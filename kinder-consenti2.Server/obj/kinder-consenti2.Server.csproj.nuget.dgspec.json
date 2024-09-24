@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\eddyo\\Source\\Repos\\Tawnny27\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj": {}
+    "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj": {}
   },
   "projects": {
-    "C:\\Users\\eddyo\\Source\\Repos\\Tawnny27\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj": {
+    "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\eddyo\\Source\\Repos\\Tawnny27\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj",
+        "projectUniqueName": "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj",
         "projectName": "kinder-consenti2.Server",
-        "projectPath": "C:\\Users\\eddyo\\Source\\Repos\\Tawnny27\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj",
+        "projectPath": "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj",
         "packagesPath": "C:\\Users\\eddyo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\eddyo\\Source\\Repos\\Tawnny27\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\obj\\",
+        "outputPath": "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\eddyo\\AppData\\Roaming\\NuGet\\NuGet.Config",

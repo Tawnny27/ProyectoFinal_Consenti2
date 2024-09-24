@@ -1,13 +1,13 @@
 {
   "Version": 1,
-  "Hash": "EqzLeQgCoycywtyYAeajKF1De0D5zkKCNNsbA4GwQH8=",
+  "Hash": "asVV4+9wRUjKYr1y2+M599IxjS0MO+E+dQRMYUc1WGI=",
   "Source": "kinder-consenti2.Server",
   "BasePath": "_content/kinder-consenti2.Server",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [
     {
-      "Identity": "C:\\repos\\kinder-consenti2\\kinder-consenti2.client\\kinder-consenti2.client.esproj",
+      "Identity": "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.client\\kinder-consenti2.client.esproj",
       "Version": 2,
       "Source": "kinder-consenti2.client",
       "GetPublishAssetsTargets": "GetCurrentProjectPublishStaticWebAssetItems",
