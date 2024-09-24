@@ -18,5 +18,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
+//prueba
 
 app.Run();
