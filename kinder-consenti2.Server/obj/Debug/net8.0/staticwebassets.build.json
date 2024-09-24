@@ -1,0 +1,23 @@
+{
+  "Version": 1,
+  "Hash": "EqzLeQgCoycywtyYAeajKF1De0D5zkKCNNsbA4GwQH8=",
+  "Source": "kinder-consenti2.Server",
+  "BasePath": "_content/kinder-consenti2.Server",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [
+    {
+      "Identity": "C:\\repos\\kinder-consenti2\\kinder-consenti2.client\\kinder-consenti2.client.esproj",
+      "Version": 2,
+      "Source": "kinder-consenti2.client",
+      "GetPublishAssetsTargets": "GetCurrentProjectPublishStaticWebAssetItems",
+      "AdditionalPublishProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained",
+      "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
+      "AdditionalBuildProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained"
+    }
+  ],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

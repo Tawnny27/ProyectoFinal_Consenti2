@@ -1,0 +1,41 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "kinder-consenti2.Server/1.0.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.SpaProxy": "8.0.8"
+        },
+        "runtime": {
+          "kinder-consenti2.Server.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.SpaProxy/8.0.8": {
+        "runtime": {
+          "lib/net8.0/Microsoft.AspNetCore.SpaProxy.dll": {
+            "assemblyVersion": "8.0.8.0",
+            "fileVersion": "8.0.824.36908"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "kinder-consenti2.Server/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.AspNetCore.SpaProxy/8.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-T9Zhb64OmOr2nU0iND7br44EfJrQYHpopxvq33l33uZM2Uu/V2GTHKg5OmGMO3XJuUX59fhqvMyXOcFFj6k1pA==",
+      "path": "microsoft.aspnetcore.spaproxy/8.0.8",
+      "hashPath": "microsoft.aspnetcore.spaproxy.8.0.8.nupkg.sha512"
+    }
+  }
+}

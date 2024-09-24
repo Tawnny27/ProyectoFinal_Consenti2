@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\kinder-consenti2.Server.props" />
+</Project>

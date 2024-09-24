@@ -1,0 +1,6 @@
+@kinder_consenti2.Server_HostAddress = http://localhost:5253
+
+GET {{kinder_consenti2.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

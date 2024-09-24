@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "VF2QRtSSwh0=",
+  "success": true,
+  "projectFilePath": "C:\\repos\\kinder-consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Isaac\\.nuget\\packages\\microsoft.aspnetcore.spaproxy\\8.0.8\\microsoft.aspnetcore.spaproxy.8.0.8.nupkg.sha512"
+  ],
+  "logs": []
+}
