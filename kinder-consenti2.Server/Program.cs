@@ -1,8 +1,15 @@
+using kinder_consenti2.Server.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddDbContext<Concenti2pruebasContext>(opciones =>
+    opciones.UseSqlServer(builder.Configuration.GetConnectionString("concenti2pruebasContex")));
+
+
 
 var app = builder.Build();
 
