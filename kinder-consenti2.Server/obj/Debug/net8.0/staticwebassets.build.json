@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "fW6EMFH6RjlfCvkunVpXUBjdvp1wiBX29r/HaFn6itw=",
+  "Hash": "asVV4+9wRUjKYr1y2+M599IxjS0MO+E+dQRMYUc1WGI=",
   "Source": "kinder-consenti2.Server",
   "BasePath": "_content/kinder-consenti2.Server",
   "Mode": "Default",
@@ -11,10 +11,10 @@
       "Version": 2,
       "Source": "kinder-consenti2.client",
       "GetPublishAssetsTargets": "GetCurrentProjectPublishStaticWebAssetItems",
-      "AdditionalPublishProperties": "",
+      "AdditionalPublishProperties": "Configuration=Debug;Platform=AnyCPU",
       "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained",
       "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
-      "AdditionalBuildProperties": "",
+      "AdditionalBuildProperties": "Configuration=Debug;Platform=AnyCPU",
       "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained"
     }
   ],
