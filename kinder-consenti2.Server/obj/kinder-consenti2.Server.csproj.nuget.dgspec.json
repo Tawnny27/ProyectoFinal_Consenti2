@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\repos\\kinder-consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj": {}
+    "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj": {}
   },
   "projects": {
-    "C:\\repos\\kinder-consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj": {
+    "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\repos\\kinder-consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj",
+        "projectUniqueName": "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj",
         "projectName": "kinder-consenti2.Server",
-        "projectPath": "C:\\repos\\kinder-consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj",
-        "packagesPath": "C:\\Users\\Isaac\\.nuget\\packages\\",
-        "outputPath": "C:\\repos\\kinder-consenti2\\kinder-consenti2.Server\\obj\\",
+        "projectPath": "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj",
+        "packagesPath": "C:\\Users\\eddyo\\.nuget\\packages\\",
+        "outputPath": "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Isaac\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\eddyo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -49,6 +49,22 @@
             "Microsoft.AspNetCore.SpaProxy": {
               "target": "Package",
               "version": "[8.*-*, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.8, )"
             }
           },
           "imports": [
