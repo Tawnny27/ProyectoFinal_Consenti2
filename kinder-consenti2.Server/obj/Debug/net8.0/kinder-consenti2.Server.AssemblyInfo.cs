@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("kinder-consenti2.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+753001daaff269fc727721e8403a1d7232835e92")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+952e2c7e7e6b9b6052a7a46b44376fc5b897d23a")]
 [assembly: System.Reflection.AssemblyProductAttribute("kinder-consenti2.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("kinder-consenti2.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<Concenti2pruebasContext>(opciones =>
-    opciones.UseSqlServer(builder.Configuration.GetConnectionString("concenti2pruebasContex")));
+    opciones.UseSqlServer(builder.Configuration.GetConnectionString("concenti2pruebaContex")));
 
 
 
