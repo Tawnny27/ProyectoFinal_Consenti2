@@ -163,3 +163,8 @@ C:\Repositorio\Git\ProyectoFinal_Consenti2\kinder-consenti2.Server\obj\Debug\net
 C:\Repositorio\Git\ProyectoFinal_Consenti2\kinder-consenti2.Server\obj\Debug\net8.0\kinder-c.67A3F907.Up2Date
 C:\Repositorio\Git\ProyectoFinal_Consenti2\kinder-consenti2.Server\obj\Debug\net8.0\kinder-consenti2.Server.genruntimeconfig.cache
 C:\Repositorio\Git\ProyectoFinal_Consenti2\kinder-consenti2.Server\obj\Debug\net8.0\ref\kinder-consenti2.Server.dll
+C:\Repositorio\Git\ProyectoFinal_Consenti2\kinder-consenti2.Server\bin\Debug\net8.0\Microsoft.OpenApi.dll
+C:\Repositorio\Git\ProyectoFinal_Consenti2\kinder-consenti2.Server\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Repositorio\Git\ProyectoFinal_Consenti2\kinder-consenti2.Server\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Repositorio\Git\ProyectoFinal_Consenti2\kinder-consenti2.Server\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Repositorio\Git\ProyectoFinal_Consenti2\kinder-consenti2.Server\obj\Debug\net8.0\kinder-consenti2.Server.MvcApplicationPartsAssemblyInfo.cs

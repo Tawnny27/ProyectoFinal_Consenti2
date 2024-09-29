@@ -9,7 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+builder.Services.AddDbContext<Concenti2pruebasContext>(opciones =>
+    opciones.UseSqlServer(builder.Configuration.GetConnectionString("concenti2pruebaContex")));
 
 var app = builder.Build();
 

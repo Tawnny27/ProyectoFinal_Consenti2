@@ -14,54 +14,55 @@ namespace kinder_consenti2.Server.Controllers
             _context = context;
         }
 
+        //************** Consultar Usuarios internos ******************
         [HttpGet]
-        [Route("ObtenerPadres")]
-        public ActionResult<List<Padre>> ObtenerUsuarios()
+        [Route("ObtenerUsuariosInt")]
+        public ActionResult<List<UsuarioInterno>> ObtenerUsuariosInt()
         {
-            return Ok(_context.Padre.ToList());
+            return Ok(_context.UsuarioInterno.ToList());
         }
 
-
+        //************** Consultar un Usuario Interno******************
         [HttpGet]
-        [Route("BuscarPadre/{id}")]
-        public ActionResult<Padre> BuscarPadre(int id)
+        [Route("BuscarUsuariosInt/{id}")]
+        public ActionResult<Padre> BuscarUsuariosInt(int id)
         {
-            var padre = _context.Padre.Find(id);
-            if (padre == null)
+            var usuarioInterno = _context.UsuarioInterno.Find(id);
+            if (usuarioInterno == null)
                 return BadRequest("No encontrado");
-            return Ok(padre);
-
+            return Ok(usuarioInterno);
         }
 
+        //********************* Crear Usuarios Internos **************************
         [HttpPost]
-        [Route("CrearPadre")]
-        public ActionResult<Padre> CrearPadre(Padre padre)
+        [Route("CrearUsuarioInterno")]
+        public ActionResult<Padre> CrearUsuarioInterno(UsuarioInterno usuarioInterno)
         {
-            _context.Padre.Add(padre);
+            _context.UsuarioInterno.Add(usuarioInterno);
             _context.SaveChanges();
-            var insertado = _context.Padre.Find(padre.IdPadre);
+            var insertado = _context.UsuarioInterno.Find(usuarioInterno.IdUsuario);
             return Ok(insertado);
         }
 
-
+        //********************* Editar Usuarios Internos **************************
         [HttpPut]
-        [Route("EditarPadre")]
-        public ActionResult<Padre> EditarPadre(Padre padre)
+        [Route("EditarUsuarioInterno")]
+        public ActionResult<Padre> EditarUsuarioInterno(UsuarioInterno usuarioInterno)
         {
-            _context.Padre.Update(padre);
+            _context.UsuarioInterno.Update(usuarioInterno);
             _context.SaveChanges();
-            return Ok(_context.Padre.Find(padre.IdPadre));
+            return Ok(_context.UsuarioInterno.Find(usuarioInterno.IdUsuario));
         }
 
-
+        //********************* Eliminar Usuarios Internos **************************
         [HttpDelete]
-        [Route("EliminarPadre/{id}")]
-        public ActionResult<string> EliminarPadre(int id)
+        [Route("EliminarUsuarioInterno/{id}")]
+        public ActionResult<string> EliminarUsuarioInterno(int id)
         {
-            var padre = _context.Padre.Find(id);
-            _context.Padre.Remove(padre);
+            var usuarioInterno = _context.UsuarioInterno.Find(id);
+            _context.UsuarioInterno.Remove(usuarioInterno);
             _context.SaveChanges();
-            return Ok("Padre eliminado");
+            return Ok("Usuario eliminado");
         }
 
     }

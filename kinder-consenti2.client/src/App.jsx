@@ -13,19 +13,19 @@ function App() {
         : <table className="table table-striped" aria-labelledby="tableLabel">
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
+                    <th>nombre</th>
+                    <th>Apellido</th>
+                    <th>cedula</th>
+                    <th>telefono</th>
                 </tr>
             </thead>
             <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
+                {forecasts.map(user =>
+                    <tr key={user.idPadre}>
+                        <td>{user.nombrePadre}</td>
+                        <td>{user.apellidosPadre}</td>
+                        <td>{user.cedulaPadre}</td>
+                        <td>{user.telefonoPadre}</td>
                     </tr>
                 )}
             </tbody>
@@ -40,8 +40,10 @@ function App() {
     );
     
     async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
+        const response = await fetch('/padres/ObtenerPadres');
         const data = await response.json();
+        console.log(data);
+
         setForecasts(data);
     }
 }

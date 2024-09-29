@@ -47,11 +47,90 @@ export default defineConfig({
                 target,
                 secure: false
             },
-            '^/ObtenerPadres': {
-                target,
+            //--------------Crud Padres------------------
+            '^/padres/ObtenerPadres': {
+                target:'https://localhost:44369/',
                 secure: false
-            }
-
+            },
+            '^/padres/BuscarPadre': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/padres/CrearPadre': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/padres/EditarPadre': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/padres/EliminarPadre': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            //--------------Crud Usuarios Internos------------------
+            '^/usuarios/ObtenerUsuariosInt': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/usuarios/BuscarUsuariosInt': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/usuarios/CrearUsuarioInterno': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/usuarios/EditarUsuarioInterno': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/usuarios/EliminarUsuarioInterno': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            //--------------Crud Roles------------------
+            '^/roles/ObtenerRoles': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/roles/BuscarRol': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/roles/CrearRol': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/roles/EditarRol': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/roles/EliminaRol': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            //--------------Crud Alumnos------------------
+            '^/alumnos/ObtenerAlumnos': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/alumnos/BuscarAlumno': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/alumnos/CrearAlumno': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/alumnos/EditarAlumno': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
+            '^/alumnos/EliminarAlumno': {
+                target: 'https://localhost:44369/',
+                secure: false
+            },
         },
         port: 5173,
         https: {
