@@ -3,7 +3,7 @@
 "ServerUrl": "https://localhost:5173",
 "RedirectUrl": "",
 "LaunchCommand": "npm run dev",
-"WorkingDirectory": "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\..\\kinder-consenti2.client",
+"WorkingDirectory": "C:\\repos\\kinder\\kinder-consenti2.Server\\..\\kinder-consenti2.client",
 "MaxTimeoutInSeconds": "120",
 "KeepRunning": "false"
 }
