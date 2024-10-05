@@ -4573,19 +4573,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\eddyo\\.nuget\\packages\\": {}
+    "C:\\Users\\Isaac\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj",
+      "projectUniqueName": "C:\\repos\\kinder\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj",
       "projectName": "kinder-consenti2.Server",
-      "projectPath": "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj",
-      "packagesPath": "C:\\Users\\eddyo\\.nuget\\packages\\",
-      "outputPath": "C:\\Repositorio\\Git\\ProyectoFinal_Consenti2\\kinder-consenti2.Server\\obj\\",
+      "projectPath": "C:\\repos\\kinder\\kinder-consenti2.Server\\kinder-consenti2.Server.csproj",
+      "packagesPath": "C:\\Users\\Isaac\\.nuget\\packages\\",
+      "outputPath": "C:\\repos\\kinder\\kinder-consenti2.Server\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\eddyo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Isaac\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

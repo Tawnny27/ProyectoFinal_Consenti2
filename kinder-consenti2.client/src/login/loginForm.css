@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Opcional, para evitar scrolls si la imagen es más grande que la ventana */
+}
+
+.login-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url('../assets/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.login-form {
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', sans-serif;
+    z-index: 1; /* Asegura que el formulario esté encima de la imagen de fondo */
+    position: relative; /* Necesario para el posicionamiento del ícono */
+}
+
+.icon-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.user-icon {
+    width: 100px; /* Ajusta el tamaño del logo */
+    height: 100px; /* Ajusta el tamaño del logo */
+    border-radius: 50%; /* Hace que la imagen sea circular */
+    background-color: #A569BD; /* Color de fondo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Oculta cualquier parte de la imagen que sobresalga */
+}
+
+    .user-icon .logo {
+        width: 100%;
+        height: auto;
+        object-fit: cover; /* Ajusta la imagen dentro del contenedor circular */
+    }
+
+.login-form h2 {
+    margin-bottom: 20px;
+    color: #A569BD;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+.input-icon {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0 10px;
+}
+
+    .input-icon input {
+        border: none;
+        outline: none;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .input-icon svg {
+        color: #A569BD;
+        margin-right: 10px;
+    }
+
+    .input-icon input::placeholder {
+        color: #A569BD;
+        opacity: 0.7;
+    }
+
+.form-group input:focus {
+    border-color: #48C9B0;
+    outline: none;
+}
+
+.form-options {
+    display: flex;
+    align-items: center;
+    text-align: start;
+    justify-content: space-between;
+    color: #A569BD;
+}
+
+    .form-options label {
+        display: flex;
+        align-items: center;
+        color: #A569BD;
+        font-size: 14px;
+    }
+
+    .form-options input[type="checkbox"] {
+        margin-right: 1px; /* Espacio entre el checkbox y el texto */
+    }
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #48C9B0;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+    button:hover {
+        background-color: #5ad8bf;
+    }
+
+.forgot-password {
+    margin-top: 5px;
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+    .forgot-password a {
+        color: #A569BD;
+        text-decoration: none;
+        font-size: 13px;
+    }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
