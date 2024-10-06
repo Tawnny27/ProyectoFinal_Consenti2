@@ -2,14 +2,16 @@
 import React from 'react';
 import './App.css';
 import LoginForm from './login/loginForm';
+import EditarUsuario from './usuarios/EditarUsuarios';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
 
 function App() {
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<LoginForm />} />
-
+                <Route path="/editar-usuario/:id" element={<EditarUsuario />} />
             </Routes>
                 
         </Router>
