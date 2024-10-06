@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\kinder-consenti2.Server.props" />
-</Project>
