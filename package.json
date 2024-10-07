@@ -1,5 +1,10 @@
 {
   "dependencies": {
-    "axios": "^1.7.7"
+    "axios": "^1.7.7",
+    "bootstrap": "^5.3.3",
+    "primeicons": "^7.0.0",
+    "primereact": "^10.8.3",
+    "react-bootstrap": "^2.10.5",
+    "react-data-table-component": "^7.6.2"
   }
 }

@@ -1,0 +1,148 @@
+.user-maintenance-container {
+    position: relative;
+    padding: 90px;
+    font-family: 'Roboto', sans-serif;
+    background: url('../assets/background.jpg') no-repeat center center;
+    background-size: cover;
+    box-sizing: border-box;
+    min-height: 100vh;
+    z-index: 1;
+}
+
+    .user-maintenance-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.5); /* Capa blanca con opacidad */
+        z-index: -1; /* Asegúrate de que el pseudo-elemento esté detrás del contenido */
+    }
+
+h2 {
+    text-align: center;
+    color: #A569BD;
+    margin-bottom: 50px;
+}
+
+.filters {
+    justify-content: space-around;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 20px;
+    z-index: 1; /* Asegura que los filtros estén encima del pseudo-elemento */
+    position: relative; /* Para que el z-index funcione */
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+    .filter-group label {
+        font-weight: bold;
+        color: #333;
+    }
+
+.filters input,
+.filters select,
+.filters button {
+    padding: 15px;
+    border: 0px solid #ddd;
+    border-radius: 5px;
+}
+
+.filters .name-input {
+    width: 250px; /* Ajusta el ancho según tus necesidades */
+}
+
+.role-filter {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.search-button {
+    background-color: #48C9B0;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    align-self: flex-end; /* Alinea el botón a la derecha */
+}
+
+.cancel-button {
+    background-color: #A569BD;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    align-self: flex-end; /* Alinea el botón a la derecha */
+}
+
+    .cancel-button:hover {
+        background-color: #d481f5;
+    }
+
+.search-button:hover {
+    background-color: #1abc9c;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    z-index: 1; /* Asegura que la tabla esté encima del pseudo-elemento */
+    position: relative; /* Para que el z-index funcione */
+}
+
+    .user-table th,
+    .user-table td {
+        padding: 14px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .user-table th {
+        background-color: #f4f4f4;
+    }
+
+    .user-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .user-table button {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+.edit-button {
+    background-color: #f1c40f; /* Amarillo */
+}
+
+    .edit-button:hover {
+        background-color: #f39c12; /* Amarillo más oscuro */
+    }
+
+.inactivate-button {
+    background-color: #3498db; /* Azul */
+}
+
+    .inactivate-button:hover {
+        background-color: #2980b9; /* Azul más oscuro */
+    }
+
+.delete-button {
+    background-color: #e74c3c; /* Rojo */
+}
+
+    .delete-button:hover {
+        background-color: #c0392b; /* Rojo más oscuro */
+    }
+
