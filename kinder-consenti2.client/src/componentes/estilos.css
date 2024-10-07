@@ -22,7 +22,29 @@ body {
     background-color: #A569BD;
     color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Ocupa todo el ancho de la pantalla */
+    position: fixed; /* Fija el header en la parte superior */
+    top: 0; /* Alinea el header al borde superior */
+    left: 0; /* Alinea el header al borde izquierdo */
+    z-index: 1000; /* Asegura que el header esté por encima de otros elementos */
 }
+
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #A569BD;
+    color: white;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Ocupa todo el ancho de la pantalla */
+    position: fixed; /* Fija el footer en la parte inferior */
+    bottom: 0; /* Alinea el footer al borde inferior */
+    left: 0; /* Alinea el footer al borde izquierdo */
+    z-index: 1000; /* Asegura que el footer esté por encima de otros elementos */
+}
+
+
 
 .logo-container {
     display: flex;

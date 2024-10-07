@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DataTable from 'react-data-table-component';
+import Navbar from '../componentes/navbar'; // Asegúrate de que la ruta sea correcta
+import Footer from '../componentes/footer'; // Importa el Footer
 import './UserMaintenance.css';
 
 const UserMaintenance = () => {
@@ -30,9 +32,9 @@ const UserMaintenance = () => {
                     id: padre.idPadre,
                     name: `${padre.nombrePadre} ${padre.apellidosPadre}`,
                     idCard: padre.cedulaPadre,
-                    entryDate: padre.fechaIngreso || '2023-01-01', // Cambia esto a la propiedad correcta
+                    entryDate: padre.fechaIngreso || '2023-01-01',
                     role: 'Padre',
-                    status: padre.estado || 'Activo' // Cambia esto a la propiedad correcta
+                    status: padre.estado || 'Activo'
                 }));
                 setUserList(formattedUsers);
                 setFilteredUsers(formattedUsers); // Inicializar lista filtrada
@@ -47,7 +49,6 @@ const UserMaintenance = () => {
     }, []);
 
     useEffect(() => {
-        // Función para filtrar usuarios basados en los filtros
         const applyFilters = () => {
             const filtered = userList.filter(user => {
                 return (
@@ -65,7 +66,6 @@ const UserMaintenance = () => {
     }, [filters, userList]);
 
     const handleSearch = () => {
-        // Este botón sigue presente, pero la búsqueda se realiza automáticamente
         fetchUsers();
     };
 
@@ -80,7 +80,6 @@ const UserMaintenance = () => {
         navigate(`/editar-usuario/${user.id}`); // Corregido para usar comillas inversas
     };
 
-    // Función para manejar la inactivación del usuario
     const handleInactivate = async (userId, isChecked) => {
         if (isChecked) {
             const confirmed = window.confirm('¿Está seguro que desea inactivar este usuario?');
@@ -108,6 +107,16 @@ const UserMaintenance = () => {
 
     const handleCancel = () => {
         navigate('/main');
+    };
+
+    const handleCalendarClick = () => {
+        setShowModal(true); // Abre el modal del calendario
+    };
+
+    const handleLogout = () => {
+        // Aquí iría la lógica para cerrar sesión, como redirigir al login
+        alert('Cerrando sesión...');
+        navigate('/login'); // Redirigir a la página de login
     };
 
     // Configuración de las columnas para el DataTable
@@ -162,6 +171,10 @@ const UserMaintenance = () => {
 
     return (
         <div className="user-maintenance-container">
+            <Navbar
+                handleCalendarClick={handleCalendarClick}
+                handleLogout={handleLogout}
+            /> {/* Aquí se pasa el Navbar con las funciones */}
             <h2>Mantenimiento de Usuarios</h2>
             <div className="filters">
                 <div className="filter-group">
@@ -258,6 +271,7 @@ const UserMaintenance = () => {
                     }
                 }}
             />
+            <Footer /> {/* Agrega el Footer aquí */}
         </div>
     );
 };

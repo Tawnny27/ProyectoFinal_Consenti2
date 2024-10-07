@@ -1,15 +1,15 @@
-
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
-import './estilos.css';
+
+import logo from '../assets/logo.jpg';
 import ModalCalendar from './modalcalendar'
 
 function Navbar ({ handleCalendarClick, handleLogout }) {
     return (
         <header className="header">
             <div className="logo-container">
-                <img src={require('../assets/logo.jpg')} alt="Logo" className="logo-main" />
+                <img src={logo} alt="Logo" className="logo-main" />
                 <h1>Kínder Consenti2</h1>
             </div>
             <div className="spacer"></div>
