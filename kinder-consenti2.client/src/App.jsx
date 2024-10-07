@@ -1,8 +1,9 @@
 //import { useEffect, useState } from 'react';
 import React from 'react';
-import './App.css';
+//import './App.css';
 import LoginForm from './login/loginForm';
 import EditarUsuario from './usuarios/EditarUsuarios';
+import MainLayout from './menu/mainLayout';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 
@@ -12,6 +13,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<LoginForm />} />
                 <Route path="/editar-usuario/:id" element={<EditarUsuario />} />
+                <Route path="/main" element={<MainLayout />} />
             </Routes>
                 
         </Router>
