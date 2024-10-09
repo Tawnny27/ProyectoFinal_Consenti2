@@ -1,0 +1,174 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const RegistrarAlumno = () => {
+  const [alumno, setAlumno] = useState({
+    idAlumno: 0,
+    padreId: 0,
+    nombreAlumno: '',
+    apellidosAlumno: '',
+    fechaNacimiento: '',
+    cedulaAlumno: '',
+    generoAlumno: '',
+    direccionAlumno: '',
+    informacionAdicional: '',
+    fotoAlumno: '',
+    nombreCompAutorizado: '',
+    cedulaAutorizado: '',
+    telefonoAutorizado: '',
+    relacionAutorizado: '',
+    nombreCompContacto: '',
+    cedulaContacto: '',
+    telefonoContacto: '',
+    relacionContacto: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setAlumno({ ...alumno, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .post('URL_DEL_BACKEND', alumno)
+      .then((response) => {
+        console.log('Alumno registrado:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error registrando alumno:', error);
+      });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <h2>Registrar Alumno</h2>
+
+      <input
+        type="text"
+        name="nombreAlumno"
+        value={alumno.nombreAlumno}
+        onChange={handleChange}
+        placeholder="Nombre del alumno"
+        required
+      />
+      <input
+        type="text"
+        name="apellidosAlumno"
+        value={alumno.apellidosAlumno}
+        onChange={handleChange}
+        placeholder="Apellidos del alumno"
+        required
+      />
+      <input
+        type="date"
+        name="fechaNacimiento"
+        value={alumno.fechaNacimiento}
+        onChange={handleChange}
+        placeholder="Fecha de nacimiento"
+        required
+      />
+      <input
+        type="text"
+        name="cedulaAlumno"
+        value={alumno.cedulaAlumno}
+        onChange={handleChange}
+        placeholder="Cédula del alumno"
+        required
+      />
+      <input
+        type="text"
+        name="generoAlumno"
+        value={alumno.generoAlumno}
+        onChange={handleChange}
+        placeholder="Género del alumno"
+        required
+      />
+      <input
+        type="text"
+        name="direccionAlumno"
+        value={alumno.direccionAlumno}
+        onChange={handleChange}
+        placeholder="Dirección del alumno"
+        required
+      />
+      <textarea
+        name="informacionAdicional"
+        value={alumno.informacionAdicional}
+        onChange={handleChange}
+        placeholder="Información adicional"
+      />
+      <input
+        type="text"
+        name="fotoAlumno"
+        value={alumno.fotoAlumno}
+        onChange={handleChange}
+        placeholder="URL de la foto del alumno"
+      />
+
+      <h3>Información de Autorizados</h3>
+      <input
+        type="text"
+        name="nombreCompAutorizado"
+        value={alumno.nombreCompAutorizado}
+        onChange={handleChange}
+        placeholder="Nombre del autorizado"
+      />
+      <input
+        type="text"
+        name="cedulaAutorizado"
+        value={alumno.cedulaAutorizado}
+        onChange={handleChange}
+        placeholder="Cédula del autorizado"
+      />
+      <input
+        type="tel"
+        name="telefonoAutorizado"
+        value={alumno.telefonoAutorizado}
+        onChange={handleChange}
+        placeholder="Teléfono del autorizado"
+      />
+      <input
+        type="text"
+        name="relacionAutorizado"
+        value={alumno.relacionAutorizado}
+        onChange={handleChange}
+        placeholder="Relación con el autorizado"
+      />
+
+      <h3>Información de Contactos</h3>
+      <input
+        type="text"
+        name="nombreCompContacto"
+        value={alumno.nombreCompContacto}
+        onChange={handleChange}
+        placeholder="Nombre del contacto"
+      />
+      <input
+        type="text"
+        name="cedulaContacto"
+        value={alumno.cedulaContacto}
+        onChange={handleChange}
+        placeholder="Cédula del contacto"
+      />
+      <input
+        type="tel"
+        name="telefonoContacto"
+        value={alumno.telefonoContacto}
+        onChange={handleChange}
+        placeholder="Teléfono del contacto"
+      />
+      <input
+        type="text"
+        name="relacionContacto"
+        value={alumno.relacionContacto}
+        onChange={handleChange}
+        placeholder="Relación con el contacto"
+      />
+
+      <button type="submit">Registrar Alumno</button>
+    </form>
+  );
+};
+
+export default RegistrarAlumno;
