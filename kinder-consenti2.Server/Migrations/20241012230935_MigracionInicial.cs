@@ -25,30 +25,6 @@ namespace kinder_consenti2.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Padre",
-                columns: table => new
-                {
-                    IdPadre = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RolId = table.Column<int>(type: "int", nullable: false),
-                    NombrePadre = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    ApellidosPadre = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    CedulaPadre = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    TelefonoPadre = table.Column<int>(type: "int", maxLength: 10, nullable: false),
-                    CorreoPadre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Padre", x => x.IdPadre);
-                    table.ForeignKey(
-                        name: "FK_Padre_Rol_RolId",
-                        column: x => x.RolId,
-                        principalTable: "Rol",
-                        principalColumn: "IdRol",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UsuarioInterno",
                 columns: table => new
                 {
@@ -100,10 +76,10 @@ namespace kinder_consenti2.Server.Migrations
                 {
                     table.PrimaryKey("PK_Alumno", x => x.IdAlumno);
                     table.ForeignKey(
-                        name: "FK_Alumno_Padre_PadreId",
+                        name: "FK_Alumno_UsuarioInterno_PadreId",
                         column: x => x.PadreId,
-                        principalTable: "Padre",
-                        principalColumn: "IdPadre",
+                        principalTable: "UsuarioInterno",
+                        principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -111,11 +87,6 @@ namespace kinder_consenti2.Server.Migrations
                 name: "IX_Alumno_PadreId",
                 table: "Alumno",
                 column: "PadreId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Padre_RolId",
-                table: "Padre",
-                column: "RolId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UsuarioInterno_RolId",
@@ -131,9 +102,6 @@ namespace kinder_consenti2.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "UsuarioInterno");
-
-            migrationBuilder.DropTable(
-                name: "Padre");
 
             migrationBuilder.DropTable(
                 name: "Rol");

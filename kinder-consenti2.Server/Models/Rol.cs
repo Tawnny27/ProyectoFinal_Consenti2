@@ -4,8 +4,7 @@
     {
         public int IdRol { get; set; } 
         public string NombreRol { get; set; }
-        public List<UsuarioInterno>? UsuariosInternos { get; set; }
-        public List<Padre>? Padres { get; set; }
+        public List<UsuarioInterno>? UsuariosInternos { get; set; }       
 
     }
 }

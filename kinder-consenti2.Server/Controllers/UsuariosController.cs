@@ -25,7 +25,7 @@ namespace kinder_consenti2.Server.Controllers
         //************** Consultar un Usuario Interno******************
         [HttpGet]
         [Route("BuscarUsuariosInt/{id}")]
-        public ActionResult<Padre> BuscarUsuariosInt(int id)
+        public ActionResult<UsuarioInterno> BuscarUsuariosInt(int id)
         {
             var usuarioInterno = _context.UsuarioInterno.Find(id);
             if (usuarioInterno == null)
@@ -36,7 +36,7 @@ namespace kinder_consenti2.Server.Controllers
         //********************* Crear Usuarios Internos **************************
         [HttpPost]
         [Route("CrearUsuarioInterno")]
-        public ActionResult<Padre> CrearUsuarioInterno(UsuarioInterno usuarioInterno)
+        public ActionResult<UsuarioInterno> CrearUsuarioInterno(UsuarioInterno usuarioInterno)
         {
             _context.UsuarioInterno.Add(usuarioInterno);
             _context.SaveChanges();
@@ -47,7 +47,7 @@ namespace kinder_consenti2.Server.Controllers
         //********************* Editar Usuarios Internos **************************
         [HttpPut]
         [Route("EditarUsuarioInterno")]
-        public ActionResult<Padre> EditarUsuarioInterno(UsuarioInterno usuarioInterno)
+        public ActionResult<UsuarioInterno> EditarUsuarioInterno(UsuarioInterno usuarioInterno)
         {
             _context.UsuarioInterno.Update(usuarioInterno);
             _context.SaveChanges();

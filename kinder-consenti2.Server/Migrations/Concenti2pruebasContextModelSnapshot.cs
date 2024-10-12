@@ -114,48 +114,6 @@ namespace kinder_consenti2.Server.Migrations
                     b.ToTable("Alumno");
                 });
 
-            modelBuilder.Entity("kinder_consenti2.Server.Models.Padre", b =>
-                {
-                    b.Property<int>("IdPadre")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPadre"));
-
-                    b.Property<string>("ApellidosPadre")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("CedulaPadre")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
-
-                    b.Property<string>("CorreoPadre")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("NombrePadre")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
-
-                    b.Property<int>("RolId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TelefonoPadre")
-                        .HasMaxLength(10)
-                        .HasColumnType("int");
-
-                    b.HasKey("IdPadre");
-
-                    b.HasIndex("RolId");
-
-                    b.ToTable("Padre");
-                });
-
             modelBuilder.Entity("kinder_consenti2.Server.Models.Rol", b =>
                 {
                     b.Property<int>("IdRol")
@@ -218,24 +176,13 @@ namespace kinder_consenti2.Server.Migrations
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Alumno", b =>
                 {
-                    b.HasOne("kinder_consenti2.Server.Models.Padre", "Padre")
+                    b.HasOne("kinder_consenti2.Server.Models.UsuarioInterno", "UsuarioInterno")
                         .WithMany("Hijos")
                         .HasForeignKey("PadreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Padre");
-                });
-
-            modelBuilder.Entity("kinder_consenti2.Server.Models.Padre", b =>
-                {
-                    b.HasOne("kinder_consenti2.Server.Models.Rol", "Rol")
-                        .WithMany("Padres")
-                        .HasForeignKey("RolId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Rol");
+                    b.Navigation("UsuarioInterno");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.UsuarioInterno", b =>
@@ -249,16 +196,14 @@ namespace kinder_consenti2.Server.Migrations
                     b.Navigation("Rol");
                 });
 
-            modelBuilder.Entity("kinder_consenti2.Server.Models.Padre", b =>
-                {
-                    b.Navigation("Hijos");
-                });
-
             modelBuilder.Entity("kinder_consenti2.Server.Models.Rol", b =>
                 {
-                    b.Navigation("Padres");
-
                     b.Navigation("UsuariosInternos");
+                });
+
+            modelBuilder.Entity("kinder_consenti2.Server.Models.UsuarioInterno", b =>
+                {
+                    b.Navigation("Hijos");
                 });
 #pragma warning restore 612, 618
         }

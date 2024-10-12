@@ -9,6 +9,7 @@
         public string CedulaUsuario { get; set; }
         public int TelefonoUsuario { get; set; }
         public string CorreoUsuario { get; set; }
-        public Rol? Rol { get; set; } 
+        public Rol? Rol { get; set; }
+        public List<Alumno>? Hijos { get; set; }
     }
 }
