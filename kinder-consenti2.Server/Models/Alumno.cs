@@ -12,7 +12,7 @@
         public string DireccionAlumno { get; set; }
         public string InformacionAdicional { get; set; }
         public string? FotoAlumno { get; set; }
-        public UsuarioInterno? UsuarioInterno { get; set; }
+        public Usuario? Usuario { get; set; }
 
         //******** Autorizado a recoger el alumno *********
         public string NombreCompAutorizado { get; set; }

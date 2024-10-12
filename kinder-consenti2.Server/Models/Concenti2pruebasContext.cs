@@ -11,7 +11,7 @@ namespace kinder_consenti2.Server.Models
         }
 
         public DbSet<Rol> Rol { get; set; }
-        public DbSet<UsuarioInterno> UsuarioInterno { get; set; }
+        public DbSet<Usuario> Usuario { get; set; }
         
         public DbSet<Alumno> Alumno { get; set; }
       
@@ -24,7 +24,7 @@ namespace kinder_consenti2.Server.Models
                 R.Property(x => x.NombreRol).IsRequired().HasMaxLength(10);
             });
 
-            modelBuilder.Entity<UsuarioInterno>(UE =>
+            modelBuilder.Entity<Usuario>(UE =>
             {
                 UE.HasKey(x => x.IdUsuario);
                 UE.Property(x => x.NombreUsuario).IsRequired().HasMaxLength(15);                
@@ -36,8 +36,8 @@ namespace kinder_consenti2.Server.Models
             });
 
             //****************** Relacion entre roll-Usuario interno ***************************
-            modelBuilder.Entity<UsuarioInterno>().HasOne(x => x.Rol)
-                .WithMany(x => x.UsuariosInternos).HasForeignKey(f => f.RolId);
+            modelBuilder.Entity<Usuario>().HasOne(x => x.Rol)
+                .WithMany(x => x.Usuarios).HasForeignKey(f => f.RolId);
             //**********************************************************************************
 
 
@@ -65,7 +65,7 @@ namespace kinder_consenti2.Server.Models
             });
 
             //************************* Relacion entre Padre-Alumno  ***************************
-            modelBuilder.Entity<Alumno>().HasOne(x => x.UsuarioInterno)
+            modelBuilder.Entity<Alumno>().HasOne(x => x.Usuario)
                 .WithMany(x => x.Hijos).HasForeignKey(f => f.PadreId);
             //**********************************************************************************
 

@@ -1,6 +1,6 @@
 ﻿namespace kinder_consenti2.Server.Models
 {
-    public class UsuarioInterno
+    public class Usuario
     {
         public int IdUsuario { get; set; }
         public int RolId { get; set; }
