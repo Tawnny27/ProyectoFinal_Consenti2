@@ -13,7 +13,8 @@ const UserMaintenance = () => {
         idCard: '',
         status: '',
         entryDate: '',
-        role: ''
+        role: '',
+        estado:Boolean,
     });
     const [userList, setUserList] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
@@ -25,16 +26,16 @@ const UserMaintenance = () => {
     // Función para obtener los datos de los usuarios desde la API
     const fetchUsers = async () => {
         try {
-            const response = await axios.get('https://localhost:44369/Padres/ObtenerPadres', { params: filters });
+            const response = await axios.get('https://localhost:44369/Usuarios/ObtenerUsuarios', { params: filters });
             if (response.status === 200) {
-                const padresData = response.data;
-                const formattedUsers = padresData.map(padre => ({
-                    id: padre.idPadre,
-                    name: `${padre.nombrePadre} ${padre.apellidosPadre}`,
-                    idCard: padre.cedulaPadre,
-                    entryDate: padre.fechaIngreso || '2023-01-01',
-                    role: 'Padre',
-                    status: padre.estado || 'Activo'
+                const usuariosData = response.data;
+                const formattedUsers = usuariosData.map(usuario => ({
+                    id: usuario.idPadre,
+                    name: `${usuario.nombreUsuario} ${usuario.apellidosUsuario}`,
+                    idCard: usuario.cedulaUsuario,
+                    entryDate: usuario.fechaIngreso || '2023-01-01',
+                    role: usuario.rolId||'Padre',
+                    status: usuario.estado || 'Activo'
                 }));
                 setUserList(formattedUsers);
                 setFilteredUsers(formattedUsers); // Inicializar lista filtrada
@@ -85,7 +86,7 @@ const UserMaintenance = () => {
             const confirmed = window.confirm('¿Está seguro que desea inactivar este usuario?');
             if (confirmed) {
                 try {
-                    await axios.put(`https://localhost:44369/Padres/InactivarPadre/${userId}`);
+                    await axios.put(`https://localhost:44369/Usuarios/InactivarUsuario/${userId}`);
                     alert('Usuario inactivado exitosamente');
                     fetchUsers(); // Actualizar la lista de usuarios
                 } catch (error) {

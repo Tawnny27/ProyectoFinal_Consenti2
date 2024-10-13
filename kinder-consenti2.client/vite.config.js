@@ -46,46 +46,25 @@ export default defineConfig({
             '^/weatherforecast': {
                 target,
                 secure: false
-            },
-            //--------------Crud Padres------------------
-            '^/padres/ObtenerPadres': {
-                target:'https://localhost:44369/',
-                secure: false
-            },
-            '^/padres/BuscarPadre': {
+            },           
+            //--------------Crud Usuarios------------------
+            '^/usuarios/ObtenerUsuarios': {
                 target: 'https://localhost:44369/',
                 secure: false
             },
-            '^/padres/CrearPadre': {
+            '^/usuarios/BuscarUsuarios': {
                 target: 'https://localhost:44369/',
                 secure: false
             },
-            '^/padres/EditarPadre': {
+            '^/usuarios/CrearUsuario': {
                 target: 'https://localhost:44369/',
                 secure: false
             },
-            '^/padres/EliminarPadre': {
+            '^/usuarios/EditarUsuario': {
                 target: 'https://localhost:44369/',
                 secure: false
             },
-            //--------------Crud Usuarios Internos------------------
-            '^/usuarios/ObtenerUsuariosInt': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/usuarios/BuscarUsuariosInt': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/usuarios/CrearUsuarioInterno': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/usuarios/EditarUsuarioInterno': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/usuarios/EliminarUsuarioInterno': {
+            '^/usuarios/EliminarUsuario': {
                 target: 'https://localhost:44369/',
                 secure: false
             },

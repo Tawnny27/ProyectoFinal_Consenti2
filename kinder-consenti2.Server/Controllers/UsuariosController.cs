@@ -22,6 +22,25 @@ namespace kinder_consenti2.Server.Controllers
             return Ok(_context.Usuario.ToList());
         }
 
+        //************** Consultar Usuarios ******************
+        [HttpGet]
+        [Route("AccesoUsuario/{CorreoUsuario}&{ContrasennaUsuario}")]
+        public ActionResult<Usuario> AccesoUsuario(string CorreoUsuario, string ContrasennaUsuario)
+        {
+            if (ContrasennaUsuario != null && CorreoUsuario != null)
+            {
+                var logueado = _context.Usuario.Where(x => x.ContrasennaUsuario == ContrasennaUsuario && x.CorreoUsuario == CorreoUsuario).FirstOrDefault();
+                if (logueado != null)                
+                    return Ok(logueado);
+                return BadRequest("Correo o contraseña invalido");
+            }
+            return BadRequest("Faltan datos");
+
+        }
+
+
+
+
         //************** Consultar un Usuario ******************
         [HttpGet]
         [Route("BuscarUsuarios/{id}")]

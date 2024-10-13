@@ -9,6 +9,9 @@
         public string CedulaUsuario { get; set; }
         public int TelefonoUsuario { get; set; }
         public string CorreoUsuario { get; set; }
+        public string ContrasennaUsuario { get; set; }
+        public DateTime FechaIngreso { get; set; }
+        public bool estado {  get; set; }
         public Rol? Rol { get; set; }
         public List<Alumno>? Hijos { get; set; }
     }

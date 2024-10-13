@@ -32,7 +32,11 @@ namespace kinder_consenti2.Server.Models
                 UE.Property(x => x.RolId).IsRequired();
                 UE.Property(x => x.CedulaUsuario).IsRequired().HasMaxLength(15);
                 UE.Property(x => x.CorreoUsuario).IsRequired().HasMaxLength(50);
+                UE.Property(x => x.ContrasennaUsuario).IsRequired().HasMaxLength(16); 
                 UE.Property(x => x.TelefonoUsuario).IsRequired().HasMaxLength(10);
+                UE.Property(x => x.estado).IsRequired().HasDefaultValue(true);
+                UE.Property(x => x.FechaIngreso).IsRequired();
+                
             });
 
             //****************** Relacion entre roll-Usuario interno ***************************
