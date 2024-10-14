@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DataTable from 'react-data-table-component';
-import Navbar from '../componentes/navbar'; // Asegúrate de que la ruta sea correcta
-import Footer from '../componentes/footer'; // Importa el Footer
+import Navbar from '../componentes/navbar';
+import Footer from '../componentes/footer'; 
 import './UserMaintenance.css';
 
 const UserMaintenance = () => {
@@ -30,7 +30,7 @@ const UserMaintenance = () => {
             if (response.status === 200) {
                 const usuariosData = response.data;
                 const formattedUsers = usuariosData.map(usuario => ({
-                    id: usuario.idPadre,
+                    id: usuario.idUsuario,
                     name: `${usuario.nombreUsuario} ${usuario.apellidosUsuario}`,
                     idCard: usuario.cedulaUsuario,
                     entryDate: usuario.fechaIngreso || '2023-01-01',
