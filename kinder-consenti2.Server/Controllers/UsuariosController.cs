@@ -22,7 +22,7 @@ namespace kinder_consenti2.Server.Controllers
             return Ok(_context.Usuario.ToList());
         }
 
-        //************** Consultar Usuarios ******************
+        //************** Acceso Usuarios ******************
         [HttpGet]
         [Route("AccesoUsuario/{CorreoUsuario}&{ContrasennaUsuario}")]
         public ActionResult<Usuario> AccesoUsuario(string CorreoUsuario, string ContrasennaUsuario)
@@ -35,11 +35,32 @@ namespace kinder_consenti2.Server.Controllers
                 return BadRequest("Correo o contraseña invalido");
             }
             return BadRequest("Faltan datos");
-
+        
         }
 
+        //-----------------------------------------------------
 
+        [HttpPost]
+        [Route("AccesoUsuario2")]
+        public ActionResult<Usuario> AccesoUsuario2(Acceso datosAcesso)
+        {            
+            try
+            {
+                var logueado = _context.Usuario.Where
+                    (
+                        x => x.ContrasennaUsuario == datosAcesso.contrasenna &&
+                        x.CorreoUsuario == datosAcesso.correo
+                    ).FirstOrDefault();
+                if (logueado != null)
+                    return Ok(logueado);
+                return BadRequest("Correo o contraseña invalido");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest( "Error: "+ex) ;
+            }
 
+        }
 
         //************** Consultar un Usuario ******************
         [HttpGet]
