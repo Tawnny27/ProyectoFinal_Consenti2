@@ -1,4 +1,10 @@
+body{
+    margin:0;
+    padding:0;
+    overflow:auto;
+}
 .user-maintenance-container {
+    flex-direction: column;
     position: relative;
     padding: 90px;
     font-family: 'Roboto', sans-serif;
@@ -23,7 +29,8 @@
 h2 {
     text-align: center;
     color: #A569BD;
-    margin-bottom: 50px;
+    margin-top: 30px;
+    margin-bottom: 20px;
 }
 
 .filters {
@@ -34,6 +41,7 @@ h2 {
     margin-bottom: 20px;
     z-index: 1; /* Asegura que los filtros estén encima del pseudo-elemento */
     position: relative; /* Para que el z-index funcione */
+    align-items:stretch;
 }
 
 .filter-group {
@@ -50,14 +58,12 @@ h2 {
 .filters input,
 .filters select,
 .filters button {
-    padding: 15px;
+    padding: 10px;
     border: 0px solid #ddd;
-    border-radius: 5px;
+    border-radius: 15px;
 }
 
-.filters .name-input {
-    width: 250px; /* Ajusta el ancho según tus necesidades */
-}
+
 
 .role-filter {
     display: flex;
@@ -70,8 +76,22 @@ h2 {
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s;
+    align-self: flex-end; /* Alinea el botón a la derecha */ 
+}
+    .search-button:hover {
+        background-color: #1abc9c;
+    }
+
+.export-button {
+    background-color: #06b6d4;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
     align-self: flex-end; /* Alinea el botón a la derecha */
 }
+    .export-button:hover {
+        background-color: #546bf7;
+    }
 
 .cancel-button {
     background-color: #A569BD;
@@ -86,63 +106,140 @@ h2 {
         background-color: #d481f5;
     }
 
-.search-button:hover {
-    background-color: #1abc9c;
-}
 
-.user-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    z-index: 1; /* Asegura que la tabla esté encima del pseudo-elemento */
-    position: relative; /* Para que el z-index funcione */
-}
 
-    .user-table th,
-    .user-table td {
-        padding: 14px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .user-table th {
-        background-color: #f4f4f4;
-    }
-
-    .user-table tr:hover {
-        background-color: #f1f1f1;
-    }
-
-    .user-table button {
-        padding: 5px 10px;
-        border: none;
-        border-radius: 5px;
-        color: #fff;
-        cursor: pointer;
-        font-size: 14px;
-    }
-
+/* Estilos para el botón de editar */
 .edit-button {
-    background-color: #f1c40f; /* Amarillo */
+    background-color: #f1c40f;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
     .edit-button:hover {
-        background-color: #f39c12; /* Amarillo más oscuro */
+        background-color: #f39c12;
     }
 
-.inactivate-button {
-    background-color: #3498db; /* Azul */
-}
-
-    .inactivate-button:hover {
-        background-color: #2980b9; /* Azul más oscuro */
-    }
-
+/* Estilos para el botón de eliminar */
 .delete-button {
-    background-color: #e74c3c; /* Rojo */
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+    padding: 10px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
     .delete-button:hover {
-        background-color: #c0392b; /* Rojo más oscuro */
+        background-color: #c0392b;
     }
 
+.data-table-wrapper {
+    border-bottom: 3px solid #A569BD; /* Borde inferior fijo */
+    border-radius: 5px;
+    max-width: 100%; /* Asegura que la tabla no exceda el tamaño de la pantalla */
+}
+
+    .data-table-wrapper .rdt_Table {
+        max-height: 550px; /* Altura máxima de la tabla */
+        overflow-y: auto; /* Permite el desplazamiento si hay muchas filas */
+        padding-left: 50px; /* Ajusta el padding si es necesario */
+        padding-right: 50px;
+    }
+
+    .data-table-wrapper .rdt_TableHead .rdt_TableCol {
+        display: flex;
+        font-weight: bold; /* Texto en negrita */
+        font-size: 14px; /* Aumenta el tamaño del texto */
+    }
+
+    .data-table-wrapper .rdt_Pagination {
+        position: sticky;
+        bottom: 0; /* La paginación se queda en la parte inferior */
+        background-color: white; /* Fondo blanco para que resalte */
+        z-index: 1000; /* Asegura que siempre esté encima de las filas al desplazarse */
+        padding: 10px 0;
+        
+    }
+
+.rdt_TableCell, .rdt_TableHeadRow {
+    padding: 10px;
+    word-wrap: break-word; /* Asegura que el texto largo se ajuste a la celda */
+}
+
+
+
+.filters {
+    display: flex;
+    flex-wrap: wrap; /* Para permitir que los filtros se muevan a la siguiente línea si es necesario */
+    gap: 30px; /* Espacio entre los filtros */
+    
+}
+
+.filter-group {
+    flex: 1; /* Permite que cada grupo de filtro tome el mismo espacio */
+    min-width: 200px; /* Establece un ancho mínimo para los filtros */
+}
+
+.filter-buttons {
+    display: flex;
+    align-items: center; /* Alinear los botones verticalmente al centro */
+    gap: 10px; /* Espacio entre los botones */
+    
+}
+
+/* Alinear los botones de editar y eliminar en una fila */
+.action-buttons {
+    padding-right:0px;
+    display: flex;
+    gap: 10px; /* Espacio entre los botones */
+    justify-content: center;
+}
+
+
+.custom-confirm-dialog .p-dialog-header {
+    padding-left: 10px;
+    border-radius: 5px;
+    background-color: #fff; /* Color personalizado para la cabecera */
+    color: black;
+    padding:20px;
+    
+}
+
+.custom-confirm-dialog .p-dialog-footer {
+    display: flex; /* Usar flexbox para alinear los botones */
+    gap: 10px; /* Espacio entre los botones */
+    padding: 10px; /* Espaciado interior */
+}
+.p-component, .p-component {
+    background-color: #fff;
+    border-radius: 5px;
+    padding:10px 10px 10px 10px;
+    
+}
+
+.custom-confirm-dialog .p-dialog-footer .custom-accept-button,
+.custom-confirm-dialog .p-dialog-footer .custom-reject-button {
+    background-color: #48C9B0; /* Color del botón de aceptar */
+    border: none;
+    color: white;
+    padding: 5px 10px; /* Tamaño pequeño para los botones */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar el cursor al pasar sobre el botón */
+    font-size: 14px; /* Tamaño de fuente pequeño */
+}
+
+.custom-confirm-dialog .p-dialog-footer .custom-reject-button {
+    background-color: #A569BD; /* Color del botón de rechazar */
+}
+
+.custom-confirm-dialog .p-dialog-footer .custom-accept-button:hover {
+    background-color: #1abc9c;
+}
+    .custom-confirm-dialog .p-dialog-footer .custom-reject-button:hover {
+        background-color: #D481F5;
+    }

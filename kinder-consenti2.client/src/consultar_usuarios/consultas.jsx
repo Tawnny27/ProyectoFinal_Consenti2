@@ -3,8 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DataTable from 'react-data-table-component';
 import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer'; 
+import Footer from '../componentes/footer';
+import * as XLSX from 'xlsx'; // Importar la biblioteca xlsx
 import './UserMaintenance.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileExcel, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'; // Importa los iconos
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'; // Componente de ConfirmDialog
+
+
+
 
 const UserMaintenance = () => {
     const [filters, setFilters] = useState({
@@ -14,7 +21,7 @@ const UserMaintenance = () => {
         status: '',
         entryDate: '',
         role: '',
-        estado:Boolean,
+        estado: Boolean,
     });
     const [userList, setUserList] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
@@ -23,25 +30,47 @@ const UserMaintenance = () => {
     const [modalType, setModalType] = useState('');
     const navigate = useNavigate();
 
+    // Función para obtener el nombre del rol desde la API utilizando el rolId
+    const fetchRoleName = async (rolId) => {
+        try {
+            const response = await axios.get(`https://localhost:44369/Roles/BuscarRol/${rolId}`);
+            if (response.status === 200) {
+                return response.data.nombreRol; // Devuelve el nombre del rol
+            }
+            return 'Desconocido'; // En caso de que el rol no exista o no se pueda obtener
+        } catch (error) {
+            console.error('Error al obtener el rol:', error);
+            return 'Desconocido'; // En caso de error
+        }
+    };
+
     // Función para obtener los datos de los usuarios desde la API
     const fetchUsers = async () => {
         try {
             const response = await axios.get('https://localhost:44369/Usuarios/ObtenerUsuarios', { params: filters });
             if (response.status === 200) {
                 const usuariosData = response.data;
-                const formattedUsers = usuariosData.map(usuario => ({
-                    id: usuario.idUsuario,
-                    name: `${usuario.nombreUsuario} ${usuario.apellidosUsuario}`,
-                    idCard: usuario.cedulaUsuario,
-                    entryDate: usuario.fechaIngreso || '2023-01-01',
-                    role: usuario.rolId||'Padre',
-                    status: usuario.estado || 'Activo'
-                }));
+
+                // Obtener el nombre del rol para cada usuario
+                const formattedUsers = await Promise.all(
+                    usuariosData.map(async (usuario) => {
+                        const roleName = await fetchRoleName(usuario.rolId); // Llamar a la API para obtener el nombre del rol
+                        return {
+                            id: usuario.idUsuario,
+                            name: `${usuario.nombreUsuario} ${usuario.apellidosUsuario}`,
+                            idCard: usuario.cedulaUsuario,
+                            entryDate: usuario.fechaIngreso ? usuario.fechaIngreso.split('T')[0] : '2023-01-01', // Ajuste de formato de fecha
+                            role: roleName || 'Desconocido', // Asignar el nombre del rol obtenido o "Desconocido"
+                            status: usuario.estado ? 'Activo' : 'Inactivo' // Mapeo del estado booleano
+                        };
+                    })
+                );
+
                 setUserList(formattedUsers);
                 setFilteredUsers(formattedUsers); // Inicializar lista filtrada
             }
         } catch (error) {
-            console.error('Error al obtener los padres:', error);
+            console.error('Error al obtener los usuarios:', error);
         }
     };
 
@@ -81,24 +110,27 @@ const UserMaintenance = () => {
         navigate(`/editar-usuario/${user.id}`); // Corregido para usar comillas inversas
     };
 
-    const handleInactivate = async (userId, isChecked) => {
-        if (isChecked) {
-            const confirmed = window.confirm('¿Está seguro que desea inactivar este usuario?');
-            if (confirmed) {
-                try {
-                    await axios.put(`https://localhost:44369/Usuarios/InactivarUsuario/${userId}`);
-                    alert('Usuario inactivado exitosamente');
-                    fetchUsers(); // Actualizar la lista de usuarios
-                } catch (error) {
-                    console.error('Error al inactivar el usuario:', error);
-                    alert('Error al inactivar el usuario');
-                }
-            }
-        }
-    };
-
     const handleDelete = (userId) => {
-        // Aquí iría la lógica para eliminar al usuario
+        confirmDialog({
+            message: '¿Está seguro de que desea eliminar este usuario?',
+            header: 'Confirmación',
+            icon: 'pi pi-exclamation-triangle',
+            className: 'custom-confirm-dialog', // Agregar clase personalizada
+            acceptClassName: 'custom-accept-button', // Clase para el botón de aceptar
+            rejectClassName: 'custom-reject-button', // Clase para el botón de rechazar
+            accept: async () => {
+                try {
+                    await axios.delete(`https://localhost:44369/Usuarios/EliminarUsuario/${userId}`);
+                    setUserList(userList.filter((user) => user.id !== userId));
+                    setFilteredUsers(filteredUsers.filter((user) => user.id !== userId));
+                } catch (error) {
+                    console.error('Error al eliminar el usuario:', error);
+                }
+            },
+            reject: () => {
+                console.log('Eliminación cancelada');
+            },
+        });
     };
 
     const handleModalClose = () => {
@@ -115,9 +147,18 @@ const UserMaintenance = () => {
     };
 
     const handleLogout = () => {
-        // Aquí iría la lógica para cerrar sesión, como redirigir al login
         alert('Cerrando sesión...');
         navigate('/login'); // Redirigir a la página de login
+    };
+
+    // Nueva función para exportar a Excel
+    const exportToExcel = () => {
+        const ws = XLSX.utils.json_to_sheet(filteredUsers);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Usuarios');
+
+        // Guardar el archivo
+        XLSX.writeFile(wb, 'usuarios.xlsx');
     };
 
     // Configuración de las columnas para el DataTable
@@ -148,25 +189,17 @@ const UserMaintenance = () => {
             sortable: true
         },
         {
-            name: 'Inactivar',
-            cell: (row) => (
-                <div>
-                    <input
-                        type="checkbox"
-                        onChange={(e) => handleInactivate(row.id, e.target.checked)}
-                        title="Inactivar"
-                    />
-                </div>
-            )
-        },
-        {
             name: 'Acciones',
             cell: (row) => (
-                <div>
-                    <button className="edit-button" onClick={() => handleEdit(row)}>Editar</button>
-                    <button className="delete-button" onClick={() => handleDelete(row.id)}>Eliminar</button>
+                <div className="action-buttons">
+                    <button className="edit-button" onClick={() => handleEdit(row)}>
+                        <FontAwesomeIcon icon={faEdit} /> {/* Icono de editar */}
+                    </button>
+                    <button className="delete-button" onClick={() => handleDelete(row.id)}>
+                        <FontAwesomeIcon icon={faTrash} /> {/* Icono de eliminar */}
+                    </button>
                 </div>
-            )
+            ),
         }
     ];
 
@@ -175,8 +208,9 @@ const UserMaintenance = () => {
             <Navbar
                 handleCalendarClick={handleCalendarClick}
                 handleLogout={handleLogout}
-            /> {/* Aquí se pasa el Navbar con las funciones */}
+            />
             <h2>Mantenimiento de Usuarios</h2>
+            <ConfirmDialog />
             <div className="filters">
                 <div className="filter-group">
                     <label htmlFor="name">Nombre</label>
@@ -199,7 +233,6 @@ const UserMaintenance = () => {
                         onChange={handleFilterChange}
                     />
                 </div>
-
                 <div className="filter-group">
                     <label htmlFor="entryDate">Fecha de Ingreso</label>
                     <input
@@ -219,10 +252,11 @@ const UserMaintenance = () => {
                         onChange={handleFilterChange}
                     >
                         <option value="">Seleccione Rol</option>
-                        <option value="director/a">Director</option>
-                        <option value="maestra">Maestra</option>
-                        <option value="padre">Padre de Familia</option>
-                        <option value="niño">Niño</option>
+                        <option value="Admin">Administrador</option>
+                        <option value="Directora">Directora</option>
+                        <option value="Maestro">Maestra</option>
+                        <option value="Padre">Padre de Familia</option>
+                        
                     </select>
                 </div>
                 <div className="filter-group">
@@ -238,41 +272,38 @@ const UserMaintenance = () => {
                         <option value="inactivo">Inactivo</option>
                     </select>
                 </div>
-                <div className="button-container">
-                    <button className="search-button" onClick={handleSearch}>Consultar</button>
-                    <button className="cancel-button" onClick={handleCancel}>Cancelar</button>
+                <div className="filter-buttons">
+                    <button onClick={exportToExcel} className="export-button">
+                        <FontAwesomeIcon icon={faFileExcel} /> Exportar
+                    </button>
                 </div>
             </div>
+            <div className="data-table-wrapper">
+                <DataTable
+                    columns={columns}
+                    data={filteredUsers}
+                    pagination
+                    paginationComponentOptions={{
+                        rowsPerPageText: 'Filas por página:',
+                        rangeSeparatorText: 'de',
+                        noRowsPerPage: false, // Muestra el selector de filas por página
+                        selectAllRowsItem: true,
+                        selectAllRowsItemText: 'Todos'
+                    }}
+                    highlightOnHover
+                    fixedHeader
+                    responsive // Hace la tabla adaptable a diferentes tamaños de pantalla
+                />
+            </div>
+            {showModal && (
+                <Modal
+                    selectedUser={selectedUser}
+                    onClose={handleModalClose}
+                    modalType={modalType}
+                />
+            )}
 
-            <DataTable
-                columns={columns}
-                data={filteredUsers} // Cambia a la lista filtrada
-                pagination
-                highlightOnHover
-                customStyles={{
-                    headCells: {
-                        style: {
-                            backgroundColor: '#f4f4f4',
-                            fontWeight: 'bold',
-                            color: '#333'
-                        }
-                    },
-                    cells: {
-                        style: {
-                            padding: '14px',
-                            borderBottom: '1px solid #ddd',
-                        }
-                    },
-                    rows: {
-                        style: {
-                            '&:hover': {
-                                backgroundColor: '#f1f1f1',
-                            }
-                        }
-                    }
-                }}
-            />
-            <Footer /> {/* Agrega el Footer aquí */}
+            <Footer />
         </div>
     );
 };

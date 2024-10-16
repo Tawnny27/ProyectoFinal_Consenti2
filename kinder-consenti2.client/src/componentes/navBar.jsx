@@ -10,7 +10,7 @@ function Navbar ({ handleCalendarClick, handleLogout }) {
         <header className="header">
             <div className="logo-container">
                 <img src={logo} alt="Logo" className="logo-main" />
-                <h1>Kínder Consenti2</h1>
+                <h1>Consenti2</h1>
             </div>
             <div className="spacer"></div>
             <div className="header-actions">
