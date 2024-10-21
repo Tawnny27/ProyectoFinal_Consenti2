@@ -1,5 +1,7 @@
-﻿using kinder_consenti2.Server.Models;
+﻿using kinder_consenti2.Server.Herramientas;
+using kinder_consenti2.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace kinder_consenti2.Server.Controllers
 {
@@ -13,13 +15,14 @@ namespace kinder_consenti2.Server.Controllers
         {
             _context = context;
         }
+        
 
         //************** Consultar Usuarios ******************
         [HttpGet]
         [Route("ObtenerUsuarios")]
         public ActionResult<List<Usuario>> ObtenerUsuarios()
         {
-            return Ok(_context.Usuario.ToList());
+            return Ok(_context.Usuario.Include(p=> p.Rol).ToList());
         }
 
         //************** Acceso Usuarios ******************
@@ -29,7 +32,9 @@ namespace kinder_consenti2.Server.Controllers
         {
             if (ContrasennaUsuario != null && CorreoUsuario != null)
             {
-                var logueado = _context.Usuario.Where(x => x.ContrasennaUsuario == ContrasennaUsuario && x.CorreoUsuario == CorreoUsuario).FirstOrDefault();
+                string PassEncryp = Encryptar.encripSHA256(ContrasennaUsuario);
+
+                var logueado = _context.Usuario.Where(x => x.ContrasennaUsuario == ContrasennaUsuario && x.CorreoUsuario == PassEncryp).FirstOrDefault();
                 if (logueado != null)                
                     return Ok(logueado);
                 return BadRequest("Correo o contraseña invalido");
@@ -46,9 +51,10 @@ namespace kinder_consenti2.Server.Controllers
         {            
             try
             {
+                string PassEncryp = Encryptar.encripSHA256(datosAcesso.contrasenna);
                 var logueado = _context.Usuario.Where
                     (
-                        x => x.ContrasennaUsuario == datosAcesso.contrasenna &&
+                        x => x.ContrasennaUsuario == PassEncryp &&
                         x.CorreoUsuario == datosAcesso.correo
                     ).FirstOrDefault();
                 if (logueado != null)
@@ -57,7 +63,7 @@ namespace kinder_consenti2.Server.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest( "Error: "+ex) ;
+                return BadRequest( "Error: "+ex.Message) ;
             }
 
         }
@@ -67,7 +73,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("BuscarUsuarios/{id}")]
         public ActionResult<Usuario> BuscarUsuarios(int id)
         {
-            var usuario = _context.Usuario.Find(id);
+            var usuario = _context.Usuario.Include(p=> p.Rol).FirstOrDefault(x=> x.IdUsuario==id);
             if (usuario == null)
                 return BadRequest("No encontrado");
             return Ok(usuario);
@@ -78,9 +84,15 @@ namespace kinder_consenti2.Server.Controllers
         [Route("CrearUsuario")]
         public ActionResult<Usuario> CrearUsuario(Usuario usuario)
         {
+            string clavegenerica = Guid.NewGuid().ToString().Substring(0, 8);
+            usuario.ContrasennaUsuario = Encryptar.encripSHA256(clavegenerica);       
+
+
+            usuario.PassGenerico= true;
             _context.Usuario.Add(usuario);
             _context.SaveChanges();
             var insertado = _context.Usuario.Find(usuario.IdUsuario);
+            insertado.ContrasennaUsuario = clavegenerica;
             return Ok(insertado);
         }
 
@@ -89,6 +101,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("EditarUsuario")]
         public ActionResult<Usuario> EditarUsuario(Usuario usuario)
         {
+            usuario.ContrasennaUsuario = Encryptar.encripSHA256(usuario.ContrasennaUsuario);
             _context.Usuario.Update(usuario);
             _context.SaveChanges();
             return Ok(_context.Usuario.Find(usuario.IdUsuario));

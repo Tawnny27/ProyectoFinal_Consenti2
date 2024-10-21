@@ -15,6 +15,7 @@ const EditarUsuario = () => {
         cedulaUsuario: '',
         telefonoUsuario: '',
         correoUsuario: '',
+        rol: {nombreRol: ''},
     });
     const [mensajeExito, setMensajeExito] = useState(''); // Estado para el mensaje de éxito
 
@@ -75,7 +76,7 @@ const EditarUsuario = () => {
                         <input
                             type="text"
                             name="rolId"
-                            value={usuario.rolId}
+                            value={usuario.rol.nombreRol}
                             onChange={manejarCambio}
                             disabled
                         />

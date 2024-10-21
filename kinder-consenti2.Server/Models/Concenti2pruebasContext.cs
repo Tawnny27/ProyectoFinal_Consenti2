@@ -31,10 +31,13 @@ namespace kinder_consenti2.Server.Models
                 UE.Property(x=> x.ApellidosUsuario).IsRequired().HasMaxLength(50);
                 UE.Property(x => x.RolId).IsRequired();
                 UE.Property(x => x.CedulaUsuario).IsRequired().HasMaxLength(15);
-                UE.Property(x => x.CorreoUsuario).IsRequired().HasMaxLength(50);
-                UE.Property(x => x.ContrasennaUsuario).IsRequired().HasMaxLength(16); 
+                UE.HasIndex(x => x.CedulaUsuario).IsUnique();
+                UE.Property(x => x.CorreoUsuario).IsRequired().IsUnicode().HasMaxLength(50);
+                UE.Property(x => x.ContrasennaUsuario).IsRequired();
+                UE.HasIndex(x => x.CorreoUsuario).IsUnique();
                 UE.Property(x => x.TelefonoUsuario).IsRequired().HasMaxLength(10);
                 UE.Property(x => x.estado).IsRequired().HasDefaultValue(true);
+                UE.Property(x => x.PassGenerico).IsRequired().HasDefaultValue(true);
                 UE.Property(x => x.FechaIngreso).IsRequired();
                 
             });
@@ -42,6 +45,7 @@ namespace kinder_consenti2.Server.Models
             //****************** Relacion entre roll-Usuario interno ***************************
             modelBuilder.Entity<Usuario>().HasOne(x => x.Rol)
                 .WithMany(x => x.Usuarios).HasForeignKey(f => f.RolId);
+            modelBuilder.Entity<Rol>().Ignore(x => x.Usuarios);
             //**********************************************************************************
 
 
