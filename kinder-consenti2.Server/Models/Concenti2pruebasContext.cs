@@ -12,8 +12,9 @@ namespace kinder_consenti2.Server.Models
 
         public DbSet<Rol> Rol { get; set; }
         public DbSet<Usuario> Usuario { get; set; }
-        
         public DbSet<Alumno> Alumno { get; set; }
+
+        public DbSet<SetingCorreo> SetingCorreo { get; set; }
       
         //##########################Cofiguracion del modelo de la BD###################################
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -22,6 +23,16 @@ namespace kinder_consenti2.Server.Models
             {
                 R.HasKey(x => x.IdRol);
                 R.Property(x => x.NombreRol).IsRequired().HasMaxLength(10);
+            });
+
+            modelBuilder.Entity<SetingCorreo>(C =>
+            {
+                C.HasKey(x => x.IdRegistro);
+                C.Property(x => x.CorreoOrigen).IsRequired();
+                C.Property(x => x.ContrasennaOrigen).IsRequired();
+                C.Property(x => x.smtpClient).IsRequired();
+                C.Property(x => x.asunto).IsRequired();
+                C.Property(x => x.cuerpo).IsRequired();
             });
 
             modelBuilder.Entity<Usuario>(UE =>

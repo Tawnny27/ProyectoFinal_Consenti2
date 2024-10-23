@@ -1,7 +1,10 @@
 ﻿using kinder_consenti2.Server.Herramientas;
 using kinder_consenti2.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Mail;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace kinder_consenti2.Server.Controllers
 {
@@ -85,15 +88,69 @@ namespace kinder_consenti2.Server.Controllers
         public ActionResult<Usuario> CrearUsuario(Usuario usuario)
         {
             string clavegenerica = Guid.NewGuid().ToString().Substring(0, 8);
-            usuario.ContrasennaUsuario = Encryptar.encripSHA256(clavegenerica);       
-
-
+            usuario.ContrasennaUsuario = Encryptar.encripSHA256(clavegenerica);   
             usuario.PassGenerico= true;
             _context.Usuario.Add(usuario);
             _context.SaveChanges();
             var insertado = _context.Usuario.Find(usuario.IdUsuario);
-            insertado.ContrasennaUsuario = clavegenerica;
+            insertado.ContrasennaUsuario = clavegenerica;           
+            var dat = _context.SetingCorreo.Find(1);
+            CorreoEnvio correoEnvio = new CorreoEnvio();
+            correoEnvio.EnviarCorreo(587, dat.CorreoOrigen, dat.ContrasennaOrigen, usuario.CorreoUsuario, dat.smtpClient, dat.asunto, dat.cuerpo, clavegenerica);
             return Ok(insertado);
+        }
+
+
+        //************** Cambiar Contraseña ******************
+
+        [HttpPut]
+        [Route("CambiarContrasena")]
+        public ActionResult<string> CambiarContrasena(Acceso DatosCambio) // recibe un objeto con el correo, contraseña y contraseña de verificación
+        {
+            if (DatosCambio.correo!=null&& DatosCambio.contrasenna != null &&
+                DatosCambio.contrasennaValidacion != null && DatosCambio.contrasenna== DatosCambio.contrasennaValidacion)// sevalidan los datos
+            {
+                var usuario = _context.Usuario.Where(x => x.CorreoUsuario == DatosCambio.correo).FirstOrDefault();// se busca el usuaior en la BD
+                if (usuario != null) 
+                {
+                    usuario.ContrasennaUsuario = Encryptar.encripSHA256(DatosCambio.contrasenna); // e encripta la nueva contraseña
+                    usuario.PassGenerico = false;// cambia el status a false  para la vandera de alerta de clave real
+                    _context.Usuario.Update(usuario);// se actulizan los datos
+                    _context.SaveChanges();// se actulizan en la BD
+                    return Ok("Clave de acceso actualizada favor inicie sesion");
+                }
+                return BadRequest("Falta algun dato");
+            }
+            return BadRequest("Falta algun dato o alguno es incorrecto");
+        }
+
+
+        //************** Recuperar contraseña ******************
+
+        [HttpPut]
+        [Route("RecuperarContrasena")]
+        public ActionResult<string> RecuperarContrasena(Acceso recuperacion) // recibe un objeto con el correo del usuario
+        {
+            if (recuperacion.correo != null)
+            {
+               var usuario = _context.Usuario.Where(x=> x.CorreoUsuario == recuperacion.correo).FirstOrDefault(); // busca el usuario en la BD
+                if (usuario != null)
+                {
+                    string clavegenerica = Guid.NewGuid().ToString().Substring(0, 8); // genera la clave temporal
+                    usuario.ContrasennaUsuario = Encryptar.encripSHA256(clavegenerica); // encriopta la clave temporal
+                    usuario.PassGenerico = true; // cambia el status a true  para la vandera de alerta de clave generica
+                    _context.Usuario.Update(usuario); // se actulizan los datos
+                    _context.SaveChanges();// se actulizan en la BD
+                    var dat = _context.SetingCorreo.Find(1); // traen los datos del servidor de correo gmail
+                    CorreoEnvio correoEnvio = new CorreoEnvio();
+                    correoEnvio.EnviarCorreo(587, dat.CorreoOrigen, dat.ContrasennaOrigen,
+                        usuario.CorreoUsuario, dat.smtpClient, dat.asunto, dat.cuerpo, clavegenerica);// se envia el correo con la clave generica
+                    return Ok("Revisar correo de recuperación");
+                }
+                return BadRequest("Datos incorrectos");
+
+            }
+            return BadRequest("Datos incorrectos");
         }
 
         //********************* Editar Usuarios **************************

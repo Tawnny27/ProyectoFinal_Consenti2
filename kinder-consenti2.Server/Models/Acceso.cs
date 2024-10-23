@@ -2,8 +2,9 @@
 {
     public class Acceso
     {
-        public string correo { get; set; }
-        public string contrasenna { get; set; }
+        public string correo { get; set; }       
+        public string? contrasenna { get; set; }
+         public string? contrasennaValidacion { get; set; }
 
     }
 }
