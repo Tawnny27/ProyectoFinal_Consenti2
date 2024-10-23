@@ -18,7 +18,8 @@ namespace kinder_consenti2.Server.Controllers
         {
             _context = context;
         }
-        
+      
+
 
         //************** Consultar Usuarios ******************
         [HttpGet]
@@ -27,6 +28,7 @@ namespace kinder_consenti2.Server.Controllers
         {
             return Ok(_context.Usuario.Include(p=> p.Rol).ToList());
         }
+        
 
         //************** Acceso Usuarios ******************
         [HttpGet]
@@ -42,10 +44,8 @@ namespace kinder_consenti2.Server.Controllers
                     return Ok(logueado);
                 return BadRequest("Correo o contraseña invalido");
             }
-            return BadRequest("Faltan datos");
-        
+            return BadRequest("Faltan datos");        
         }
-
         //-----------------------------------------------------
 
         [HttpPost]
