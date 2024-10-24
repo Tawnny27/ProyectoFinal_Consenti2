@@ -200,6 +200,11 @@ h2 {
     justify-content: center;
 }
 
+/* Agregar una capa oscura sobre el fondo cuando el diálogo esté activo */
+.p-dialog-mask {
+    background-color: #00000075;
+    transition-property: background-color;
+}
 
 .custom-confirm-dialog .p-dialog-header {
     padding-left: 10px;
@@ -215,11 +220,12 @@ h2 {
     gap: 10px; /* Espacio entre los botones */
     padding: 10px; /* Espaciado interior */
 }
+
+
 .p-component, .p-component {
     background-color: #fff;
     border-radius: 5px;
-    padding:10px 10px 10px 10px;
-    
+    padding: 10px 10px 10px 10px;
 }
 
 .custom-confirm-dialog .p-dialog-footer .custom-accept-button,

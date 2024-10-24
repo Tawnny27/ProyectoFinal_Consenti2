@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import 'primeicons/primeicons.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DataTable from 'react-data-table-component';
@@ -110,28 +111,44 @@ const UserMaintenance = () => {
         navigate(`/editar-usuario/${user.id}`); // Corregido para usar comillas inversas
     };
 
+   
     const handleDelete = (userId) => {
-        confirmDialog({
-            message: '¿Está seguro de que desea eliminar este usuario?',
-            header: 'Confirmación',
-            icon: 'pi pi-exclamation-triangle',
-            className: 'custom-confirm-dialog', // Agregar clase personalizada
-            acceptClassName: 'custom-accept-button', // Clase para el botón de aceptar
-            rejectClassName: 'custom-reject-button', // Clase para el botón de rechazar
-            accept: async () => {
-                try {
-                    await axios.delete(`https://localhost:44369/Usuarios/EliminarUsuario/${userId}`);
-                    setUserList(userList.filter((user) => user.id !== userId));
-                    setFilteredUsers(filteredUsers.filter((user) => user.id !== userId));
-                } catch (error) {
-                    console.error('Error al eliminar el usuario:', error);
-                }
-            },
-            reject: () => {
-                console.log('Eliminación cancelada');
-            },
-        });
+        // Encuentra el usuario que coincida con el userId
+        const userToDelete = userList.find((user) => user.id === userId);
+
+        // Si el usuario es encontrado, procede con la confirmación
+        if (userToDelete) {
+            confirmDialog({
+                message: (
+                    <>
+                        ¿Está seguro de que desea eliminar al usuario <strong>{userToDelete.name}</strong>?
+                        <br />
+                        Esta acción no se puede deshacer.
+                    </>
+                ),
+                header: 'Confirmación',
+                icon: 'pi pi-exclamation-triangle', // Icono de advertencia
+                className: 'custom-confirm-dialog', // Clase personalizada para el diálogo
+                acceptClassName: 'custom-accept-button', // Clase para el botón de aceptar
+                rejectClassName: 'custom-reject-button', // Clase para el botón de rechazar
+                accept: async () => {
+                    try {
+                        await axios.delete(`https://localhost:44369/Usuarios/EliminarUsuario/${userId}`);
+                        setUserList(userList.filter((user) => user.id !== userId));
+                        setFilteredUsers(filteredUsers.filter((user) => user.id !== userId));
+                    } catch (error) {
+                        console.error('Error al eliminar el usuario:', error);
+                    }
+                },
+                reject: () => {
+                    console.log('Eliminación cancelada');
+                },
+            });
+        }
     };
+
+
+    
 
     const handleModalClose = () => {
         setShowModal(false);
