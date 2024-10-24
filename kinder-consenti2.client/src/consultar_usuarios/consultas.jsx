@@ -116,8 +116,19 @@ const UserMaintenance = () => {
         // Encuentra el usuario que coincida con el userId
         const userToDelete = userList.find((user) => user.id === userId);
 
+        // Verifica si el usuario está inactivo y tiene más de 2 años de inactividad
+        const canDeleteUser = (user) => {
+            if (user && user.status.toLowerCase() === 'inactivo') {
+                const currentDate = new Date();
+                const inactiveDate = new Date(user.entryDate); // Suponiendo que entryDate es la fecha de inactividad
+                const twoYearsAgo = new Date(currentDate.setFullYear(currentDate.getFullYear() - 2));
+                return inactiveDate <= twoYearsAgo;
+            }
+            return false;
+        };
+
         // Si el usuario es encontrado, procede con la confirmación
-        if (userToDelete) {
+        if (userToDelete && canDeleteUser(userToDelete)) {
             confirmDialog({
                 message: (
                     <>
@@ -127,7 +138,7 @@ const UserMaintenance = () => {
                     </>
                 ),
                 header: 'Confirmación',
-                icon: 'pi pi-exclamation-triangle', // Icono de advertencia
+                icon: 'pi-exclamation-triangle', // Icono de advertencia
                 className: 'custom-confirm-dialog', // Clase personalizada para el diálogo
                 acceptClassName: 'custom-accept-button', // Clase para el botón de aceptar
                 rejectClassName: 'custom-reject-button', // Clase para el botón de rechazar
@@ -144,6 +155,16 @@ const UserMaintenance = () => {
                     console.log('Eliminación cancelada');
                 },
             });
+        } else {
+            confirmDialog({
+                message: (
+                    <>
+                        No se puede eliminar al usuario <strong>{userToDelete.name}</strong>
+                        <br />
+                        Asegúrate de que está inactivo y tiene más de 2 años de inactividad.
+                    </>
+                ),
+            })
         }
     };
 
@@ -226,6 +247,7 @@ const UserMaintenance = () => {
                 handleCalendarClick={handleCalendarClick}
                 handleLogout={handleLogout}
             />
+          
             <h2>Mantenimiento de Usuarios</h2>
             <ConfirmDialog />
             <div className="filters">

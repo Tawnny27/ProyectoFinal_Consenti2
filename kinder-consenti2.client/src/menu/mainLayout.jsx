@@ -4,6 +4,7 @@ import './mainLayout.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt, faCalendarAlt, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import logo from '../assets/logo.jpg'; // Asegúrate de que la ruta sea correcta
+import Footer from '../componentes/footer';
 
 const MainLayout = () => {
     const navigate = useNavigate();
@@ -154,6 +155,7 @@ const MainLayout = () => {
                     </div>
                 </div>
             )}
+            <Footer />
         </div>
     );
 };

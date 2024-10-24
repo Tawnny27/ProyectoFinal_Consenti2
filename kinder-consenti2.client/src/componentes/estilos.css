@@ -44,12 +44,13 @@ body {
     z-index: 1000; /* Asegura que el footer esté por encima de otros elementos */
 }
 
-
-
-.logo-container {
-    display: flex;
-    align-items: center;
+.logo-container a {
+    display: flex; /* Asegúrate de que el enlace también use flexbox */
+    align-items: center; /* Alinear los elementos dentro del enlace */
+    text-decoration: none; /* Mantiene el estilo de texto limpio */
+    color: inherit; /* Hereda el color del contenedor */
 }
+
 
 .logo-main {
     width: 60px;
