@@ -1,7 +1,7 @@
 
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import AlumnoMaintenance from './Alumnos/consultasA';
 import LoginForm from './login/loginForm';
 import EditarUsuario from './usuarios/EditarUsuarios';
 import MainLayout from './menu/mainLayout';
@@ -17,6 +17,7 @@ function App() {
                 <Route path="/editar-usuario/:id" element={<EditarUsuario />} />
                 <Route path="/main" element={<MainLayout />} />
                 <Route path="/user-maintenance" element={<UserMaintenance />} /> 
+                <Route path="/alumno-maintenance" element={<AlumnoMaintenance />} /> 
                 <Route path="/registrar-usuario" element={<RegistroUsuario />} /> {/* Nueva ruta */}
             </Routes>
                 
