@@ -71,7 +71,7 @@ const MainLayout = () => {
                             </div>
                             {showAdminSubmenu && (
                                 <ul className="submenu">
-                                    <li><Link to="/RegistroUsuario">Registrar Usuario</Link></li>
+                                    <li><Link to="/registrar-usuario">Registrar Usuario</Link></li>
                                     <li><Link to="/user-maintenance">Mantenimiento de Usuarios</Link></li>
                                     <li><Link to="/reportes">Reportes</Link></li>
                                 </ul>
