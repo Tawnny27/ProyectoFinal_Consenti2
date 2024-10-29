@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './mainLayout.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt, faCalendarAlt, faCaretDown } from '@fortawesome/free-solid-svg-icons';
@@ -7,6 +7,9 @@ import logo from '../assets/logo.jpg'; // Asegúrate de que la ruta sea correcta
 
 const MainLayout = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const usuario = location.state?.usuario; // Obtener el objeto usuario desde el estado
+
     const [showCalendarModal, setShowCalendarModal] = useState(false);
     const [importantDate, setImportantDate] = useState('');
     const [activityDescription, setActivityDescription] = useState('');
@@ -14,8 +17,16 @@ const MainLayout = () => {
     const [showPlatformSubmenu, setShowPlatformSubmenu] = useState(false);
     const [showGestFSubMenu, setShowGestFSubMenu] = useState(false);
 
+    useEffect(() => {
+        console.log(usuario)
+        // Valida si el usuario necesita cambiar su contraseña
+        if (usuario.passGenerico === true) {
+            navigate('/change-password'); 
+        }
+    }, [usuario, navigate]);
+
     const handleLogout = () => {
-        navigate('/'); // Redirigir a la página de inicio de sesión
+        navigate('/'); 
     };
 
     const handleCalendarClick = () => {

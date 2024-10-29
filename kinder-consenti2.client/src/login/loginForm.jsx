@@ -14,16 +14,17 @@ const LoginForm = () => {
 
     const handleLogin = async () => {
         try {
-            // Realiza la solicitud al backend
+            
             const response = await axios.post('https://localhost:44369/Usuarios/AccesoUsuario2', {
                 correo: email,
                 contrasenna: password
             });
 
             if (response.status === 200) {
-                console.log('Inicio de sesión exitoso:', response.data);
+                const usuario = response.data;
+
                 setErrorMessage(''); 
-                navigate('/main'); 
+                navigate('/main', { state: { usuario } });
             }
         } catch (error) {
             console.error('Error en el inicio de sesión:', error.response?.data || error.message);

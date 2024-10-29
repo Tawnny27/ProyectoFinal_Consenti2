@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const ResetPassword = () => {
-    const [correo, setCorreo] = useState(''); // Cambiado a 'correo'
+    const [correo, setCorreo] = useState(''); 
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
@@ -14,10 +14,12 @@ const ResetPassword = () => {
         e.preventDefault();
 
         try {
-            // Cambiado 'email' a 'correo'
             const response = await axios.put('https://localhost:44369/Usuarios/RecuperarContrasena', { correo });
             if (response.status === 200) {
-                setMessage('Correo de restablecimiento enviado. Revisa tu bandeja de entrada.');
+                setMessage('Correo de restablecimiento enviado. Revisa tu bandeja de entrada. Y la proxima vez que ingrese podrá cambiar su contraseña');
+                setTimeout(() => {
+                    navigate('/'); // Redirige después de 10 segundos
+                }, 10000); 
             }
         } catch (error) {
             console.error('Error al enviar el correo de restablecimiento:', error);
@@ -34,9 +36,9 @@ const ResetPassword = () => {
                         <FontAwesomeIcon icon={faEnvelope} />
                         <input
                             type="email"
-                            id="correo" // Cambiado a 'correo'
-                            value={correo} // Cambiado a 'correo'
-                            onChange={(e) => setCorreo(e.target.value)} // Cambiado a 'correo'
+                            id="correo" 
+                            value={correo} 
+                            onChange={(e) => setCorreo(e.target.value)} 
                             required
                             placeholder="Ingresa tu correo"
                         />

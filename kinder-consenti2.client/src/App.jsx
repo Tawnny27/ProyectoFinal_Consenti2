@@ -7,6 +7,7 @@ import EditarUsuario from './usuarios/EditarUsuarios';
 import MainLayout from './menu/mainLayout';
 import UserMaintenance from './consultar_usuarios/consultas';
 import ResetPassword from './login/resetPassword';
+import ChangePassword from './login/changePassword';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import RegistroUsuario from './usuarios/RegistroUsuario'; // Importar el nuevo componente de registro
 
@@ -21,6 +22,7 @@ function App() {
                 <Route path="/alumno-maintenance" element={<AlumnoMaintenance />} /> 
                 <Route path="/registrar-usuario" element={<RegistroUsuario />} /> {/* Nueva ruta */}
                 <Route path="/reset-password" element={<ResetPassword />} /> 
+                <Route path="/change-password" element={<ChangePassword />} /> 
             </Routes>
                 
         </Router>
