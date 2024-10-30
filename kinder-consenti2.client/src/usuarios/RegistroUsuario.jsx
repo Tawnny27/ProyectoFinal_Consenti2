@@ -1,5 +1,5 @@
 // src/usuarios/RegistroUsuario.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from '../axios'; // Importar configuración de axios
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../componentes/navbar';
@@ -8,6 +8,7 @@ import './registro.css';
 
 const RegistroUsuario = () => {
     const navigate = useNavigate();
+    const [roles, setRoles] = useState([]);
     const [usuario, setUsuario] = useState({
         idUsuario: 0,
         rolId: '',
@@ -19,6 +20,7 @@ const RegistroUsuario = () => {
         contrasennaUsuario: '',
     });
     const [mensajeExito, setMensajeExito] = useState('');
+    
 
     const manejarCambio = (e) => {
         const { name, value } = e.target;
@@ -28,14 +30,35 @@ const RegistroUsuario = () => {
         }));
     };
 
+    useEffect(() => {
+        
+        const fetchRoles = async () => {
+            const response = await fetch('https://localhost:44369/Roles/ObtenerRoles'); 
+            const data = await response.json();
+            setRoles(data);
+        };
+        fetchRoles();
+    }, []);
+
+
+
+
     const manejarEnvio = async (e) => {
         e.preventDefault();
         try {
             // Enviar los datos al backend
             await axios.post('https://localhost:44369/Usuarios/CrearUsuario/', usuario);
             setMensajeExito('Usuario registrado exitosamente.');
+
+            // Espera 2 segundos y luego redirige según el rol seleccionado
             setTimeout(() => {
-                navigate('/user-maintenance'); // Redirigir a una página después del registro
+                if (usuario.rolId === "3") {
+                    // Redirigir a una página específica para usuarios con rol "Padre"
+                    navigate('/alumno-maintenance'); 
+                } else {
+                    // Redirigir a la página por defecto
+                    navigate('/user-maintenance');
+                }
             }, 2000);
         } catch (error) {
             console.error("Error al registrar usuario:", error);
@@ -51,14 +74,21 @@ const RegistroUsuario = () => {
                 <form onSubmit={manejarEnvio}>
                     <div>
                         <label>ID Rol</label>
-                        <input
-                            type="text"
+                        <select
                             name="rolId"
                             value={usuario.rolId}
                             onChange={manejarCambio}
                             required
-                        />
+                        >
+                            <option value="">Seleccione un rol</option>
+                            {roles.map((rol) => (
+                                <option key={rol.idRol} value={rol.idRol}>
+                                    {rol.nombreRol}
+                                </option>
+                            ))}
+                        </select>
                     </div>
+
                     <div>
                         <label>Nombre</label>
                         <input

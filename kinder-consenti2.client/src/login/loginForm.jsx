@@ -1,21 +1,40 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './LoginForm.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
-import { Link, useNavigate } from 'react-router-dom'; // Importar Link
-import logo from '../assets/logo.jpg'; // Asegúrate de que la ruta sea correcta
-
+import { Link, useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.jpg';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate(); // Inicializar useNavigate
+    const [errorMessage, setErrorMessage] = useState(''); 
+    const navigate = useNavigate();
+
+    const handleLogin = async () => {
+        try {
+            
+            const response = await axios.post('https://localhost:44369/Usuarios/AccesoUsuario2', {
+                correo: email,
+                contrasenna: password
+            });
+
+            if (response.status === 200) {
+                const usuario = response.data;
+
+                setErrorMessage(''); 
+                navigate('/main', { state: { usuario } });
+            }
+        } catch (error) {
+            console.error('Error en el inicio de sesión:', error.response?.data || error.message);
+            setErrorMessage(error.response?.data || 'Error en el inicio de sesión. Revisa tus credenciales.');
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Email:', email);
-        console.log('Password:', password);
-        navigate('/main'); // Redirigir al formulario de registro
+        handleLogin(); // Llama a la función para iniciar sesión
     };
 
     return (
@@ -23,7 +42,7 @@ const LoginForm = () => {
             <form onSubmit={handleSubmit} className="login-form">
                 <div className="icon-container">
                     <div className="user-icon">
-                        <img src={logo} alt="Logo" className="logo" /> {}
+                        <img src={logo} alt="Logo" className="logo" />
                     </div>
                 </div>
                 <h2>Bienvenido a Consenti2</h2>
@@ -52,9 +71,10 @@ const LoginForm = () => {
                             placeholder="Ingresa tu contraseña"
                         />
                     </div>
+                    {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Mensaje de error */}
                     <div className="form-options">
                         <div className="forgot-password">
-                            <Link to="/reset-password">Olvidé mi contraseña</Link> {/* Aquí cambias la ruta */}
+                            <Link to="/reset-password">Olvidé mi contraseña</Link>
                         </div>
                     </div>
                 </div>

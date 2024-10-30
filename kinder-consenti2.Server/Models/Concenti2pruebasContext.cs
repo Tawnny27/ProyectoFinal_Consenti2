@@ -13,9 +13,13 @@ namespace kinder_consenti2.Server.Models
         public DbSet<Rol> Rol { get; set; }
         public DbSet<Usuario> Usuario { get; set; }
         public DbSet<Alumno> Alumno { get; set; }
-
         public DbSet<SetingCorreo> SetingCorreo { get; set; }
-      
+        public DbSet<EncabezadoFactura> EncabezadoFactura { get; set; }
+        public DbSet<DetalleFactura> DetalleFactura { get; set; }
+        public DbSet<Producto> Producto { get; set; }
+        public DbSet<Matricula> Matricula { get; set; }
+
+
         //##########################Cofiguracion del modelo de la BD###################################
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +28,60 @@ namespace kinder_consenti2.Server.Models
                 R.HasKey(x => x.IdRol);
                 R.Property(x => x.NombreRol).IsRequired().HasMaxLength(10);
             });
+
+            //******************* Modelo de Facturacion***********************
+            modelBuilder.Entity<EncabezadoFactura>(E =>
+            {
+                E.HasKey(x=> x.IdFactura);
+                E.Property(x=> x.Fecha).IsRequired();
+                E.Property(x=> x.Subtotal).IsRequired();
+                E.Property(x => x.Iva).IsRequired();
+                E.Property(x => x.Total).IsRequired();
+            });
+
+            modelBuilder.Entity<DetalleFactura>(D =>
+            {
+                D.HasKey(x => x.IdDetalleFactura);
+                D.Property(x => x.EncabezadoId).IsRequired();
+                D.Property(x => x.ProductoId).IsRequired();
+                D.Property(x => x.Monto).IsRequired();          
+            });
+
+            modelBuilder.Entity<DetalleFactura>().HasOne(x => x.Encabezado)
+                .WithMany(x => x.Detalles).HasForeignKey(f => f.EncabezadoId);
+
+            modelBuilder.Entity<DetalleFactura>().HasOne(x => x.Producto)
+                .WithMany(x => x.detalleFacturas).HasForeignKey(f => f.ProductoId);
+
+            modelBuilder.Entity<DetalleFactura>().Ignore(x=> x.Encabezado);
+
+           modelBuilder.Entity<Producto>().Ignore(x => x.detalleFacturas);
+            //******************************************************************
+
+
+            modelBuilder.Entity<Producto>(P =>
+            {
+                P.HasKey(x => x.IdProducto);
+                P.Property(x => x.NombreProducto).IsRequired();
+                P.Property(x => x.Frecuencias).IsRequired();
+                P.Property(x => x.Monto).IsRequired();
+            });
+
+            modelBuilder.Entity<Matricula>(M =>
+            {
+                M.HasKey(x => x.IdMatricula);
+                M.Property(x => x.ProductoId).IsRequired();
+                M.Property(x => x.AlumnoId).IsRequired();
+                M.Property(x => x.Fecha).IsRequired();
+                M.Property(x => x.FechaFin).IsRequired();
+                M.Property(x => x.Dias).IsRequired();
+                M.Property(x => x.Status).IsRequired();
+                M.Property(x => x.Monto).IsRequired();
+            });
+            modelBuilder.Entity<Matricula>().HasOne(x => x.Alumno)
+                .WithMany(x => x.Matriculas).HasForeignKey(f => f.AlumnoId);
+
+
 
             modelBuilder.Entity<SetingCorreo>(C =>
             {

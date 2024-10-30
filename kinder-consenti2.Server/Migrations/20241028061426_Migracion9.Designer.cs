@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using kinder_consenti2.Server.Models;
 
@@ -11,9 +12,11 @@ using kinder_consenti2.Server.Models;
 namespace kinder_consenti2.Server.Migrations
 {
     [DbContext(typeof(Concenti2pruebasContext))]
-    partial class Concenti2pruebasContextModelSnapshot : ModelSnapshot
+    [Migration("20241028061426_Migracion9")]
+    partial class Migracion9
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,9 +125,6 @@ namespace kinder_consenti2.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDetalleFactura"));
 
-                    b.Property<int?>("EncabezadoFacturaIdFactura")
-                        .HasColumnType("int");
-
                     b.Property<int>("EncabezadoId")
                         .HasColumnType("int");
 
@@ -136,7 +136,7 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.HasKey("IdDetalleFactura");
 
-                    b.HasIndex("EncabezadoFacturaIdFactura");
+                    b.HasIndex("EncabezadoId");
 
                     b.HasIndex("ProductoId");
 
@@ -151,14 +151,8 @@ namespace kinder_consenti2.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdFactura"));
 
-                    b.Property<int?>("AlumnoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Cliente")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Dias")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Fecha")
@@ -371,15 +365,19 @@ namespace kinder_consenti2.Server.Migrations
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.DetalleFactura", b =>
                 {
-                    b.HasOne("kinder_consenti2.Server.Models.EncabezadoFactura", null)
+                    b.HasOne("kinder_consenti2.Server.Models.EncabezadoFactura", "Encabezado")
                         .WithMany("Detalles")
-                        .HasForeignKey("EncabezadoFacturaIdFactura");
+                        .HasForeignKey("EncabezadoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("kinder_consenti2.Server.Models.Producto", "Producto")
                         .WithMany()
                         .HasForeignKey("ProductoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Encabezado");
 
                     b.Navigation("Producto");
                 });

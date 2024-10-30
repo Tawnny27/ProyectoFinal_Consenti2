@@ -148,3 +148,14 @@ button {
         .forgot-password a:hover {
             text-decoration: underline;
         }
+
+.error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.success-message {
+    margin: 10px 0;
+    font-size: 16px;
+}

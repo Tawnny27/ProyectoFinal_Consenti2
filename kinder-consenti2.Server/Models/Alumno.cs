@@ -13,6 +13,8 @@
         public string InformacionAdicional { get; set; }
         public string? FotoAlumno { get; set; }
         public Usuario? Usuario { get; set; }
+        public List<Matricula>? Matriculas { get; set; }
+
 
         //******** Autorizado a recoger el alumno *********
         public string NombreCompAutorizado { get; set; }
