@@ -1,0 +1,90 @@
+.enrollment-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url('../assets/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Roboto', sans-serif;
+}
+
+.enrollment-form {
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 600px;
+    margin: 40px auto;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+}
+
+    .enrollment-form h2 {
+        color: #A569BD;
+    }
+
+.payment-section,
+.parent-info,
+.child-info {
+    margin-bottom: 20px;
+}
+
+    .payment-section h3,
+    .parent-info h3,
+    .child-info h3 {
+        color: #48C9B0;
+        margin-bottom: 10px;
+    }
+
+    .payment-section label,
+    .parent-info label,
+    .child-info label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+input[type="text"],
+textarea,
+select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.proof-of-payment {
+    margin-top: 10px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.submit-m-button {
+    background-color: #48C9B0;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    .submit-m-button:hover {
+        background-color: #41b89a;
+    }
+
+.cancel-m-button {
+    background-color: #A569BD;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    .cancel-m-button:hover {
+        background-color: #D481F5;
+    }
