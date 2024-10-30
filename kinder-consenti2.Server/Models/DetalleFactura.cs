@@ -6,7 +6,7 @@
         public int EncabezadoId { get; set; }   
         public int ProductoId { get; set; }
         public int Monto { get; set; }
-        public EncabezadoFactura? Encabezado {  get; set; }
+        public EncabezadoFactura? EncabezadoFactura {  get; set; }
         public Producto? Producto { get; set; }
 
     }

@@ -5,7 +5,7 @@
 namespace kinder_consenti2.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class Migracion10 : Migration
+    public partial class Migracion2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,21 +14,17 @@ namespace kinder_consenti2.Server.Migrations
                 name: "FK_DetalleFactura_EncabezadoFactura_EncabezadoId",
                 table: "DetalleFactura");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_DetalleFactura_Producto_ProductoId",
+                table: "DetalleFactura");
+
             migrationBuilder.DropIndex(
                 name: "IX_DetalleFactura_EncabezadoId",
                 table: "DetalleFactura");
 
-            migrationBuilder.AddColumn<int>(
-                name: "AlumnoId",
-                table: "EncabezadoFactura",
-                type: "int",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "Dias",
-                table: "EncabezadoFactura",
-                type: "nvarchar(max)",
-                nullable: true);
+            migrationBuilder.DropIndex(
+                name: "IX_DetalleFactura_ProductoId",
+                table: "DetalleFactura");
 
             migrationBuilder.AddColumn<int>(
                 name: "EncabezadoFacturaIdFactura",
@@ -61,14 +57,6 @@ namespace kinder_consenti2.Server.Migrations
                 table: "DetalleFactura");
 
             migrationBuilder.DropColumn(
-                name: "AlumnoId",
-                table: "EncabezadoFactura");
-
-            migrationBuilder.DropColumn(
-                name: "Dias",
-                table: "EncabezadoFactura");
-
-            migrationBuilder.DropColumn(
                 name: "EncabezadoFacturaIdFactura",
                 table: "DetalleFactura");
 
@@ -77,12 +65,25 @@ namespace kinder_consenti2.Server.Migrations
                 table: "DetalleFactura",
                 column: "EncabezadoId");
 
+            migrationBuilder.CreateIndex(
+                name: "IX_DetalleFactura_ProductoId",
+                table: "DetalleFactura",
+                column: "ProductoId");
+
             migrationBuilder.AddForeignKey(
                 name: "FK_DetalleFactura_EncabezadoFactura_EncabezadoId",
                 table: "DetalleFactura",
                 column: "EncabezadoId",
                 principalTable: "EncabezadoFactura",
                 principalColumn: "IdFactura",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_DetalleFactura_Producto_ProductoId",
+                table: "DetalleFactura",
+                column: "ProductoId",
+                principalTable: "Producto",
+                principalColumn: "IdProducto",
                 onDelete: ReferentialAction.Cascade);
         }
     }

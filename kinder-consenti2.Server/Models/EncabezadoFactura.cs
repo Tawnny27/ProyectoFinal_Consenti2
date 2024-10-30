@@ -10,7 +10,7 @@
         public double Total { get; set; }
         public int? AlumnoId { get; set; }
         public string? Dias {  get; set; }
-        public List<DetalleFactura>? Detalles { get; set; }
+        public List<DetalleFactura>? DetalleFacturas { get; set; }
 
     }
 }

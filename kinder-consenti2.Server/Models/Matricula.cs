@@ -11,7 +11,7 @@
         public int Monto { get; set; }
         public bool Status { get; set; }
         public Alumno? Alumno { get; set; }
-        public Producto? Productos { get; set; }
+        public Producto? Producto { get; set; }
 
     }
 }

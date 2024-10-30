@@ -23,7 +23,7 @@ namespace kinder_consenti2.Server.Controllers
         public ActionResult<List<EncabezadoFactura>> ObtenerFacturas()
         {
 
-            return Ok(_context.EncabezadoFactura.Include(x => x.Detalles).ToList());
+            return Ok(_context.EncabezadoFactura.Include(x => x.DetalleFacturas).ToList());
         }
 
 
@@ -31,7 +31,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("BuscarFactura/{id}")]
         public ActionResult<EncabezadoFactura> BuscarFactura(int id)
         {
-            var facturaEncontrada = _context.EncabezadoFactura.Include(x => x.Detalles).FirstOrDefault(x => x.IdFactura == id);
+            var facturaEncontrada = _context.EncabezadoFactura.Include(x => x.DetalleFacturas).FirstOrDefault(x => x.IdFactura == id);
             if (facturaEncontrada == null)
                 return BadRequest("Factura no encontrada");
             return Ok(facturaEncontrada);
@@ -42,7 +42,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("CrearMatricula")]
         public ActionResult<EncabezadoFactura> CrearMatricula(EncabezadoFactura factura)
         {
-            if (factura.AlumnoId != null && factura.Detalles != null && factura.Dias!= null)
+            if (factura.AlumnoId != null && factura.DetalleFacturas != null && factura.Dias!= null)
             {
                 var alumno = _context.Alumno.Find(factura.AlumnoId);
 
@@ -52,13 +52,13 @@ namespace kinder_consenti2.Server.Controllers
                     _context.EncabezadoFactura.Add(factura);
                     _context.SaveChanges();
                     var insertada = _context.EncabezadoFactura.Find(factura.IdFactura);
-                    foreach (var item in insertada.Detalles)
+                    foreach (var item in insertada.DetalleFacturas)
                     {
                         item.EncabezadoId = factura.IdFactura;
                         _context.DetalleFactura.Add(item);
                         _context.SaveChanges();
                     }
-                    var insertadaCondetalle = _context.EncabezadoFactura.Include(x => x.Detalles).FirstOrDefault(x => x.IdFactura == insertada.IdFactura);
+                    var insertadaCondetalle = _context.EncabezadoFactura.Include(x => x.DetalleFacturas).FirstOrDefault(x => x.IdFactura == insertada.IdFactura);
                     var Detalle = _context.DetalleFactura.Where(x=> x.EncabezadoId == insertadaCondetalle.IdFactura && x.ProductoId > 3).FirstOrDefault();
 
                     Matricula Matriculada = new Matricula();

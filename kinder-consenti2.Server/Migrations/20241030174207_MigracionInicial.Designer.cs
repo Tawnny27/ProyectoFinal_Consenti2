@@ -12,8 +12,8 @@ using kinder_consenti2.Server.Models;
 namespace kinder_consenti2.Server.Migrations
 {
     [DbContext(typeof(Concenti2pruebasContext))]
-    [Migration("20241021022533_Migracion6")]
-    partial class Migracion6
+    [Migration("20241030174207_MigracionInicial")]
+    partial class MigracionInicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,6 +117,129 @@ namespace kinder_consenti2.Server.Migrations
                     b.ToTable("Alumno");
                 });
 
+            modelBuilder.Entity("kinder_consenti2.Server.Models.DetalleFactura", b =>
+                {
+                    b.Property<int>("IdDetalleFactura")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDetalleFactura"));
+
+                    b.Property<int>("EncabezadoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Monto")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdDetalleFactura");
+
+                    b.HasIndex("EncabezadoId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.ToTable("DetalleFactura");
+                });
+
+            modelBuilder.Entity("kinder_consenti2.Server.Models.EncabezadoFactura", b =>
+                {
+                    b.Property<int>("IdFactura")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdFactura"));
+
+                    b.Property<int?>("AlumnoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Cliente")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Dias")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("Iva")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Subtotal")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Total")
+                        .HasColumnType("float");
+
+                    b.HasKey("IdFactura");
+
+                    b.ToTable("EncabezadoFactura");
+                });
+
+            modelBuilder.Entity("kinder_consenti2.Server.Models.Matricula", b =>
+                {
+                    b.Property<int>("IdMatricula")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdMatricula"));
+
+                    b.Property<int>("AlumnoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Dias")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaFin")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Monto")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.HasKey("IdMatricula");
+
+                    b.HasIndex("AlumnoId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.ToTable("Matricula");
+                });
+
+            modelBuilder.Entity("kinder_consenti2.Server.Models.Producto", b =>
+                {
+                    b.Property<int>("IdProducto")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProducto"));
+
+                    b.Property<int>("Frecuencias")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Monto")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NombreProducto")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdProducto");
+
+                    b.ToTable("Producto");
+                });
+
             modelBuilder.Entity("kinder_consenti2.Server.Models.Rol", b =>
                 {
                     b.Property<int>("IdRol")
@@ -133,6 +256,39 @@ namespace kinder_consenti2.Server.Migrations
                     b.HasKey("IdRol");
 
                     b.ToTable("Rol");
+                });
+
+            modelBuilder.Entity("kinder_consenti2.Server.Models.SetingCorreo", b =>
+                {
+                    b.Property<int>("IdRegistro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdRegistro"));
+
+                    b.Property<string>("ContrasennaOrigen")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CorreoOrigen")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("asunto")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("cuerpo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("smtpClient")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdRegistro");
+
+                    b.ToTable("SetingCorreo");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Usuario", b =>
@@ -155,8 +311,7 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.Property<string>("ContrasennaUsuario")
                         .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("nvarchar(16)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CorreoUsuario")
                         .IsRequired()
@@ -172,7 +327,8 @@ namespace kinder_consenti2.Server.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<bool>("PassGenerico")
+                    b.Property<bool?>("PassGenerico")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
@@ -213,10 +369,48 @@ namespace kinder_consenti2.Server.Migrations
                     b.Navigation("Usuario");
                 });
 
+            modelBuilder.Entity("kinder_consenti2.Server.Models.DetalleFactura", b =>
+                {
+                    b.HasOne("kinder_consenti2.Server.Models.EncabezadoFactura", "Encabezado")
+                        .WithMany("DetalleFacturas")
+                        .HasForeignKey("EncabezadoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("kinder_consenti2.Server.Models.Producto", "Producto")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Encabezado");
+
+                    b.Navigation("Producto");
+                });
+
+            modelBuilder.Entity("kinder_consenti2.Server.Models.Matricula", b =>
+                {
+                    b.HasOne("kinder_consenti2.Server.Models.Alumno", "Alumno")
+                        .WithMany("Matriculas")
+                        .HasForeignKey("AlumnoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("kinder_consenti2.Server.Models.Producto", "Productos")
+                        .WithMany("Matricula")
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Alumno");
+
+                    b.Navigation("Productos");
+                });
+
             modelBuilder.Entity("kinder_consenti2.Server.Models.Usuario", b =>
                 {
                     b.HasOne("kinder_consenti2.Server.Models.Rol", "Rol")
-                        .WithMany("Usuarios")
+                        .WithMany()
                         .HasForeignKey("RolId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -224,9 +418,19 @@ namespace kinder_consenti2.Server.Migrations
                     b.Navigation("Rol");
                 });
 
-            modelBuilder.Entity("kinder_consenti2.Server.Models.Rol", b =>
+            modelBuilder.Entity("kinder_consenti2.Server.Models.Alumno", b =>
                 {
-                    b.Navigation("Usuarios");
+                    b.Navigation("Matriculas");
+                });
+
+            modelBuilder.Entity("kinder_consenti2.Server.Models.EncabezadoFactura", b =>
+                {
+                    b.Navigation("DetalleFacturas");
+                });
+
+            modelBuilder.Entity("kinder_consenti2.Server.Models.Producto", b =>
+                {
+                    b.Navigation("Matricula");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Usuario", b =>
