@@ -54,8 +54,8 @@ namespace kinder_consenti2.Server.Models
                 .WithMany(x => x.detalleFacturas).HasForeignKey(f => f.ProductoId);
 
             modelBuilder.Entity<DetalleFactura>().Ignore(x=> x.Encabezado);
+            modelBuilder.Entity<DetalleFactura>().Ignore(x => x.Producto);
 
-           modelBuilder.Entity<Producto>().Ignore(x => x.detalleFacturas);
             //******************************************************************
 
 
@@ -66,6 +66,11 @@ namespace kinder_consenti2.Server.Models
                 P.Property(x => x.Frecuencias).IsRequired();
                 P.Property(x => x.Monto).IsRequired();
             });
+
+            modelBuilder.Entity<Producto>().Ignore(x => x.detalleFacturas);
+            modelBuilder.Entity<Producto>().Ignore(x => x.Matricula);
+
+
 
             modelBuilder.Entity<Matricula>(M =>
             {
@@ -80,6 +85,11 @@ namespace kinder_consenti2.Server.Models
             });
             modelBuilder.Entity<Matricula>().HasOne(x => x.Alumno)
                 .WithMany(x => x.Matriculas).HasForeignKey(f => f.AlumnoId);
+
+            modelBuilder.Entity<Matricula>().HasOne(x => x.Productos)
+                .WithMany(x => x.Matricula).HasForeignKey(f => f.ProductoId);
+
+            
 
 
 
