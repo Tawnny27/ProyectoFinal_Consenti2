@@ -1,0 +1,128 @@
+@charset "UTF-8";
+
+.receipt-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*background: linear-gradient(to right, #68d391, #90cdf4, #d6bcfa, #fbb6ce, #f6ad55, #f6e05e);*/
+    background: url('../assets/background.jpg') no-repeat center center;
+    background-size: cover;
+    position: relative;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+
+
+
+/* Tarjeta del recibo */
+.receipt-card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    z-index: 10;
+}
+
+    .receipt-card h2 {
+        color: #805ad5;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+    }
+
+/* Grupo de selecci�n */
+.select-group {
+    margin-bottom: 1.5rem;
+}
+
+    .select-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #4a5568;
+    }
+
+    .select-group select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        background-color: white;
+        cursor: pointer;
+    }
+
+/* Grupo de informaci�n */
+.info-group {
+    background-color: #f7fafc;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-row label {
+        color: #4a5568;
+        font-weight: 500;
+    }
+
+    .info-row span {
+        color: #2d3748;
+    }
+
+/* Contenedor de botones */
+.button-container {
+    display: flex;
+    gap: 1rem;
+}
+
+    .button-container button {
+        flex: 1;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        font-weight: 500;
+    }
+
+.btn-export {
+    background-color: #38b2ac;
+}
+
+    .btn-export:hover {
+        background-color: #319795;
+    }
+
+.btn-cancel {
+    background-color: #805ad5;
+}
+
+    .btn-cancel:hover {
+        background-color: #6b46c1;
+    }
+
+/* Responsive */
+@media (max-width: 480px) {
+    .receipt-card {
+        padding: 1rem;
+        margin: 1rem;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+}
