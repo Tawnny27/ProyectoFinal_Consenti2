@@ -14,6 +14,6 @@
         public DateTime FechaIngreso { get; set; }
         public bool estado {  get; set; }
         public Rol? Rol { get; set; }
-        public List<Alumno>? Hijos { get; set; }
+        public List<Alumno>? Alumnos { get; set; }
     }
 }

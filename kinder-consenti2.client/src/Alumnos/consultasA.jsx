@@ -8,12 +8,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import 'primeicons/primeicons.css';
-import { faFileExcel, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'; // Importa los iconos
+/*import { faFileExcel, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'; // Importa los iconos*/
 import './AlumnoMaintenance.css'; // Importing main styles
-import './CustomModal.css'; // Importing custom modal styles
+
 
 
 function AlumnoMaintenance() {
+    const [showContactInfo, setShowContactInfo] = useState(false);
+    const [showContactInfo2, setShowContactInfo2] = useState(false);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [alumnos, setAlumnos] = useState([]);
     const [padres, setPadres] = useState([]);
@@ -56,24 +58,25 @@ function AlumnoMaintenance() {
 
         const payload = {
             idAlumno: 0,
-            padreId: parseInt(formData.padreId),
-            nombreAlumno: formData.nombreAlumno,
-            apellidosAlumno: formData.apellidosAlumno,
-            fechaNacimiento: new Date(formData.fechaNacimiento).toISOString(),
-            cedulaAlumno: formData.cedulaAlumno,
-            generoAlumno: formData.generoAlumno,
-            direccionAlumno: formData.direccionAlumno,
-            informacionAdicional: formData.informacionAdicional,
-            fotoAlumno: formData.fotoAlumno,
-            // Removemos el objeto usuario ya que parece que el backend lo maneja internamente
-            nombreCompAutorizado: formData.nombreCompAutorizado,
-            cedulaAutorizado: formData.cedulaAutorizado,
+            padreId: parseInt(formData.padreId) || 0,
+            nombreAlumno: formData.nombreAlumno || 'Sin nombre', // Valor por defecto para campos de texto
+            apellidosAlumno: formData.apellidosAlumno || 'Sin apellidos',
+            fechaNacimiento: formData.fechaNacimiento ?
+                new Date(formData.fechaNacimiento).toISOString() :
+                new Date().toISOString(), // Fecha actual como valor por defecto
+            cedulaAlumno: formData.cedulaAlumno || 'Sin cédula',
+            generoAlumno: formData.generoAlumno || 'No especificado',
+            direccionAlumno: formData.direccionAlumno || 'Sin dirección',
+            informacionAdicional: formData.informacionAdicional || 'Sin información',
+            fotoAlumno: formData.fotoAlumno || 'default.jpg', // Nombre de una imagen por defecto
+            nombreCompAutorizado: formData.nombreCompAutorizado || 'Sin autorizado',
+            cedulaAutorizado: formData.cedulaAutorizado || 'Sin cédula',
             telefonoAutorizado: parseInt(formData.telefonoAutorizado) || 0,
-            relacionAutorizado: formData.relacionAutorizado,
-            nombreCompContacto: formData.nombreCompContacto,
-            cedulaContacto: formData.cedulaContacto,
+            relacionAutorizado: formData.relacionAutorizado || 'No especificada',
+            nombreCompContacto: formData.nombreCompContacto || 'Sin contacto',
+            cedulaContacto: formData.cedulaContacto || 'Sin cédula',
             telefonoContacto: parseInt(formData.telefonoContacto) || 0,
-            relacionContacto: formData.relacionContacto
+            relacionContacto: formData.relacionContacto || 'No especificada'
         };
 
         try {
@@ -126,119 +129,130 @@ function AlumnoMaintenance() {
 
     const columns = [
         {
+            name: 'Foto',
+            selector: row => row.fotoAlumno,
+            cell: row => (
+                <img
+                    src={row.fotoAlumno}
+                    alt="Foto del Alumno"
+                    className="foto-alumno"
+                />
+            ),
+        },
+        {
             name: 'Nombre',
             selector: row => row.nombreAlumno,
             sortable: true
         },
         {
-            name: 'Apellidos',
-            selector: row => row.apellidosAlumno,
-            sortable: true
-        },
-        {
-            name: 'Fecha de Nacimiento',
-            selector: row => row.fechaNacimiento,
-            sortable: true,
-            cell: row => new Date(row.fechaNacimiento).toLocaleDateString()
-        },
-        {
-            name: 'Cédula',
+            name: 'Cedula',
             selector: row => row.cedulaAlumno,
             sortable: true
         },
         {
-            name: 'Género',
+            name: 'Genero',
             selector: row => row.generoAlumno,
             sortable: true
         },
         {
-            name: 'Dirección',
+            name: 'Direccion',
             selector: row => row.direccionAlumno,
+            sortable: true
+        },
+        {
+            name: 'Información Adicional',
+            selector: row => row.informacionAdicional,
+            sortable: true
+        },
+        {
+            name: 'Nombre Autorizado',
+            selector: row => row.nombreCompAutorizado,
+            sortable: true
+        },
+        {
+            name: 'Tel Contacto',
+            selector: row => row.telefonoContacto,
             sortable: true
         },
         {
             name: 'Acciones',
             cell: row => (
-                <div className="flex gap-2">
-                    <button
-                        onClick={() => {/* Logic for editing */ }}
-                        className="text-blue-600 hover:text-blue-800"
-                    >
-                        <FontAwesomeIcon icon={faEdit} />
+                <div className="action-buttons">
+                    <button className="edit-button" onClick={() => handleEdit(row)}>
+                        Editar
                     </button>
-                    <button
-                        onClick={() => handleDelete(row.idAlumno)}
-                        className="text-red-600 hover:text-red-800"
-                    >
-                        <FontAwesomeIcon icon={faTrash} />
+                    <button className="delete-button" onClick={() => handleDelete(row.idAlumno)}>
+                        Eliminar
                     </button>
                 </div>
             ),
         },
     ];
 
-    console.log(alumnos);
-    return (
-        <div className="maintenance-container">
-            <Navbar />
-            <div className="content-wrapper">
-                <h2>Registro de Alumnos</h2>
 
-                <div className="controls-section">
-                    <div className="filters">
-                        <div className="filter-group">
-                            <label>Nombre</label>
-                            <input
-                                type="text"
-                                placeholder="Buscar por nombre"
-                                className="filter-input"
-                            />
-                        </div>
-                        <div className="filter-group">
-                            <label>Cédula</label>
-                            <input
-                                type="text"
-                                placeholder="Buscar por cédula"
-                                className="filter-input"
-                            />
-                        </div>
-                        <div className="filter-group">
-                            <button className="export-button">
-                                <FontAwesomeIcon icon={faFileExcel} /> Exportar
-                            </button>
-                            <button className="add-button" onClick={openModal}>
-                                <FontAwesomeIcon icon={faPlus} /> Agregar Alumno
-                            </button>
-                        </div>
+    const handleEdit = (alumno) => {
+        navigate(`/editar-alumno/${alumno.idAlumno}`); // Corregido para usar comillas inversas
+    };
+
+    const toggleContactInfo = () => {
+        setShowContactInfo(!showContactInfo);
+    };
+
+    const toggleContactInfo2 = () => {
+        setShowContactInfo2(!showContactInfo2);
+    };
+
+    const handleOverlayClick = () => {
+        closeModal();
+    };
+
+ 
+    return (
+        <div className="children-registry-container">
+           {/* <Navbar />*/}
+            <div className="content-wrapper">
+              
+
+                {/* Contenido principal */}
+                <div className="registry-content">
+                    <h1 className="registry-title">Registro de Niños</h1>
+
+                    {/* Botones principales */}
+                    <div className="main-buttons">
+                        <button className="add-child-btn" onClick={openModal}>
+                            Agregar Niño
+                        </button>
+                        <button className="cancel-btn">
+                            Cancelar
+                        </button>
+                    </div>
+
+                    {/* Tabla de datos */}
+                    <div className="data-table-wrapper">
+                                <DataTable
+                                    columns={columns}
+                                    data={alumnos}
+                                    pagination
+                                    paginationComponentOptions={{
+                                        rowsPerPageText: 'Filas por página:',
+                                        rangeSeparatorText: 'de',
+                                        noRowsPerPage: false,
+                                        selectAllRowsItem: true,
+                                        selectAllRowsItemText: 'Todos'
+                                    }}
+                                    highlightOnHover
+                                    fixedHeader
+                                    responsive
+                                />
                     </div>
                 </div>
 
-                <div className="data-table-wrapper">
-                    <DataTable
-                        columns={columns}
-                        data={alumnos}
-                        pagination
-                        paginationComponentOptions={{
-                            rowsPerPageText: 'Filas por página:',
-                            rangeSeparatorText: 'de',
-                            noRowsPerPage: false,
-                            selectAllRowsItem: true,
-                            selectAllRowsItemText: 'Todos'
-                        }}
-                        highlightOnHover
-                        fixedHeader
-                        responsive
-                    />
-                </div>
-
                 {modalIsOpen && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
+                    <div className="modal-overlay" onClick={handleOverlayClick}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                             <div className="modal-header">
                                 <h2>Agregar Nuevo Alumno</h2>
-                                <button className="modal-close" onClick={closeModal}>
-                                    &times;
-                                </button>
+                               {/* <button className="modal-close" onClick={closeModal}>&times;</button>*/}
                             </div>
 
                             <form onSubmit={handleSubmit} className="student-form">
@@ -247,130 +261,130 @@ function AlumnoMaintenance() {
                                     <div className="form-row">
                                         <div className="form-group">
                                             <label>Nombre</label>
-                                            <input
-                                                type="text"
-                                                name="nombreAlumno"
-                                                value={formData.nombreAlumno}
-                                                onChange={handleInputChange}
-                                                required
-                                            />
+                                            <input type="text" name="nombreAlumno" value={formData.nombreAlumno} onChange={handleInputChange} required />
                                         </div>
                                         <div className="form-group">
                                             <label>Apellidos</label>
-                                            <input
-                                                type="text"
-                                                name="apellidosAlumno"
-                                                value={formData.apellidosAlumno}
-                                                onChange={handleInputChange}
-                                                required
-                                            />
+                                            <input type="text" name="apellidosAlumno" value={formData.apellidosAlumno} onChange={handleInputChange} required />
                                         </div>
                                     </div>
 
                                     <div className="form-row">
                                         <div className="form-group">
                                             <label>Fecha de Nacimiento</label>
-                                            <input
-                                                type="date"
-                                                name="fechaNacimiento"
-                                                value={formData.fechaNacimiento}
-                                                onChange={handleInputChange}
-                                                required
-                                            />
+                                            <input type="date" name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleInputChange} required />
                                         </div>
                                         <div className="form-group">
                                             <label>Cédula</label>
-                                            <input
-                                                type="text"
-                                                name="cedulaAlumno"
-                                                value={formData.cedulaAlumno}
-                                                onChange={handleInputChange}
-                                                required
-                                            />
+                                            <input type="text" name="cedulaAlumno" value={formData.cedulaAlumno} onChange={handleInputChange} required />
                                         </div>
                                     </div>
 
                                     <div className="form-row">
                                         <div className="form-group">
                                             <label>Género</label>
-                                            <input
-                                                type="text"
-                                                name="generoAlumno"
-                                                value={formData.generoAlumno}
-                                                onChange={handleInputChange}
-                                                required
-                                            />
+                                            <select name="generoAlumno" value={formData.generoAlumno} onChange={handleInputChange} required>
+                                                <option value="masc">Masculino</option>
+                                                <option value="feme">Femenino</option>
+                                            </select>
                                         </div>
                                         <div className="form-group">
                                             <label>Dirección</label>
-                                            <input
-                                                type="text"
-                                                name="direccionAlumno"
-                                                value={formData.direccionAlumno}
-                                                onChange={handleInputChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="form-section">
-                                    <h3>Información de Contacto y Autorización</h3>
-
-                                    <div className="form-row">
-                                        <div className="form-group">
-                                            <label>Nombre del Autorizado</label>
-                                            <input
-                                                type="text"
-                                                name="nombreCompAutorizado"
-                                                value={formData.nombreCompAutorizado}
-                                                onChange={handleInputChange}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Cédula del Autorizado</label>
-                                            <input
-                                                type="text"
-                                                name="cedulaAutorizado"
-                                                value={formData.cedulaAutorizado}
-                                                onChange={handleInputChange}
-                                            />
+                                            <input type="text" name="direccionAlumno" value={formData.direccionAlumno} onChange={handleInputChange} required />
                                         </div>
                                     </div>
 
                                     <div className="form-row">
                                         <div className="form-group">
-                                            <label>Teléfono del Autorizado</label>
-                                            <input
-                                                type="text"
-                                                name="telefonoAutorizado"
-                                                value={formData.telefonoAutorizado}
-                                                onChange={handleInputChange}
-                                            />
+                                            <label>Información Adicional</label>
+                                            <textarea name="informacionAdicional" value={formData.informacionAdicional} onChange={handleInputChange}></textarea>
                                         </div>
                                         <div className="form-group">
-                                            <label>Relación con el Alumno</label>
-                                            <input
-                                                type="text"
-                                                name="relacionAutorizado"
-                                                value={formData.relacionAutorizado}
-                                                onChange={handleInputChange}
-                                            />
+                                            <label>Foto del Alumno (de momento con URL)</label>
+                                            <input type="text" name="fotoAlumno" value={formData.fotoAlumno} onChange={handleInputChange}/>
                                         </div>
                                     </div>
                                 </div>
+
+                                <div>
+
+                                    <h3>Autorizado a recoger al niño</h3>
+                                    <button onClick={toggleContactInfo} className="">
+                                        {showContactInfo ? 'Ocultar' : 'Agregar'}
+                                    </button>
+
+                                   
+                                    {showContactInfo && (
+                                        <div className="form-section">
+ 
+                                            <div className="form-row">
+                                                <div className="form-group">
+                                                    <label>Nombre del Autorizado</label>
+                                                    <input type="text" name="nombreCompAutorizado" value={formData.nombreCompAutorizado} onChange={handleInputChange} />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>Cédula del Autorizado</label>
+                                                    <input type="text" name="cedulaAutorizado" value={formData.cedulaAutorizado} onChange={handleInputChange} />
+                                                </div>
+                                            </div>
+
+                                            <div className="form-row">
+                                                <div className="form-group">
+                                                    <label>Teléfono del Autorizado</label>
+                                                    <input type="text" name="telefonoAutorizado" value={formData.telefonoAutorizado} onChange={handleInputChange} />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>Relación con el Alumno</label>
+                                                    <input type="text" name="relacionAutorizado" value={formData.relacionAutorizado} onChange={handleInputChange} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div>
+
+                                    <h3>Contacto de emergencia</h3>
+                                    <button onClick={toggleContactInfo2} className="">
+                                        {showContactInfo2 ? 'Ocultar' : 'Agregar'}
+                                    </button>
+
+
+                                    {showContactInfo2 && (
+                                        <div className="form-section">
+                                            <div className="form-row">
+                                                <div className="form-group">
+                                                    <label>Nombre del Contacto</label>
+                                                    <input type="text" name="nombreCompContacto" value={formData.nombreCompContacto} onChange={handleInputChange} />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>Cédula del Contacto</label>
+                                                    <input type="text" name="cedulaContacto" value={formData.cedulaContacto} onChange={handleInputChange} />
+                                                </div>
+                                            </div>
+
+                                            <div className="form-row">
+                                                <div className="form-group">
+                                                    <label>Teléfono del Contacto</label>
+                                                    <input type="text" name="telefonoContacto" value={formData.telefonoContacto} onChange={handleInputChange} />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>Relación con el Contacto</label>
+                                                    <input type="text" name="relacionContacto" value={formData.relacionContacto} onChange={handleInputChange} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+
+
 
                                 <div className="form-section">
                                     <h3>Padre de Familia</h3>
                                     <div className="form-group">
                                         <label>Seleccionar Padre</label>
-                                        <select
-                                            name="padreId"
-                                            value={formData.padreId}
-                                            onChange={handleInputChange}
-                                            required
-                                            className="select-input"
-                                        >
+                                        <select name="padreId" value={formData.padreId} onChange={handleInputChange} required className="select-input">
                                             <option value="">Selecciona un padre</option>
                                             {padres.map((padre) => (
                                                 <option key={padre.idUsuario} value={padre.idUsuario}>
@@ -382,19 +396,16 @@ function AlumnoMaintenance() {
                                 </div>
 
                                 <div className="form-actions">
-                                    <button type="submit" className="save-button">
-                                        Guardar
-                                    </button>
-                                    <button type="button" onClick={closeModal} className="cancel-button">
-                                        Cancelar
-                                    </button>
+                                    <button type="submit" className="save-button">Guardar</button>
+                                    <button type="button" onClick={closeModal} className="cancel-button">Cancelar</button>
                                 </div>
                             </form>
                         </div>
                     </div>
+
                 )}
             </div>
-            <Footer />
+           {/* <Footer />*/}
             <ConfirmDialog />
         </div>
     );

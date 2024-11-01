@@ -138,8 +138,6 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.HasIndex("EncabezadoFacturaIdFactura");
 
-                    b.HasIndex("ProductoId");
-
                     b.ToTable("DetalleFactura");
                 });
 
@@ -361,7 +359,7 @@ namespace kinder_consenti2.Server.Migrations
             modelBuilder.Entity("kinder_consenti2.Server.Models.Alumno", b =>
                 {
                     b.HasOne("kinder_consenti2.Server.Models.Usuario", "Usuario")
-                        .WithMany("Hijos")
+                        .WithMany("Alumnos")
                         .HasForeignKey("PadreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -372,17 +370,10 @@ namespace kinder_consenti2.Server.Migrations
             modelBuilder.Entity("kinder_consenti2.Server.Models.DetalleFactura", b =>
                 {
                     b.HasOne("kinder_consenti2.Server.Models.EncabezadoFactura", null)
-                        .WithMany("Detalles")
+                        .WithMany("DetalleFacturas")
                         .HasForeignKey("EncabezadoFacturaIdFactura");
-
-                    b.HasOne("kinder_consenti2.Server.Models.Producto", "Producto")
-                        .WithMany()
-                        .HasForeignKey("ProductoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Producto");
                 });
+
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Matricula", b =>
                 {
@@ -392,15 +383,15 @@ namespace kinder_consenti2.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("kinder_consenti2.Server.Models.Producto", "Productos")
-                        .WithMany("Matricula")
+                    b.HasOne("kinder_consenti2.Server.Models.Producto", "Producto")
+                        .WithMany("Matriculas")
                         .HasForeignKey("ProductoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Alumno");
 
-                    b.Navigation("Productos");
+                    b.Navigation("Producto");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Usuario", b =>
@@ -421,17 +412,17 @@ namespace kinder_consenti2.Server.Migrations
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.EncabezadoFactura", b =>
                 {
-                    b.Navigation("Detalles");
+                    b.Navigation("DetalleFacturas");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Producto", b =>
                 {
-                    b.Navigation("Matricula");
+                    b.Navigation("Matriculas");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Usuario", b =>
                 {
-                    b.Navigation("Hijos");
+                    b.Navigation("Alumnos");
                 });
 #pragma warning restore 612, 618
         }

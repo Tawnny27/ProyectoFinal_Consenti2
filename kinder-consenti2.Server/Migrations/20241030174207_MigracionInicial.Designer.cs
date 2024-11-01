@@ -12,8 +12,8 @@ using kinder_consenti2.Server.Models;
 namespace kinder_consenti2.Server.Migrations
 {
     [DbContext(typeof(Concenti2pruebasContext))]
-    [Migration("20241028061426_Migracion9")]
-    partial class Migracion9
+    [Migration("20241030174207_MigracionInicial")]
+    partial class MigracionInicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -151,8 +151,14 @@ namespace kinder_consenti2.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdFactura"));
 
+                    b.Property<int?>("AlumnoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Cliente")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Dias")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Fecha")
@@ -366,7 +372,7 @@ namespace kinder_consenti2.Server.Migrations
             modelBuilder.Entity("kinder_consenti2.Server.Models.DetalleFactura", b =>
                 {
                     b.HasOne("kinder_consenti2.Server.Models.EncabezadoFactura", "Encabezado")
-                        .WithMany("Detalles")
+                        .WithMany("DetalleFacturas")
                         .HasForeignKey("EncabezadoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -419,7 +425,7 @@ namespace kinder_consenti2.Server.Migrations
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.EncabezadoFactura", b =>
                 {
-                    b.Navigation("Detalles");
+                    b.Navigation("DetalleFacturas");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Producto", b =>

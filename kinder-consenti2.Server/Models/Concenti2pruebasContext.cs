@@ -39,23 +39,22 @@ namespace kinder_consenti2.Server.Models
                 E.Property(x => x.Total).IsRequired();
             });
 
+
             modelBuilder.Entity<DetalleFactura>(D =>
             {
                 D.HasKey(x => x.IdDetalleFactura);
                 D.Property(x => x.EncabezadoId).IsRequired();
                 D.Property(x => x.ProductoId).IsRequired();
                 D.Property(x => x.Monto).IsRequired();          
-            });
+            });          
 
-            modelBuilder.Entity<DetalleFactura>().HasOne(x => x.Encabezado)
-                .WithMany(x => x.Detalles).HasForeignKey(f => f.EncabezadoId);
+            modelBuilder.Entity<DetalleFactura>().HasOne(x => x.EncabezadoFactura).WithMany(x => x.DetalleFacturas).HasForeignKey(f => f.EncabezadoId);
 
-            modelBuilder.Entity<DetalleFactura>().HasOne(x => x.Producto)
-                .WithMany(x => x.detalleFacturas).HasForeignKey(f => f.ProductoId);
+            modelBuilder.Entity<DetalleFactura>().HasOne(x => x.Producto).WithMany(x => x.DetalleFacturas).HasForeignKey(f => f.ProductoId);
 
-            modelBuilder.Entity<DetalleFactura>().Ignore(x=> x.Encabezado);
+            modelBuilder.Entity<DetalleFactura>().Ignore(x => x.EncabezadoFactura).Ignore(x => x.Producto);
+           
 
-           modelBuilder.Entity<Producto>().Ignore(x => x.detalleFacturas);
             //******************************************************************
 
 
@@ -66,6 +65,11 @@ namespace kinder_consenti2.Server.Models
                 P.Property(x => x.Frecuencias).IsRequired();
                 P.Property(x => x.Monto).IsRequired();
             });
+
+            modelBuilder.Entity<Producto>().Ignore(x => x.DetalleFacturas).Ignore(x => x.Matriculas);
+            
+
+
 
             modelBuilder.Entity<Matricula>(M =>
             {
@@ -80,6 +84,11 @@ namespace kinder_consenti2.Server.Models
             });
             modelBuilder.Entity<Matricula>().HasOne(x => x.Alumno)
                 .WithMany(x => x.Matriculas).HasForeignKey(f => f.AlumnoId);
+
+            modelBuilder.Entity<Matricula>().HasOne(x => x.Producto)
+                .WithMany(x => x.Matriculas).HasForeignKey(f => f.ProductoId);
+
+            
 
 
 
@@ -112,8 +121,7 @@ namespace kinder_consenti2.Server.Models
             });
 
             //****************** Relacion entre roll-Usuario interno ***************************
-            modelBuilder.Entity<Usuario>().HasOne(x => x.Rol)
-                .WithMany(x => x.Usuarios).HasForeignKey(f => f.RolId);
+            modelBuilder.Entity<Usuario>().HasOne(x => x.Rol).WithMany(x => x.Usuarios).HasForeignKey(f => f.RolId);
             modelBuilder.Entity<Rol>().Ignore(x => x.Usuarios);
             //**********************************************************************************
 
@@ -143,7 +151,7 @@ namespace kinder_consenti2.Server.Models
 
             //************************* Relacion entre Padre-Alumno  ***************************
             modelBuilder.Entity<Alumno>().HasOne(x => x.Usuario)
-                .WithMany(x => x.Hijos).HasForeignKey(f => f.PadreId);
+                .WithMany(x => x.Alumnos).HasForeignKey(f => f.PadreId);
             //**********************************************************************************
 
 
