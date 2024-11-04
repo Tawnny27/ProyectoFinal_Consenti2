@@ -26,7 +26,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("ObtenerUsuarios")]
         public ActionResult<List<Usuario>> ObtenerUsuarios()
         {
-            return Ok(_context.Usuario.Include(p=> p.Rol).ToList());
+            return Ok(_context.Usuario.Include(p=> p.Rol).Include(p => p.Alumnos).ToList());
         }
         
 
