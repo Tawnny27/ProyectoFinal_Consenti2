@@ -15,7 +15,8 @@ const EditarUsuario = () => {
         cedulaUsuario: '',
         telefonoUsuario: '',
         correoUsuario: '',
-        rol: {nombreRol: ''},
+        estado: false, 
+        rol: { nombreRol: '' },
     });
     const [mensajeExito, setMensajeExito] = useState(''); // Estado para el mensaje de éxito
 
@@ -34,10 +35,10 @@ const EditarUsuario = () => {
     }, [id]);
 
     const manejarCambio = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, checked } = e.target;
         setUsuario((prevState) => ({
             ...prevState,
-            [name]: value,
+            [name]: type === 'checkbox' ? checked : value,
         }));
     };
 
@@ -131,6 +132,18 @@ const EditarUsuario = () => {
                             required
                         />
                     </div>
+                   
+                    <div>
+                        <label>Estado</label>
+                        <input
+                            type="checkbox"
+                            name="estado"
+                            checked={usuario.estado}
+                            onChange={manejarCambio}
+                        />
+                    </div>
+                    <span>{usuario.estado ? " Activo" : " Inactivo"}</span>
+
                     <button type="submit">Guardar Cambios</button>
                 </form>
             </div>

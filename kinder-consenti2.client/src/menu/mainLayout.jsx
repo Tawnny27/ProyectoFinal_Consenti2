@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './mainLayout.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt, faCalendarAlt, faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import logo from '../assets/logo.jpg'; // Asegúrate de que la ruta sea correcta
+import logo from '../assets/logo.jpg'; 
 import Footer from '../componentes/footer';
 
 const MainLayout = () => {
@@ -21,7 +21,7 @@ const MainLayout = () => {
     useEffect(() => {
         console.log(usuario)
         // Valida si el usuario necesita cambiar su contraseña
-        if (usuario.passGenerico === true) {
+        if (usuario?.passGenerico === true) {
             navigate('/change-password'); 
         }
     }, [usuario, navigate]);

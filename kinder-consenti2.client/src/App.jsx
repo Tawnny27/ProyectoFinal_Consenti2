@@ -29,7 +29,6 @@ function App() {
                 <Route path="/registrar-usuario" element={<RegistroUsuario />} /> {/* Nueva ruta */}
                 <Route path="/registrar-pago" element={<FormularioRegistroPago />} /> 
                 <Route path="/GenerarRecibo" element={<GeneradorRecibos />} /> 
-
                 <Route path="/reset-password" element={<ResetPassword />} /> 
                 <Route path="/change-password" element={<ChangePassword />} /> 
             </Routes>
