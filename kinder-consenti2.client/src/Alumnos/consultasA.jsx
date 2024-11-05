@@ -65,7 +65,7 @@ function AlumnoMaintenance() {
                 new Date(formData.fechaNacimiento).toISOString() :
                 new Date().toISOString(), // Fecha actual como valor por defecto
             cedulaAlumno: formData.cedulaAlumno || 'Sin cédula',
-            generoAlumno: formData.generoAlumno || 'No especificado',
+            generoAlumno: formData.generoAlumno || 'NA',
             direccionAlumno: formData.direccionAlumno || 'Sin dirección',
             informacionAdicional: formData.informacionAdicional || 'Sin información',
             fotoAlumno: formData.fotoAlumno || 'default.jpg', // Nombre de una imagen por defecto
@@ -135,7 +135,7 @@ function AlumnoMaintenance() {
                 <img
                     src={row.fotoAlumno}
                     alt="Foto del Alumno"
-                    className="foto-alumno"
+                    className="alumno-registry-foto-alumno"
                 />
             ),
         },
@@ -178,10 +178,10 @@ function AlumnoMaintenance() {
             name: 'Acciones',
             cell: row => (
                 <div className="action-buttons">
-                    <button className="edit-button" onClick={() => handleEdit(row)}>
+                    <button className="alumno-registry-edit-button" onClick={() => handleEdit(row)}>
                         Editar
                     </button>
-                    <button className="delete-button" onClick={() => handleDelete(row.idAlumno)}>
+                    <button className="alumno-registry-delete-button" onClick={() => handleDelete(row.idAlumno)}>
                         Eliminar
                     </button>
                 </div>
@@ -208,27 +208,27 @@ function AlumnoMaintenance() {
 
  
     return (
-        <div className="children-registry-container">
+        <div className="alumno-registry-container">
            {/* <Navbar />*/}
             <div className="content-wrapper">
               
 
                 {/* Contenido principal */}
-                <div className="registry-content">
-                    <h1 className="registry-title">Registro de Niños</h1>
+                <div className="alumno-registry-content">
+                    <h1 className="alumno-registry-title">Registro de Niños</h1>
 
                     {/* Botones principales */}
-                    <div className="main-buttons">
-                        <button className="add-child-btn" onClick={openModal}>
+                    <div className="alumno-registry-main-buttons">
+                        <button className="alumno-registry-add-child-btn" onClick={openModal}>
                             Agregar Niño
                         </button>
-                        <button className="cancel-btn">
+                        <button className="alumno-registry-cancel-btn">
                             Cancelar
                         </button>
                     </div>
 
                     {/* Tabla de datos */}
-                    <div className="data-table-wrapper">
+                    <div className="alumno-registry-data-table-wrapper">
                                 <DataTable
                                     columns={columns}
                                     data={alumnos}
@@ -248,8 +248,8 @@ function AlumnoMaintenance() {
                 </div>
 
                 {modalIsOpen && (
-                    <div className="modal-overlay" onClick={handleOverlayClick}>
-                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="alumno-registry-modal-overlay" onClick={handleOverlayClick}>
+                        <div className="alumno-registry-modal-content" onClick={(e) => e.stopPropagation()}>
                             <div className="modal-header">
                                 <h2>Agregar Nuevo Alumno</h2>
                                {/* <button className="modal-close" onClick={closeModal}>&times;</button>*/}
@@ -283,7 +283,7 @@ function AlumnoMaintenance() {
                                     <div className="form-row">
                                         <div className="form-group">
                                             <label>Género</label>
-                                            <select name="generoAlumno" value={formData.generoAlumno} onChange={handleInputChange} required>
+                                            <select className="inputPadre" name="generoAlumno" value={formData.generoAlumno} onChange={handleInputChange} required>
                                                 <option value="masc">Masculino</option>
                                                 <option value="feme">Femenino</option>
                                             </select>
@@ -309,7 +309,7 @@ function AlumnoMaintenance() {
                                 <div>
 
                                     <h3>Autorizado a recoger al niño</h3>
-                                    <button onClick={toggleContactInfo} className="">
+                                    <button onClick={toggleContactInfo} className="a-agregarInfo">
                                         {showContactInfo ? 'Ocultar' : 'Agregar'}
                                     </button>
 
@@ -345,7 +345,7 @@ function AlumnoMaintenance() {
                                 <div>
 
                                     <h3>Contacto de emergencia</h3>
-                                    <button onClick={toggleContactInfo2} className="">
+                                    <button onClick={toggleContactInfo2} className="a-agregarInfo">
                                         {showContactInfo2 ? 'Ocultar' : 'Agregar'}
                                     </button>
 
@@ -382,10 +382,10 @@ function AlumnoMaintenance() {
 
                                 <div className="form-section">
                                     <h3>Padre de Familia</h3>
-                                    <div className="form-group">
-                                        <label>Seleccionar Padre</label>
-                                        <select name="padreId" value={formData.padreId} onChange={handleInputChange} required className="select-input">
-                                            <option value="">Selecciona un padre</option>
+                                    <div className="alumno-registry-form-group">
+                                        {/*<label>Seleccionar Padre</label>*/}
+                                        <select name="padreId" value={formData.padreId} onChange={handleInputChange} required className="inputPadre">
+                                            {/*<option value="">Selecciona un padre</option>*/}
                                             {padres.map((padre) => (
                                                 <option key={padre.idUsuario} value={padre.idUsuario}>
                                                     {padre.nombreUsuario} {padre.apellidosUsuario}
@@ -396,8 +396,8 @@ function AlumnoMaintenance() {
                                 </div>
 
                                 <div className="form-actions">
-                                    <button type="submit" className="save-button">Guardar</button>
-                                    <button type="button" onClick={closeModal} className="cancel-button">Cancelar</button>
+                                    <button type="submit" className="a-save-button">Guardar</button>
+                                    <button type="button" onClick={closeModal} className="a-cancel-button">Cancelar</button>
                                 </div>
                             </form>
                         </div>
