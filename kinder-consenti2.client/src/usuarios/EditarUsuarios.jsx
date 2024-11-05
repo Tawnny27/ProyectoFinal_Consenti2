@@ -16,7 +16,7 @@ const EditarUsuario = () => {
         telefonoUsuario: '',
         correoUsuario: '',
         estado: false, 
-        rol: { nombreRol: '' },
+        rol: { idRol: '', nombreRol: '' }, 
     });
     const [mensajeExito, setMensajeExito] = useState(''); // Estado para el mensaje de éxito
 
@@ -36,10 +36,22 @@ const EditarUsuario = () => {
 
     const manejarCambio = (e) => {
         const { name, value, type, checked } = e.target;
-        setUsuario((prevState) => ({
-            ...prevState,
-            [name]: type === 'checkbox' ? checked : value,
-        }));
+
+        // Si el campo es rolId, actualizamos el objeto rol
+        if (name === 'rolId') {
+            setUsuario((prevState) => ({
+                ...prevState,
+                rol: {
+                    ...prevState.rol,
+                    idRol: value, // Actualiza solo el idRol dentro del objeto rol
+                },
+            }));
+        } else {
+            setUsuario((prevState) => ({
+                ...prevState,
+                [name]: type === 'checkbox' ? checked : value,
+            }));
+        }
     };
 
     const manejarEnvio = async (e) => {
@@ -77,9 +89,9 @@ const EditarUsuario = () => {
                         <input
                             type="text"
                             name="rolId"
-                            value={usuario.rol.nombreRol}
+                            value={usuario.rol.idRol}
                             onChange={manejarCambio}
-                            disabled
+                            required
                         />
                     </div>
                     <div>
