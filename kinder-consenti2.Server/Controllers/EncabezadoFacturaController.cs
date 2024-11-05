@@ -58,6 +58,8 @@ namespace kinder_consenti2.Server.Controllers
                         _context.DetalleFactura.Add(item);
                         _context.SaveChanges();
                     }
+
+
                     var insertadaCondetalle = _context.EncabezadoFactura.Include(x => x.DetalleFacturas).FirstOrDefault(x => x.IdFactura == insertada.IdFactura);
                     var Detalle = _context.DetalleFactura.Where(x=> x.EncabezadoId == insertadaCondetalle.IdFactura && x.ProductoId > 3).FirstOrDefault();
 
