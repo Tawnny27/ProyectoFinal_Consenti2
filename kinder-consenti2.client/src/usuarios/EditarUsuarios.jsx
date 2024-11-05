@@ -1,8 +1,12 @@
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faIdCard, faUser, faEnvelope, faPhone, faUserCheck } from '@fortawesome/free-solid-svg-icons';
+import './EditarUsuarios.css'; 
 
 const EditarUsuario = () => {
     const { id } = useParams(); // Obtener el id del usuario desde la URL
@@ -15,8 +19,8 @@ const EditarUsuario = () => {
         cedulaUsuario: '',
         telefonoUsuario: '',
         correoUsuario: '',
-        estado: false, 
-        rol: { idRol: '', nombreRol: '' }, 
+        estado: false,
+        rol: { idRol: '', nombreRol: '' },
     });
     const [mensajeExito, setMensajeExito] = useState(''); // Estado para el mensaje de éxito
 
@@ -70,93 +74,128 @@ const EditarUsuario = () => {
     return (
         <div className="user-maintenance-container">
             <Navbar />
-            <div className="form-container">
-                <h1>Editar Usuario</h1>
-                {mensajeExito && <div className="success-message">{mensajeExito}</div>}
-                <form onSubmit={manejarEnvio}>
-                    <div>
-                        <label>ID Usuario</label>
-                        <input
-                            type="text"
-                            name="idUsuario"
-                            value={usuario.idUsuario}
-                            onChange={manejarCambio}
-                            disabled
-                        />
-                    </div>
-                    <div>
-                        <label>ID Rol</label>
-                        <input
-                            type="text"
-                            name="rolId"
-                            value={usuario.rol.idRol}
-                            onChange={manejarCambio}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label>Nombre</label>
-                        <input
-                            type="text"
-                            name="nombreUsuario"
-                            value={usuario.nombreUsuario}
-                            onChange={manejarCambio}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label>Apellidos</label>
-                        <input
-                            type="text"
-                            name="apellidosUsuario"
-                            value={usuario.apellidosUsuario}
-                            onChange={manejarCambio}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label>Cédula</label>
-                        <input
-                            type="text"
-                            name="cedulaUsuario"
-                            value={usuario.cedulaUsuario}
-                            onChange={manejarCambio}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label>Teléfono</label>
-                        <input
-                            type="text"
-                            name="telefonoUsuario"
-                            value={usuario.telefonoUsuario}
-                            onChange={manejarCambio}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label>Correo</label>
-                        <input
-                            type="email"
-                            name="correoUsuario"
-                            value={usuario.correoUsuario}
-                            onChange={manejarCambio}
-                            required
-                        />
-                    </div>
-                   
-                    <div>
-                        <label>Estado</label>
-                        <input
-                            type="checkbox"
-                            name="estado"
-                            checked={usuario.estado}
-                            onChange={manejarCambio}
-                        />
-                    </div>
-                    <span>{usuario.estado ? " Activo" : " Inactivo"}</span>
+            <div className="register-user-form-container">
+                <form onSubmit={manejarEnvio} className="edit-user-form">
+                    <h2>Editar Usuario</h2>
+                    {mensajeExito && <div className="success-message">{mensajeExito}</div>}
 
-                    <button type="submit">Guardar Cambios</button>
+                    <div className="edit-form-group">
+                        <div className="input-icon">
+                            <FontAwesomeIcon icon={faIdCard} />
+                            <input
+                                type="text"
+                                name="idUsuario"
+                                value={usuario.idUsuario}
+                                onChange={manejarCambio}
+                                disabled
+                                placeholder="ID Usuario"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="edit-form-group">
+                        <div className="input-icon">
+                            <FontAwesomeIcon icon={faUser} />
+                            <input
+                                type="text"
+                                name="rolId"
+                                value={usuario.rol.idRol}
+                                onChange={manejarCambio}
+                                required
+                                placeholder="ID Rol"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="edit-form-group">
+                        <div className="input-icon">
+                            <FontAwesomeIcon icon={faUser} />
+                            <input
+                                type="text"
+                                name="nombreUsuario"
+                                value={usuario.nombreUsuario}
+                                onChange={manejarCambio}
+                                required
+                                placeholder="Nombre"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="edit-form-group">
+                        <div className="input-icon">
+                            <FontAwesomeIcon icon={faUser} />
+                            <input
+                                type="text"
+                                name="apellidosUsuario"
+                                value={usuario.apellidosUsuario}
+                                onChange={manejarCambio}
+                                required
+                                placeholder="Apellidos"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="edit-form-group">
+                        <div className="input-icon">
+                            <FontAwesomeIcon icon={faIdCard} />
+                            <input
+                                type="text"
+                                name="cedulaUsuario"
+                                value={usuario.cedulaUsuario}
+                                onChange={manejarCambio}
+                                required
+                                placeholder="Cédula"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="edit-form-group">
+                        <div className="input-icon">
+                            <FontAwesomeIcon icon={faPhone} />
+                            <input
+                                type="text"
+                                name="telefonoUsuario"
+                                value={usuario.telefonoUsuario}
+                                onChange={manejarCambio}
+                                required
+                                placeholder="Teléfono"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="edit-form-group">
+                        <div className="input-icon">
+                            <FontAwesomeIcon icon={faEnvelope} />
+                            <input
+                                type="email"
+                                name="correoUsuario"
+                                value={usuario.correoUsuario}
+                                onChange={manejarCambio}
+                                required
+                                placeholder="Correo"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="edit-form-group">
+                        <div className="input-icon">
+                            <label>
+                                <FontAwesomeIcon icon={faUserCheck} />
+                                <input
+                                    type="checkbox"
+                                    name="estado"
+                                    checked={usuario.estado}
+                                    onChange={manejarCambio}
+                                />
+                                Estado: {usuario.estado ? " Activo" : " Inactivo"}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="button-group">
+                        <button type="submit">Guardar Cambios</button>
+                        <button style={{ backgroundColor: '#A569BD' }} type="button" onClick={() => navigate('/main')}>Cancelar</button>
+                    </div>
                 </form>
             </div>
             <Footer />

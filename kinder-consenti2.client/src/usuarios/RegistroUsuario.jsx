@@ -91,7 +91,7 @@ const RegistroUsuario = () => {
 
                     <div>
                         <label>Nombre</label>
-                        <input
+                        <input className="input-form"
                             type="text"
                             name="nombreUsuario"
                             value={usuario.nombreUsuario}
@@ -101,7 +101,7 @@ const RegistroUsuario = () => {
                     </div>
                     <div>
                         <label>Apellidos</label>
-                        <input
+                        <input className="input-form"
                             type="text"
                             name="apellidosUsuario"
                             value={usuario.apellidosUsuario}
@@ -111,7 +111,7 @@ const RegistroUsuario = () => {
                     </div>
                     <div>
                         <label>Cédula</label>
-                        <input
+                        <input className="input-form"
                             type="text"
                             name="cedulaUsuario"
                             value={usuario.cedulaUsuario}
@@ -121,7 +121,7 @@ const RegistroUsuario = () => {
                     </div>
                     <div>
                         <label>Teléfono</label>
-                        <input
+                        <input className="input-form"
                             type="text"
                             name="telefonoUsuario"
                             value={usuario.telefonoUsuario}
@@ -131,7 +131,7 @@ const RegistroUsuario = () => {
                     </div>
                     <div>
                         <label>Correo</label>
-                        <input
+                        <input className="input-form"
                             type="email"
                             name="correoUsuario"
                             value={usuario.correoUsuario}
@@ -141,7 +141,7 @@ const RegistroUsuario = () => {
                     </div>
                     <div>
                         <label>Contraseña</label>
-                        <input
+                        <input className="input-form"
                             type="password"
                             name="contrasennaUsuario"
                             value={usuario.contrasennaUsuario}
