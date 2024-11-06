@@ -71,7 +71,7 @@ namespace kinder_consenti2.Server.Controllers
 
         }
 
-        //************** Consultar un Usuario ******************
+        //******************* Consultar un Usuario ******************
         [HttpGet]
         [Route("BuscarUsuarios/{id}")]
         public ActionResult<Usuario> BuscarUsuarios(int id)
@@ -87,6 +87,10 @@ namespace kinder_consenti2.Server.Controllers
         [Route("CrearUsuario")]
         public ActionResult<Usuario> CrearUsuario(Usuario usuario)
         {
+            var usuarioRev = _context.Usuario.FirstOrDefault(x => x.CorreoUsuario == usuario.CorreoUsuario);
+            if (usuarioRev != null)
+                return BadRequest("Correo ya existe");            
+            
             string clavegenerica = Guid.NewGuid().ToString().Substring(0, 8);
             usuario.ContrasennaUsuario = Encryptar.encripSHA256(clavegenerica);   
             usuario.PassGenerico= true;
@@ -119,7 +123,7 @@ namespace kinder_consenti2.Server.Controllers
                     _context.SaveChanges();// se actulizan en la BD
                     return Ok("Clave de acceso actualizada favor inicie sesion");
                 }
-                return BadRequest("Falta algun dato");
+                return BadRequest("Este correo ya existe");
             }
             return BadRequest("Falta algun dato o alguno es incorrecto");
         }

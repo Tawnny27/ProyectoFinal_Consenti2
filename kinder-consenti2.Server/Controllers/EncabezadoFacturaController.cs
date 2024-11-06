@@ -51,10 +51,11 @@ namespace kinder_consenti2.Server.Controllers
 
                     _context.EncabezadoFactura.Add(factura);
                     _context.SaveChanges();
+
                     var insertada = _context.EncabezadoFactura.Find(factura.IdFactura);
-                    foreach (var item in insertada.DetalleFacturas)
+                    foreach (var item in factura.DetalleFacturas)
                     {
-                        item.EncabezadoId = factura.IdFactura;
+                        item.EncabezadoId = insertada.IdFactura;
                         _context.DetalleFactura.Add(item);
                         _context.SaveChanges();
                     }
