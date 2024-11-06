@@ -74,7 +74,7 @@ const EditarUsuario = () => {
     return (
         <div className="user-maintenance-container">
             <Navbar />
-            <div className="register-user-form-container">
+            <div className="register-user-form-container" style={{ marginTop: '100px' }}>
                 <form onSubmit={manejarEnvio} className="edit-user-form">
                     <h2>Editar Usuario</h2>
                     {mensajeExito && <div className="success-message">{mensajeExito}</div>}
@@ -193,7 +193,7 @@ const EditarUsuario = () => {
                     </div>
 
                     <div className="button-group">
-                        <button type="submit">Guardar Cambios</button>
+                        <button style={{ backgroundColor: '#48C9B0' }} type="submit">Guardar Cambios</button>
                         <button style={{ backgroundColor: '#A569BD' }} type="button" onClick={() => navigate('/main')}>Cancelar</button>
                     </div>
                 </form>
