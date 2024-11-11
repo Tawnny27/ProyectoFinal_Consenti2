@@ -12,8 +12,8 @@ using kinder_consenti2.Server.Models;
 namespace kinder_consenti2.Server.Migrations
 {
     [DbContext(typeof(Concenti2pruebasContext))]
-    [Migration("20241030174207_MigracionInicial")]
-    partial class MigracionInicial
+    [Migration("20241111014427_Migracion2")]
+    partial class Migracion2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -125,7 +125,7 @@ namespace kinder_consenti2.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDetalleFactura"));
 
-                    b.Property<int>("EncabezadoId")
+                    b.Property<int>("EncabezadoFacturaId")
                         .HasColumnType("int");
 
                     b.Property<int>("Monto")
@@ -136,7 +136,7 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.HasKey("IdDetalleFactura");
 
-                    b.HasIndex("EncabezadoId");
+                    b.HasIndex("EncabezadoFacturaId");
 
                     b.HasIndex("ProductoId");
 
@@ -151,14 +151,8 @@ namespace kinder_consenti2.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdFactura"));
 
-                    b.Property<int?>("AlumnoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Cliente")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Dias")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Fecha")
@@ -361,7 +355,7 @@ namespace kinder_consenti2.Server.Migrations
             modelBuilder.Entity("kinder_consenti2.Server.Models.Alumno", b =>
                 {
                     b.HasOne("kinder_consenti2.Server.Models.Usuario", "Usuario")
-                        .WithMany("Hijos")
+                        .WithMany("Alumnos")
                         .HasForeignKey("PadreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -371,9 +365,9 @@ namespace kinder_consenti2.Server.Migrations
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.DetalleFactura", b =>
                 {
-                    b.HasOne("kinder_consenti2.Server.Models.EncabezadoFactura", "Encabezado")
+                    b.HasOne("kinder_consenti2.Server.Models.EncabezadoFactura", "EncabezadoFactura")
                         .WithMany("DetalleFacturas")
-                        .HasForeignKey("EncabezadoId")
+                        .HasForeignKey("EncabezadoFacturaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -383,7 +377,7 @@ namespace kinder_consenti2.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Encabezado");
+                    b.Navigation("EncabezadoFactura");
 
                     b.Navigation("Producto");
                 });
@@ -396,15 +390,15 @@ namespace kinder_consenti2.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("kinder_consenti2.Server.Models.Producto", "Productos")
-                        .WithMany("Matricula")
+                    b.HasOne("kinder_consenti2.Server.Models.Producto", "Producto")
+                        .WithMany("Matriculas")
                         .HasForeignKey("ProductoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Alumno");
 
-                    b.Navigation("Productos");
+                    b.Navigation("Producto");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Usuario", b =>
@@ -430,12 +424,12 @@ namespace kinder_consenti2.Server.Migrations
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Producto", b =>
                 {
-                    b.Navigation("Matricula");
+                    b.Navigation("Matriculas");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Usuario", b =>
                 {
-                    b.Navigation("Hijos");
+                    b.Navigation("Alumnos");
                 });
 #pragma warning restore 612, 618
         }

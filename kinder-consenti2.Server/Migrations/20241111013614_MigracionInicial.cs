@@ -21,9 +21,7 @@ namespace kinder_consenti2.Server.Migrations
                     Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Subtotal = table.Column<double>(type: "float", nullable: false),
                     Iva = table.Column<double>(type: "float", nullable: false),
-                    Total = table.Column<double>(type: "float", nullable: false),
-                    AlumnoId = table.Column<int>(type: "int", nullable: true),
-                    Dias = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Total = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -83,23 +81,17 @@ namespace kinder_consenti2.Server.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EncabezadoId = table.Column<int>(type: "int", nullable: false),
                     ProductoId = table.Column<int>(type: "int", nullable: false),
-                    Monto = table.Column<int>(type: "int", nullable: false)
+                    Monto = table.Column<int>(type: "int", nullable: false),
+                    EncabezadoFacturaIdFactura = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DetalleFactura", x => x.IdDetalleFactura);
                     table.ForeignKey(
-                        name: "FK_DetalleFactura_EncabezadoFactura_EncabezadoId",
-                        column: x => x.EncabezadoId,
+                        name: "FK_DetalleFactura_EncabezadoFactura_EncabezadoFacturaIdFactura",
+                        column: x => x.EncabezadoFacturaIdFactura,
                         principalTable: "EncabezadoFactura",
-                        principalColumn: "IdFactura",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DetalleFactura_Producto_ProductoId",
-                        column: x => x.ProductoId,
-                        principalTable: "Producto",
-                        principalColumn: "IdProducto",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdFactura");
                 });
 
             migrationBuilder.CreateTable(
@@ -202,14 +194,9 @@ namespace kinder_consenti2.Server.Migrations
                 column: "PadreId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DetalleFactura_EncabezadoId",
+                name: "IX_DetalleFactura_EncabezadoFacturaIdFactura",
                 table: "DetalleFactura",
-                column: "EncabezadoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DetalleFactura_ProductoId",
-                table: "DetalleFactura",
-                column: "ProductoId");
+                column: "EncabezadoFacturaIdFactura");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Matricula_AlumnoId",

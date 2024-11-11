@@ -23,7 +23,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("BuscarDeallesFactura/{idEncabezado}")]
         public ActionResult<EncabezadoFactura> BuscarFactura(int idEncabezado)
         {
-            var DetallesEncontrados = _context.DetalleFactura.FirstOrDefault(x => x.EncabezadoId == idEncabezado);
+            var DetallesEncontrados = _context.DetalleFactura.FirstOrDefault(x => x.EncabezadoFacturaId == idEncabezado);
             if (DetallesEncontrados == null)
                 return BadRequest("Factura no encontrada");
             return Ok(DetallesEncontrados);

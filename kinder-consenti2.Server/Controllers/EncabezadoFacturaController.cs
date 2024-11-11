@@ -1,4 +1,5 @@
-﻿using kinder_consenti2.Server.Models;
+﻿using kinder_consenti2.Server.Herramientas;
+using kinder_consenti2.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,49 +41,58 @@ namespace kinder_consenti2.Server.Controllers
 
         [HttpPost]
         [Route("CrearMatricula")]
-        public ActionResult<EncabezadoFactura> CrearMatricula(EncabezadoFactura factura)
+        public ActionResult<EncabezadoFactura> CrearMatricula(DatosMatricula Datos)
         {
-            if (factura.AlumnoId != null && factura.DetalleFacturas != null && factura.Dias!= null)
+            
+            EncabezadoFactura factura = new EncabezadoFactura
             {
-                var alumno = _context.Alumno.Find(factura.AlumnoId);
+                Cliente = Datos.Ciente,
+                Fecha = Datos.Fecha,
+                Subtotal = Datos.Subtotal,
+                Descuento = Datos.Descuento,
+                Iva = Datos.Iva,
+                Total = Datos.Total,
+                status = 0
+            };
+            _context.EncabezadoFactura.Add(factura);
+            _context.SaveChanges();
+            var insertada = _context.EncabezadoFactura.Find(factura.IdFactura);
 
-                if (alumno != null)
+            if (insertada != null)
+            {
+                foreach (var item in Datos.Detalles)
                 {
-
-                    _context.EncabezadoFactura.Add(factura);
-                    _context.SaveChanges();
-
-                    var insertada = _context.EncabezadoFactura.Find(factura.IdFactura);
-                    foreach (var item in factura.DetalleFacturas)
+                    DetalleFactura detalleFact = new DetalleFactura
                     {
-                        item.EncabezadoId = insertada.IdFactura;
-                        _context.DetalleFactura.Add(item);
-                        _context.SaveChanges();
-                    }
-
-
-                    var insertadaCondetalle = _context.EncabezadoFactura.Include(x => x.DetalleFacturas).FirstOrDefault(x => x.IdFactura == insertada.IdFactura);
-                    var Detalle = _context.DetalleFactura.Where(x=> x.EncabezadoId == insertadaCondetalle.IdFactura && x.ProductoId > 3).FirstOrDefault();
-
-                    Matricula Matriculada = new Matricula();
-                    Matriculada.ProductoId = Detalle.ProductoId;
-                    Matriculada.AlumnoId = alumno.IdAlumno;
-                    Matriculada.Fecha = factura.Fecha;
-                    Matriculada.FechaFin = factura.Fecha.AddYears(1);                    
-                    Matriculada.Monto = Detalle.Monto;
-                    Matriculada.Dias = factura.Dias;
-                    if (Matriculada.Monto != _context.Producto.Find(1).Monto)
-                        Matriculada.Status = false;
-                    else
-                        Matriculada.Status = true;          
-
-                    _context.Matricula.Add(Matriculada);
-                    
-                    return Ok(insertadaCondetalle);
-
+                        EncabezadoFacturaId = insertada.IdFactura,
+                        ProductoId = item.ProductoId,
+                        AlumnoId = item.AlumnoId,
+                        Monto = item.Monto
+                    };
+                    _context.DetalleFactura.Add(detalleFact);
+                    _context.SaveChanges();
                 }
+
+                var Mat = Datos.Detalles.Where(x => x.ProductoId > 3);
+                foreach (var item in Mat)
+                {
+                    Matricula Matriculada = new Matricula
+                    {
+                        Fecha = Datos.Fecha,
+                        FechaFin = Datos.Fecha.AddYears(1),
+                        ProductoId = item.ProductoId,
+                        AlumnoId = item.AlumnoId,
+                        Dias = item.Dias,
+                        Status = false
+                    };
+                    _context.Matricula.Add(Matriculada);
+                    _context.SaveChanges();
+                }
+                return Ok("Matricula enviada para validacio del pago");
+
             }
-            return BadRequest("Faltan los detalles de la factura");
+            
+             return BadRequest("Algo salio mal, validar con Amnistarcion");
 
         }
 

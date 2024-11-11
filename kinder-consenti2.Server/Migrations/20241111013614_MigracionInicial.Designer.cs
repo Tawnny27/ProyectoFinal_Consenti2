@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using kinder_consenti2.Server.Models;
 
@@ -11,9 +12,11 @@ using kinder_consenti2.Server.Models;
 namespace kinder_consenti2.Server.Migrations
 {
     [DbContext(typeof(Concenti2pruebasContext))]
-    partial class Concenti2pruebasContextModelSnapshot : ModelSnapshot
+    [Migration("20241111013614_MigracionInicial")]
+    partial class MigracionInicial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,10 +125,10 @@ namespace kinder_consenti2.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDetalleFactura"));
 
-                    b.Property<int>("AlumnoId")
+                    b.Property<int?>("EncabezadoFacturaIdFactura")
                         .HasColumnType("int");
 
-                    b.Property<int>("EncabezadoFacturaId")
+                    b.Property<int>("EncabezadoId")
                         .HasColumnType("int");
 
                     b.Property<int>("Monto")
@@ -136,11 +139,7 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.HasKey("IdDetalleFactura");
 
-                    b.HasIndex("AlumnoId");
-
-                    b.HasIndex("EncabezadoFacturaId");
-
-                    b.HasIndex("ProductoId");
+                    b.HasIndex("EncabezadoFacturaIdFactura");
 
                     b.ToTable("DetalleFactura");
                 });
@@ -157,9 +156,6 @@ namespace kinder_consenti2.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Descuento")
-                        .HasColumnType("float");
-
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
@@ -171,9 +167,6 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.Property<double>("Total")
                         .HasColumnType("float");
-
-                    b.Property<int>("status")
-                        .HasColumnType("int");
 
                     b.HasKey("IdFactura");
 
@@ -200,6 +193,9 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.Property<DateTime>("FechaFin")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Monto")
+                        .HasColumnType("int");
 
                     b.Property<int>("ProductoId")
                         .HasColumnType("int");
@@ -370,29 +366,9 @@ namespace kinder_consenti2.Server.Migrations
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.DetalleFactura", b =>
                 {
-                    b.HasOne("kinder_consenti2.Server.Models.Alumno", "Alumno")
+                    b.HasOne("kinder_consenti2.Server.Models.EncabezadoFactura", null)
                         .WithMany("DetalleFacturas")
-                        .HasForeignKey("AlumnoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("kinder_consenti2.Server.Models.EncabezadoFactura", "EncabezadoFactura")
-                        .WithMany("DetalleFacturas")
-                        .HasForeignKey("EncabezadoFacturaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("kinder_consenti2.Server.Models.Producto", "Producto")
-                        .WithMany()
-                        .HasForeignKey("ProductoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Alumno");
-
-                    b.Navigation("EncabezadoFactura");
-
-                    b.Navigation("Producto");
+                        .HasForeignKey("EncabezadoFacturaIdFactura");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Matricula", b =>
@@ -427,8 +403,6 @@ namespace kinder_consenti2.Server.Migrations
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Alumno", b =>
                 {
-                    b.Navigation("DetalleFacturas");
-
                     b.Navigation("Matriculas");
                 });
 
