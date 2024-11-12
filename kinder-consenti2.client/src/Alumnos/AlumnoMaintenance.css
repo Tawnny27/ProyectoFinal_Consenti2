@@ -1,3 +1,9 @@
+.input-icon {
+    position: relative;
+    width: 100%;
+}
+
+
 /* Estilos para el botón de edición */
 .alumno-registry-foto-alumno {
     width: 60px; /* Ajusta el tamaño de la imagen */
@@ -213,8 +219,7 @@
     word-break: break-word; /* Asegura que el texto largo se ajuste a la celda */
 }
 
-/* Estilos para el modal */
-.alumno-registry-modal-overlay {
+.alumno-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -224,166 +229,215 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    z-index: 1000;
 }
 
-/* Contenedor principal del modal */
-.alumno-registry-modal-content {
-    background-color: white;
+.alumno-modal-content {
+    background-color: #f4f4f4;
     border-radius: 8px;
-    /*width: 95%;*/
-    max-width: 800px;
+    padding: 24px;
+    width: 150%;
+    max-width: 600px;
     max-height: 90vh;
     overflow-y: auto;
-    padding: 24px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-    /* Estilos para la sección de fotografía */
-    .alumno-registry-modal-content h3 {
-        color: #666;
-        font-size: 16px;
-        font-weight: 500;
-        margin-bottom: 12px;
-    }
-
-.alumno-registry-form-section:first-child {
+.alumno-modal-header {
     margin-bottom: 24px;
 }
 
-/* Contenedor del formulario */
-.alumno-registry-student-form {
+.alumno-title {
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.alumno-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width:100%;
+}
+
+.alumno-form-section {
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-/* Grupos de formularios */
-.alumno-registry-form-group {
-    background-color: #f5f5f5;
-    border-radius: 4px;
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+.alumno-section-title {
+    color: #00ff7c;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0;
 }
 
-    /* Entradas y selecciones */
-    .inputPadre, .alumno-registry-form-group select, .alumno-registry-form-group textarea {
-        border: none;
-        background: transparent;
-        width: 100%;
-        outline: none;
-        font-size: 14px;
-        color: #333;
-    }
-
-        /* Estilos específicos para fechas */
-        .alumno-registry-form-group input[type="date"] {
-            font-family: Heritage;
-        }
-
-/* Estilos para la entrada de archivo y vista previa de la imagen */
-.alumno-registry-photo-upload {
+.alumno-form-row {
     display: flex;
-    align-items: center;
     gap: 16px;
 }
 
-.alumno-registry-button-file-input {
-    padding: 8px 16px;
+.alumno-form-group {
+    flex: 1;
+    min-width: 0;
+}
+
+.alumno-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #A569BD;
+    font-size: 14px;
+}
+
+.alumno-input-container {
+    position: relative;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.alumno-input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #A569BD;
+}
+
+.alumno-input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: none;
+    outline: none;
+    font-size: 14px;
     background: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+}
+
+    .alumno-input:focus {
+        border-color: #2196f3;
+        box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+    }
+
+.alumno-select {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: white;
+    appearance: none;
     cursor: pointer;
 }
 
-.alumno-registry-photo-preview {
-    width: 64px;
-    height: 64px;
-}
-
-    .alumno-registry-photo-preview img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-/* Secciones de autorización y emergencia */
-.alumno-registry-form-section h3 {
-    color: #666;
-    font-size: 16px;
-    margin-bottom: 8px;
-}
-
-/* Botón agregar */
-.alumno-registry-add-button {
+.alumno-textarea {
     width: 100%;
-    padding: 12px;
+    padding: 12px 12px 12px 40px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    min-height: 100px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.alumno-collapsible-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.alumno-toggle-button {
     background-color: #2196f3;
     color: white;
     border: none;
     border-radius: 4px;
+    padding: 8px 16px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
     font-size: 14px;
+    margin-top: 8px;
+    width: 100%;
+    transition: background-color 0.2s;
 }
 
-    .alumno-registry-add-button::before {
-        content: '+';
-        font-size: 18px;
+    .alumno-toggle-button:hover {
+        background-color: #1976d2;
     }
 
-/* Botones de acción */
-.alumno-registry-form-actions {
+.alumno-action-buttons {
     display: flex;
     gap: 16px;
-    margin-top: 16px;
+    margin-top: 24px;
 }
 
-.alumno-registry-save-button, .alumno-registry-cancel-button {
-    flex: 1;
-    padding: 12px;
+.alumno-button-save {
+    background-color: #4caf50;
+    color: white;
     border: none;
     border-radius: 4px;
-    color: white;
+    padding: 12px 24px;
     cursor: pointer;
     font-size: 14px;
+    flex: 1;
+    transition: background-color 0.2s;
 }
 
-.a-save-button {
-    background-color: #26a69a;
-    margin-top:15px;
-}
-
-.a-cancel-button {
+.alumno-button-cancel {
     background-color: #9c27b0;
-    
-}
-
-.a-agregarInfo {
-    background-color: blue;
-    
-}
-
-/* Ajustes adicionales */
-.textarea {
-    resize: none;
-    min-height: 60px;
-    font-family: heritage;
-}
-
-.alumno-registry-form-group .date-display {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-}
-
-.alumno-registry-age-text {
-    color: #666;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    cursor: pointer;
     font-size: 14px;
-    white-space: nowrap;
+    flex: 1;
+    transition: background-color 0.2s;
 }
+
+.alumno-button-save:hover {
+    background-color: #43a047;
+}
+
+.alumno-button-cancel:hover {
+    background-color: #8e24aa;
+}
+
+/* Estilos adicionales para mejorar la experiencia móvil */
+@media (max-width: 768px) {
+    .alumno-form-row {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .alumno-modal-content {
+        width: 95%;
+        padding: 16px;
+    }
+
+    .alumno-input,
+    .alumno-select,
+    .alumno-textarea {
+        font-size: 16px; /* Mejor tamaño para móviles */
+    }
+}
+
+/* Estilos para el scroll del modal */
+.alumno-modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.alumno-modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.alumno-modal-content::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+    .alumno-modal-content::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }

@@ -1,4 +1,12 @@
 
+.alumno-input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #A569BD;
+}
+
 form {
     /* Contenedor del formulario */
     width: 300px;
@@ -35,3 +43,162 @@ button {
     button:hover {
         background-color: #3e8e41; /* Verde más oscuro al pasar el ratón */
     }
+
+
+.error-message {
+    color: red;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid red;
+    border-radius: 4px;
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+.success-message {
+    color: green;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid green;
+    border-radius: 4px;
+    background-color: rgba(0, 255, 0, 0.1);
+}
+
+
+/**ACTUALIZACION: No se borra lo anterior por que por alguna razon afecta a otras partes*/
+
+.usuario-maintenance-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+    background: url('../assets/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    padding: 20px;
+    /*margin: 150px;*/
+}
+
+.usuario-form-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 24px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 150px;
+}
+
+.usuario-title {
+    text-align: center;
+    color: #9370DB;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.usuario-success-message {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.usuario-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.usuario-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.usuario-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #A569BD;
+    font-size: 14px;
+}
+
+.usuario-input-container {
+    position: relative;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+    
+}
+
+.usuario-input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #A569BD;
+}
+
+.usuario-input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: white;
+}
+
+    .usuario-input:focus {
+        border-color: #2196f3;
+        box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+    }
+
+.usuario-select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+    background: white;
+    appearance: none;
+    cursor: pointer;
+}
+
+.usuario-button-save {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+    width: 100%;
+    font-weight: bold;
+}
+
+    .usuario-button-save:hover {
+        background-color: #43a047;
+    }
+
+.usuario-error-message {
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .usuario-form-group {
+        width: 100%;
+    }
+
+    .usuario-input,
+    .usuario-select {
+        font-size: 16px;
+    }
+}
