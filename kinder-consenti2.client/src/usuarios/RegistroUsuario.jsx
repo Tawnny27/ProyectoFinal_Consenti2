@@ -80,7 +80,13 @@ const RegistroUsuario = () => {
                 } else {
                     switch (error.response.status) {
                         case 400:
-                            mensajeError = 'La Cedula o Correo electronico ya fueron registrados anteriormente.';
+                            // Aquí puedes manejar un BadRequest (400)
+                            // Si el servidor envía un mensaje en el body de la respuesta, lo usamos.
+                            if (error.response.data) {
+                                mensajeError = error.response.data.message || 'La Cedula o Correo Electronico ya se han registrado previamente . Por favor verifique los campos.';
+                            } else {
+                                mensajeError = 'La solicitud no es válida. Por favor, verifique los datos enviados.';
+                            }
                             break;
                         case 401:
                             mensajeError = 'No autorizado. Por favor inicie sesión nuevamente.';

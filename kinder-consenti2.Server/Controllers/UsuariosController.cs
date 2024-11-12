@@ -87,22 +87,33 @@ namespace kinder_consenti2.Server.Controllers
         [Route("CrearUsuario")]
         public ActionResult<Usuario> CrearUsuario(Usuario usuario)
         {
-            var usuarioRev = _context.Usuario.FirstOrDefault(x => x.CorreoUsuario == usuario.CorreoUsuario);
-            if (usuarioRev != null)
-                return BadRequest("Correo ya existe");            
-            
-            string clavegenerica = Guid.NewGuid().ToString().Substring(0, 8);
-            usuario.ContrasennaUsuario = Encryptar.encripSHA256(clavegenerica);   
-            usuario.PassGenerico= true;
-            _context.Usuario.Add(usuario);
-            _context.SaveChanges();
-            var insertado = _context.Usuario.Find(usuario.IdUsuario);
-            insertado.ContrasennaUsuario = clavegenerica;           
-            var dat = _context.SetingCorreo.Find(1);
-            CorreoEnvio correoEnvio = new CorreoEnvio();
-            correoEnvio.EnviarCorreo(587, dat.CorreoOrigen, dat.ContrasennaOrigen, usuario.CorreoUsuario, dat.smtpClient, dat.asunto, dat.cuerpo, clavegenerica);
-            return Ok(insertado);
+            try
+            {
+                var usuarioRev = _context.Usuario.FirstOrDefault(x => x.CorreoUsuario == usuario.CorreoUsuario);
+                if (usuarioRev != null)
+                    return BadRequest("Correo ya existe");
+
+                string clavegenerica = Guid.NewGuid().ToString().Substring(0, 8);
+                usuario.ContrasennaUsuario = Encryptar.encripSHA256(clavegenerica);
+                usuario.PassGenerico = true;
+                _context.Usuario.Add(usuario);
+                _context.SaveChanges();
+
+                var insertado = _context.Usuario.Find(usuario.IdUsuario);
+                insertado.ContrasennaUsuario = clavegenerica;
+
+                var dat = _context.SetingCorreo.Find(1);
+                CorreoEnvio correoEnvio = new CorreoEnvio();
+                correoEnvio.EnviarCorreo(587, dat.CorreoOrigen, dat.ContrasennaOrigen, usuario.CorreoUsuario, dat.smtpClient, dat.asunto, dat.cuerpo, clavegenerica);
+
+                return Ok(insertado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, "Ha ocurrido un error al crear el usuario: " + ex.Message);
+            }
         }
+
 
 
         //************** Cambiar Contraseña ******************
