@@ -1,3 +1,4 @@
+/* Container for the enrollment form */
 .enrollment-form-container {
     display: flex;
     justify-content: center;
@@ -8,61 +9,66 @@
     font-family: 'Roboto', sans-serif;
 }
 
+/* Styling for the main form */
 .enrollment-form {
-    background-color: rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255, 0.9);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 600px;
     margin: 40px auto;
-    font-family: 'Roboto', sans-serif;
     color: #333;
 }
 
-    .enrollment-form h2 {
-        color: #A569BD;
-    }
-
-.payment-section,
-.parent-info,
-.child-info {
+/* Form headings */
+.enrollment-form h2 {
+    color: #A569BD;
+    text-align: center;
     margin-bottom: 20px;
 }
 
-    .payment-section h3,
-    .parent-info h3,
-    .child-info h3 {
-        color: #48C9B0;
-        margin-bottom: 10px;
-    }
+/* Section headers */
+.payment-section h3,
+.parent-info h3,
+.child-info h3 {
+    color: #48C9B0;
+    margin-bottom: 10px;
+}
 
-    .payment-section label,
-    .parent-info label,
-    .child-info label {
-        display: block;
-        margin-bottom: 5px;
-    }
+/* Labels and inputs */
+.payment-section label,
+.parent-info label,
+.child-info label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
 
 input[type="text"],
 textarea,
 select {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     margin-bottom: 10px;
     border-radius: 4px;
     border: 1px solid #ddd;
     font-size: 14px;
+    box-sizing: border-box;
 }
 
+/* File input styling */
 .proof-of-payment {
     margin-top: 10px;
 }
 
+/* Button layout */
 .buttons {
     display: flex;
     justify-content: space-between;
+    margin-top: 20px;
 }
 
+/* Submit button styling */
 .submit-m-button {
     background-color: #48C9B0;
     color: #fff;
@@ -70,12 +76,14 @@ select {
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-    .submit-m-button:hover {
-        background-color: #41b89a;
-    }
+.submit-m-button:hover {
+    background-color: #41b89a;
+}
 
+/* Cancel button styling */
 .cancel-m-button {
     background-color: #A569BD;
     color: #fff;
@@ -83,8 +91,9 @@ select {
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-    .cancel-m-button:hover {
-        background-color: #D481F5;
-    }
+.cancel-m-button:hover {
+    background-color: #D481F5;
+}

@@ -13,6 +13,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import RegistroUsuario from './usuarios/RegistroUsuario'; // Importar el nuevo componente de registro
 import FormularioRegistroPago from './Pagos/Registropago'; 
 import GeneradorRecibos from './Pagos/GenerarRecibo';
+import Matricula from './matricula/Matricula';
 
 
 
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/GenerarRecibo" element={<GeneradorRecibos />} /> 
                 <Route path="/reset-password" element={<ResetPassword />} /> 
                 <Route path="/change-password" element={<ChangePassword />} /> 
+                <Route path="/matricula" element={<Matricula />} /> 
             </Routes>
                 
         </Router>
