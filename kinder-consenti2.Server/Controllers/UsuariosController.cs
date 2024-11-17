@@ -76,7 +76,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("BuscarUsuarios/{id}")]
         public ActionResult<Usuario> BuscarUsuarios(int id)
         {
-            var usuario = _context.Usuario.Include(p=> p.Rol).FirstOrDefault(x=> x.IdUsuario==id);
+            var usuario = _context.Usuario.Include(p=> p.Rol).Include(p => p.Alumnos).ToList().FirstOrDefault(x=> x.IdUsuario==id);
             if (usuario == null)
                 return BadRequest("No encontrado");
             return Ok(usuario);
@@ -134,7 +134,7 @@ namespace kinder_consenti2.Server.Controllers
                     _context.SaveChanges();// se actulizan en la BD
                     return Ok("Clave de acceso actualizada favor inicie sesion");
                 }
-                return BadRequest("Este correo ya existe");
+                return BadRequest("Este correo no existe en nuetros registros");
             }
             return BadRequest("Falta algun dato o alguno es incorrecto");
         }
