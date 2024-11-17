@@ -1,233 +1,277 @@
-import React, { useState, useEffect } from 'react';
+ï»¿import React, { useState, useEffect } from 'react';
 import axios from '../axios';
 import './matricula.css';
+import { useUser } from '../UserContext';
+import Navbar from '../componentes/navbar';
+import Footer from '../componentes/footer';
 
-const Matricula = ({ userId, padresData }) => {
-    const [idRol, setIdRol] = useState(null);
-    const [userData, setUserData] = useState({});
+const Matricula = () => {
+    const { user } = useUser();
     const [formData, setFormData] = useState({
-        paymentMethod: '',
-        proofOfPayment: null,
-        parentName: '',
-        parentID: '',
-        phone: '',
-        address: '',
+        nombreUsuario: '',
+        apellidosUsuario: '',
+        cedulaUsuario: '',
+        telefonoUsuario: '',
+        correoUsuario: '',
+        totalAmount: 0,
         selectedChildren: [],
         period: '4 meses',
-        totalAmount: 0,
+        paymentMethod: '',
+        proofOfPayment: null,
     });
+
     const [childrenList, setChildrenList] = useState([]);
+    const [userList, setUserList] = useState([]);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const loginResponse = await axios.get('https://localhost:44369/Usuarios/AccesoUsuario2');
-                setIdRol(loginResponse.data.rolId);
-
-                const userResponse = await axios.get(`https://localhost:44369/Usuarios/BuscarUsuarios/${userId}`);
-                setUserData(userResponse.data);
-
-                if (loginResponse.data.rolId === 3) { // Si es un padre
-                    setFormData(prev => ({
-                        ...prev,
-                        parentName: userResponse.data.nombreUsuario,
-                        parentID: userResponse.data.cedulaUsuario,
-                        phone: userResponse.data.telefonoUsuario,
-                        address: userResponse.data.direccionUsuario || '',
-                    }));
-                    setChildrenList(userResponse.data.alumnos || []);
-                }
-            } catch (error) {
-                setError("Error fetching user data");
-                console.error("Error fetching user data:", error);
+        if (user) {
+            if (user.rolId === 3) {
+                // Prellenar datos del padre si es usuario tipo Padre
+                setFormData((prev) => ({
+                    ...prev,
+                    parentFullName: `${user.nombreUsuario} ${user.apellidosUsuario}`,
+                    parentID: user.cedulaUsuario,
+                    phone: user.telefonoUsuario || '',
+                    address: user.direccionUsuario || '',
+                }));
+                setChildrenList(user.alumnos || []);
+            } else if (user.rolId === 1) {
+                fetchUsers();
             }
-        };
+        }
+    }, [user]);
 
-        fetchUserData();
-    }, [userId]);
+    const fetchUsers = async () => {
+        try {
+            const { data } = await axios.get('https://localhost:44369/Usuarios/ObtenerUsuarios');
+            const formattedUsers = data
+                .filter((usuario) => usuario.rolId === 3)
+                .map((usuario) => ({
+                    id: usuario.idUsuario,
+                    name: `${usuario.nombreUsuario} ${usuario.apellidosUsuario}`,
+                    idCard: usuario.cedulaUsuario,
+                    children: usuario.alumnos || [],
+                    phone: usuario.telefonoUsuario,
+                    address: usuario.direccionUsuario || '',
+                }));
+            setUserList(formattedUsers);
+        } catch (error) {
+            console.error('Error al obtener los usuarios:', error);
+        }
+    };
 
-    const handleParentChange = (e) => {
-        const selectedParent = padresData.find(parent => parent.id === e.target.value);
-        if (selectedParent) {
-            setFormData(prev => ({
+    const handleUserSelect = (userId) => {
+        const selectedUser = userList.find((user) => user.id === parseInt(userId));
+        if (selectedUser) {
+            setFormData((prev) => ({
                 ...prev,
-                parentName: selectedParent.name,
-                parentID: selectedParent.id,
-                phone: selectedParent.phone,
-                address: selectedParent.address,
+                parentFullName: selectedUser.name,
+                parentID: selectedUser.idCard,
+                phone: selectedUser.phone,
+                address: selectedUser.address,
             }));
-            setChildrenList(selectedParent.children);
+            setChildrenList(selectedUser.children);
         }
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value,
-        }));
-
-        // Actualizar el total a pagar según el período
-        if (name === 'period') {
-            const amount = value === 'Anual' ? 1000 : 300;
-            setFormData(prev => ({ ...prev, totalAmount: amount }));
-        }
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleFileChange = (e) => {
-        setFormData(prev => ({ ...prev, proofOfPayment: e.target.files[0] }));
+        setFormData((prev) => ({ ...prev, proofOfPayment: e.target.files[0] }));
     };
 
     const handleChildSelection = (childId) => {
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
             selectedChildren: prev.selectedChildren.includes(childId)
-                ? prev.selectedChildren.filter(id => id !== childId)
+                ? prev.selectedChildren.filter((id) => id !== childId)
                 : [...prev.selectedChildren, childId],
         }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-
-        // Validación simple
-        if (formData.selectedChildren.length === 0) {
-            setError('Debes seleccionar al menos un niño para matricular.');
+        if (!formData.selectedChildren.length) {
+            setError('Debes seleccionar al menos un niÃ±o para matricular.');
             return;
         }
-
         if (!formData.proofOfPayment) {
             setError('Debes agregar un comprobante de pago.');
             return;
         }
-
-        try {
-            const formDataToSend = new FormData();
-            for (const key in formData) {
-                formDataToSend.append(key, formData[key]);
-            }
-
-            const response = await axios.post('URL_DEL_ENDPOINT_DE_MATRICULA', formDataToSend);
-
-            if (response.status === 200) {
-                // Resetear el formulario o redirigir al usuario
-                setFormData({
-                    paymentMethod: '',
-                    proofOfPayment: null,
-                    parentName: '',
-                    parentID: '',
-                    phone: '',
-                    address: '',
-                    selectedChildren: [],
-                    period: '4 meses',
-                    totalAmount: 0,
-                });
-
-                alert('Matrícula realizada con éxito!');
-                // redirigir o realizar otras acciones aquí
-            }
-        } catch (error) {
-            setError("Error al enviar los datos de matrícula.");
-            console.error("Error al enviar datos de matrícula:", error);
-        }
+        console.log('Formulario enviado:', formData);
     };
 
     return (
         <div className="enrollment-form-container">
+            <Navbar />
             <div className="enrollment-form">
-                <h2>Formulario de Matrícula</h2>
+                <h2>Formulario de MatrÃ­cula</h2>
                 {error && <p className="error">{error}</p>}
                 <form onSubmit={handleSubmit}>
-                    <div className="payment-section">
-                        <h3>Opciones de Pago</h3>
-                        <label>
-                            <input
-                                type="radio"
-                                name="paymentMethod"
-                                value="SINPE"
-                                checked={formData.paymentMethod === 'SINPE'}
-                                onChange={handleChange}
-                            />
-                            SINPE
-                        </label>
-                        {idRol === 1 && (
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    value="Efectivo"
-                                    checked={formData.paymentMethod === 'Efectivo'}
-                                    onChange={handleChange}
-                                />
-                                Efectivo
-                            </label>
-                        )}
-                        <div className="proof-of-payment">
-                            <label>Agregar comprobante de pago:</label>
-                            <input type="file" onChange={handleFileChange} />
-                        </div>
-                    </div>
-
-                    <div className="parent-info">
-                        <h3>Información del Padre</h3>
-                        {idRol === 1 ? (
-                            <select onChange={handleParentChange} value={formData.parentID}>
-                                <option value="">Seleccionar Padre</option>
-                                {padresData.map((parent) => (
-                                    <option key={parent.id} value={parent.id}>
-                                        {parent.name}
+                    {user.rolId === 1 && (
+                        <div className="select-parent">
+                            <label>Selecciona un Padre:</label>
+                            <select
+                                onChange={(e) => handleUserSelect(e.target.value)}
+                                value={formData.parentID || ''}
+                            >
+                                <option value="">Selecciona un padre</option>
+                                {userList.map((user) => (
+                                    <option key={user.id} value={user.id}>
+                                        {user.name}
                                     </option>
                                 ))}
                             </select>
-                        ) : (
-                            <>
-                                    <label>Nombre del Padre:</label>
-                                    <input type="text" value={formData.parentName} readOnly />
-                                <label>Cédula:</label>
-                                <input type="text" value={formData.parentID} readOnly />
-                                <label>Teléfono:</label>
-                                <input type="text" value={formData.phone} readOnly />
-                                <label>Dirección:</label>
-                                <textarea value={formData.address} readOnly />
-                            </>
-                        )}
+                        </div>
+                    )}
+
+                    <PaymentSection
+                        formData={formData}
+                        handleChange={handleChange}
+                        handleFileChange={handleFileChange}
+                    />
+
+                    <ParentInfo formData={formData} handleChange={handleChange} userRole={user.rolId} />
+
+                    <ChildrenSelection
+                        childrenList={childrenList}
+                        selectedChildren={formData.selectedChildren}
+                        handleChildSelection={handleChildSelection}
+                    />
+
+                    <div className="payment-period">
+                        <label>
+                            Periodo:
+                            <select
+                                name="period"
+                                value={formData.period}
+                                onChange={handleChange}
+                            >
+                                <option value="4 meses">4 meses</option>
+                                <option value="Anual">Anual</option>
+                            </select>
+                        </label>
                     </div>
 
-                    <div className="child-info">
-                        <h3>Seleccionar Niño(s) a Matricular</h3>
-                        {childrenList.map((child) => (
-                            <label key={child.id}>
-                                <input
-                                    type="checkbox"
-                                    checked={formData.selectedChildren.includes(child.id)}
-                                    onChange={() => handleChildSelection(child.id)}
-                                />
-                                {child.name}
-                            </label>
-                        ))}
-                        <label>Período de Matrícula:</label>
-                        <select name="period" value={formData.period} onChange={handleChange}>
-                            <option value="4 meses">4 meses</option>
-                            <option value="Anual">Anual</option>
-                        </select>
-                        <p>Total a pagar: {formData.totalAmount} XXX</p>
+                    <div className="total-amount">
+                        <p>Total a pagar: {formData.totalAmount}</p>
                     </div>
 
                     <div className="buttons">
-                        <button type="submit" className="submit-m-button">Realizar Matrícula</button>
-                        <button
-                            type="button"
-                            className="cancel-m-button"
-                            onClick={() => window.location.href = '/main'}
-                        >
+                        <button type="submit">Realizar MatrÃ­cula</button>
+                        <button type="button" onClick={() => (window.location.href = '/main')}>
                             Cancelar
                         </button>
                     </div>
                 </form>
             </div>
+            <Footer />
         </div>
     );
 };
+
+const PaymentSection = ({ formData, handleChange, handleFileChange }) => (
+    <div className="payment-section">
+        <h3>Opciones de Pago</h3>
+        <label>
+            <input
+                type="radio"
+                name="paymentMethod"
+                value="Transaccion"
+                checked={formData.paymentMethod === 'Transaccion'}
+                onChange={handleChange}
+            />
+            TransacciÃ³n BancarÃ­a
+        </label>
+        <label>
+            <input
+                type="radio"
+                name="paymentMethod"
+                value="SINPE"
+                checked={formData.paymentMethod === 'SINPE'}
+                onChange={handleChange}
+            />
+            SINPE
+        </label>
+        <label>
+            <input
+                type="radio"
+                name="paymentMethod"
+                value="Efectivo"
+                checked={formData.paymentMethod === 'Efectivo'}
+                onChange={handleChange}
+               
+            />
+            Efectivo
+        </label>
+        <div className="proof-of-payment">
+            <label>Agregar comprobante de pago:</label>
+            <input type="file" onChange={handleFileChange} />
+        </div>
+    </div>
+);
+
+const ParentInfo = ({ formData, handleChange, userRole }) => (
+    <div className="parent-info">
+        <h3>InformaciÃ³n del Padre</h3>
+        <label>Nombre Completo del Padre:</label>
+        <input
+            type="text"
+            name="parentFullName"
+            value={formData.parentFullName}
+            onChange={handleChange}
+            disabled={userRole === 3}
+        />
+        <label>CÃ©dula:</label>
+        <input
+            type="text"
+            name="parentID"
+            value={formData.parentID}
+            onChange={handleChange}
+            disabled={userRole === 3}
+        />
+        <label>TelÃ©fono:</label>
+        <input
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+        />
+        <label>DirecciÃ³n:</label>
+        <input
+            type="text"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+        />
+    </div>
+);
+
+const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelection }) => (
+    <div className="children-selection">
+        <h3>NiÃ±os a Matricular:</h3>
+        {childrenList.length > 0 ? (
+            childrenList.map((child) => (
+                <div key={child.idAlumno}>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={selectedChildren.includes(child.idAlumno)}
+                            onChange={() => handleChildSelection(child.idAlumno)}
+                        />
+                        {`${child.nombreAlumno} ${child.apellidosAlumno}`}
+                    </label>
+                </div>
+            ))
+        ) : (
+            <p>No hay niÃ±os para mostrar.</p>
+        )}
+    </div>
+);
 
 export default Matricula;
