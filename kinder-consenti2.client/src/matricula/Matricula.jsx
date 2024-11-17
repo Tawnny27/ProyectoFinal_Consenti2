@@ -23,24 +23,77 @@ const Matricula = () => {
     const [childrenList, setChildrenList] = useState([]);
     const [userList, setUserList] = useState([]);
     const [error, setError] = useState('');
+    const [productosFijos, setProductosFijos] = useState([]);
+    const [productosMensuales, setProductosMensuales] = useState([]);
+    const [selectedProductos, setSelectedProductos] = useState([]);
+
 
     useEffect(() => {
-        if (user) {
-            if (user.rolId === 3) {
-                // Prellenar datos del padre si es usuario tipo Padre
-                setFormData((prev) => ({
-                    ...prev,
-                    parentFullName: `${user.nombreUsuario} ${user.apellidosUsuario}`,
-                    parentID: user.cedulaUsuario,
-                    phone: user.telefonoUsuario || '',
-                    address: user.direccionUsuario || '',
-                }));
-                setChildrenList(user.alumnos || []);
-            } else if (user.rolId === 1) {
-                fetchUsers();
+        const obtenerProductos = async () => {
+            try {
+                const responseFijos = await axios.get('https://localhost:44369/ObtenerProductosfijos');
+                const responseMensuales = await axios.get('https://localhost:44369/ObtenerProductosMensuales');
+
+                setProductosFijos(responseFijos.data);
+                setProductosMensuales(responseMensuales.data);
+            } catch (error) {
+                console.error('Error al obtener los productos:', error);
             }
-        }
-    }, [user]);
+        };
+
+        obtenerProductos();
+    }, []);
+
+
+
+    useEffect(() => {
+        const cargarDatosUsuario = async () => {
+            if (user) {
+                if (user.rolId === 3) {
+                    // Si el usuario actual es un padre, prellenar sus datos y cargar sus hijos
+                    setFormData((prev) => ({
+                        ...prev,
+                        id: user.idUsuario,
+                        parentFullName: `${user.nombreUsuario} ${user.apellidosUsuario}`,
+                        parentID: user.cedulaUsuario,
+                        phone: user.telefonoUsuario || '',
+                        address: user.direccionUsuario || '',
+                    }));
+                    if (user.alumnos && user.alumnos.length > 0) {
+                        setChildrenList(user.alumnos); // Los alumnos deberían estar en `user.alumnos`
+                    } else {
+                        setChildrenList([]); // Si no hay alumnos
+                    }
+
+                } else if (user.rolId === 1) {
+                    // Si el usuario actual es un administrador, usar fetchUsers para obtener datos
+                    await fetchUsers();
+
+                    // Buscar al usuario correspondiente con el mismo id del usuario actual
+                    const usuarioEncontrado = userList.find(
+                        (usuario) => usuario.id === user.idUsuario
+                    );
+                    if (usuarioEncontrado) {
+                        setChildrenList(usuarioEncontrado.children || []);
+                    }
+                }
+            }
+        };
+
+        cargarDatosUsuario();
+    }, [user, userList]);
+
+    useEffect(() => {
+        const total = selectedProductos.reduce((acc, productoId) => {
+            const producto = [...productosFijos, ...productosMensuales].find(
+                (p) => p.idProducto === productoId
+            );
+            return acc + (producto ? producto.monto : 0);
+        }, 0);
+
+        setFormData((prev) => ({ ...prev, totalAmount: total }));
+    }, [selectedProductos, productosFijos, productosMensuales]);
+
 
     const fetchUsers = async () => {
         try {
@@ -51,7 +104,7 @@ const Matricula = () => {
                     id: usuario.idUsuario,
                     name: `${usuario.nombreUsuario} ${usuario.apellidosUsuario}`,
                     idCard: usuario.cedulaUsuario,
-                    children: usuario.alumnos || [],
+                    children: usuario.alumnos || [], // Asegúrate de que la API devuelve `alumnos`
                     phone: usuario.telefonoUsuario,
                     address: usuario.direccionUsuario || '',
                 }));
@@ -93,6 +146,15 @@ const Matricula = () => {
         }));
     };
 
+    const handleProductoSelection = (productoId) => {
+        setSelectedProductos((prev) =>
+            prev.includes(productoId)
+                ? prev.filter((id) => id !== productoId)
+                : [...prev, productoId]
+        );
+    };
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!formData.selectedChildren.length) {
@@ -103,8 +165,32 @@ const Matricula = () => {
             setError('Debes agregar un comprobante de pago.');
             return;
         }
-        console.log('Formulario enviado:', formData);
+
+        const dataToSend = {
+            cliente: `${user.nombreUsuario} ${user.apellidosUsuario}`,
+            fecha: new Date().toISOString(),
+            subtotal: formData.totalAmount - formData.iva,  // El subtotal es el total menos el IVA
+            descuento: 0,  // Agrega lógica para descuentos si es necesario
+            iva: formData.iva,
+            total: formData.totalAmount,  // Total incluye IVA
+            detalles: formData.selectedChildren.map((childId) => ({
+                productoId: childId,  // Asegúrate de enviar los productos seleccionados de alguna forma
+                alumnoId: childId,  // O el id del alumno relacionado
+                monto: formData.totalAmount,
+                dias: formData.period,  // O la duración seleccionada
+            })),
+        };
+
+        axios.post('https://localhost:44369/EncabezadoFactura/CrearMatricula', dataToSend)
+            .then((response) => {
+                console.log('Matrícula creada:', response);
+            })
+            .catch((error) => {
+                console.error('Error al crear matrícula:', error);
+            });
     };
+
+
 
     return (
         <div className="enrollment-form-container">
@@ -130,19 +216,60 @@ const Matricula = () => {
                         </div>
                     )}
 
-                    <PaymentSection
-                        formData={formData}
-                        handleChange={handleChange}
-                        handleFileChange={handleFileChange}
-                    />
+                    {/* Sección de Pago */}
+                    <div className="payment-section">
+                        <PaymentSection
+                            formData={formData}
+                            handleChange={handleChange}
+                            handleFileChange={handleFileChange}
+                            userRole={user.rolId}
+                        />
+                    </div>
 
-                    <ParentInfo formData={formData} handleChange={handleChange} userRole={user.rolId} />
+                    {/* Sección de Información del Padre */}
+                    <div className="parent-info">
+                        <ParentInfo formData={formData} handleChange={handleChange} userRole={user.rolId} />
+                    </div>
 
-                    <ChildrenSelection
-                        childrenList={childrenList}
-                        selectedChildren={formData.selectedChildren}
-                        handleChildSelection={handleChildSelection}
-                    />
+                    {/* Sección de Selección de Niños */}
+                    <div className="children-selection">
+                        <ChildrenSelection
+                            childrenList={childrenList}
+                            selectedChildren={formData.selectedChildren}
+                            handleChildSelection={handleChildSelection}
+                        />
+                    </div>
+                    <div className="products-selection">
+                        <h3>Seleccionar Productos:</h3>
+                        <h4>Productos Fijos:</h4>
+                        {productosFijos.map((producto) => (
+                            <div key={producto.idProducto}>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedProductos.includes(producto.idProducto)}
+                                        onChange={() => handleProductoSelection(producto.idProducto)}
+                                    />
+                                    {producto.nombreProducto} - {producto.monto} colones
+                                </label>
+                            </div>
+                        ))}
+
+                        <h4>Productos Mensuales:</h4>
+                        {productosMensuales.map((producto) => (
+                            <div key={producto.idProducto}>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedProductos.includes(producto.idProducto)}
+                                        onChange={() => handleProductoSelection(producto.idProducto)}
+                                    />
+                                    {producto.nombreProducto} - {producto.monto} colones
+                                </label>
+                            </div>
+                        ))}
+                    </div>
+
 
                     <div className="payment-period">
                         <label>
@@ -152,19 +279,19 @@ const Matricula = () => {
                                 value={formData.period}
                                 onChange={handleChange}
                             >
-                                <option value="4 meses">4 meses</option>
+                                <option value="4 meses">Mensual</option>
                                 <option value="Anual">Anual</option>
                             </select>
                         </label>
                     </div>
 
                     <div className="total-amount">
-                        <p>Total a pagar: {formData.totalAmount}</p>
+                        <p>Total a pagar: {formData.totalAmount} colones</p>
                     </div>
 
                     <div className="buttons">
                         <button type="submit">Realizar Matrícula</button>
-                        <button type="button" onClick={() => (window.location.href = '/main')}>
+                        <button type="button" onClick={(handleSubmit) => (window.location.href = '/main')}>
                             Cancelar
                         </button>
                     </div>
@@ -172,10 +299,11 @@ const Matricula = () => {
             </div>
             <Footer />
         </div>
+
     );
 };
 
-const PaymentSection = ({ formData, handleChange, handleFileChange }) => (
+const PaymentSection = ({ formData, handleChange, handleFileChange, userRole }) => (
     <div className="payment-section">
         <h3>Opciones de Pago</h3>
         <label>
@@ -205,7 +333,7 @@ const PaymentSection = ({ formData, handleChange, handleFileChange }) => (
                 value="Efectivo"
                 checked={formData.paymentMethod === 'Efectivo'}
                 onChange={handleChange}
-               
+                disabled={userRole === 3}
             />
             Efectivo
         </label>
@@ -273,5 +401,6 @@ const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelectio
         )}
     </div>
 );
+
 
 export default Matricula;
