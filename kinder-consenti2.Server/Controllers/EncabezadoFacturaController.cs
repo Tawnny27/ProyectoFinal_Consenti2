@@ -46,8 +46,11 @@ namespace kinder_consenti2.Server.Controllers
             
             EncabezadoFactura factura = new EncabezadoFactura
             {
-                Cliente = Datos.Ciente,
+                UsuarioId = Datos.ClienteId,
                 Fecha = Datos.Fecha,
+                MetodoPago = Datos.MetodoPago,
+                ImagenPago   = Datos.ImagenPago,
+                Referencia = Datos.Referencia,
                 Subtotal = Datos.Subtotal,
                 Descuento = Datos.Descuento,
                 Iva = Datos.Iva,

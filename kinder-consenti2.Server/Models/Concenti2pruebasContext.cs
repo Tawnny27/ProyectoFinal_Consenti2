@@ -34,13 +34,21 @@ namespace kinder_consenti2.Server.Models
             {
                 E.HasKey(x=> x.IdFactura);
                 E.Property(x=> x.Fecha).IsRequired();
+                E.Property(x => x.UsuarioId).IsRequired();
+                E.Property(x => x.MetodoPago).IsRequired();                
+                E.Property(x => x.Referencia).IsRequired();
                 E.Property(x=> x.Subtotal).IsRequired();
                 E.Property(x => x.Iva).IsRequired();
                 E.Property(x => x.Total).IsRequired();
                 E.Property(x => x.Descuento).IsRequired();
             });
 
+            modelBuilder.Entity<EncabezadoFactura>().
+                HasOne(x => x.Usuario).
+                WithMany(x => x.EncabezadoFacturas).
+                HasForeignKey(f => f.UsuarioId).OnDelete(DeleteBehavior.NoAction);
 
+            
             modelBuilder.Entity<DetalleFactura>(D =>
             {
                 D.HasKey(x => x.IdDetalleFactura);

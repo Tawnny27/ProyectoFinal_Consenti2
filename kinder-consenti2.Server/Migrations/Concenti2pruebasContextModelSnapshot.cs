@@ -153,18 +153,24 @@ namespace kinder_consenti2.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdFactura"));
 
-                    b.Property<string>("Cliente")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("Descuento")
                         .HasColumnType("float");
 
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("ImagenPago")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double>("Iva")
                         .HasColumnType("float");
+
+                    b.Property<string>("MetodoPago")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Referencia")
+                        .HasColumnType("int");
 
                     b.Property<double>("Subtotal")
                         .HasColumnType("float");
@@ -172,10 +178,15 @@ namespace kinder_consenti2.Server.Migrations
                     b.Property<double>("Total")
                         .HasColumnType("float");
 
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
                     b.Property<int>("status")
                         .HasColumnType("int");
 
                     b.HasKey("IdFactura");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("EncabezadoFactura");
                 });
@@ -395,6 +406,17 @@ namespace kinder_consenti2.Server.Migrations
                     b.Navigation("Producto");
                 });
 
+            modelBuilder.Entity("kinder_consenti2.Server.Models.EncabezadoFactura", b =>
+                {
+                    b.HasOne("kinder_consenti2.Server.Models.Usuario", "Usuario")
+                        .WithMany("EncabezadoFacturas")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("kinder_consenti2.Server.Models.Matricula", b =>
                 {
                     b.HasOne("kinder_consenti2.Server.Models.Alumno", "Alumno")
@@ -445,6 +467,8 @@ namespace kinder_consenti2.Server.Migrations
             modelBuilder.Entity("kinder_consenti2.Server.Models.Usuario", b =>
                 {
                     b.Navigation("Alumnos");
+
+                    b.Navigation("EncabezadoFacturas");
                 });
 #pragma warning restore 612, 618
         }
