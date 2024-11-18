@@ -15,9 +15,16 @@ const Matricula = () => {
         correoUsuario: '',
         totalAmount: 0,
         selectedChildren: [],
-        period: '4 meses',
+        period: '',
         paymentMethod: '',
         proofOfPayment: null,
+        matriculaStatus: '',
+        lastEnrollmentDate: null,
+        date: new Date().toISOString(), // Fecha actual
+        referenceNumber: '', // Número de referencia del comprobante
+        subtotal: 0, // Subtotal
+        iva: 0, // IVA
+        discount: 0, // Descuento
     });
 
     const [childrenList, setChildrenList] = useState([]);
@@ -29,70 +36,75 @@ const Matricula = () => {
 
 
     useEffect(() => {
-        const obtenerProductos = async () => {
-            try {
-                const responseFijos = await axios.get('https://localhost:44369/ObtenerProductosfijos');
-                const responseMensuales = await axios.get('https://localhost:44369/ObtenerProductosMensuales');
-
-                setProductosFijos(responseFijos.data);
-                setProductosMensuales(responseMensuales.data);
-            } catch (error) {
-                console.error('Error al obtener los productos:', error);
-            }
-        };
-
-        obtenerProductos();
-    }, []);
-
-
-
-    useEffect(() => {
         const cargarDatosUsuario = async () => {
+
             if (user) {
-                if (user.rolId === 3) {
-                    // Si el usuario actual es un padre, prellenar sus datos y cargar sus hijos
-                    setFormData((prev) => ({
-                        ...prev,
-                        id: user.idUsuario,
-                        parentFullName: `${user.nombreUsuario} ${user.apellidosUsuario}`,
-                        parentID: user.cedulaUsuario,
-                        phone: user.telefonoUsuario || '',
-                        address: user.direccionUsuario || '',
-                    }));
-                    if (user.alumnos && user.alumnos.length > 0) {
-                        setChildrenList(user.alumnos); // Los alumnos deberían estar en `user.alumnos`
-                    } else {
-                        setChildrenList([]); // Si no hay alumnos
+                try {
+
+                    // Si el rol del usuario es 3 (Padre)
+                    if (user.rolId === 3) {
+                        // Prellenar los datos del usuario actual (padre)
+                        setFormData((prev) => ({
+                            ...prev,
+                            id: user.idUsuario,
+                            parentFullName: `${user.nombreUsuario} ${user.apellidosUsuario}`,
+                            parentID: user.cedulaUsuario,
+                            phone: user.telefonoUsuario || '',
+                            address: user.direccionUsuario || '',
+                        }));
+
+                        // Llamada para obtener los datos del usuario con el idUsuario del padre
+                        const usuarioResponse = await fetch(`/Usuarios/BuscarUsuarios/${user.idUsuario}`);
+                        if (!usuarioResponse.ok) {
+                            throw new Error('No se pudo obtener los datos del usuario');
+                        }
+
+                        const usuarioData = await usuarioResponse.json();
+
+                        // Validar que el idUsuario de la API coincida con el idUsuario del usuario actual
+                        if (usuarioData && usuarioData.idUsuario === user.idUsuario) {
+                            // Si el idUsuario coincide, obtener la lista de alumnos (hijos)
+                            const alumnosResponse = await fetch(`/api/alumnos/${user.idUsuario}`);
+                            const alumnos = await alumnosResponse.json();
+                            setChildrenList(alumnos || []); // Establecer la lista de alumnos (hijos)
+                        } else {
+                            setChildrenList([]); // Limpiar la lista de alumnos si el idUsuario no coincide
+                        }
                     }
 
-                } else if (user.rolId === 1) {
-                    // Si el usuario actual es un administrador, usar fetchUsers para obtener datos
-                    await fetchUsers();
+                    // Si el rol es 1 (Administrador), usar los usuarios de la API
+                    else if (user.rolId === 1) {
+                        // Usar la función fetchUsers para obtener los usuarios
+                        await fetchUsers();
 
-                    // Buscar al usuario correspondiente con el mismo id del usuario actual
-                    const usuarioEncontrado = userList.find(
-                        (usuario) => usuario.id === user.idUsuario
-                    );
-                    if (usuarioEncontrado) {
-                        setChildrenList(usuarioEncontrado.children || []);
+                        // Buscar el usuario correspondiente por idUsuario en la lista de usuarios
+                        const usuarioEncontrado = userList.find(
+                            (usuario) => usuario.id === user.idUsuario
+                        );
+
+                        // Si el usuario se encuentra, cargar los datos de los alumnos
+                        if (usuarioEncontrado) {
+                            if (usuarioEncontrado.idUsuario === user.idUsuario) {
+                                // Obtener los datos de los alumnos
+                                const alumnosResponse = await fetch(`/api/alumnos/${user.idUsuario}`);
+                                const alumnos = await alumnosResponse.json();
+                                setChildrenList(alumnos || []); // Establecer la lista de alumnos
+                            } else {
+                                setChildrenList([]); // Limpiar la lista de alumnos si no coincide el idUsuario
+                            }
+                        }
                     }
+                } catch (error) {
+                    console.error('Error al cargar los datos del usuario:', error);
+                    setChildrenList([]); // Limpiar la lista de alumnos en caso de error
                 }
             }
         };
 
+
         cargarDatosUsuario();
-    }, [user, userList]);
+    }, [user, userList]); // Se ejecuta cada vez que cambia el 'user' o la lista de 'userList'
 
-    useEffect(() => {
-        const total = selectedProductos.reduce((acc, productoId) => {
-            const producto = [...productosFijos, ...productosMensuales].find(
-                (p) => p.idProducto === productoId
-            );
-            return acc + (producto ? producto.monto : 0);
-        }, 0);
-
-        setFormData((prev) => ({ ...prev, totalAmount: total }));
-    }, [selectedProductos, productosFijos, productosMensuales]);
 
 
     const fetchUsers = async () => {
@@ -146,6 +158,44 @@ const Matricula = () => {
         }));
     };
 
+    //Productos
+    useEffect(() => {
+        const obtenerProductos = async () => {
+            try {
+                const responseFijos = await axios.get('https://localhost:44369/ObtenerProductosfijos');
+                const responseMensuales = await axios.get('https://localhost:44369/ObtenerProductosMensuales');
+
+                setProductosFijos(responseFijos.data);
+                setProductosMensuales(responseMensuales.data);
+            } catch (error) {
+                console.error('Error al obtener los productos:', error);
+            }
+        };
+
+        obtenerProductos();
+    }, []);
+
+    // Actualizar el subtotal, IVA y total
+    useEffect(() => {
+        const subtotal = selectedProductos.reduce((acc, productoId) => {
+            const producto = [...productosFijos, ...productosMensuales].find(
+                (p) => p.idProducto === productoId
+            );
+            return acc + (producto ? producto.monto : 0);
+        }, 0);
+
+        const iva = subtotal * 0.13; // 13% de IVA
+        const discountAmount = user.rolId === 1 ? ((iva + subtotal) * formData.discount) / 100 : 0; // Descuento para rol 1
+        const total = subtotal + iva - discountAmount;
+
+        setFormData((prev) => ({
+            ...prev,
+            subtotal: subtotal,
+            iva: iva,
+            totalAmount: total,
+        }));
+    }, [selectedProductos, productosFijos, productosMensuales, formData.discount]);
+
     const handleProductoSelection = (productoId) => {
         setSelectedProductos((prev) =>
             prev.includes(productoId)
@@ -154,7 +204,40 @@ const Matricula = () => {
         );
     };
 
+    const handlePeriodoChange = async (e) => {
+        const selectedPeriod = e.target.value;
+        setFormData((prev) => ({ ...prev, period: selectedPeriod }));
 
+        // Si selecciona "Anual", marca automáticamente la matrícula
+        if (selectedPeriod === 'Anual') {
+            setFormData((prev) => ({
+                ...prev,
+                matriculaStatus: 'Matrícula marcada automáticamente.',
+            }));
+        } else {
+            setFormData((prev) => ({
+                ...prev,
+                matriculaStatus: 'El niño está actualmente matriculado.',
+            }));
+
+            // Validar si el niño tiene matrícula activa (un año desde la última matrícula)
+            const lastEnrollmentDate = formData.lastEnrollmentDate;
+            if (lastEnrollmentDate) {
+                const today = new Date();
+                const oneYearLater = new Date(lastEnrollmentDate);
+                oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+
+                if (today < oneYearLater) {
+                    setFormData((prev) => ({
+                        ...prev,
+                        matriculaStatus: 'El niño está actualmente matriculado. No puede matricularse nuevamente.',
+                    }));
+                }
+            }
+        }
+    };
+
+    //Envia datos
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!formData.selectedChildren.length) {
@@ -169,16 +252,11 @@ const Matricula = () => {
         const dataToSend = {
             cliente: `${user.nombreUsuario} ${user.apellidosUsuario}`,
             fecha: new Date().toISOString(),
-            subtotal: formData.totalAmount - formData.iva,  // El subtotal es el total menos el IVA
-            descuento: 0,  // Agrega lógica para descuentos si es necesario
+            referenceNumber: formData.referenceNumber, // Número de referencia
+            subtotal: formData.subtotal,
             iva: formData.iva,
-            total: formData.totalAmount,  // Total incluye IVA
-            detalles: formData.selectedChildren.map((childId) => ({
-                productoId: childId,  // Asegúrate de enviar los productos seleccionados de alguna forma
-                alumnoId: childId,  // O el id del alumno relacionado
-                monto: formData.totalAmount,
-                dias: formData.period,  // O la duración seleccionada
-            })),
+            descuento: formData.discount, // Descuento
+            total: formData.totalAmount,
         };
 
         axios.post('https://localhost:44369/EncabezadoFactura/CrearMatricula', dataToSend)
@@ -199,94 +277,125 @@ const Matricula = () => {
                 <h2>Formulario de Matrícula</h2>
                 {error && <p className="error">{error}</p>}
                 <form onSubmit={handleSubmit}>
-                    {user.rolId === 1 && (
-                        <div className="select-parent">
-                            <label>Selecciona un Padre:</label>
-                            <select
-                                onChange={(e) => handleUserSelect(e.target.value)}
-                                value={formData.parentID || ''}
-                            >
-                                <option value="">Selecciona un padre</option>
-                                {userList.map((user) => (
-                                    <option key={user.id} value={user.id}>
-                                        {user.name}
-                                    </option>
-                                ))}
-                            </select>
+                    <div className="form-layout">
+                        {/* Sección Izquierda (Información del Usuario e Hijos) */}
+                        <div className="left-section">
+                            {user.rolId === 1 && (
+                                <div className="select-parent">
+                                    <label>Selecciona un Padre:</label>
+                                    <select
+                                        onChange={(e) => handleUserSelect(e.target.value)}
+                                        value={formData.parentID || ''}
+                                    >
+                                        <option value="">Selecciona un padre</option>
+                                        {userList.map((user) => (
+                                            <option key={user.id} value={user.id}>
+                                                {user.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+
+                            <div className="parent-info">
+                                <ParentInfo formData={formData} handleChange={handleChange} userRole={user.rolId} />
+                            </div>
+
+                            <div className="children-selection">
+                                <ChildrenSelection
+                                    childrenList={childrenList}
+                                    selectedChildren={formData.selectedChildren}
+                                    handleChildSelection={handleChildSelection}
+                                />
+                            </div>
                         </div>
-                    )}
 
-                    {/* Sección de Pago */}
-                    <div className="payment-section">
-                        <PaymentSection
-                            formData={formData}
-                            handleChange={handleChange}
-                            handleFileChange={handleFileChange}
-                            userRole={user.rolId}
-                        />
-                    </div>
+                        {/* Sección Derecha (Pagos y Productos) */}
+                        <div className="right-section">
+                            <div className="payment-section">
+                                <label>Fecha Actual: {new Date().toLocaleDateString()}</label>
 
-                    {/* Sección de Información del Padre */}
-                    <div className="parent-info">
-                        <ParentInfo formData={formData} handleChange={handleChange} userRole={user.rolId} />
-                    </div>
-
-                    {/* Sección de Selección de Niños */}
-                    <div className="children-selection">
-                        <ChildrenSelection
-                            childrenList={childrenList}
-                            selectedChildren={formData.selectedChildren}
-                            handleChildSelection={handleChildSelection}
-                        />
-                    </div>
-                    <div className="products-selection">
-                        <h3>Seleccionar Productos:</h3>
-                        <h4>Productos Fijos:</h4>
-                        {productosFijos.map((producto) => (
-                            <div key={producto.idProducto}>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedProductos.includes(producto.idProducto)}
-                                        onChange={() => handleProductoSelection(producto.idProducto)}
+                                {/* Sección de Pago */}
+                                <div className="payment-section">
+                                    <PaymentSection
+                                        formData={formData}
+                                        handleChange={handleChange}
+                                        handleFileChange={handleFileChange}
+                                        userRole={user.rolId}
                                     />
-                                    {producto.nombreProducto} - {producto.monto} colones
-                                </label>
-                            </div>
-                        ))}
-
-                        <h4>Productos Mensuales:</h4>
-                        {productosMensuales.map((producto) => (
-                            <div key={producto.idProducto}>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedProductos.includes(producto.idProducto)}
-                                        onChange={() => handleProductoSelection(producto.idProducto)}
+                                <label>Número de Referencia del Comprobante:</label>
+                                <input
+                                    type="text"
+                                    name="referenceNumber"
+                                    value={formData.referenceNumber}
+                                    onChange={handleChange}
+                                        //required
                                     />
-                                    {producto.nombreProducto} - {producto.monto} colones
-                                </label>
+                                    <div className="payment-period">
+                                        <label>
+                                            Periodo:
+                                            <select name="period" value={formData.period} onChange={handlePeriodoChange}>
+                                                <option value="Mensual">Mensual</option>
+                                                <option value="Anual">Anual</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                
+                                </div>
+                                
+
+                            <div className="products-selection">
+                                <h3>Seleccionar Productos:</h3>
+                                <h4>Productos Fijos:</h4>
+                                {productosFijos.map((producto) => (
+                                    <div key={producto.idProducto}>
+                                        <label>
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedProductos.includes(producto.idProducto)}
+                                                onChange={() => handleProductoSelection(producto.idProducto)}
+                                            />
+                                            {producto.nombreProducto} - {producto.monto} colones
+                                        </label>
+                                    </div>
+                                ))}
+                                <h4>Productos Mensuales:</h4>
+                                {productosMensuales.map((producto) => (
+                                    <div key={producto.idProducto}>
+                                        <label>
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedProductos.includes(producto.idProducto)}
+                                                onChange={() => handleProductoSelection(producto.idProducto)}
+                                            />
+                                            {producto.nombreProducto} - {producto.monto} colones
+                                        </label>
+                                    </div>
+                                ))}
+                                </div>
+                                <label>Subtotal: {formData.subtotal}</label>
+                                <label>IVA (13%): {formData.iva}</label>
+                                
+
+                                {user.rolId === 1 && (
+                                    <>
+                                        <label>Descuento (%):</label>
+                                        <input
+                                            type="number"
+                                            name="discount"
+                                            value={formData.discount}
+                                            onChange={handleChange}
+                                            min="0"
+                                            max="100"
+                                        />
+                                    </>
+                                )}
                             </div>
-                        ))}
-                    </div>
 
-
-                    <div className="payment-period">
-                        <label>
-                            Periodo:
-                            <select
-                                name="period"
-                                value={formData.period}
-                                onChange={handleChange}
-                            >
-                                <option value="4 meses">Mensual</option>
-                                <option value="Anual">Anual</option>
-                            </select>
-                        </label>
-                    </div>
-
-                    <div className="total-amount">
-                        <p>Total a pagar: {formData.totalAmount} colones</p>
+                            <div className="total-amount">
+                                <p>Total a pagar: {formData.totalAmount} colones</p>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="buttons">
@@ -299,9 +408,9 @@ const Matricula = () => {
             </div>
             <Footer />
         </div>
-
     );
-};
+}
+
 
 const PaymentSection = ({ formData, handleChange, handleFileChange, userRole }) => (
     <div className="payment-section">
@@ -380,27 +489,32 @@ const ParentInfo = ({ formData, handleChange, userRole }) => (
     </div>
 );
 
-const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelection }) => (
-    <div className="children-selection">
-        <h3>Niños a Matricular:</h3>
-        {childrenList.length > 0 ? (
-            childrenList.map((child) => (
-                <div key={child.idAlumno}>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={selectedChildren.includes(child.idAlumno)}
-                            onChange={() => handleChildSelection(child.idAlumno)}
-                        />
-                        {`${child.nombreAlumno} ${child.apellidosAlumno}`}
-                    </label>
-                </div>
-            ))
-        ) : (
-            <p>No hay niños para mostrar.</p>
-        )}
-    </div>
-);
+const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelection }) => {
+    console.log('childrenList:', childrenList); // Verifica el contenido de childrenList
+
+    return (
+        <div className="children-selection">
+            <h3>Niños a Matricular:</h3>
+            {childrenList.length > 0 ? (
+                childrenList.map((child) => (
+                    <div key={child.idAlumno}>
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={selectedChildren.includes(child.idAlumno)}
+                                onChange={() => handleChildSelection(child.idAlumno)}
+                            />
+                            {`${child.nombreAlumno} ${child.apellidosAlumno}`}
+                        </label>
+                    </div>
+                ))
+            ) : (
+                <p>No hay niños para mostrar.</p> // Se muestra este mensaje si childrenList está vacío
+            )}
+        </div>
+    );
+};
+
 
 
 export default Matricula;

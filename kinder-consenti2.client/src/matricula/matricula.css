@@ -8,17 +8,10 @@
     font-family: 'Roboto', sans-serif;
     width: 100%; /* Asegura que ocupe todo el ancho de la pantalla */
     box-sizing: border-box;
+    padding-top: 10px; /* Ajusta este valor a la altura de tu navbar */
+    padding-bottom: 50px; /* Ajusta este valor a la altura de tu footer */
 }
 
-/* Evita que el navbar se reduzca */
-nav {
-    flex-shrink: 0; /* El navbar no debe reducirse */
-}
-
-/* Evita que el footer se reduzca */
-footer {
-    flex-shrink: 0; /* El footer no debe reducirse */
-}
 
 /* Contenedor del formulario, ocupa el espacio restante y se adapta al tamaño de la pantalla */
 .enrollment-form {
@@ -42,6 +35,36 @@ form {
     border-radius: 5px;
     background-color: #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+}
+
+/* Contenedor para las dos secciones */
+.form-layout {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Sección de la izquierda: Información del Usuario e Hijos */
+.left-section {
+    flex: 1;
+}
+
+/* Sección de la derecha: Pagos y Productos */
+.right-section {
+    flex: 1;
+}
+
+/* Ajustes en la disposición de las secciones en pantallas pequeñas */
+@media (max-width: 768px) {
+    .form-layout {
+        flex-direction: column;
+    }
+
+    .left-section, .right-section {
+        flex: none;
+        width: 100%;
+    }
 }
 
     /* Estilos para el encabezado del formulario */
@@ -122,3 +145,6 @@ select {
     .cancel-m-button:hover {
         background-color: #D481F5;
     }
+
+
+
