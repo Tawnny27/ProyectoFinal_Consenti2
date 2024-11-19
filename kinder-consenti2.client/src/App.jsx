@@ -10,11 +10,11 @@ import UserMaintenance from './consultar_usuarios/consultas';
 import ResetPassword from './login/resetPassword';
 import ChangePassword from './login/changePassword';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import RegistroUsuario from './usuarios/RegistroUsuario'; // Importar el nuevo componente de registro
+import RegistroUsuario from './usuarios/RegistroUsuario'; 
 import FormularioRegistroPago from './Pagos/Registropago'; 
 import GeneradorRecibos from './Pagos/GenerarRecibo';
 import Matricula from './matricula/Matricula';
-
+import Reportes from './Reportes/Reportes';
 
 
 function App() {
@@ -33,6 +33,7 @@ function App() {
                 <Route path="/reset-password" element={<ResetPassword />} /> 
                 <Route path="/change-password" element={<ChangePassword />} /> 
                 <Route path="/matricula" element={<Matricula />} /> 
+                <Route path="/reportes" element={<Reportes />} /> 
             </Routes>
                 
         </Router>
