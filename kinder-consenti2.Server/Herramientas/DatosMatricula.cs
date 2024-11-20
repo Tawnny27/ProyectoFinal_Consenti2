@@ -3,6 +3,7 @@
     public class DatosMatricula
     {
         public int ClienteId {get;set;}
+        public int RollId {get;set;}
         public DateTime Fecha {get;set;}
         public string MetodoPago { get; set; }
         public string ImagenPago {get;set;}

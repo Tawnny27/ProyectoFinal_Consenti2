@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Line, Bar, Pie } from "react-chartjs-2";
+//import { Line, Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Tooltip, Legend } from "chart.js";
 import './Reportes.css';
 import * as XLSX from 'xlsx'; // Importar la biblioteca xlsx

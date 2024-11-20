@@ -57,9 +57,12 @@ namespace kinder_consenti2.Server.Controllers
                     _context.EncabezadoFactura.Update(factura);
                     _context.SaveChanges();
                     if (status == 1)
+
                         return Ok("Factura finalizada");
-                    return Ok("Factura rechazada");                    
+                    else
+                        return Ok("Factura rechazada");                    
                 }
+                return BadRequest("Algo salió mal revisar los datos enviados");
             } 
             return BadRequest("Algo salió mal revisar los datos enviados");
         }
@@ -88,7 +91,12 @@ namespace kinder_consenti2.Server.Controllers
         [Route("CrearMatricula")]
         public ActionResult<EncabezadoFactura> CrearMatricula(DatosMatricula Datos)
         {
-            
+
+            int idStatus;
+            if (Datos.RollId == 1)
+                idStatus = 1;
+            else idStatus = 0;
+
             EncabezadoFactura factura = new EncabezadoFactura
             {
                 UsuarioId = Datos.ClienteId,
@@ -100,7 +108,7 @@ namespace kinder_consenti2.Server.Controllers
                 Descuento = Datos.Descuento,
                 Iva = Datos.Iva,
                 Total = Datos.Total,
-                status = 0
+                status = idStatus
             };
             _context.EncabezadoFactura.Add(factura);
             _context.SaveChanges();

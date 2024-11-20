@@ -128,7 +128,7 @@ namespace kinder_consenti2.Server.Controllers
                 var usuario = _context.Usuario.Where(x => x.CorreoUsuario == DatosCambio.correo).FirstOrDefault();// se busca el usuaior en la BD
                 if (usuario != null) 
                 {
-                    usuario.ContrasennaUsuario = Encryptar.encripSHA256(DatosCambio.contrasenna); // e encripta la nueva contraseña
+                    usuario.ContrasennaUsuario = Encryptar.encripSHA256(DatosCambio.contrasenna); // se encripta la nueva contraseña
                     usuario.PassGenerico = false;// cambia el status a false  para la vandera de alerta de clave real
                     _context.Usuario.Update(usuario);// se actulizan los datos
                     _context.SaveChanges();// se actulizan en la BD
