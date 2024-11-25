@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\Matricula\" />
+    <Folder Include="src\NewFolder1\" />
     <Folder Include="src\NewFolder\" />
   </ItemGroup>
 </Project>

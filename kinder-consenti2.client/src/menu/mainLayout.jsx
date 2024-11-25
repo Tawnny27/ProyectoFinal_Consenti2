@@ -96,7 +96,7 @@ const MainLayout = () => {
                             </div>
                             {showPlatformSubmenu && (
                                 <ul className="submenu">
-                                    <li><Link to="/actividades">Actividades (Maestro)</Link></li>
+                                    <li><Link to="/activity-panel">Actividades (Maestro)</Link></li>
                                     {/* <li><Link to="/main">?</Link></li>
                   <li><Link to="/main">?</Link></li> */}
                                 </ul>

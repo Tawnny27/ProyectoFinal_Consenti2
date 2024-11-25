@@ -1,0 +1,106 @@
+/* Contenedor principal para centrar el panel en la pantalla */
+.activity-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+
+.activity-panel {
+    background-color: white;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.activity-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #A569BD;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+
+.activity-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+
+.activity-submit-button {
+    width: 48%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #A569BD;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .activity-submit-button:hover {
+        background-color: #9254a2;
+    }
+
+
+.activity-cancel-button {
+    width: 48%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #48C9B0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .activity-cancel-button:hover {
+        background-color: #3fb399;
+    }
+
+
+.activity-label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #A569BD;
+    margin: 10px 0 5px;
+}
+
+
+.activity-input,
+.activity-select,
+.activity-textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+
+.activity-textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+
+.activity-error {
+    color: #A569BD;
+    font-size: 12px;
+    margin-top: -8px;
+    margin-bottom: 10px;
+}
