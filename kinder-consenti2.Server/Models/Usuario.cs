@@ -15,5 +15,6 @@
         public bool estado {  get; set; }
         public Rol? Rol { get; set; }
         public List<Alumno>? Alumnos { get; set; }
+        public List<EncabezadoFactura>? EncabezadoFacturas { get; set; }
     }
 }

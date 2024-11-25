@@ -76,7 +76,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("BuscarUsuarios/{id}")]
         public ActionResult<Usuario> BuscarUsuarios(int id)
         {
-            var usuario = _context.Usuario.Include(p=> p.Rol).FirstOrDefault(x=> x.IdUsuario==id);
+            var usuario = _context.Usuario.Include(p=> p.Rol).Include(p => p.Alumnos).ToList().FirstOrDefault(x=> x.IdUsuario==id);
             if (usuario == null)
                 return BadRequest("No encontrado");
             return Ok(usuario);
@@ -87,22 +87,33 @@ namespace kinder_consenti2.Server.Controllers
         [Route("CrearUsuario")]
         public ActionResult<Usuario> CrearUsuario(Usuario usuario)
         {
-            var usuarioRev = _context.Usuario.FirstOrDefault(x => x.CorreoUsuario == usuario.CorreoUsuario);
-            if (usuarioRev != null)
-                return BadRequest("Correo ya existe");            
-            
-            string clavegenerica = Guid.NewGuid().ToString().Substring(0, 8);
-            usuario.ContrasennaUsuario = Encryptar.encripSHA256(clavegenerica);   
-            usuario.PassGenerico= true;
-            _context.Usuario.Add(usuario);
-            _context.SaveChanges();
-            var insertado = _context.Usuario.Find(usuario.IdUsuario);
-            insertado.ContrasennaUsuario = clavegenerica;           
-            var dat = _context.SetingCorreo.Find(1);
-            CorreoEnvio correoEnvio = new CorreoEnvio();
-            correoEnvio.EnviarCorreo(587, dat.CorreoOrigen, dat.ContrasennaOrigen, usuario.CorreoUsuario, dat.smtpClient, dat.asunto, dat.cuerpo, clavegenerica);
-            return Ok(insertado);
+            try
+            {
+                var usuarioRev = _context.Usuario.FirstOrDefault(x => x.CorreoUsuario == usuario.CorreoUsuario);
+                if (usuarioRev != null)
+                    return BadRequest("Correo ya existe");
+
+                string clavegenerica = Guid.NewGuid().ToString().Substring(0, 8);
+                usuario.ContrasennaUsuario = Encryptar.encripSHA256(clavegenerica);
+                usuario.PassGenerico = true;
+                _context.Usuario.Add(usuario);
+                _context.SaveChanges();
+
+                var insertado = _context.Usuario.Find(usuario.IdUsuario);
+                insertado.ContrasennaUsuario = clavegenerica;
+
+                var dat = _context.SetingCorreo.Find(1);
+                CorreoEnvio correoEnvio = new CorreoEnvio();
+                correoEnvio.EnviarCorreo(587, dat.CorreoOrigen, dat.ContrasennaOrigen, usuario.CorreoUsuario, dat.smtpClient, dat.asunto, dat.cuerpo, clavegenerica);
+
+                return Ok(insertado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, "Ha ocurrido un error al crear el usuario: " + ex.Message);
+            }
         }
+
 
 
         //************** Cambiar Contraseña ******************
@@ -117,13 +128,13 @@ namespace kinder_consenti2.Server.Controllers
                 var usuario = _context.Usuario.Where(x => x.CorreoUsuario == DatosCambio.correo).FirstOrDefault();// se busca el usuaior en la BD
                 if (usuario != null) 
                 {
-                    usuario.ContrasennaUsuario = Encryptar.encripSHA256(DatosCambio.contrasenna); // e encripta la nueva contraseña
+                    usuario.ContrasennaUsuario = Encryptar.encripSHA256(DatosCambio.contrasenna); // se encripta la nueva contraseña
                     usuario.PassGenerico = false;// cambia el status a false  para la vandera de alerta de clave real
                     _context.Usuario.Update(usuario);// se actulizan los datos
                     _context.SaveChanges();// se actulizan en la BD
                     return Ok("Clave de acceso actualizada favor inicie sesion");
                 }
-                return BadRequest("Este correo ya existe");
+                return BadRequest("Este correo no existe en nuetros registros");
             }
             return BadRequest("Falta algun dato o alguno es incorrecto");
         }
@@ -162,7 +173,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("EditarUsuario")]
         public ActionResult<Usuario> EditarUsuario(Usuario usuario)
         {
-            usuario.ContrasennaUsuario = Encryptar.encripSHA256(usuario.ContrasennaUsuario);
+            //usuario.ContrasennaUsuario = Encryptar.encripSHA256(usuario.ContrasennaUsuario);
             _context.Usuario.Update(usuario);
             _context.SaveChanges();
             return Ok(_context.Usuario.Find(usuario.IdUsuario));

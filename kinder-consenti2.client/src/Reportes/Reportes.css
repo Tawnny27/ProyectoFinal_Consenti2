@@ -1,0 +1,57 @@
+.reportes-container {
+    padding: 20px;
+    min-height: 100vh;
+    background-image: url('../assets/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+    .reportes-container h2 {
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 24px;
+        /* padding-left: 20px;*/
+    }
+
+.charts-grid {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 0 20px;
+}
+
+.chart-container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 20px;
+    width: 30%;
+    min-width: 300px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+    .chart-container:hover {
+        transform: translateY(-5px);
+    }
+
+    .chart-container h3 {
+        color: #666;
+        font-size: 18px;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .chart-container {
+        width: 45%;
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        width: 100%;
+    }
+}

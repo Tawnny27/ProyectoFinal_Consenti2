@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'primeicons/primeicons.css';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../axios';
 import DataTable from 'react-data-table-component';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
