@@ -1,0 +1,39 @@
+.Fact-maintenance-container {
+    flex-direction: column;
+    position: relative;
+    padding: 90px;
+    font-family: 'Roboto', sans-serif;
+    background: url('../assets/background.jpg') no-repeat center center;
+    background-size: cover;
+    box-sizing: border-box;
+    min-height: 100vh;
+    z-index: 1;
+}
+
+.data-table-wrapper {
+    border-bottom: 3px solid #A569BD; /* Borde inferior fijo */
+    border-radius: 5px;
+    max-width: 100%; /* Asegura que la tabla no exceda el tamaño de la pantalla */
+}
+
+    .data-table-wrapper .rdt_Table {
+        max-height: 550px; /* Altura máxima de la tabla */
+        overflow-y: auto; /* Permite el desplazamiento si hay muchas filas */
+        padding-left: 50px; /* Ajusta el padding si es necesario */
+        padding-right: 50px;
+    }
+
+    .data-table-wrapper .rdt_TableHead .rdt_TableCol {
+        display: flex;
+        font-weight: bold; /* Texto en negrita */
+        font-size: 14px; /* Aumenta el tamaño del texto */
+    }
+
+    .data-table-wrapper .rdt_Pagination {
+        position: sticky;
+        bottom: 0; /* La paginación se queda en la parte inferior */
+        background-color: white; /* Fondo blanco para que resalte */
+        z-index: 1000; /* Asegura que siempre esté encima de las filas al desplazarse */
+        padding: 10px 0;
+    }
+
