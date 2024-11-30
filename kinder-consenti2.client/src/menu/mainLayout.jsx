@@ -5,11 +5,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt, faCalendarAlt, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import logo from '../assets/logo.jpg'; 
 import Footer from '../componentes/footer';
+import { useUser } from '../UserContext';
 
 const MainLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const usuario = location.state?.usuario; // Obtener el objeto usuario desde el estado
+    const { user } = useUser();
 
     const [showCalendarModal, setShowCalendarModal] = useState(false);
     const [importantDate, setImportantDate] = useState('');
@@ -17,6 +19,7 @@ const MainLayout = () => {
     const [showAdminSubmenu, setShowAdminSubmenu] = useState(false);
     const [showPlatformSubmenu, setShowPlatformSubmenu] = useState(false);
     const [showGestFSubMenu, setShowGestFSubMenu] = useState(false);
+    const [showEvaluaSubmenu, setShowEvaluaSubmenu] = useState(false);
 
     useEffect(() => {
         console.log(usuario)
@@ -53,6 +56,9 @@ const MainLayout = () => {
 
     const togglePlatformSubmenu = () => {
         setShowPlatformSubmenu(!showPlatformSubmenu);
+    };
+    const toggleEvaluaSubmenu = () => {
+        setShowEvaluaSubmenu(!showEvaluaSubmenu);
     };
 
     return (
@@ -119,6 +125,20 @@ const MainLayout = () => {
                         <li><Link to="/expedientes">Expedientes</Link></li>
                         <li><Link to="/comunicacion">Comunicación</Link></li>
                         <li><Link to="/inventario">Inventario</Link></li>
+                        {user.rolId === 3 && (
+                            <li>
+                                <div onClick={toggleEvaluaSubmenu} className="menu-item">
+                                    <span>Evaluación</span>
+                                    <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />
+                                </div>
+                                {showEvaluaSubmenu && (
+                                    <ul className="submenu">
+                                        <li><Link to="/registrar-encuesta">Encuesta</Link></li>
+                                        <li><Link to="/evalua-docente">Evaluación Docente</Link></li>
+                                    </ul>
+                                )}
+                            </li>
+                        )}
                     </ul>
                 </aside>
                 <main className="main-content">
