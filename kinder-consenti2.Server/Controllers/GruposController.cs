@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace kinder_consenti2.Server.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class GruposController : ControllerBase
     {
         private readonly Concenti2pruebasContext _context;
@@ -29,6 +31,9 @@ namespace kinder_consenti2.Server.Controllers
         [Route("CrearGrupo")]
         public ActionResult<Grupos> CrearGrupo(Grupos grupo)
         {
+            var usuario = _context.Usuario.Find(grupo.UsuarioId);
+            if (usuario.RolId != 2)
+                return BadRequest("Error: intenta asignar un Usuario que no es maestro.");
             _context.Grupos.Add(grupo);
             _context.SaveChanges();
             var insertado = _context.Grupos.Find(grupo.IdGrupos);

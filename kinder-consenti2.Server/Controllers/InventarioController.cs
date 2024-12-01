@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace kinder_consenti2.Server.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class InventarioController : ControllerBase
     {
         private readonly Concenti2pruebasContext _context;

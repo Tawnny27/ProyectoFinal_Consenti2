@@ -171,6 +171,8 @@ namespace kinder_consenti2.Server.Models
             //Tablas ignoradas
             modelBuilder.Entity<Rol>()
                 .Ignore(x => x.Usuarios);
+            modelBuilder.Entity<Alumno>()
+                .Ignore(x => x.Usuario);
             //***************************************************************
 
             //************************* Tabla Alumno ************************

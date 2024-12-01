@@ -28,7 +28,22 @@ namespace kinder_consenti2.Server.Controllers
         {
             return Ok(_context.Usuario.Include(p=> p.Rol).Include(p => p.Alumnos).ToList());
         }
-        
+
+        //************** Consultar Maestros ******************
+        [HttpGet]
+        [Route("ObtenerMaestros")]
+        public ActionResult<List<Usuario>> ObtenerMaestros()
+        {
+            return Ok(_context.Usuario.Where(x=> x.RolId==2).ToList());
+        }
+
+        //************** Consultar Padres ******************
+        [HttpGet]
+        [Route("ObtenerPadres")]
+        public ActionResult<List<Usuario>> ObtenerPadres()
+        {
+            return Ok(_context.Usuario.Where(x => x.RolId == 3).Include(p => p.Alumnos).ToList());
+        }
 
         //************** Acceso Usuarios ******************       
 
