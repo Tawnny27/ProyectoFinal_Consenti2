@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSignOutAlt, faHome } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.jpg';
-import ModalCalendar from './modalcalendar'
 import { useUser } from '../UserContext'; // Importar el hook del contexto
 
 
 
-function Navbar({ handleCalendarClick, handleLogout }) {
-    const { user } = useUser(); // Obtener el usuario del contexto
+function Navbar() {
+    const { user, logout } = useUser(); // Obtener el usuario del contexto
+    const navigate = useNavigate(); // Inicializa el hook useNavigate
+
+    const handleMenuClick = () => {
+        navigate('/main'); // Redirige al usuario a la ruta '/main'
+    };
+
+    const handleLogout = () => {
+        navigate('/'); // Redirigir a la página de inicio de sesión
+    };
 
     return (
         <header className="header">
@@ -30,8 +38,8 @@ function Navbar({ handleCalendarClick, handleLogout }) {
                 )}
             </div>
             <div className="header-actions">
-                <button onClick={ModalCalendar} className="calendar-button">
-                    <FontAwesomeIcon icon={faCalendarAlt} /> Calendario
+                <button onClick={handleMenuClick} className="home-button">
+                    <FontAwesomeIcon icon={faHome} /> Menú
                 </button>
                 <button onClick={handleLogout} className="logout-button">
                     <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar

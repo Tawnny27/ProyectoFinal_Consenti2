@@ -134,7 +134,7 @@ const MainLayout = () => {
                                 {showEvaluaSubmenu && (
                                     <ul className="submenu">
                                         <li><Link to="/registrar-encuesta">Encuesta</Link></li>
-                                        <li><Link to="/evalua-docente">Evaluación Docente</Link></li>
+                                        <li><Link to="/evalua-maestra">Evaluación Docente</Link></li>
                                     </ul>
                                 )}
                             </li>
