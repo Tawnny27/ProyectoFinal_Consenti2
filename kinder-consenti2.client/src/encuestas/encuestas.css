@@ -1,0 +1,148 @@
+.teachers-feedback-container {
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    padding: 20px;
+    background: url('../assets/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Roboto', sans-serif;
+    width: 100%;
+    height: 100vh; /* Para cubrir toda la pantalla */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 30px; /* Para dar espacio al navbar */
+    position: relative;
+}
+
+    .teachers-feedback-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.7); /* Opacidad blanca para mejorar la legibilidad */
+        z-index: 1;
+    }
+
+.feedback-form-container {
+    z-index: 2; /* Asegurarse de que el formulario esté encima del fondo */
+    text-align: center;
+    width: 100%;
+}
+
+.feedback-title {
+    font-size: 2rem;
+    text-align: center;
+    color: #A569BD;
+    margin-bottom: 20px;
+    z-index: 2;
+}
+
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 30px;
+    z-index: 2;
+}
+
+.card {
+    width: 200px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+.selected {
+    border: 2px solid #48C9B0;
+}
+
+.teacher-photo {
+    width: 100%;
+    height: 150px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    object-fit: cover;
+}
+
+.teacher-name {
+    font-size: 1.2rem;
+    margin: 10px 0;
+    color: #555;
+}
+
+.rating-form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+    z-index: 2;
+}
+
+.rating-title {
+    font-size: 1.5rem;
+    color: #48C9B0;
+    margin-bottom: 15px;
+}
+
+.feedback-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    resize: none;
+    font-size: 1rem;
+}
+
+.feedback-submit-button {
+    background-color: #48C9B0;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+    .feedback-submit-button:hover {
+        background-color: #3498db;
+    }
+
+.success-message {
+    background-color: #dff0d8;
+    color: #3c763d;
+    padding: 10px;
+    border: 1px solid #d6e9c6;
+    border-radius: 4px;
+    text-align: center;
+    margin-bottom: 20px;
+    z-index: 2;
+}
+
+.survey-form {
+    margin-top:100px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    text-align: center;
+    z-index: 2;
+}

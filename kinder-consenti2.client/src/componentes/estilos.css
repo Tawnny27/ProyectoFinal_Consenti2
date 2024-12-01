@@ -72,7 +72,7 @@ body {
     align-items: center;
 }
 
-.calendar-button,
+.home-button,
 .logout-button {
     background-color: #d481f5;
     border: none;
@@ -84,7 +84,7 @@ body {
     margin-left: 20px;
 }
 
-    .calendar-button svg,
+    .home-button svg,
     .logout-button svg {
         margin-right: 5px;
     }

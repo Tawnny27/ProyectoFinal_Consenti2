@@ -24,6 +24,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+
 .logo-container {
     display: flex;
     align-items: center;
@@ -73,11 +74,17 @@ body {
 }
 
 .sidebar {
-    width: 250px;
+    width: 275px;
     background-color: #A569BD;
     color: white;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+    margin-bottom:50px;
+    opacity: 90%;
+    scroll-behavior: smooth;
+    max-height: calc(100vh - 50px); /* Ajusta según el margen superior */
+    overflow-y: auto;
 }
 
     .sidebar h2 {
@@ -88,10 +95,13 @@ body {
     .sidebar ul {
         list-style: none;
         padding: 0;
+        margin-top:10px;
+        
     }
 
         .sidebar ul li {
             margin: 15px 0;
+            
         }
 
             .sidebar ul li a {
@@ -102,6 +112,7 @@ body {
                 padding: 10px;
                 border-radius: 5px;
                 transition: background-color 0.3s;
+
             }
 
                 .sidebar ul li a:hover {
@@ -117,6 +128,7 @@ body {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+
 }
 
 .caret-icon {
@@ -125,7 +137,7 @@ body {
 
 .submenu {
     padding-left: 20px;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
     .submenu li {

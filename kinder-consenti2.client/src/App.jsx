@@ -16,6 +16,9 @@ import GeneradorRecibos from './Pagos/GenerarRecibo';
 import Matricula from './matricula/Matricula';
 import Reportes from './Reportes/Reportes';
 import ActivityPanel from './actividades/activityPanel';
+import FacturaMaintenance from './Facturas/Facturas';
+import Encuesta from './encuestas/Encuesta';
+import MaestrasFeedback from './encuestas/Maestras';
 
 
 function App() {
@@ -36,7 +39,10 @@ function App() {
                 <Route path="/matricula" element={<Matricula />} /> 
                 <Route path="/reportes" element={<Reportes />} /> 
                 <Route path="/activity-panel" element={<ActivityPanel />} /> 
-
+                <Route path="/Factura-maintenance" element={<FacturaMaintenance />} /> 
+                <Route path="/registrar-encuesta" element={<Encuesta />} /> 
+                <Route path="/evalua-maestra" element={<MaestrasFeedback />} /> 
+                
             </Routes>
                 
         </Router>

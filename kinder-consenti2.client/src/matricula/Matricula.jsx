@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from '../axios';
 import './matricula.css';
 import { useUser } from '../UserContext';
@@ -6,8 +7,10 @@ import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 
 const Matricula = () => {
+    const navigate = useNavigate();
     const { user } = useUser();
     const [formData, setFormData] = useState({
+        parentID:0,
         nombreUsuario: '',
         apellidosUsuario: '',
         cedulaUsuario: '',
@@ -18,7 +21,6 @@ const Matricula = () => {
         period: '',
         paymentMethod: '',
         proofOfPayment: null,
-        matriculaStatus: '',
         lastEnrollmentDate: null,
         date: new Date().toISOString(), // Fecha actual
         referenceNumber: '', // Número de referencia del comprobante
@@ -37,10 +39,8 @@ const Matricula = () => {
 
     useEffect(() => {
         const cargarDatosUsuario = async () => {
-
             if (user) {
                 try {
-
                     // Si el rol del usuario es 3 (Padre)
                     if (user.rolId === 3) {
                         // Prellenar los datos del usuario actual (padre)
@@ -55,6 +55,7 @@ const Matricula = () => {
 
                         // Llamada para obtener los datos del usuario con el idUsuario del padre
                         const usuarioResponse = await fetch(`/Usuarios/BuscarUsuarios/${user.idUsuario}`);
+
                         if (!usuarioResponse.ok) {
                             throw new Error('No se pudo obtener los datos del usuario');
                         }
@@ -71,13 +72,10 @@ const Matricula = () => {
                             setChildrenList([]); // Limpiar la lista de alumnos si el idUsuario no coincide
                         }
                     }
-
                     // Si el rol es 1 (Administrador), usar los usuarios de la API
                     else if (user.rolId === 1) {
-                        // Usar la función fetchUsers para obtener los usuarios
                         await fetchUsers();
 
-                        // Buscar el usuario correspondiente por idUsuario en la lista de usuarios
                         const usuarioEncontrado = userList.find(
                             (usuario) => usuario.id === user.idUsuario
                         );
@@ -85,12 +83,11 @@ const Matricula = () => {
                         // Si el usuario se encuentra, cargar los datos de los alumnos
                         if (usuarioEncontrado) {
                             if (usuarioEncontrado.idUsuario === user.idUsuario) {
-                                // Obtener los datos de los alumnos
                                 const alumnosResponse = await fetch(`/api/alumnos/${user.idUsuario}`);
                                 const alumnos = await alumnosResponse.json();
-                                setChildrenList(alumnos || []); // Establecer la lista de alumnos
+                                setChildrenList(alumnos || []);
                             } else {
-                                setChildrenList([]); // Limpiar la lista de alumnos si no coincide el idUsuario
+                                setChildrenList([]);
                             }
                         }
                     }
@@ -101,9 +98,9 @@ const Matricula = () => {
             }
         };
 
-
         cargarDatosUsuario();
-    }, [user, userList]); // Se ejecuta cada vez que cambia el 'user' o la lista de 'userList'
+    }, [user]); // Dependencia solo de `user` para evitar la carga infinita
+
 
 
 
@@ -238,7 +235,7 @@ const Matricula = () => {
     };
 
     //Envia datos
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.selectedChildren.length) {
             setError('Debes seleccionar al menos un niño para matricular.');
@@ -249,22 +246,42 @@ const Matricula = () => {
             return;
         }
 
+        // Preparar los detalles de la matrícula (productos, monto, días)
+        const detalles = selectedProductos.map((productoId) => {
+            const producto = [...productosFijos, ...productosMensuales].find(
+                (p) => p.idProducto === productoId
+            );
+            return {
+                productoId: producto.idProducto,
+                alumnoId: formData.selectedChildren[0], // Asumiendo que seleccionas un niño
+                monto: producto.monto,
+                dias: producto.nombreProducto, // Suponiendo que el periodo se utiliza para los días
+            };
+        });
+
         const dataToSend = {
-            cliente: `${user.nombreUsuario} ${user.apellidosUsuario}`,
+            clienteId: formData.parentID,
+            rollId: formData.rolId,
+            metodoPago: formData.paymentMethod,
+            imagenPago: formData.proofOfPayment,
             fecha: new Date().toISOString(),
-            referenceNumber: formData.referenceNumber, // Número de referencia
+            referencia: formData.referenceNumber, // Número de referencia
             subtotal: formData.subtotal,
             iva: formData.iva,
             descuento: formData.discount, // Descuento
             total: formData.totalAmount,
+            detalles: detalles,
         };
 
-        axios.post('https://localhost:44369/EncabezadoFactura/CrearMatricula', dataToSend)
+        console.log("Datos a enviar:", dataToSend);
+
+        const response = await axios.post('https://localhost:44369/EncabezadoFactura/CrearMatricula', dataToSend)
             .then((response) => {
-                console.log('Matrícula creada:', response);
+                console.log('Respuesta del servidor:', response.data);
+                console.log('Matrícula creada con éxito');
             })
             .catch((error) => {
-                console.error('Error al crear matrícula:', error);
+                console.error('Error al crear matrícula:', error.response?.data || error.message);
             });
     };
 
@@ -323,13 +340,13 @@ const Matricula = () => {
                                         handleFileChange={handleFileChange}
                                         userRole={user.rolId}
                                     />
-                                <label>Número de Referencia del Comprobante:</label>
-                                <input
-                                    type="text"
-                                    name="referenceNumber"
-                                    value={formData.referenceNumber}
-                                    onChange={handleChange}
-                                        //required
+                                    <label>Número de Referencia del Comprobante:</label>
+                                    <input
+                                        type="text"
+                                        name="referenceNumber"
+                                        value={formData.referenceNumber}
+                                        onChange={handleChange}
+                                    //required
                                     />
                                     <div className="payment-period">
                                         <label>
@@ -340,42 +357,42 @@ const Matricula = () => {
                                             </select>
                                         </label>
                                     </div>
-                                
-                                </div>
-                                
 
-                            <div className="products-selection">
-                                <h3>Seleccionar Productos:</h3>
-                                <h4>Productos Fijos:</h4>
-                                {productosFijos.map((producto) => (
-                                    <div key={producto.idProducto}>
-                                        <label>
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedProductos.includes(producto.idProducto)}
-                                                onChange={() => handleProductoSelection(producto.idProducto)}
-                                            />
-                                            {producto.nombreProducto} - {producto.monto} colones
-                                        </label>
-                                    </div>
-                                ))}
-                                <h4>Productos Mensuales:</h4>
-                                {productosMensuales.map((producto) => (
-                                    <div key={producto.idProducto}>
-                                        <label>
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedProductos.includes(producto.idProducto)}
-                                                onChange={() => handleProductoSelection(producto.idProducto)}
-                                            />
-                                            {producto.nombreProducto} - {producto.monto} colones
-                                        </label>
-                                    </div>
-                                ))}
+                                </div>
+
+
+                                <div className="products-selection">
+                                    <h3>Seleccionar Productos:</h3>
+                                    <h4>Productos Fijos:</h4>
+                                    {productosFijos.map((producto) => (
+                                        <div key={producto.idProducto}>
+                                            <label>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedProductos.includes(producto.idProducto)}
+                                                    onChange={() => handleProductoSelection(producto.idProducto)}
+                                                />
+                                                {producto.nombreProducto} - {producto.monto} colones
+                                            </label>
+                                        </div>
+                                    ))}
+                                    <h4>Productos Mensuales:</h4>
+                                    {productosMensuales.map((producto) => (
+                                        <div key={producto.idProducto}>
+                                            <label>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedProductos.includes(producto.idProducto)}
+                                                    onChange={() => handleProductoSelection(producto.idProducto)}
+                                                />
+                                                {producto.nombreProducto} - {producto.monto} colones
+                                            </label>
+                                        </div>
+                                    ))}
                                 </div>
                                 <label>Subtotal: {formData.subtotal}</label>
                                 <label>IVA (13%): {formData.iva}</label>
-                                
+
 
                                 {user.rolId === 1 && (
                                     <>
@@ -489,6 +506,18 @@ const ParentInfo = ({ formData, handleChange, userRole }) => (
     </div>
 );
 
+const handleChildSelection = (idAlumno) => {
+    setSelectedChildren((prevSelectedChildren) => {
+        if (prevSelectedChildren.includes(idAlumno)) {
+            // El niño ya está seleccionado, eliminarlo
+            return prevSelectedChildren.filter((id) => id !== idAlumno);
+        } else {
+            // El niño no está seleccionado, agregarlo
+            return [...prevSelectedChildren, idAlumno];
+        }
+    });
+};
+
 const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelection }) => {
     console.log('childrenList:', childrenList); // Verifica el contenido de childrenList
 
@@ -501,8 +530,8 @@ const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelectio
                         <label>
                             <input
                                 type="checkbox"
-                                checked={selectedChildren.includes(child.idAlumno)}
-                                onChange={() => handleChildSelection(child.idAlumno)}
+                                checked={selectedChildren.includes(child.idAlumno)} // Asegúrate de que selectedChildren sea un array
+                                onChange={() => handleChildSelection(child.idAlumno)} // Llama a la función para manejar la selección
                             />
                             {`${child.nombreAlumno} ${child.apellidosAlumno}`}
                         </label>
@@ -514,7 +543,5 @@ const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelectio
         </div>
     );
 };
-
-
 
 export default Matricula;
