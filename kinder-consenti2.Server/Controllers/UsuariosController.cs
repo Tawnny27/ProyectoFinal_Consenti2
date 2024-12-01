@@ -30,23 +30,7 @@ namespace kinder_consenti2.Server.Controllers
         }
         
 
-        //************** Acceso Usuarios ******************
-        [HttpGet]
-        [Route("AccesoUsuario/{CorreoUsuario}&{ContrasennaUsuario}")]
-        public ActionResult<Usuario> AccesoUsuario(string CorreoUsuario, string ContrasennaUsuario)
-        {
-            if (ContrasennaUsuario != null && CorreoUsuario != null)
-            {
-                string PassEncryp = Encryptar.encripSHA256(ContrasennaUsuario);
-
-                var logueado = _context.Usuario.Where(x => x.ContrasennaUsuario == ContrasennaUsuario && x.CorreoUsuario == PassEncryp).FirstOrDefault();
-                if (logueado != null)                
-                    return Ok(logueado);
-                return BadRequest("Correo o contraseña invalido");
-            }
-            return BadRequest("Faltan datos");        
-        }
-        //-----------------------------------------------------
+        //************** Acceso Usuarios ******************       
 
         [HttpPost]
         [Route("AccesoUsuario2")]
@@ -70,6 +54,8 @@ namespace kinder_consenti2.Server.Controllers
             }
 
         }
+
+        //--------------------------------------------------------------------
 
         //******************* Consultar un Usuario ******************
         [HttpGet]
