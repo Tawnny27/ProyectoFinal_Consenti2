@@ -1,0 +1,108 @@
+/* Contenedor principal */
+.attendance-container {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.attendance-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #A569BD;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Lista de asistencia */
+.attendance-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Elemento individual */
+.attendance-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+    background-color: #F8F9F9;
+    border: 1px solid #D5D8DC;
+    border-radius: 8px;
+}
+
+/* Nombre del niño */
+.attendance-child-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #34495E;
+}
+
+/* Selector de estado */
+.attendance-select {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #BDC3C7;
+    border-radius: 5px;
+}
+
+/* Campo de justificación */
+.attendance-justification-input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #BDC3C7;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+/* Botones */
+.attendance-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.attendance-save-button {
+    width: 48%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #A569BD;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.attendance-cancel-button {
+    width: 48%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #48C9B0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+
+.attendance-save-button:hover {
+    background-color: #9254a2;
+}
+
+
+
+.attendance-cancel-button:hover {
+    background-color: #3fb399;
+}
