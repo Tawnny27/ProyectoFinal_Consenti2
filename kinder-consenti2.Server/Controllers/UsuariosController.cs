@@ -28,25 +28,24 @@ namespace kinder_consenti2.Server.Controllers
         {
             return Ok(_context.Usuario.Include(p=> p.Rol).Include(p => p.Alumnos).ToList());
         }
-        
 
-        //************** Acceso Usuarios ******************
+        //************** Consultar Maestros ******************
         [HttpGet]
-        [Route("AccesoUsuario/{CorreoUsuario}&{ContrasennaUsuario}")]
-        public ActionResult<Usuario> AccesoUsuario(string CorreoUsuario, string ContrasennaUsuario)
+        [Route("ObtenerMaestros")]
+        public ActionResult<List<Usuario>> ObtenerMaestros()
         {
-            if (ContrasennaUsuario != null && CorreoUsuario != null)
-            {
-                string PassEncryp = Encryptar.encripSHA256(ContrasennaUsuario);
-
-                var logueado = _context.Usuario.Where(x => x.ContrasennaUsuario == ContrasennaUsuario && x.CorreoUsuario == PassEncryp).FirstOrDefault();
-                if (logueado != null)                
-                    return Ok(logueado);
-                return BadRequest("Correo o contraseña invalido");
-            }
-            return BadRequest("Faltan datos");        
+            return Ok(_context.Usuario.Where(x=> x.RolId==2).ToList());
         }
-        //-----------------------------------------------------
+
+        //************** Consultar Padres ******************
+        [HttpGet]
+        [Route("ObtenerPadres")]
+        public ActionResult<List<Usuario>> ObtenerPadres()
+        {
+            return Ok(_context.Usuario.Where(x => x.RolId == 3).Include(p => p.Alumnos).ToList());
+        }
+
+        //************** Acceso Usuarios ******************       
 
         [HttpPost]
         [Route("AccesoUsuario2")]
@@ -70,6 +69,8 @@ namespace kinder_consenti2.Server.Controllers
             }
 
         }
+
+        //--------------------------------------------------------------------
 
         //******************* Consultar un Usuario ******************
         [HttpGet]

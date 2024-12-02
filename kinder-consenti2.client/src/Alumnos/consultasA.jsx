@@ -276,7 +276,7 @@ function AlumnoMaintenance() {
     return (
         
         <div className="alumno-registry-container">
-           {/* <Navbar />*/}
+           <Navbar />
             <div className="content-wrapper">
               
 

@@ -8,7 +8,7 @@ import Footer from '../componentes/footer';
 
 const Matricula = () => {
     const navigate = useNavigate();
-    const { user } = useUser();
+    const { user, usuario } = useUser();
     const [formData, setFormData] = useState({
         parentID:0,
         nombreUsuario: '',
@@ -54,7 +54,7 @@ const Matricula = () => {
                         }));
 
                         // Llamada para obtener los datos del usuario con el idUsuario del padre
-                        const usuarioResponse = await fetch(`/Usuarios/BuscarUsuarios/${user.idUsuario}`);
+                        const usuarioResponse = await fetch(`https://localhost:44369/Usuarios/BuscarUsuarios/${user.idUsuario}`);
 
                         if (!usuarioResponse.ok) {
                             throw new Error('No se pudo obtener los datos del usuario');
@@ -62,14 +62,11 @@ const Matricula = () => {
 
                         const usuarioData = await usuarioResponse.json();
 
-                        // Validar que el idUsuario de la API coincida con el idUsuario del usuario actual
-                        if (usuarioData && usuarioData.idUsuario === user.idUsuario) {
-                            // Si el idUsuario coincide, obtener la lista de alumnos (hijos)
-                            const alumnosResponse = await fetch(`/api/alumnos/${user.idUsuario}`);
-                            const alumnos = await alumnosResponse.json();
-                            setChildrenList(alumnos || []); // Establecer la lista de alumnos (hijos)
+                        // Verificar si la respuesta de la API contiene los niños
+                        if (usuarioData && usuarioData.alumnos && usuarioData.alumnos.length > 0) {
+                            setChildrenList(usuarioData.alumnos); // Establecer los niños asociados
                         } else {
-                            setChildrenList([]); // Limpiar la lista de alumnos si el idUsuario no coincide
+                            setChildrenList([]); // Limpiar la lista si no hay niños
                         }
                     }
                     // Si el rol es 1 (Administrador), usar los usuarios de la API
@@ -83,7 +80,7 @@ const Matricula = () => {
                         // Si el usuario se encuentra, cargar los datos de los alumnos
                         if (usuarioEncontrado) {
                             if (usuarioEncontrado.idUsuario === user.idUsuario) {
-                                const alumnosResponse = await fetch(`/api/alumnos/${user.idUsuario}`);
+                                const alumnosResponse = await fetch(`https://localhost:44369/alumnos/${user.idUsuario}`);
                                 const alumnos = await alumnosResponse.json();
                                 setChildrenList(alumnos || []);
                             } else {
@@ -134,6 +131,21 @@ const Matricula = () => {
                 address: selectedUser.address,
             }));
             setChildrenList(selectedUser.children);
+
+            // Obtener idUsuario y idRol
+            const idPadre = selectedUser.id;
+            const idRol = selectedUser.rolId;  // Suponiendo que el rol está guardado como 'rolId' en el objeto 'selectedUser'
+
+            // Aquí podrías hacer algo con esos valores si los necesitas, por ejemplo:
+            console.log('ID Padre:', idPadre);
+            console.log('ID Rol:', idRol);
+
+            // Si necesitas guardarlos en el estado o hacer alguna otra acción con ellos, puedes hacerlo aquí.
+            // Ejemplo:
+            setUserDetails({
+                idPadre,
+                idRol
+            });
         }
     };
 
@@ -234,6 +246,19 @@ const Matricula = () => {
         }
     };
 
+    const validatePaymentProof = (file) => {
+        if (!file) {
+            throw new Error('Por favor seleccione un comprobante de pago.');
+        }
+        if (!['image/jpeg', 'image/png', 'application/pdf'].includes(file.type)) {
+            throw new Error('Formato no permitido. Use JPG, PNG o PDF');
+        }
+        if (file.size > 10 * 1024 * 1024) {  // 10MB máximo
+            throw new Error('El archivo excede el tamaño máximo de 10MB.');
+        }
+        return true;
+    };
+
     //Envia datos
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -243,6 +268,15 @@ const Matricula = () => {
         }
         if (!formData.proofOfPayment) {
             setError('Debes agregar un comprobante de pago.');
+            return;
+        }
+
+
+        // Validar el comprobante de pago antes de enviarlo
+        try {
+            validatePaymentProof(formData.proofOfPayment);
+        } catch (error) {
+            setError(error.message);
             return;
         }
 
@@ -260,8 +294,8 @@ const Matricula = () => {
         });
 
         const dataToSend = {
-            clienteId: formData.parentID,
-            rollId: formData.rolId,
+            clienteId: user.idUsuario,
+            rollId: user.rolId, 
             metodoPago: formData.paymentMethod,
             imagenPago: formData.proofOfPayment,
             fecha: new Date().toISOString(),
@@ -275,14 +309,14 @@ const Matricula = () => {
 
         console.log("Datos a enviar:", dataToSend);
 
-        const response = await axios.post('https://localhost:44369/EncabezadoFactura/CrearMatricula', dataToSend)
-            .then((response) => {
-                console.log('Respuesta del servidor:', response.data);
-                console.log('Matrícula creada con éxito');
-            })
-            .catch((error) => {
-                console.error('Error al crear matrícula:', error.response?.data || error.message);
-            });
+        // Enviar datos al backend
+        try {
+            const response = await axios.post('https://localhost:44369/EncabezadoFactura/CrearMatricula', dataToSend);
+            console.log('Respuesta del servidor:', response.dataToSend);
+            console.log('Matrícula creada con éxito');
+        } catch (error) {
+            console.error('Error al crear matrícula:', error.response?.dataToSend || error.message);
+        }
     };
 
 

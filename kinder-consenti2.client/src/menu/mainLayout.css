@@ -80,16 +80,19 @@ body {
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     margin-top: 30px;
-    margin-bottom:50px;
+    margin-bottom: 50px;
     opacity: 90%;
     scroll-behavior: smooth;
     max-height: calc(100vh - 50px); /* Ajusta según el margen superior */
     overflow-y: auto;
+    font-family: 'Roboto', sans-serif;
 }
 
     .sidebar h2 {
         margin-top: 0;
         text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
     }
 
     .sidebar ul {
@@ -111,8 +114,8 @@ body {
                 display: block;
                 padding: 10px;
                 border-radius: 5px;
-                transition: background-color 0.3s;
-
+                
+                
             }
 
                 .sidebar ul li a:hover {
@@ -123,35 +126,69 @@ body {
                     background-color: #5ad8bf;
                 }
 
+.menu-link {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+    border-radius: 5px;
+    
+}
+
+    .menu-link:hover {
+        background-color: #48C9B0;
+       
+    }
+
+
 .menu-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-
+    padding: 10px 15px;
+    border-radius: 5px;
+    
+}
+    
+.menu-icon {
+    margin-right: 15px;
+    
 }
 
 .caret-icon {
-    margin-left: 5px;
+    margin-left: 10px;
+    font-size: 1rem;
 }
 
 .submenu {
-    padding-left: 20px;
-    margin-top: 20px;
+    padding-left: 15px;
+    margin-top: 10px;
 }
 
     .submenu li {
-        margin-bottom: 5px;
+        margin-bottom: 10px;
     }
 
         .submenu li a {
-            padding: 8px;
-            background-color: #c298e2;
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            background-color: #C298E2;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            
         }
 
             .submenu li a:hover {
                 background-color: #48C9B0;
             }
+    .submenu .menu-icon {
+        margin-right: 10px;
+        font-size: 1rem;
+    }
 
 .main-content {
     flex-grow: 1;
