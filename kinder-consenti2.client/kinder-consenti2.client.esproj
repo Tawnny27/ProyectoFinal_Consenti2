@@ -17,5 +17,6 @@
     <Folder Include="src\Matricula\" />
     <Folder Include="src\Facturas\" />
     <Folder Include="src\encuestas\" />
+    <Folder Include="src\materiales\" />
   </ItemGroup>
 </Project>

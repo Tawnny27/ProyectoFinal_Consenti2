@@ -19,6 +19,8 @@ import ActivityPanel from './actividades/activityPanel';
 import FacturaMaintenance from './Facturas/Facturas';
 import Encuesta from './encuestas/Encuesta';
 import MaestrasFeedback from './encuestas/Maestras';
+import MaterialesDidacticos from './materiales/Materiales';
+import FotosPorCarpeta from './materiales/Fotos';
 
 
 function App() {
@@ -42,6 +44,8 @@ function App() {
                 <Route path="/Factura-maintenance" element={<FacturaMaintenance />} /> 
                 <Route path="/registrar-encuesta" element={<Encuesta />} /> 
                 <Route path="/evalua-maestra" element={<MaestrasFeedback />} /> 
+                <Route path="/materiales" element={<MaterialesDidacticos />} /> 
+                <Route path="/fotos" element={<FotosPorCarpeta />} /> 
                 
             </Routes>
                 
