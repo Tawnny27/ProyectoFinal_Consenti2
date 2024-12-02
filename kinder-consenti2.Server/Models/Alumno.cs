@@ -15,6 +15,7 @@
         public Usuario? Usuario { get; set; }
         public List<Matricula>? Matriculas { get; set; }
         public List<DetalleFactura>? DetalleFacturas { get; set; }
+        public List<GruposAlumnos>? AlumnosAlumnos { get; set; }
 
         //******** Autorizado a recoger el alumno *********
         public string NombreCompAutorizado { get; set; }
