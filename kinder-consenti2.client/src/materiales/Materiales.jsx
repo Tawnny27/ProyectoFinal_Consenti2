@@ -1,106 +1,166 @@
 import React, { useEffect, useState } from "react";
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
+import Navbar from "../componentes/navbar";
+import Footer from "../componentes/footer";
+import "./materiales.css";
 
 const MaterialesDidacticos = () => {
     const [materiales, setMateriales] = useState([]);
     const [mensaje, setMensaje] = useState("");
     const [isLoading, setIsLoading] = useState(true);
+    const [nuevoMaterial, setNuevoMaterial] = useState({
+        nombre: "",
+        descripcion: "",
+        documento: null,
+        aula: "",  // Nuevo campo para aula
+    });
+    const [modalVisible, setModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
 
     useEffect(() => {
-        const cargarMateriales = async () => {
-            try {
-                setIsLoading(true);
-                // Llamada a una API para obtener los materiales
-                const response = await fetch("/api/materiales-didacticos");
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.length > 0) {
-                        setMateriales(data);
-                    } else {
-                        setMensaje("Próximamente habrá más materiales.");
-                    }
-                } else {
-                    setMensaje("Error al cargar los materiales. Inténtelo más tarde.");
-                }
-            } catch (error) {
-                setMensaje("Hubo un error al obtener los materiales.");
-            } finally {
+        const cargarMateriales = () => {
+            // Datos de ejemplo
+            const materialesEjemplo = [
+                {
+                    id: 1,
+                    nombre: "Guía de Matemáticas Básicas",
+                    descripcion: "Una guía completa para aprender las operaciones básicas.",
+                    documento: "guia_matematicas.pdf",
+                    aula: "Aula 1"
+                },
+                {
+                    id: 2,
+                    nombre: "Cuentos Infantiles",
+                    descripcion: "Una colección de cuentos para incentivar la lectura.",
+                    documento: "cuentos_infantiles.pdf",
+                    aula: "Aula 2"
+                },
+                {
+                    id: 3,
+                    nombre: "Manual de Ciencias Naturales",
+                    descripcion: "Aprende sobre el medio ambiente con este manual ilustrado.",
+                    documento: "manual_ciencias.pdf",
+                    aula: "Aula 3"
+                },
+            ];
+
+            // Simulación de carga
+            setTimeout(() => {
+                setMateriales(materialesEjemplo);
                 setIsLoading(false);
-            }
+            }, 1000); // Simula un retraso de 1 segundo
         };
 
         cargarMateriales();
     }, []);
 
+    const agregarMaterial = () => {
+        if (!nuevoMaterial.nombre || !nuevoMaterial.descripcion || !nuevoMaterial.documento || !nuevoMaterial.aula) {
+            alert("Por favor, completa todos los campos.");
+            return;
+        }
+        const nuevoId = materiales.length > 0 ? materiales[materiales.length - 1].id + 1 : 1;
+        setMateriales([...materiales, { id: nuevoId, ...nuevoMaterial }]);
+        setNuevoMaterial({ nombre: "", descripcion: "", documento: null, aula: "" });
+        setModalVisible(false); // Cierra el modal al agregar el material
+    };
+
     const descargarMaterial = (id, nombre) => {
-        // Simulación de descarga (se puede implementar con API de descarga real)
         alert(`Se ha descargado el material: ${nombre}`);
     };
 
+    const handleFileChange = (e) => {
+        setNuevoMaterial({ ...nuevoMaterial, documento: e.target.files[0] });
+    };
+
+    const handleChange = (e) => {
+        setNuevoMaterial({ ...nuevoMaterial, [e.target.name]: e.target.value });
+    };
+
     const volverAPrincipal = () => {
-        // Navegar a la página principal (ajustar según la estructura de tu aplicación)
         window.location.href = "/main";
     };
 
     return (
-        <div style={{ padding: "20px", fontFamily: "Roboto, sans-serif" }}>
+        <>
             <Navbar />
-            <h2 style={{ color: "#48C9B0" }}>Material Didáctico</h2>
-            {isLoading ? (
-                <p>Cargando materiales...</p>
-            ) : materiales.length > 0 ? (
-                <div>
-                    {materiales.map((material) => (
-                        <div
-                            key={material.id}
-                            style={{
-                                border: "1px solid #A569BD",
-                                borderRadius: "8px",
-                                marginBottom: "15px",
-                                padding: "15px",
-                                backgroundColor: "#f9f9f9",
-                            }}
-                        >
-                            <h3 style={{ color: "#A569BD" }}>{material.nombre}</h3>
-                            <p>{material.descripcion}</p>
-                            <button
-                                onClick={() => descargarMaterial(material.id, material.nombre)}
-                                style={{
-                                    padding: "10px 15px",
-                                    backgroundColor: "#3498DB",
-                                    color: "#fff",
-                                    border: "none",
-                                    borderRadius: "5px",
-                                    cursor: "pointer",
-                                }}
+            <div className="materiales-container">
+                <h2 className="materiales-header">Material Didáctico</h2>
+                {isLoading ? (
+                    <p className="materiales-loading">Cargando materiales...</p>
+                ) : (
+                    <div className="cards-container">
+                        {materiales.map((material) => (
+                            <div key={material.id} className="material-card">
+                                <h4>{material.nombre}</h4>
+                                <p className="material-description">{material.descripcion}</p>
+                                <p>Aula: {material.aula}</p>
+                                <p>Documento: {material.documento}</p>
+                                <button
+                                    onClick={() => descargarMaterial(material.id, material.nombre)}
+                                    className="materiales-button"
+                                >
+                                    Descargar
+                                </button>
+                            </div>
+                        ))}
+                            <button onClick={() => setModalVisible(true)} className="button-agregar">
+                                Agregar Nuevo Material
+                            </button>
+                    </div>
+                )}
+
+                {/* Modal para agregar nuevo material */}
+                {modalVisible && (
+                    <div className="modal">
+                        <div className="modal-content">
+                            <span className="close" onClick={() => setModalVisible(false)}>&times;</span>
+                            <h3>Agregar Nuevo Material</h3>
+                            <select
+                                name="aula"
+                                value={nuevoMaterial.aula}
+                                onChange={handleChange}
                             >
-                                Descargar
+                                <option value="">Seleccionar Aula</option>
+                                <option value="Aula 1">Aula 1</option>
+                                <option value="Aula 2">Aula 2</option>
+                                <option value="Aula 3">Aula 3</option>
+                            </select>
+                            <input
+                                type="text"
+                                placeholder="Título"
+                                value={nuevoMaterial.nombre}
+                                onChange={handleChange}
+                                name="nombre"
+                            />
+                            <textarea
+                                placeholder="Descripción"
+                                value={nuevoMaterial.descripcion}
+                                onChange={handleChange}
+                                name="descripcion"
+                            />
+                            <input
+                                type="file"
+                                onChange={handleFileChange}
+                                accept=".pdf,.doc,.docx,.ppt,.pptx"
+                            />
+                            
+                            <button onClick={agregarMaterial} className="button-adjuntar">
+                                Agregar Material
                             </button>
                         </div>
-                    ))}
-                </div>
-            ) : (
-                <div style={{ textAlign: "center" }}>
-                    <p>{mensaje}</p>
-                    <button
-                        onClick={volverAPrincipal}
-                        style={{
-                            padding: "10px 20px",
-                            backgroundColor: "#A569BD",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "5px",
-                            cursor: "pointer",
-                            marginTop: "20px",
-                        }}
-                    >
-                        Volver a la página principal
-                    </button>
-                </div>
-            )}
+                    </div>
+                )}
+
+                {mensaje && (
+                    <div className="materiales-empty">
+                        <p>{mensaje}</p>
+                        <button onClick={volverAPrincipal} className="button">
+                            Volver a la página principal
+                        </button>
+                    </div>
+                )}
+            </div>
             <Footer />
-        </div>
+        </>
     );
 };
 
