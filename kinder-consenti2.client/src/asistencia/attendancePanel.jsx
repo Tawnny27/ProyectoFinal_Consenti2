@@ -87,6 +87,7 @@ function AttendancePanel({ navigateToActivities }) {
                     </button>
                 </div>
             </div>
+            <Footer />
         </div>
         
     );

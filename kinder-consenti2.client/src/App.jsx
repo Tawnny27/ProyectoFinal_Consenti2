@@ -22,6 +22,7 @@ import MaestrasFeedback from './encuestas/Maestras';
 import MaterialesDidacticos from './materiales/Materiales';
 import FotosPorCarpeta from './materiales/Fotos';
 import AttendancePanel from './asistencia/attendancePanel';
+import ActivityForm from './actividades/activityForm';
 
 
 function App() {
@@ -41,7 +42,8 @@ function App() {
                 <Route path="/change-password" element={<ChangePassword />} /> 
                 <Route path="/matricula" element={<Matricula />} /> 
                 <Route path="/reportes" element={<Reportes />} /> 
-                <Route path="/activity-panel" element={<ActivityPanel />} /> 
+                <Route path="/activity-panel" element={<ActivityPanel />} />
+                <Route path="/activity-form" element={<ActivityForm />} /> 
                 <Route path="/attendance-panel" element={<AttendancePanel />} /> 
                 <Route path="/Factura-maintenance" element={<FacturaMaintenance />} /> 
                 <Route path="/registrar-encuesta" element={<Encuesta />} /> 

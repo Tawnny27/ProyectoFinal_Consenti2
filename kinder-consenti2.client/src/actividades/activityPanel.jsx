@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 import './ActivityPanel.css';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
@@ -10,6 +11,8 @@ function ActivityPanel() {
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
     const [bathroomVisits, setBathroomVisits] = useState(0);
+
+    const navigate = useNavigate(); // Inicializa el hook de navegación
 
     const handleActivityChange = (e) => {
         setSelectedActivity(e.target.value);
@@ -38,19 +41,22 @@ function ActivityPanel() {
     };
 
     const handleCancel = () => {
-       
         window.history.back();
+    };
+
+    const goToActivityForm = () => {
+        navigate('/activity-form'); 
     };
 
     return (
         <div className="user-maintenance-container">
             <Navbar />
-            <div className="activity-container" style={{ marginTop: '220px' }}>
+            <div className="activity-container" style={{ marginTop: '200px' }}>
                 <div className="activity-panel">
                     <h1 className="activity-title">Panel de Actividades</h1>
 
                     {/* Selector de actividad */}
-                    <div className="activity-section">
+                    <div className="activity-section mb-3">
                         <label className="activity-label">Selecciona una Actividad:</label>
                         <select
                             className="activity-select"
@@ -65,7 +71,7 @@ function ActivityPanel() {
                         </select>
                     </div>
 
-                   
+                    {/* Opciones dinámicas según actividad */}
                     {selectedActivity === "Comida" && (
                         <div>
                             <label className="activity-label">Estatus de Comida:</label>
@@ -158,13 +164,16 @@ function ActivityPanel() {
                         </div>
                     )}
 
-                    {/* Botones de guardar y cancelar */}
+                    {/* Botones de guardar, cancelar y nuevo formulario */}
                     <div className="activity-buttons">
                         <button className="activity-submit-button" onClick={handleSubmit}>
                             Guardar Actividad
                         </button>
                         <button className="activity-cancel-button" onClick={handleCancel}>
                             Cancelar
+                        </button>
+                        <button className="activity-form-button" onClick={goToActivityForm}>
+                            Crear Actividad
                         </button>
                     </div>
                 </div>
