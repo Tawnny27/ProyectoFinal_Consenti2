@@ -48,17 +48,22 @@ namespace kinder_consenti2.Server.Controllers
 
         public ActionResult <string> DarAltaFactura(int idfact, int status) 
         {
-            if (status == 1 || status == 2)
+            if (status == 1 || status == 2) // 1-finalizada  2-Rechazada
             {
                 var factura = _context.EncabezadoFactura.FirstOrDefault(x=> x.IdFactura== idfact);
                 if (factura != null)
                 { 
                     factura.status = status;
                     _context.EncabezadoFactura.Update(factura);
-                    _context.SaveChanges();
-                    if (status == 1)
-
+                    _context.SaveChanges();                    
+                    if (status == 1) 
+                    {
+                        var matricula = _context.Matricula.FirstOrDefault(x => x.IdFact == factura.IdFactura);
+                        matricula.Status = true;
+                        _context.Matricula.Update(matricula);
+                        _context.SaveChanges();
                         return Ok("Factura finalizada");
+                    }                        
                     else
                         return Ok("Factura rechazada");                    
                 }
@@ -93,9 +98,17 @@ namespace kinder_consenti2.Server.Controllers
         {
 
             int idStatus;
+            bool status;
             if (Datos.RollId == 1)
+            {
                 idStatus = 1;
-            else idStatus = 0;
+                status = true;
+            }
+            else 
+            { 
+                idStatus = 0; 
+                status = false;
+            }
 
             EncabezadoFactura factura = new EncabezadoFactura
             {
@@ -139,7 +152,7 @@ namespace kinder_consenti2.Server.Controllers
                         ProductoId = item.ProductoId,
                         AlumnoId = item.AlumnoId,
                         Dias = item.Dias,
-                        Status = false
+                        Status = status
                     };
                     _context.Matricula.Add(Matriculada);
                     _context.SaveChanges();

@@ -9,6 +9,7 @@
         public DateTime FechaFin { get; set; }
         public string Dias { get; set; }       
         public bool Status { get; set; }
+        public int IdFact { get; set; }
         public Alumno? Alumno { get; set; }
         public Producto? Producto { get; set; }
 

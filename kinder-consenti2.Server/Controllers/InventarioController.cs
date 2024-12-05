@@ -32,7 +32,7 @@ namespace kinder_consenti2.Server.Controllers
         public ActionResult<Inventario> CrearInventario(Inventario inventario)
         {
             inventario.Descripcion=inventario.Descripcion.Trim();
-            if(_context.Inventario.Where(x=> x.Descripcion==inventario.Descripcion)!=null)
+            if(_context.Inventario.Where(x=> x.Descripcion==inventario.Descripcion).Count()!=0)
                 return BadRequest("Ya existe un producto con esa descripcion");
             inventario.Cantidad = 0;
             _context.Inventario.Add(inventario);

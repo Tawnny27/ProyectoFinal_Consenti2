@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using kinder_consenti2.Server.Models;
 
@@ -11,9 +12,11 @@ using kinder_consenti2.Server.Models;
 namespace kinder_consenti2.Server.Migrations
 {
     [DbContext(typeof(Concenti2pruebasContext))]
-    partial class Concenti2pruebasContextModelSnapshot : ModelSnapshot
+    [Migration("20241205053736_Migracion4")]
+    partial class Migracion4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,14 +45,9 @@ namespace kinder_consenti2.Server.Migrations
                     b.Property<DateOnly>("Fecha")
                         .HasColumnType("date");
 
-                    b.Property<int>("GruposId")
-                        .HasColumnType("int");
-
                     b.HasKey("IdActividadBanno");
 
                     b.HasIndex("AlumnoId");
-
-                    b.HasIndex("GruposId");
 
                     b.ToTable("ActividadBanno");
                 });
@@ -71,9 +69,6 @@ namespace kinder_consenti2.Server.Migrations
                     b.Property<DateOnly>("Fecha")
                         .HasColumnType("date");
 
-                    b.Property<int>("GruposId")
-                        .HasColumnType("int");
-
                     b.Property<int>("StatusComida")
                         .HasColumnType("int");
 
@@ -84,8 +79,6 @@ namespace kinder_consenti2.Server.Migrations
                     b.HasKey("IdActividadComida");
 
                     b.HasIndex("AlumnoId");
-
-                    b.HasIndex("GruposId");
 
                     b.ToTable("ActividadComida");
                 });
@@ -107,17 +100,12 @@ namespace kinder_consenti2.Server.Migrations
                     b.Property<DateOnly>("Fecha")
                         .HasColumnType("date");
 
-                    b.Property<int>("GruposId")
-                        .HasColumnType("int");
-
                     b.Property<TimeOnly>("Tiempo")
                         .HasColumnType("time");
 
                     b.HasKey("IdActividadDormir");
 
                     b.HasIndex("AlumnoId");
-
-                    b.HasIndex("GruposId");
 
                     b.ToTable("ActividadDormir");
                 });
@@ -136,15 +124,11 @@ namespace kinder_consenti2.Server.Migrations
                     b.Property<string>("Comentario")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Descripcion")
+                        .HasColumnType("int");
 
                     b.Property<DateOnly>("Fecha")
                         .HasColumnType("date");
-
-                    b.Property<int>("GruposId")
-                        .HasColumnType("int");
 
                     b.Property<int>("StatusParticipacion")
                         .HasColumnType("int");
@@ -152,8 +136,6 @@ namespace kinder_consenti2.Server.Migrations
                     b.HasKey("IdActividadHuerta");
 
                     b.HasIndex("AlumnoId");
-
-                    b.HasIndex("GruposId");
 
                     b.ToTable("ActividadHuerta");
                 });
@@ -673,12 +655,6 @@ namespace kinder_consenti2.Server.Migrations
                         .HasForeignKey("AlumnoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("kinder_consenti2.Server.Models.Grupos", null)
-                        .WithMany("ActividadBannos")
-                        .HasForeignKey("GruposId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.ActividadComida", b =>
@@ -686,12 +662,6 @@ namespace kinder_consenti2.Server.Migrations
                     b.HasOne("kinder_consenti2.Server.Models.Alumno", null)
                         .WithMany("ActividadComidas")
                         .HasForeignKey("AlumnoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("kinder_consenti2.Server.Models.Grupos", null)
-                        .WithMany("ActividadComidas")
-                        .HasForeignKey("GruposId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -703,12 +673,6 @@ namespace kinder_consenti2.Server.Migrations
                         .HasForeignKey("AlumnoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("kinder_consenti2.Server.Models.Grupos", null)
-                        .WithMany("ActividadDormirs")
-                        .HasForeignKey("GruposId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.ActividadHuerta", b =>
@@ -716,12 +680,6 @@ namespace kinder_consenti2.Server.Migrations
                     b.HasOne("kinder_consenti2.Server.Models.Alumno", null)
                         .WithMany("ActividadHuertas")
                         .HasForeignKey("AlumnoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("kinder_consenti2.Server.Models.Grupos", null)
-                        .WithMany("ActividadHuertas")
-                        .HasForeignKey("GruposId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -895,14 +853,6 @@ namespace kinder_consenti2.Server.Migrations
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Grupos", b =>
                 {
-                    b.Navigation("ActividadBannos");
-
-                    b.Navigation("ActividadComidas");
-
-                    b.Navigation("ActividadDormirs");
-
-                    b.Navigation("ActividadHuertas");
-
                     b.Navigation("GruposAlumnos");
                 });
 

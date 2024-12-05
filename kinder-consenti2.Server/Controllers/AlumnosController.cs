@@ -23,7 +23,7 @@ namespace kinder_consenti2.Server.Controllers
             return Ok(_context.Alumno.ToList());
         }
 
-        //************** Consultar un Alumnos******************
+        //************** Consultar un Alumno******************
         [HttpGet]
         [Route("BuscarAlumno/{id}")]
         public ActionResult<Alumno> BuscarAlumnos(int id)

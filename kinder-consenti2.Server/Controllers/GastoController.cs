@@ -16,14 +16,20 @@ namespace kinder_consenti2.Server.Controllers
 
 
         [HttpGet]
-        [Route("ObtenerGastos")]
+        [Route("ObtenerGastos/{año}&{mes}")]
         public ActionResult<List<Gasto>> ObtenerGastos(int año, int mes)
-        {                      
+        {
+            if (año == null || mes == null|| mes>12)
+            {
+                return BadRequest("Debe indicar año y mes correcto");
+            }
             DateOnly fechaInicial = new (año,mes,1);
+            if (mes == 12)
+            { mes = 0; año = año + 1; }
             DateOnly fechaFinal = new (año,mes+1,1);
             fechaFinal = fechaFinal.AddDays(-1);
             var gastos = _context.Gasto.Where(x => x.Fecha >= fechaInicial && x.Fecha <= fechaFinal).ToList();
-            if (gastos != null) 
+            if (gastos.Count() != 0) 
             {
                 return Ok(gastos);
             }

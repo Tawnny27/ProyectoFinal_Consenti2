@@ -16,6 +16,11 @@
         public List<Matricula>? Matriculas { get; set; }
         public List<DetalleFactura>? DetalleFacturas { get; set; }
         public List<GruposAlumnos>? AlumnosAlumnos { get; set; }
+        public List<ActividadComida>? ActividadComidas { get; set; }
+        public List<ActividadDormir>? ActividadDormirs { get; set; }
+        public List<ActividadBanno>? ActividadBannos { get; set; }
+        public List<ActividadHuerta>? ActividadHuertas { get; set; }
+
 
         //******** Autorizado a recoger el alumno *********
         public string NombreCompAutorizado { get; set; }

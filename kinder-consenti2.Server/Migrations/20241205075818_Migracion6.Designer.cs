@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using kinder_consenti2.Server.Models;
 
@@ -11,9 +12,11 @@ using kinder_consenti2.Server.Models;
 namespace kinder_consenti2.Server.Migrations
 {
     [DbContext(typeof(Concenti2pruebasContext))]
-    partial class Concenti2pruebasContextModelSnapshot : ModelSnapshot
+    [Migration("20241205075818_Migracion6")]
+    partial class Migracion6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,14 +45,17 @@ namespace kinder_consenti2.Server.Migrations
                     b.Property<DateOnly>("Fecha")
                         .HasColumnType("date");
 
-                    b.Property<int>("GruposId")
+                    b.Property<int>("GrupoId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GruposIdGrupos")
                         .HasColumnType("int");
 
                     b.HasKey("IdActividadBanno");
 
                     b.HasIndex("AlumnoId");
 
-                    b.HasIndex("GruposId");
+                    b.HasIndex("GruposIdGrupos");
 
                     b.ToTable("ActividadBanno");
                 });
@@ -71,7 +77,10 @@ namespace kinder_consenti2.Server.Migrations
                     b.Property<DateOnly>("Fecha")
                         .HasColumnType("date");
 
-                    b.Property<int>("GruposId")
+                    b.Property<int>("GrupoId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GruposIdGrupos")
                         .HasColumnType("int");
 
                     b.Property<int>("StatusComida")
@@ -85,7 +94,7 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.HasIndex("AlumnoId");
 
-                    b.HasIndex("GruposId");
+                    b.HasIndex("GruposIdGrupos");
 
                     b.ToTable("ActividadComida");
                 });
@@ -107,7 +116,10 @@ namespace kinder_consenti2.Server.Migrations
                     b.Property<DateOnly>("Fecha")
                         .HasColumnType("date");
 
-                    b.Property<int>("GruposId")
+                    b.Property<int>("GrupoId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GruposIdGrupos")
                         .HasColumnType("int");
 
                     b.Property<TimeOnly>("Tiempo")
@@ -117,7 +129,7 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.HasIndex("AlumnoId");
 
-                    b.HasIndex("GruposId");
+                    b.HasIndex("GruposIdGrupos");
 
                     b.ToTable("ActividadDormir");
                 });
@@ -143,7 +155,10 @@ namespace kinder_consenti2.Server.Migrations
                     b.Property<DateOnly>("Fecha")
                         .HasColumnType("date");
 
-                    b.Property<int>("GruposId")
+                    b.Property<int>("GrupoId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GruposIdGrupos")
                         .HasColumnType("int");
 
                     b.Property<int>("StatusParticipacion")
@@ -153,7 +168,7 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.HasIndex("AlumnoId");
 
-                    b.HasIndex("GruposId");
+                    b.HasIndex("GruposIdGrupos");
 
                     b.ToTable("ActividadHuerta");
                 });
@@ -676,9 +691,7 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.HasOne("kinder_consenti2.Server.Models.Grupos", null)
                         .WithMany("ActividadBannos")
-                        .HasForeignKey("GruposId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GruposIdGrupos");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.ActividadComida", b =>
@@ -691,9 +704,7 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.HasOne("kinder_consenti2.Server.Models.Grupos", null)
                         .WithMany("ActividadComidas")
-                        .HasForeignKey("GruposId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GruposIdGrupos");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.ActividadDormir", b =>
@@ -706,9 +717,7 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.HasOne("kinder_consenti2.Server.Models.Grupos", null)
                         .WithMany("ActividadDormirs")
-                        .HasForeignKey("GruposId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GruposIdGrupos");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.ActividadHuerta", b =>
@@ -721,9 +730,7 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.HasOne("kinder_consenti2.Server.Models.Grupos", null)
                         .WithMany("ActividadHuertas")
-                        .HasForeignKey("GruposId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GruposIdGrupos");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Alumno", b =>
