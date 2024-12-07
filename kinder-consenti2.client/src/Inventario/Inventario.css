@@ -1,0 +1,405 @@
+/* Estilos generales */
+.input-icon {
+    position: relative;
+    width: 100%;
+}
+
+/* Estilos para el botón de edición */
+.inventario-edit-button {
+    background-color: #f1c40f;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 80px;
+}
+
+    .inventario-edit-button:hover {
+        background-color: #f39c12;
+    }
+
+/* Estilos para el botón de eliminación */
+.inventario-delete-button {
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+    padding: 10px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 85px;
+}
+
+    .inventario-delete-button:hover {
+        background-color: #c0392b;
+    }
+
+/* Estilos para la pantalla de inventario */
+.inventario-container {
+    flex-direction: column;
+    position: relative;
+    font-family: 'Roboto', sans-serif;
+    background: url('../assets/background.jpg') no-repeat center center;
+    background-size: cover;
+    box-sizing: border-box;
+    min-height: 100vh;
+    z-index: 1;
+    width: 100%;
+    /*margin-top: 95px;*/
+}
+
+.inventario-decorative-header {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.inventario-decorative-stripes {
+    display: flex;
+    height: 100%;
+    position: relative;
+}
+
+.inventario-stripe {
+    flex: 1;
+    height: 100%;
+}
+
+/* Colores de las franjas */
+.inventario-stripe-0 {
+    background-color: #98FB98;
+}
+
+.inventario-stripe-1 {
+    background-color: #87CEEB;
+}
+
+.inventario-stripe-2 {
+    background-color: #DDA0DD;
+}
+
+.inventario-stripe-3 {
+    background-color: #FFB6C1;
+}
+
+.inventario-stripe-4 {
+    background-color: #FFA07A;
+}
+
+.inventario-stripe-5 {
+    background-color: #F0E68C;
+}
+
+.inventario-stripe-6 {
+    background-color: #98FB98;
+}
+
+.inventario-stripe-7 {
+    background-color: #87CEEB;
+}
+
+/* Contenido principal */
+.inventario-content {
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+    margin-top: 80px;
+}
+
+.inventario-title {
+    text-align: center;
+    color: #9370DB;
+    margin-bottom: 20px;
+    font-size: 24px;
+   
+
+}
+
+.inventario-main-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    margin-top:10px;
+}
+
+.inventario-add-item-btn {
+    background-color: #2E8B57;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.inventario-cancel-btn {
+    background-color: #A569BD;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Tabla de inventario */
+.inventario-table-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.inventario-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+    .inventario-table th {
+        /*background-color: #9370DB;*/
+        color: black;
+        padding: 12px;
+        text-align: left;
+        font-weight: 500;
+    }
+
+    .inventario-table td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+    }
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .inventario-main-buttons {
+        flex-direction: column;
+    }
+
+    .inventario-table-container {
+        overflow-x: auto;
+    }
+}
+
+.inventario-data-table-container {
+    border-bottom: 3px solid #A569BD; /* Borde inferior fijo */
+    border-radius: 5px;
+    max-width: 100%; /* Asegura que la tabla no exceda el tamaño de la pantalla */
+    width: 100%;
+    margin: 0;
+}
+
+.inventario-data-table-wrapper .rdt_Table {
+    max-height: 550px; /* Altura máxima de la tabla */
+    overflow-y: auto; /* Permite el desplazamiento si hay muchas filas */
+    padding-left: 50px; /* Ajusta el padding si es necesario */
+    padding-right: 50px;
+}
+
+.inventario-data-table-wrapper .rdt_TableHead .rdt_TableCol {
+    display: flex;
+    font-weight: bold; /* Texto en negrita */
+    font-size: 14px; /* Aumenta el tamaño del texto */
+    background-color: white;
+}
+
+.inventario-data-table-wrapper .rdt_Pagination {
+    position: sticky;
+    bottom: 0; /* La paginación se queda en la parte inferior */
+    background-color: white; /* Fondo blanco para que resalte */
+    z-index: 1000; /* Asegura que siempre esté encima de las filas al desplazarse */
+    padding: 10px 0;
+}
+
+.inventario-rdt_TableCell, .inventario-rdt_TableHeadRow {
+    padding: 10px;
+    word-break: break-word; /* Asegura que el texto largo se ajuste a la celda */
+}
+
+.inventario-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+
+}
+.inventario-add-btn{
+    margin-top:40px;
+}
+
+.inventario-modal-content {
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    padding: 24px;
+    width: 150%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.inventario-modal-header {
+    margin-bottom: 24px;
+}
+
+.inventario-title {
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.inventario-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+
+.inventario-form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.inventario-section-title {
+    color: #00ff7c;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.inventario-form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.inventario-form-group {
+    flex: 1;
+    min-width: 0;
+}
+
+.inventario-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #A569BD;
+    font-size: 14px;
+}
+
+.inventario-input-container {
+    position: relative;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.inventario-input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #A569BD;
+}
+
+.inventario-input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: white;
+}
+
+    .inventario-input:focus {
+        border-color: #2196f3;
+        box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+    }
+
+.inventario-select {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: white;
+    appearance: none;
+    cursor: pointer;
+}
+
+.inventario-textarea {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    min-height: 100px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.inventario-collapsible-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.inventario-form-group input,
+.inventario-form-group select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+
+.accionInventario-boton {
+    background-color:slateblue;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+    .accionInventario-boton:hover {
+        background-color: slateblue;
+    }
+
+.acciones-container {
+    display: flex;
+    gap: 8px;
+}
+
+.inventario-edit-btn, .inventario-delete-btn {
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+}
+
+.inventario-edit-btn {
+    background-color: yellow; 
+}
+
+.inventario-delete-btn {
+    background-color: #f44336; /* Rojo */
+}
+
+.inventario-edit-btn:hover {
+    background-color: #45a049;
+}
+
+.inventario-delete-btn:hover {
+    background-color: #d32f2f;
+}

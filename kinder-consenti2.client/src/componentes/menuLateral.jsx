@@ -22,6 +22,7 @@ function Sidebar ({ showAdminSubmenu, toggleAdminSubmenu, showPlatformSubmenu, t
                             <li><Link to="/register">Registrar Usuario</Link></li>
                             <li><Link to="/user-maintenance">Mantenimiento de Usuarios</Link></li>
                             <li><Link to="/reportes">Reportes</Link></li>
+                            <li><Link to="/Gastos">Control de gastos</Link></li>
                         </ul>
                     )}
                 </li>
@@ -53,6 +54,7 @@ function Sidebar ({ showAdminSubmenu, toggleAdminSubmenu, showPlatformSubmenu, t
                 <li><Link to="/expedientes">Expedientes</Link></li>
                 <li><Link to="/comunicacion">Comunicación</Link></li>
                 <li><Link to="/inventario">Inventario</Link></li>
+                
             </ul>
         </aside>
     );

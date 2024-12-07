@@ -23,6 +23,9 @@ import MaterialesDidacticos from './materiales/Materiales';
 import FotosPorCarpeta from './materiales/Fotos';
 import AttendancePanel from './asistencia/attendancePanel';
 import ActivityForm from './actividades/activityForm';
+import Inventario from './Inventario/Inventario';
+import Gastos from './Gastos/Gastos';
+
 
 
 function App() {
@@ -50,7 +53,8 @@ function App() {
                 <Route path="/evalua-maestra" element={<MaestrasFeedback />} /> 
                 <Route path="/materiales" element={<MaterialesDidacticos />} /> 
                 <Route path="/fotos" element={<FotosPorCarpeta />} /> 
-                
+                <Route path="/inventario" element={<Inventario />} /> 
+                <Route path="/Gastos" element={<Gastos />} /> 
             </Routes>
                 
         </Router>

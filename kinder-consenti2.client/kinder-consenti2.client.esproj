@@ -10,9 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="src\NewFolder1\**" />
-    <None Remove="src\NewFolder\**" />
     <TypeScriptConfiguration Remove="src\NewFolder1\**" />
-    <TypeScriptConfiguration Remove="src\NewFolder\**" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\Fotos\" />
@@ -20,5 +18,7 @@
     <Folder Include="src\Facturas\" />
     <Folder Include="src\encuestas\" />
     <Folder Include="src\materiales\" />
+    <Folder Include="src\Inventario\" />
+    <Folder Include="src\Gastos\" />
   </ItemGroup>
 </Project>

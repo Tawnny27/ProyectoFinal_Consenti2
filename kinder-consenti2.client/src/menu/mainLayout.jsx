@@ -8,7 +8,7 @@ import {
 import logo from '../assets/logo.jpg'; 
 import Footer from '../componentes/footer';
 import { useUser } from '../UserContext';
-import { faAddressBook, faBoxesStacked, faCheck, faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
+import { faAddressBook, faReceipt,faBoxesStacked, faCheck, faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
 
 
 const MainLayout = () => {
@@ -150,7 +150,9 @@ const MainLayout = () => {
                                     <li><Link to="/recibo-pago">
                                         <FontAwesomeIcon icon={faFileInvoice} className="menu-icon" /> Recibo de Pagos</Link></li>
                                     <li><Link to="/control-pago">
-                                        <FontAwesomeIcon icon={faHandHoldingDollar} className="menu-icon" /> Control de pagos</Link></li>
+                                            <FontAwesomeIcon icon={faHandHoldingDollar} className="menu-icon" /> Control de pagos</Link></li>
+                                        <li><Link to="/Gastos">
+                                            <FontAwesomeIcon icon={faReceipt} className="menu-icon" /> Control de gastos</Link></li>
                                 </ul>
                             )}
                         </li>
@@ -163,6 +165,7 @@ const MainLayout = () => {
                             <FontAwesomeIcon icon={faCommentDots} className="menu-icon" />Comunicación</Link></li>
                         <li className="menu-link"><Link to="/inventario">
                             <FontAwesomeIcon icon={faBoxesStacked} className="menu-icon" />Inventario</Link></li>
+                        
                         {user.rolId === 3 && (
                             <li>
 

@@ -1,0 +1,378 @@
+/* Estilos generales */
+.input-icon {
+    position: relative;
+    width: 100%;
+}
+
+/* Estilos para el botón de edición */
+.gastos-edit-button {
+    background-color: #f1c40f;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .gastos-edit-button:hover {
+        background-color: #FF4500; /* Rojo más intenso */
+    }
+
+/* Estilos para el botón de eliminación */
+.gastos-delete-button {
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+    padding: 10px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .gastos-delete-button:hover {
+        background-color: #228B22; /* Verde más profundo */
+    }
+
+/* Estilos para la pantalla de gastos */
+.gastos-container {
+    flex-direction: column;
+    position: relative;
+    font-family: 'Roboto', sans-serif;
+    background: url('../assets/background.jpg') no-repeat center center;
+    background-size: cover;
+    box-sizing: border-box;
+    min-height: 100vh;
+    z-index: 1;
+    width: 100%;
+}
+
+.gastos-decorative-header {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.gastos-decorative-stripes {
+    display: flex;
+    height: 100%;
+    position: relative;
+}
+
+.gastos-stripe {
+    flex: 1;
+    height: 100%;
+}
+
+/* Colores de las franjas */
+.gastos-stripe-0 {
+    background-color: #FFD700; /* Amarillo dorado */
+}
+
+.gastos-stripe-1 {
+    background-color: #FFB6C1; /* Rosa suave */
+}
+
+.gastos-stripe-2 {
+    background-color: #FF69B4; /* Rosa fuerte */
+}
+
+.gastos-stripe-3 {
+    background-color: #F4A300; /* Naranja brillante */
+}
+
+.gastos-stripe-4 {
+    background-color: #D3D3D3; /* Gris claro */
+}
+
+.gastos-stripe-5 {
+    background-color: #E6E6FA; /* Lavanda */
+}
+
+.gastos-stripe-6 {
+    background-color: #90EE90; /* Verde menta */
+}
+
+.gastos-stripe-7 {
+    background-color: #ADD8E6; /* Azul claro */
+}
+
+/* Contenido principal */
+.gastos-content {
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+    margin-top: 80px;
+}
+
+.gastos-title {
+    text-align: center;
+    color: #6A5ACD; /* Color lavanda */
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.gastos-main-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.gastos-add-item-btn {
+    background-color: #32CD32; /* Verde lima */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.gastos-cancel-btn {
+    background-color: #BA55D3; /* Púrpura brillante */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Tabla de gastos */
+.gastos-table-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.gastos-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+    .gastos-table th {
+        color: #8A2BE2; /* Púrpura */
+        padding: 12px;
+        text-align: left;
+        font-weight: 500;
+    }
+
+    .gastos-table td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+    }
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .gastos-main-buttons {
+        flex-direction: column;
+    }
+
+    .gastos-table-container {
+        overflow-x: auto;
+    }
+}
+
+.gastos-data-table-container {
+    border-bottom: 3px solid #BA55D3; /* Borde inferior fijo */
+    border-radius: 5px;
+    max-width: 100%; /* Asegura que la tabla no exceda el tamaño de la pantalla */
+    width: 100%;
+    margin: 0;
+}
+
+.gastos-data-table-wrapper .rdt_Table {
+    max-height: 550px; /* Altura máxima de la tabla */
+    overflow-y: auto; /* Permite el desplazamiento si hay muchas filas */
+    padding-left: 50px; /* Ajusta el padding si es necesario */
+    padding-right: 50px;
+}
+
+.gastos-data-table-wrapper .rdt_TableHead .rdt_TableCol {
+    display: flex;
+    font-weight: bold; /* Texto en negrita */
+    font-size: 14px; /* Aumenta el tamaño del texto */
+    background-color: white;
+}
+
+.gastos-data-table-wrapper .rdt_Pagination {
+    position: sticky;
+    bottom: 0; /* La paginación se queda en la parte inferior */
+    background-color: white; /* Fondo blanco para que resalte */
+    z-index: 1000; /* Asegura que siempre esté encima de las filas al desplazarse */
+    padding: 10px 0;
+}
+
+.gastos-rdt_TableCell, .gastos-rdt_TableHeadRow {
+    padding: 10px;
+    word-break: break-word; /* Asegura que el texto largo se ajuste a la celda */
+}
+
+.gastos-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.gastos-modal-content {
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    padding: 24px;
+    width: 150%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.gastos-modal-header {
+    margin-bottom: 24px;
+}
+
+.gastos-title {
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.gastos-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+
+.gastos-form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.gastos-section-title {
+    color: #00ff7c;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.gastos-form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.gastos-form-group {
+    flex: 1;
+    min-width: 0;
+}
+
+.gastos-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #BA55D3;
+    font-size: 14px;
+}
+
+.gastos-input-container {
+    position: relative;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.gastos-input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #BA55D3;
+}
+
+.gastos-input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: white;
+}
+
+    .gastos-input:focus {
+        border-color: #2196f3;
+        box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+    }
+
+.gastos-select {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: white;
+    appearance: none;
+    cursor: pointer;
+}
+
+.gastos-textarea {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: white;
+    min-height: 100px;
+}
+
+.gastos-filtro {
+    display: flex;
+    align-items: center; /* Alinea verticalmente en el centro */
+    justify-content: center; /* Centra los elementos horizontalmente */
+    gap: 10px; /* Espacio entre el label y el input */
+    background-color: #f9f9f9; /* Fondo suave */
+    padding: 10px 20px; /* Relleno alrededor */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    width: 400px; /* Ajusta el ancho según tus necesidades */
+    margin: 20px auto; /* Centra el contenedor horizontalmente */
+}
+
+    .gastos-filtro label {
+        font-size: 16px; /* Tamaño del texto */
+        font-weight: 500; /* Peso del texto */
+        color: #333; /* Color de texto oscuro */
+    }
+
+    .gastos-filtro input[type="date"] {
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 5px;
+        border: 1px solid #ddd; /* Borde sutil */
+        outline: none;
+        width: 150px; /* Ajusta el tamaño del input */
+        box-sizing: border-box; /* Asegura que el padding no afecte el tamaño */
+        background-color: #fff; /* Fondo blanco */
+        transition: border-color 0.3s ease; /* Animación suave al enfocar */
+    }
+
+        .gastos-filtro input[type="date"]:focus {
+            border-color: #BA55D3; /* Color de borde cuando está enfocado */
+            box-shadow: 0 0 5px rgba(186, 85, 211, 0.2); /* Sombra al enfocar */
+        }
+
+.acciones-container {
+    padding-right: 0px;
+    display: flex;
+    gap: 10px; /* Espacio entre los botones */
+    justify-content: center;
+}
