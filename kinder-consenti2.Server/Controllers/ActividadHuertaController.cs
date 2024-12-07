@@ -42,7 +42,7 @@ namespace kinder_consenti2.Server.Controllers
                     return BadRequest("Debe ingresar un Alumno");
                 }
                 var actividadHuerta = _context.ActividadHuerta.ToList().Where(x => x.AlumnoId == idAlumno);
-                if (actividadHuerta.Count() == 0)
+                if (actividadHuerta.Any())
                 {
                     return Ok("No hay registros");
                 }
