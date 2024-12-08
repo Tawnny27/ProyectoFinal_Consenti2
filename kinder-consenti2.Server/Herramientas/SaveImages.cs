@@ -19,9 +19,10 @@ namespace kinder_consenti2.Server.Herramientas
            Directory.GetCurrentDirectory(), "..", "kinder-consenti2.client",
            "public", "FotosAlumnos"
        );
-
-
-
+        private readonly string _FolderMaterial = Path.Combine(
+          Directory.GetCurrentDirectory(), "..", "kinder-consenti2.client",
+          "public", "FotosMaterial"
+      );
         private void ValidarFolder(int num)
         {
             // Asegurarse de que la carpeta de imágenes exista
@@ -39,8 +40,14 @@ namespace kinder_consenti2.Server.Herramientas
                     if (!Directory.Exists(_FolderAlumnos))
                         Directory.CreateDirectory(_FolderAlumnos);
                     break;
+                case 4:
+                    if (!Directory.Exists(_FolderMaterial))
+                        Directory.CreateDirectory(_FolderMaterial);
+                    break;
             }
         }
+
+        
 
         private string extencion(string nombre)
         {
@@ -79,6 +86,11 @@ namespace kinder_consenti2.Server.Herramientas
                         return new MensajeValidacion { Condicion = true, Mensaje = extencion(ext) };
                     else
                         return new MensajeValidacion { Condicion = false, Mensaje = "Error en tipo de archivo" + "\nPermitidos: jpg, png" };
+                case 4:
+                    if (ext.Contains(".pdf") || ext.Contains(".PDF"))
+                        return new MensajeValidacion { Condicion = true, Mensaje = extencion(ext) };
+                    else
+                        return new MensajeValidacion { Condicion = false, Mensaje = "Error en tipo de archivo" + "\nPermitidos: pdf" };
                 default: return new MensajeValidacion { Condicion = false, Mensaje = " Algún dato esta erroneo" };
             }
         }
@@ -105,6 +117,10 @@ namespace kinder_consenti2.Server.Herramientas
                     case 3:
                         filePath = Path.Combine(_FolderAlumnos, Name);
                         ruta = "/FotosAlumnos/" + Name;
+                        break;
+                    case 4:
+                        filePath = Path.Combine(_FolderMaterial, Name);
+                        ruta = "/FotosMaterial/" + Name;
                         break;
                 }               
                 using (var fileStream = new FileStream(filePath, FileMode.Create))

@@ -17,5 +17,6 @@
         public List<Alumno>? Alumnos { get; set; }
         public List<EncabezadoFactura>? EncabezadoFacturas { get; set; }
         public List<Grupos>? Grupos { get; set; }
+        public List<EvaluacionDocente>? EvaluacionDocentes { get; set; }
     }
 }

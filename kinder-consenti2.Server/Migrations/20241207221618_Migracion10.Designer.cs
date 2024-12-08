@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using kinder_consenti2.Server.Models;
 
@@ -11,9 +12,11 @@ using kinder_consenti2.Server.Models;
 namespace kinder_consenti2.Server.Migrations
 {
     [DbContext(typeof(Concenti2pruebasContext))]
-    partial class Concenti2pruebasContextModelSnapshot : ModelSnapshot
+    [Migration("20241207221618_Migracion10")]
+    partial class Migracion10
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -606,10 +609,6 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.Property<int>("GruposId")
                         .HasColumnType("int");
-
-                    b.Property<string>("NombreArchivo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RutaFoto")
                         .IsRequired()

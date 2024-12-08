@@ -39,7 +39,7 @@ function AlumnoMaintenance() {
 
     const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png'];
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-    const IMAGE_PATH = '/Fotos/';
+    const IMAGE_PATH = '/FotosPerfAlumno/';
 
 
     const validateImage = (file) => {
@@ -152,7 +152,7 @@ function AlumnoMaintenance() {
                 imageFormData.append('fileName', uniqueFileName); // Enviamos el nombre generado
 
                 // Enviamos la imagen al servidor
-                const imageResponse = await axios.post('https://localhost:44369/Imagenes/GuardarImagen', imageFormData, {
+                const imageResponse = await axios.post('https://localhost:44369/Imagenes/GuardarImagenPerfilAluno', imageFormData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },

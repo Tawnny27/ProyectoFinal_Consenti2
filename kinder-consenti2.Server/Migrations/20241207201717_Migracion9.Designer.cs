@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using kinder_consenti2.Server.Models;
 
@@ -11,9 +12,11 @@ using kinder_consenti2.Server.Models;
 namespace kinder_consenti2.Server.Migrations
 {
     [DbContext(typeof(Concenti2pruebasContext))]
-    partial class Concenti2pruebasContextModelSnapshot : ModelSnapshot
+    [Migration("20241207201717_Migracion9")]
+    partial class Migracion9
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -427,31 +430,6 @@ namespace kinder_consenti2.Server.Migrations
                     b.ToTable("Expediente");
                 });
 
-            modelBuilder.Entity("kinder_consenti2.Server.Models.FotoAlumno", b =>
-                {
-                    b.Property<int>("IdFotoAlumno")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdFotoAlumno"));
-
-                    b.Property<int>("AlumnoId")
-                        .HasColumnType("int");
-
-                    b.Property<DateOnly>("Fecha")
-                        .HasColumnType("date");
-
-                    b.Property<string>("RutaFoto")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("IdFotoAlumno");
-
-                    b.HasIndex("AlumnoId");
-
-                    b.ToTable("FotoAlumno");
-                });
-
             modelBuilder.Entity("kinder_consenti2.Server.Models.Gasto", b =>
                 {
                     b.Property<int>("IdGasto")
@@ -591,38 +569,6 @@ namespace kinder_consenti2.Server.Migrations
                     b.HasIndex("GruposId");
 
                     b.ToTable("ListaAsistencia");
-                });
-
-            modelBuilder.Entity("kinder_consenti2.Server.Models.MaterialDidactico", b =>
-                {
-                    b.Property<int>("IdMaterialDidactico")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdMaterialDidactico"));
-
-                    b.Property<DateOnly>("Fecha")
-                        .HasColumnType("date");
-
-                    b.Property<int>("GruposId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("NombreArchivo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RutaFoto")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("StatusAct")
-                        .HasColumnType("bit");
-
-                    b.HasKey("IdMaterialDidactico");
-
-                    b.HasIndex("GruposId");
-
-                    b.ToTable("MaterialDidactico");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Matricula", b =>
@@ -958,15 +904,6 @@ namespace kinder_consenti2.Server.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("kinder_consenti2.Server.Models.FotoAlumno", b =>
-                {
-                    b.HasOne("kinder_consenti2.Server.Models.Alumno", null)
-                        .WithMany("FotoAlumnos")
-                        .HasForeignKey("AlumnoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("kinder_consenti2.Server.Models.Gasto", b =>
                 {
                     b.HasOne("kinder_consenti2.Server.Models.Categoria", "Categoria")
@@ -1034,15 +971,6 @@ namespace kinder_consenti2.Server.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("kinder_consenti2.Server.Models.MaterialDidactico", b =>
-                {
-                    b.HasOne("kinder_consenti2.Server.Models.Grupos", null)
-                        .WithMany("MaterialDidacticos")
-                        .HasForeignKey("GruposId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("kinder_consenti2.Server.Models.Matricula", b =>
                 {
                     b.HasOne("kinder_consenti2.Server.Models.Alumno", "Alumno")
@@ -1100,8 +1028,6 @@ namespace kinder_consenti2.Server.Migrations
 
                     b.Navigation("Expedientes");
 
-                    b.Navigation("FotoAlumnos");
-
                     b.Navigation("ListaAsistencias");
 
                     b.Navigation("Matriculas");
@@ -1132,8 +1058,6 @@ namespace kinder_consenti2.Server.Migrations
                     b.Navigation("GruposAlumnos");
 
                     b.Navigation("ListaAsistencias");
-
-                    b.Navigation("MaterialDidacticos");
                 });
 
             modelBuilder.Entity("kinder_consenti2.Server.Models.Inventario", b =>

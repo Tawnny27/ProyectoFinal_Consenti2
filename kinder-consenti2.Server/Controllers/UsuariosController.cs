@@ -175,12 +175,13 @@ namespace kinder_consenti2.Server.Controllers
         [Route("EditarUsuario")]
         public ActionResult<Usuario> EditarUsuario(Usuario usuario)
         {
-            //usuario.ContrasennaUsuario = Encryptar.encripSHA256(usuario.ContrasennaUsuario);
+            //usuario.ContrasennaUsuario = Encryptar.encripSHA256(usuario.ContrasennaUsuario);              
             _context.Usuario.Update(usuario);
             _context.SaveChanges();
             return Ok(_context.Usuario.Find(usuario.IdUsuario));
         }
 
+    
         //********************* Eliminar Usuarios **************************
         [HttpDelete]
         [Route("EliminarUsuario/{id}")]

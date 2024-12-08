@@ -31,6 +31,12 @@ namespace kinder_consenti2.Server.Models
         public DbSet<ActividadDormir> ActividadDormir { get; set; }
         public DbSet<ActividadBanno> ActividadBanno { get; set; }
         public DbSet<ActividadHuerta> ActividadHuerta { get; set; }
+        public DbSet<ListaAsistencia> ListaAsistencia { get; set; }
+        public DbSet<Expediente> Expediente { get; set; }
+        public DbSet<EvaluacionDocente> EvaluacionDocente { get; set; }
+        public DbSet<EvaluacionKinder> EvaluacionKinder { get; set; }
+        public DbSet<FotoAlumno> FotoAlumno { get; set; }
+        public DbSet<MaterialDidactico> MaterialDidactico { get; set; }
 
 
 
@@ -428,6 +434,126 @@ namespace kinder_consenti2.Server.Models
 
             modelBuilder.Entity<ActividadHuerta>()
                 .Ignore(x => x.Grupo);
+            //******************************************************************
+
+
+            //************************* Tabla ListaAsistencia ******************                                                                              
+            modelBuilder.Entity<ListaAsistencia>(LA =>
+            {
+                LA.HasKey(x => x.IdListaAsistencia);
+                LA.Property(x => x.AlumnoId).IsRequired();
+                LA.Property(x => x.Fecha).IsRequired();
+                LA.Property(x => x.StatusAsistencia).IsRequired();
+            });
+            //ForeingKey
+            modelBuilder.Entity<ListaAsistencia>()
+                .HasOne(x => x.Alumno)
+                .WithMany(x => x.ListaAsistencias)
+                .HasForeignKey(f => f.AlumnoId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ListaAsistencia>()
+                .HasOne(x => x.Grupo)
+                .WithMany(x => x.ListaAsistencias)
+                .HasForeignKey(f => f.GruposId)
+                .OnDelete(DeleteBehavior.NoAction);
+            //Tablas ignoradas
+            modelBuilder.Entity<ListaAsistencia>()
+                .Ignore(x => x.Alumno);
+
+            modelBuilder.Entity<ListaAsistencia>()
+                .Ignore(x => x.Grupo);
+            //******************************************************************
+
+            //************************* Tabla Expediente **********************                                                                              
+            modelBuilder.Entity<Expediente>(E =>
+            {
+                E.HasKey(x => x.IdExpediente);
+                E.Property(x => x.AlumnoId).IsRequired();
+                E.Property(x => x.Fecha).IsRequired();
+                E.Property(x => x.Suceso).IsRequired();
+            });
+            //ForeingKey
+            modelBuilder.Entity<Expediente>()
+                .HasOne(x => x.Alumno)
+                .WithMany(x => x.Expedientes)
+                .HasForeignKey(f => f.AlumnoId)
+                .OnDelete(DeleteBehavior.NoAction);
+            //Tablas ignoradas
+            modelBuilder.Entity<Expediente>()
+                .Ignore(x => x.Alumno);
+            //******************************************************************
+
+            //************************* Tabla EvaluacionDocente ****************                                                                              
+            modelBuilder.Entity<EvaluacionDocente>(ED =>
+            {
+                ED.HasKey(x => x.IdEvaluacionDocente);
+                ED.Property(x => x.UsuarioId).IsRequired();
+                ED.Property(x => x.Fecha).IsRequired();
+                ED.Property(x => x.Puntos).IsRequired();
+            });
+            //ForeingKey
+            modelBuilder.Entity<EvaluacionDocente>()
+                .HasOne(x => x.Usuario)
+                .WithMany(x => x.EvaluacionDocentes)
+                .HasForeignKey(f => f.UsuarioId)
+                .OnDelete(DeleteBehavior.NoAction);
+            //Tablas ignoradas
+            modelBuilder.Entity<EvaluacionDocente>()
+                .Ignore(x => x.Usuario);
+            //******************************************************************
+
+
+            //************************* Tabla EvaluacionKinder *****************                                                                              
+            modelBuilder.Entity<EvaluacionKinder>(EK =>
+            {
+                EK.HasKey(x => x.IdEvaluacionKinder);
+                EK.Property(x => x.Fecha).IsRequired();
+                EK.Property(x => x.PuntosIntalacion).IsRequired();
+                EK.Property(x => x.PuntosPersonlAdm).IsRequired();
+                EK.Property(x => x.PuntosEnsenaza).IsRequired();
+            });
+
+            //******************************************************************
+
+            //************************* Tabla FotoAlumno ***********************                                                                              
+            modelBuilder.Entity<FotoAlumno>(F =>
+            {
+                F.HasKey(x => x.IdFotoAlumno);
+                F.Property(x => x.AlumnoId).IsRequired();
+                F.Property(x => x.Fecha).IsRequired();
+                F.Property(x => x.RutaFoto).IsRequired();
+            });
+            //ForeingKey
+            modelBuilder.Entity<FotoAlumno>()
+                .HasOne(x => x.Alumno)
+                .WithMany(x => x.FotoAlumnos)
+                .HasForeignKey(f => f.AlumnoId)
+                .OnDelete(DeleteBehavior.NoAction);
+            //Tablas ignoradas
+            modelBuilder.Entity<FotoAlumno>()
+                .Ignore(x => x.Alumno);
+            //******************************************************************
+
+            //************************* Tabla MaterialDidactico ****************                                                                              
+            modelBuilder.Entity<MaterialDidactico>(F =>
+            {
+                F.HasKey(x => x.IdMaterialDidactico);
+                F.Property(x => x.GruposId).IsRequired();
+                F.Property(x => x.NombreArchivo).IsRequired();
+                F.Property(x => x.Fecha).IsRequired();
+                F.Property(x => x.RutaFoto).IsRequired();
+                F.Property(x => x.StatusAct).IsRequired();
+            });
+            //ForeingKey
+            modelBuilder.Entity<MaterialDidactico>()
+                .HasOne(x => x.Grupos)
+                .WithMany(x => x.MaterialDidacticos)
+                .HasForeignKey(f => f.GruposId)
+                .OnDelete(DeleteBehavior.NoAction);
+            //Tablas ignoradas
+            modelBuilder.Entity<MaterialDidactico>()
+                .Ignore(x => x.Grupos);
             //******************************************************************
 
         }

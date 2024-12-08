@@ -1,4 +1,5 @@
-﻿using kinder_consenti2.Server.Models;
+﻿using kinder_consenti2.Server.Herramientas;
+using kinder_consenti2.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,10 +10,13 @@ namespace kinder_consenti2.Server.Controllers
     public class AlumnosController : ControllerBase
     {
         private readonly Concenti2pruebasContext _context;
+        private readonly SaveImages _saveImage;
 
         public AlumnosController(Concenti2pruebasContext context)
         {
             _context = context;
+            _saveImage = new SaveImages();
+
         }
 
         //************** Consultar Alumnos ******************
@@ -39,10 +43,17 @@ namespace kinder_consenti2.Server.Controllers
         [Route("CrearAlumno")]
         public ActionResult<Alumno> CrearAlumno(Alumno alumno)
         {
-            _context.Alumno.Add(alumno);
-            _context.SaveChanges();
-            var insertado = _context.Alumno.Find(alumno.IdAlumno);
-            return Ok(insertado);
+            try
+            {
+                _context.Alumno.Add(alumno);
+                _context.SaveChanges();
+                var insertado = _context.Alumno.Find(alumno.IdAlumno);                
+                return Ok(insertado);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error: " + ex.Message);
+            }
         }
 
         //********************* Editar Alumnos **************************

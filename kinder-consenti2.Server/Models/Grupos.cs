@@ -16,5 +16,7 @@
         public List<ActividadComida>? ActividadComidas { get; set; }
         public List<ActividadDormir>? ActividadDormirs { get; set; }
         public List<ActividadHuerta>? ActividadHuertas { get; set; }
+        public List<ListaAsistencia>? ListaAsistencias { get; set; }
+        public List<MaterialDidactico>? MaterialDidacticos { get; set; }
     }
 }

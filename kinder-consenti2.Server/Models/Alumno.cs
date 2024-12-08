@@ -20,6 +20,9 @@
         public List<ActividadDormir>? ActividadDormirs { get; set; }
         public List<ActividadBanno>? ActividadBannos { get; set; }
         public List<ActividadHuerta>? ActividadHuertas { get; set; }
+        public List<ListaAsistencia>? ListaAsistencias { get; set; }
+        public List<Expediente>? Expedientes { get; set; }
+        public List<FotoAlumno>? FotoAlumnos { get; set; }
 
 
         //******** Autorizado a recoger el alumno *********
