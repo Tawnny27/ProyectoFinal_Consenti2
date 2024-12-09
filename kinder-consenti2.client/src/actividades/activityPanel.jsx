@@ -1,43 +1,23 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate
+import { useNavigate } from 'react-router-dom';
 import './ActivityPanel.css';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
+import { faCarrot } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function ActivityPanel() {
     const [selectedActivity, setSelectedActivity] = useState("");
-    const [comments, setComments] = useState("");
-    const [status, setStatus] = useState("");
-    const [startTime, setStartTime] = useState("");
-    const [endTime, setEndTime] = useState("");
-    const [bathroomVisits, setBathroomVisits] = useState(0);
+    const [childrenData, setChildrenData] = useState([
+        { name: "Juan Pérez", status: "Bueno", comments: "Comió todo" },
+        { name: "María López", status: "Regular", comments: "No quiso la sopa" },
+        { name: "Carlos Sánchez", status: "Malo", comments: "No comió nada" }
+    ]);
 
-    const navigate = useNavigate(); // Inicializa el hook de navegación
+    const navigate = useNavigate();
 
-    const handleActivityChange = (e) => {
-        setSelectedActivity(e.target.value);
-        setComments("");
-        setStatus("");
-        setStartTime("");
-        setEndTime("");
-        setBathroomVisits(0);
-    };
-
-    const handleStatusChange = (e) => setStatus(e.target.value);
-    const handleCommentsChange = (e) => setComments(e.target.value);
-    const handleStartTimeChange = (e) => setStartTime(e.target.value);
-    const handleEndTimeChange = (e) => setEndTime(e.target.value);
-    const handleBathroomVisitsChange = (e) => setBathroomVisits(e.target.value);
-
-    const handleSubmit = () => {
-        console.log({
-            selectedActivity,
-            status,
-            comments,
-            startTime,
-            endTime,
-            bathroomVisits,
-        });
+    const handleActivitySelect = (activity) => {
+        setSelectedActivity(activity);
     };
 
     const handleCancel = () => {
@@ -45,7 +25,13 @@ function ActivityPanel() {
     };
 
     const goToActivityForm = () => {
-        navigate('/activity-form'); 
+        navigate('/activity-form');
+    };
+
+    const handleInputChange = (index, field, value) => {
+        const updatedData = [...childrenData];
+        updatedData[index][field] = value;
+        setChildrenData(updatedData);
     };
 
     return (
@@ -55,120 +41,200 @@ function ActivityPanel() {
                 <div className="activity-panel">
                     <h1 className="activity-title">Panel de Actividades</h1>
 
-                    {/* Selector de actividad */}
-                    <div className="activity-section mb-3">
-                        <label className="activity-label">Selecciona una Actividad:</label>
-                        <select
-                            className="activity-select"
-                            value={selectedActivity}
-                            onChange={handleActivityChange}
+                    {/* Botones para seleccionar la actividad */}
+                    <div className="activity-buttons">
+                        <button
+                            className={`activity-button fa-light fa-carrot ${selectedActivity === 'Comida' ? 'active' : ''}`} 
+                            onClick={() => handleActivitySelect('Comida')} 
                         >
-                            <option value="">Seleccionar</option>
-                            <option value="Comida">Comida</option>
-                            <option value="Dormir">Dormir</option>
-                            <option value="Ir al Baño">Ir al Baño</option>
-                            <option value="Huerta">Huerta</option>
-                        </select>
+                            Comida  <FontAwesomeIcon icon={faCarrot} />
+                        </button>
+                        <button
+                            className={`activity-button ${selectedActivity === 'Dormir' ? 'active' : ''}`}
+                            onClick={() => handleActivitySelect('Dormir')}
+                        >
+                            Dormir
+                        </button>
+                        <button
+                            className={`activity-button ${selectedActivity === 'Ir al Baño' ? 'active' : ''}`}
+                            onClick={() => handleActivitySelect('Ir al Baño')}
+                        >
+                            Ir al Baño
+                        </button>
+                        <button
+                            className={`activity-button ${selectedActivity === 'Huerta' ? 'active' : ''}`}
+                            onClick={() => handleActivitySelect('Huerta')}
+                        >
+                            Huerta
+                        </button>
                     </div>
 
-                    {/* Opciones dinámicas según actividad */}
+                    {/* Tabla de datos para "Comida" */}
                     {selectedActivity === "Comida" && (
                         <div>
-                            <label className="activity-label">Estatus de Comida:</label>
-                            <select
-                                className="activity-select"
-                                value={status}
-                                onChange={handleStatusChange}
-                            >
-                                <option value="">Seleccionar</option>
-                                <option value="Bueno">Bueno</option>
-                                <option value="Regular">Regular</option>
-                                <option value="Malo">Malo</option>
-                            </select>
-                            <label className="activity-label">Comentarios:</label>
-                            <textarea
-                                className="activity-textarea"
-                                value={comments}
-                                onChange={handleCommentsChange}
-                                placeholder="Escribe un comentario"
-                            ></textarea>
+                            <h2 className="activity-subtitle">Estado de Comida</h2>
+                            <table className="activity-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre del Niño</th>
+                                        <th>Estatus de Comida</th>
+                                        <th>Comentarios</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {childrenData.map((child, index) => (
+                                        <tr key={index}>
+                                            <td>{child.name}</td>
+                                            <td>
+                                                <select
+                                                    value={child.status}
+                                                    onChange={(e) => handleInputChange(index, 'status', e.target.value)}
+                                                    className="activity-select"
+                                                >
+                                                    <option value="Bueno">Bueno</option>
+                                                    <option value="Regular">Regular</option>
+                                                    <option value="Malo">Malo</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    value={child.comments}
+                                                    onChange={(e) => handleInputChange(index, 'comments', e.target.value)}
+                                                    className="activity-input"
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     )}
 
+                    {/* Tabla de datos para "Dormir" */}
                     {selectedActivity === "Dormir" && (
                         <div>
-                            <label className="activity-label">Hora de Inicio de Siesta:</label>
-                            <input
-                                type="time"
-                                className="activity-input"
-                                value={startTime}
-                                onChange={handleStartTimeChange}
-                            />
-                            <label className="activity-label">Hora de Fin de Siesta:</label>
-                            <input
-                                type="time"
-                                className="activity-input"
-                                value={endTime}
-                                onChange={handleEndTimeChange}
-                            />
-                            <label className="activity-label">Comentarios:</label>
-                            <textarea
-                                className="activity-textarea"
-                                value={comments}
-                                onChange={handleCommentsChange}
-                                placeholder="Escribe un comentario"
-                            ></textarea>
+                            <h2 className="activity-subtitle">Estado de Dormir</h2>
+                            <table className="activity-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre del Niño</th>
+                                        <th>Hora de Inicio</th>
+                                        <th>Hora de Fin</th>
+                                        <th>Comentarios</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {childrenData.map((child, index) => (
+                                        <tr key={index}>
+                                            <td>{child.name}</td>
+                                            <td>
+                                                <input
+                                                    type="time"
+                                                    className="activity-input"
+                                                />
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="time"
+                                                    className="activity-input"
+                                                />
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    value={child.comments}
+                                                    onChange={(e) => handleInputChange(index, 'comments', e.target.value)}
+                                                    className="activity-input"
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     )}
 
+                    {/* Tabla de datos para "Ir al Baño" */}
                     {selectedActivity === "Ir al Baño" && (
                         <div>
-                            <label className="activity-label">Veces que fue al Baño:</label>
-                            <input
-                                type="number"
-                                className="activity-input"
-                                value={bathroomVisits}
-                                onChange={handleBathroomVisitsChange}
-                                min="0"
-                            />
-                            <label className="activity-label">Comentarios:</label>
-                            <textarea
-                                className="activity-textarea"
-                                value={comments}
-                                onChange={handleCommentsChange}
-                                placeholder="Escribe un comentario"
-                            ></textarea>
+                            <h2 className="activity-subtitle">Estado de Baño</h2>
+                            <table className="activity-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre del Niño</th>
+                                        <th>Veces que fue al baño</th>
+                                        <th>Comentarios</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {childrenData.map((child, index) => (
+                                        <tr key={index}>
+                                            <td>{child.name}</td>
+                                            <td>
+                                                <input
+                                                    type="number"
+                                                    className="activity-input"
+                                                    min="0"
+                                                />
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    value={child.comments}
+                                                    onChange={(e) => handleInputChange(index, 'comments', e.target.value)}
+                                                    className="activity-input"
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     )}
 
+                    {/* Tabla de datos para "Huerta" */}
                     {selectedActivity === "Huerta" && (
                         <div>
-                            <label className="activity-label">Participación en la Huerta:</label>
-                            <select
-                                className="activity-select"
-                                value={status}
-                                onChange={handleStatusChange}
-                            >
-                                <option value="">Seleccionar</option>
-                                <option value="Muy participativo">Muy participativo</option>
-                                <option value="Participativo">Participativo</option>
-                                <option value="Poco participativo">Poco participativo</option>
-                            </select>
-                            <label className="activity-label">Comentarios:</label>
-                            <textarea
-                                className="activity-textarea"
-                                value={comments}
-                                onChange={handleCommentsChange}
-                                placeholder="Escribe un comentario"
-                            ></textarea>
+                            <h2 className="activity-subtitle">Estado de Huerta</h2>
+                            <table className="activity-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre del Niño</th>
+                                        <th>Participación</th>
+                                        <th>Comentarios</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {childrenData.map((child, index) => (
+                                        <tr key={index}>
+                                            <td>{child.name}</td>
+                                            <td>
+                                                <select
+                                                    className="activity-select"
+                                                >
+                                                    <option value="Muy participativo">Muy participativo</option>
+                                                    <option value="Participativo">Participativo</option>
+                                                    <option value="Poco participativo">Poco participativo</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    value={child.comments}
+                                                    onChange={(e) => handleInputChange(index, 'comments', e.target.value)}
+                                                    className="activity-input"
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     )}
 
-                    {/* Botones de guardar, cancelar y nuevo formulario */}
-                    <div className="activity-buttons">
-                        <button className="activity-submit-button" onClick={handleSubmit}>
-                            Guardar Actividad
-                        </button>
+                    {/* Botones de cancelar y nuevo formulario */}
+                    <div className="activity-buttons mt-5">
                         <button className="activity-cancel-button" onClick={handleCancel}>
                             Cancelar
                         </button>
