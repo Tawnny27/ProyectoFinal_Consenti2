@@ -12,7 +12,6 @@
     background-color: white;
     padding: 30px;
     width: 90%;
-    max-width: 500px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -104,3 +103,77 @@
     margin-top: -8px;
     margin-bottom: 10px;
 }
+
+/* Contenedor de la tabla con desplazamiento horizontal */
+.activity-table-container {
+    overflow-x: auto; /* Habilita el desplazamiento horizontal */
+    -webkit-overflow-scrolling: touch; /* Asegura una mejor experiencia en dispositivos móviles */
+    margin-bottom: 20px; /* Espacio debajo de la tabla */
+}
+
+/* Estilo para la tabla en sí */
+.activity-table {
+    width: 100%;
+    min-width: 600px; /* Establece un ancho mínimo para evitar que se deforme demasiado */
+    border-collapse: collapse; /* Mejora el aspecto visual */
+    margin-bottom: 20px; /* Espacio debajo de la tabla */
+}
+
+    .activity-table th,
+    .activity-table td {
+        padding: 12px;
+        text-align: left;
+        font-size: 14px;
+        white-space: nowrap; /* Evita que el texto se ajuste y se deforme */
+    }
+
+    /* Estilo de los encabezados */
+    .activity-table th {
+        background-color: #A569BD;
+        color: white;
+        font-weight: bold;
+    }
+
+/* Responsividad: se activará cuando el ancho sea menor de 768px */
+@media (max-width: 768px) {
+    .activity-table th,
+    .activity-table td {
+        font-size: 12px; /* Reduce el tamaño del texto en pantallas pequeñas */
+        padding: 8px; /* Reduce el espacio en las celdas */
+    }
+
+    .activity-table td {
+        word-wrap: break-word; /* Permite que el texto largo se rompa en varias líneas si es necesario */
+    }
+
+    .activity-buttons {
+        flex-direction: column; /* Cambia la disposición de los botones a columna */
+    }
+
+    .activity-submit-button,
+    .activity-cancel-button {
+        width: 100%; /* Hace que los botones ocupen todo el ancho en pantallas pequeñas */
+        margin-bottom: 10px;
+    }
+}
+
+/* Estilo para los botones de las actividades */
+.activity-button {
+    background-color: #A569BD; /* Color morado claro */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px;
+}
+
+    .activity-button:hover {
+        background-color: #8E44AD; /* Un tono más oscuro cuando se pasa el ratón */
+    }
+
+    /* Estilo para el botón activo */
+    .activity-button.active {
+        background-color: #8E44AD; /* Un tono más oscuro para el botón activo */
+    }
