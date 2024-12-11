@@ -16,16 +16,15 @@ namespace kinder_consenti2.Server.Controllers
         public DetalleFacturaController(Concenti2pruebasContext context)
         {
             _context = context;
-        }
-               
+        }               
 
         [HttpGet]
         [Route("BuscarDeallesFactura/{idEncabezado}")]
-        public ActionResult<EncabezadoFactura> BuscarFactura(int idEncabezado)
+        public async Task<ActionResult<List<DetalleFactura>>> BuscarFactura(int idEncabezado)
         {
-            var DetallesEncontrados = _context.DetalleFactura.FirstOrDefault(x => x.EncabezadoFacturaId == idEncabezado);
-            if (DetallesEncontrados == null)
-                return BadRequest("Factura no encontrada");
+            var DetallesEncontrados = await _context.DetalleFactura.Where(x => x.EncabezadoFacturaId == idEncabezado).ToListAsync();
+            if (DetallesEncontrados.Count==0)
+                return NotFound("Factura no encontrada");
             return Ok(DetallesEncontrados);
         }
 

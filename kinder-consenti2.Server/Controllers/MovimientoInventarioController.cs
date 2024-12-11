@@ -1,5 +1,6 @@
 ﻿using kinder_consenti2.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace kinder_consenti2.Server.Controllers
 {
@@ -16,24 +17,22 @@ namespace kinder_consenti2.Server.Controllers
 
         [HttpGet]
         [Route("ObtenerMovimientos")]
-        public ActionResult<List<MovimientosInventario>> ObtenerMovimientos()
+        public async Task<ActionResult<List<MovimientosInventario>>> ObtenerMovimientos()
         {
-            return Ok(_context.MovimientosInventario.ToList());
+            return Ok(await _context.MovimientosInventario.ToListAsync());
         }
 
         [HttpGet]
         [Route("BuscarMovimiento/{id}")]
-        public ActionResult<MovimientosInventario> BuscarMovimiento(int id)
+        public async Task<ActionResult<MovimientosInventario>> BuscarMovimiento(int id)
         {
-            return Ok(_context.MovimientosInventario.Find(id));
+            return Ok(await _context.MovimientosInventario.FindAsync(id));
         }
 
         [HttpPost]
         [Route("CrearMovimiento")]
-        public ActionResult<MovimientosInventario> CrearMovimiento(MovimientosInventario movimientosInventario)
+        public async Task<ActionResult<MovimientosInventario>> CrearMovimiento(MovimientosInventario movimientosInventario)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Falta algún dato");
             _context.MovimientosInventario.Add(movimientosInventario);
             _context.SaveChanges();
             var insertado = _context.MovimientosInventario
@@ -52,26 +51,26 @@ namespace kinder_consenti2.Server.Controllers
         
         [HttpPut]
         [Route("EditarMovimiento")]
-        public ActionResult<MovimientosInventario> EditarMovimiento(MovimientosInventario movimientosInventario)
+        public async  Task<ActionResult<MovimientosInventario>> EditarMovimiento(MovimientosInventario movimientosInventario)
         {
-            var movimiento = _context.MovimientosInventario
-                .Find(movimientosInventario.IdMovimientosInventario);
+            var movimiento = await _context.MovimientosInventario
+                .FindAsync(movimientosInventario.IdMovimientosInventario);
             if (movimiento.Cantidad != movimientosInventario.Cantidad)
                 return BadRequest("No se pude cambiar la cantidad");
             _context.MovimientosInventario.Update(movimientosInventario);
-            _context.SaveChanges();
-            return Ok(_context.MovimientosInventario.Find(movimientosInventario.IdMovimientosInventario));
+            await _context.SaveChangesAsync();
+            return Ok(await _context.MovimientosInventario.FindAsync(movimientosInventario.IdMovimientosInventario));
         }
         
 
         
         [HttpDelete]
         [Route("EliminarMovimiento/{id}")]
-        public ActionResult<string> EliminarMovimiento(int id)
+        public async Task<ActionResult<string>> EliminarMovimiento(int id)
         {
-            var movimientosInventario = _context.MovimientosInventario.Find(id);
+            var movimientosInventario = await _context.MovimientosInventario.FindAsync(id);
             _context.MovimientosInventario.Remove(movimientosInventario);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok("Movimiento eliminado");
         }
         

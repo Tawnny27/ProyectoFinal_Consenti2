@@ -11,18 +11,7 @@
         public string GeneroAlumno { get; set; }
         public string DireccionAlumno { get; set; }
         public string InformacionAdicional { get; set; }
-        public string? FotoAlumno { get; set; }
-        public Usuario? Usuario { get; set; }
-        public List<Matricula>? Matriculas { get; set; }
-        public List<DetalleFactura>? DetalleFacturas { get; set; }
-        public List<GruposAlumnos>? AlumnosAlumnos { get; set; }
-        public List<ActividadComida>? ActividadComidas { get; set; }
-        public List<ActividadDormir>? ActividadDormirs { get; set; }
-        public List<ActividadBanno>? ActividadBannos { get; set; }
-        public List<ActividadHuerta>? ActividadHuertas { get; set; }
-        public List<ListaAsistencia>? ListaAsistencias { get; set; }
-        public List<Expediente>? Expedientes { get; set; }
-        public List<FotoAlumno>? FotoAlumnos { get; set; }
+        public string? FotoAlumno { get; set; }       
 
 
         //******** Autorizado a recoger el alumno *********
@@ -36,6 +25,20 @@
         public string CedulaContacto { get; set; }
         public int TelefonoContacto { get; set; }
         public string RelacionContacto { get; set; }
+
+
+        //***************** Relaciones ***********************
+        public Usuario? Usuario { get; set; }
+        public List<Matricula>? Matriculas { get; set; }
+        public List<DetalleFactura>? DetalleFacturas { get; set; }
+        public List<GruposAlumnos>? AlumnosAlumnos { get; set; }
+        public List<ActividadComida>? ActividadComidas { get; set; }
+        public List<ActividadDormir>? ActividadDormirs { get; set; }
+        public List<ActividadBanno>? ActividadBannos { get; set; }
+        public List<ActividadHuerta>? ActividadHuertas { get; set; }
+        public List<ListaAsistencia>? ListaAsistencias { get; set; }
+        public List<Expediente>? Expedientes { get; set; }
+        public List<FotoAlumno>? FotoAlumnos { get; set; }
 
     }
 }

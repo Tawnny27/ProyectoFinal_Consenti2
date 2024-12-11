@@ -32,8 +32,8 @@ namespace kinder_consenti2.Server.Controllers
         public ActionResult<Grupos> CrearGrupo(Grupos grupo)
         {
             var usuario = _context.Usuario.Find(grupo.UsuarioId);
-            if (usuario.RolId != 2)
-                return BadRequest("Error: intenta asignar un Usuario que no es maestro.");
+            if (usuario == null) return NotFound("No se encontraron datos favor validar");
+            if (usuario.RolId != 2) return BadRequest("Error: intenta asignar un Usuario que no es maestro.");
             _context.Grupos.Add(grupo);
             _context.SaveChanges();
             var insertado = _context.Grupos.Find(grupo.IdGrupos);
@@ -54,6 +54,7 @@ namespace kinder_consenti2.Server.Controllers
         public ActionResult<string> EliminarGrupos(int id)
         {
             var grupo = _context.Grupos.Find(id);
+            if (grupo == null) return NotFound("No se encontraron datos favor validar");
             _context.Grupos.Remove(grupo);
             _context.SaveChanges();
             return Ok("Grupo eliminado");
