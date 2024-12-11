@@ -31,11 +31,11 @@ namespace kinder_consenti2.Server.Controllers
 
         [HttpPost]
         [Route("CrearDetallesFactura")]
-        public ActionResult<EncabezadoFactura> CrearFactura(EncabezadoFactura factura)
+        public async Task<ActionResult<EncabezadoFactura>> CrearFactura(EncabezadoFactura factura)
         {
             _context.EncabezadoFactura.Add(factura);
-            _context.SaveChanges();
-            var insertada = _context.EncabezadoFactura.Find(factura.IdFactura);
+            await _context.SaveChangesAsync();
+            var insertada = await _context.EncabezadoFactura.FindAsync(factura.IdFactura);
             return Ok(insertada);
 
         }
