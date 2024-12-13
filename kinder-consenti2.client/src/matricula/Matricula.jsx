@@ -29,6 +29,12 @@ const Matricula = () => {
         discount: 0, // Descuento
     });
 
+    const [userDetails, setUserDetails] = useState({
+        idPadre: 0,
+        idRol: 0
+    });
+
+    const [selectedUser, setSelectedUser] = useState(null); 
     const [childrenList, setChildrenList] = useState([]);
     const [userList, setUserList] = useState([]);
     const [error, setError] = useState('');
@@ -47,10 +53,12 @@ const Matricula = () => {
                         setFormData((prev) => ({
                             ...prev,
                             id: user.idUsuario,
+                            rol: user.rolId,
                             parentFullName: `${user.nombreUsuario} ${user.apellidosUsuario}`,
                             parentID: user.cedulaUsuario,
                             phone: user.telefonoUsuario || '',
                             address: user.direccionUsuario || '',
+                            
                         }));
 
                         // Llamada para obtener los datos del usuario con el idUsuario del padre
@@ -99,8 +107,6 @@ const Matricula = () => {
     }, [user]); // Dependencia solo de `user` para evitar la carga infinita
 
 
-
-
     const fetchUsers = async () => {
         try {
             const { data } = await axios.get('https://localhost:44369/Usuarios/ObtenerUsuarios');
@@ -108,6 +114,7 @@ const Matricula = () => {
                 .filter((usuario) => usuario.rolId === 3)
                 .map((usuario) => ({
                     id: usuario.idUsuario,
+                    rol: usuario.rolId,
                     name: `${usuario.nombreUsuario} ${usuario.apellidosUsuario}`,
                     idCard: usuario.cedulaUsuario,
                     children: usuario.alumnos || [], // Asegúrate de que la API devuelve `alumnos`
@@ -134,11 +141,12 @@ const Matricula = () => {
 
             // Obtener idUsuario y idRol
             const idPadre = selectedUser.id;
-            const idRol = selectedUser.rolId;  // Suponiendo que el rol está guardado como 'rolId' en el objeto 'selectedUser'
+            const idRol = selectedUser.rol;  // Suponiendo que el rol está guardado como 'rolId' en el objeto 'selectedUser'
 
             // Aquí podrías hacer algo con esos valores si los necesitas, por ejemplo:
             console.log('ID Padre:', idPadre);
             console.log('ID Rol:', idRol);
+            
 
             // Si necesitas guardarlos en el estado o hacer alguna otra acción con ellos, puedes hacerlo aquí.
             // Ejemplo:
@@ -146,7 +154,9 @@ const Matricula = () => {
                 idPadre,
                 idRol
             });
-        }
+            // Guardar el usuario seleccionado
+            setSelectedUser(selectedUser); // Esto asegura que tienes acceso al usuario seleccionado
+        } 
     };
 
     const handleChange = (e) => {
@@ -262,23 +272,23 @@ const Matricula = () => {
     //Envia datos
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.selectedChildren.length) {
-            setError('Debes seleccionar al menos un niño para matricular.');
-            return;
-        }
-        if (!formData.proofOfPayment) {
-            setError('Debes agregar un comprobante de pago.');
-            return;
-        }
+        ////if (!formData.selectedChildren.length) {
+        ////    setError('Debes seleccionar al menos un niño para matricular.');
+        ////    return;
+        ////}
+        ////if (!formData.proofOfPayment) {
+        ////    setError('Debes agregar un comprobante de pago.');
+        ////    return;
+        ////}
 
 
-        // Validar el comprobante de pago antes de enviarlo
-        try {
-            validatePaymentProof(formData.proofOfPayment);
-        } catch (error) {
-            setError(error.message);
-            return;
-        }
+        //// Validar el comprobante de pago antes de enviarlo
+        //try {
+        //    validatePaymentProof(formData.proofOfPayment);
+        //} catch (error) {
+        //    setError(error.message);
+        //    return;
+        //}
 
         // Preparar los detalles de la matrícula (productos, monto, días)
         const detalles = selectedProductos.map((productoId) => {
@@ -294,10 +304,13 @@ const Matricula = () => {
         });
 
         const dataToSend = {
-            clienteId: user.idUsuario,
-            rollId: user.rolId, 
+            ...(user.rolId === 3 && { clienteId: user.idUsuario, rollId: user.rolId }),
+            ...(user.rolId === 1 && { clienteId: userDetails.idPadre, rollId: userDetails.idRol }),
+            //clienteId: user.idUsuario,
+            //rollId:  user.rolId,
             metodoPago: formData.paymentMethod,
-            imagenPago: formData.proofOfPayment,
+            /*imagenPago: formData.proofOfPayment,*/
+            imagenPago: 'Prueba',
             fecha: new Date().toISOString(),
             referencia: formData.referenceNumber, // Número de referencia
             subtotal: formData.subtotal,
@@ -374,14 +387,18 @@ const Matricula = () => {
                                         handleFileChange={handleFileChange}
                                         userRole={user.rolId}
                                     />
-                                    <label>Número de Referencia del Comprobante:</label>
-                                    <input
-                                        type="text"
-                                        name="referenceNumber"
-                                        value={formData.referenceNumber}
-                                        onChange={handleChange}
-                                    //required
-                                    />
+                                    {formData.paymentMethod !== 'Efectivo' && (
+                                        <>
+                                            <label>Número de Referencia del Comprobante:</label>
+                                            <input
+                                                type="text"
+                                                name="referenceNumber"
+                                                value={formData.referenceNumber}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </>
+                                    )}
                                     <div className="payment-period">
                                         <label>
                                             Periodo:
@@ -451,7 +468,7 @@ const Matricula = () => {
 
                     <div className="buttons">
                         <button type="submit">Realizar Matrícula</button>
-                        <button type="button" onClick={(handleSubmit) => (window.location.href = '/main')}>
+                        <button type="button" onClick={() => (window.location.href = '/main')}>
                             Cancelar
                         </button>
                     </div>
@@ -497,12 +514,15 @@ const PaymentSection = ({ formData, handleChange, handleFileChange, userRole }) 
             />
             Efectivo
         </label>
-        <div className="proof-of-payment">
-            <label>Agregar comprobante de pago:</label>
-            <input type="file" onChange={handleFileChange} />
-        </div>
+        {formData.paymentMethod !== 'Efectivo' && (
+            <div className="proof-of-payment">
+                <label>Agregar comprobante de pago:</label>
+                <input type="file" onChange={handleFileChange} />
+            </div>
+        )}
     </div>
 );
+
 
 const ParentInfo = ({ formData, handleChange, userRole }) => (
     <div className="parent-info">
