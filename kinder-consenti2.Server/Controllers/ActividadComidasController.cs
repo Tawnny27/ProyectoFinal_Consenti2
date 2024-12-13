@@ -18,47 +18,36 @@ namespace kinder_consenti2.Server.Controllers
         //************** Consultar ActividadComidas ******************
         [HttpGet]
         [Route("ObtenerActividadComidas/{gruposId}&{fecha}")]
-        public ActionResult<List<ActividadComida>> ObtenerActividadComidas(int gruposId, DateOnly fecha)
+        public async Task<ActionResult<List<ActividadComida>>> ObtenerActividadComidas(int gruposId, DateOnly fecha)
         {
             try
-            {
-                return Ok(_context.ActividadComida.ToList().Where(x=> x.GruposId== gruposId && x.Fecha==fecha));
+            { 
+                return Ok(await _context.ActividadComida.Where(x => x.GruposId == gruposId && x.Fecha == fecha).ToListAsync());
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error en la ejecución " + ex.Message);
-            }
+            catch (Exception ex){ return BadRequest("Error en la ejecución " + ex.Message); }
         }
 
         //************** Consultar un ActividadComidasAlumno******************
         [HttpGet]
         [Route("BuscarActividadComidas/{idAlumno}")]
-        public ActionResult<List<ActividadComida>> BuscarActividadComidas(int idAlumno)
+        public async Task<ActionResult<List<ActividadComida>>> BuscarActividadComidas(int idAlumno)
         {
             try
             {
                 if (idAlumno == 0)
-                {
                     return BadRequest("Debe ingresar un Alumno");
-                }
-                var actividadComidas = _context.ActividadComida.ToList().Where(x => x.AlumnoId == idAlumno);
-                if (actividadComidas.Count() == 0)
-                {
+                var actividadComidas = await _context.ActividadComida.Where(x => x.AlumnoId == idAlumno).ToListAsync();
+                if (!actividadComidas.Any())
                     return Ok("No hay registros");
-                }
                 return Ok(actividadComidas);
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error en la ejecución " + ex.Message);
-            }
-
+            catch (Exception ex) {  return BadRequest("Error en la ejecución " + ex.Message); }
         }
 
         //********************* Crear ActividadComida ********************
         [HttpPost]
         [Route("CrearActividadComidas")]
-        public ActionResult<string> CrearActividadComida(List<ActividadComida> ListaActividadComida)
+        public async Task<ActionResult<string>> CrearActividadComida(List<ActividadComida> ListaActividadComida)
         {
             try
             {
@@ -69,36 +58,26 @@ namespace kinder_consenti2.Server.Controllers
                         return BadRequest("Falta algun dato en almenos un registro");
                 }
                 _context.ActividadComida.AddRange(ListaActividadComida);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return Ok("Registros insertados");
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error en la ejecución " + ex.Message);
-            }
+            catch (Exception ex) {  return BadRequest("Error en la ejecución " + ex.Message); }
         }
 
         //********************* Editar ActividadComida ********************
         [HttpPut]
         [Route("EditarActividadComida")]
-        public ActionResult<ActividadComida> EditarActividadComida(ActividadComida actividadComida)
+        public async Task<ActionResult<ActividadComida>> EditarActividadComida(ActividadComida actividadComida)
         {
             try
             {
                 if (actividadComida == null)
-                {
                     return BadRequest("Debeingresar Los datos");
-                }
                 _context.ActividadComida.Update(actividadComida);
-                _context.SaveChanges();
-                return Ok(_context.ActividadComida.Find(actividadComida.IdActividadComida));
+                await _context.SaveChangesAsync();
+                return Ok(await _context.ActividadComida.FindAsync(actividadComida.IdActividadComida));
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error en la ejecución " + ex.Message);
-            }
+            catch (Exception ex) { return BadRequest("Error en la ejecución " + ex.Message);}
         }
-
-
     }
 }

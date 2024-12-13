@@ -1,5 +1,6 @@
 ﻿using kinder_consenti2.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace kinder_consenti2.Server.Controllers
 {
@@ -17,47 +18,36 @@ namespace kinder_consenti2.Server.Controllers
         //************** Consultar ActividadDormir ******************
         [HttpGet]
         [Route("ObtenerActividadDormirs/{gruposId}&{fecha}")]
-        public ActionResult<List<ActividadDormir>> ObtenerActividadDormirs(int gruposId, DateOnly fecha)
+        public async Task<ActionResult<List<ActividadDormir>>> ObtenerActividadDormirs(int gruposId, DateOnly fecha)
         {
             try
             {
-                return Ok(_context.ActividadDormir.ToList().Where(x => x.GruposId == gruposId && x.Fecha == fecha));
+                return Ok(await _context.ActividadDormir.Where(x => x.GruposId == gruposId && x.Fecha == fecha).ToListAsync());
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error en la ejecución " + ex.Message);
-            }
+            catch (Exception ex) { return BadRequest("Error en la ejecución " + ex.Message); }
         }
 
         //************** Consultar un ActividadDormir ******************
         [HttpGet]
         [Route("BuscarActividadDormirs/{idAlumno}")]
-        public ActionResult<List<ActividadDormir>> BuscarActividadDormirs(int idAlumno)
+        public async Task<ActionResult<List<ActividadDormir>>> BuscarActividadDormirs(int idAlumno)
         {
             try
             {
                 if (idAlumno == 0)
-                {
                     return BadRequest("Debe ingresar un Alumno");
-                }
-                var actividadDormir = _context.ActividadDormir.ToList().Where(x => x.AlumnoId == idAlumno);
-                if (actividadDormir.Count() == 0)
-                {
+                var actividadDormir = await _context.ActividadDormir.Where(x => x.AlumnoId == idAlumno).ToListAsync();
+                if (actividadDormir.Count==0)
                     return Ok("No hay registros");
-                }
                 return Ok(actividadDormir);
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error en la ejecución " + ex.Message);
-            }
-
+            catch (Exception ex) { return BadRequest("Error en la ejecución " + ex.Message); }
         }
 
         //********************* Crear actividadDormir ********************
         [HttpPost]
         [Route("CrearActividadDormir")]
-        public ActionResult<string> CrearActividadComida(List<ActividadDormir> ListaactividadDormir)
+        public async Task<ActionResult<string>> CrearActividadComida(List<ActividadDormir> ListaactividadDormir)
         {
             try
             {
@@ -68,34 +58,26 @@ namespace kinder_consenti2.Server.Controllers
                         return BadRequest("Falta algun dato en almenos un registro");
                 }
                 _context.ActividadDormir.AddRange(ListaactividadDormir);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return Ok("Registros insertados");
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error en la ejecución " + ex.Message);
-            }
+            catch (Exception ex) { return BadRequest("Error en la ejecución " + ex.Message); }
         }
 
         //********************* Editar ActividadDormir ********************
         [HttpPut]
         [Route("EditarActividadDormir")]
-        public ActionResult<ActividadDormir> EditarActividadDormir(ActividadDormir actividadDormir)
+        public async Task<ActionResult<ActividadDormir>> EditarActividadDormir(ActividadDormir actividadDormir)
         {
             try
             {
                 if (actividadDormir == null)
-                {
                     return BadRequest("Debeingresar Los datos");
-                }
                 _context.ActividadDormir.Update(actividadDormir);
-                _context.SaveChanges();
-                return Ok(_context.ActividadDormir.Find(actividadDormir.IdActividadDormir));
+                await _context.SaveChangesAsync();
+                return Ok(await _context.ActividadDormir.FindAsync(actividadDormir.IdActividadDormir));
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error en la ejecución " + ex.Message);
-            }
+            catch (Exception ex) {  return BadRequest("Error en la ejecución " + ex.Message); }
         }
     }
 }
