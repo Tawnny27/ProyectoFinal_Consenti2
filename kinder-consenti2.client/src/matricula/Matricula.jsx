@@ -42,7 +42,7 @@ const Matricula = () => {
     const [imageError, setImageError] = useState('');
     const fileInputRef = useState(null);
 
-    const IMAGE_PATH = '/Pagos/';
+    const IMAGE_PATH = '/FotosPagos/';
     const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -183,11 +183,10 @@ const Matricula = () => {
     const handleChildSelection = (childId) => {
         setFormData((prev) => ({
             ...prev,
-            selectedChildren: prev.selectedChildren.includes(childId)
-                ? prev.selectedChildren.filter((id) => id !== childId)
-                : [...prev.selectedChildren, childId],
+            selectedChildren: [childId], // Solo se permite un único niño seleccionado
         }));
     };
+
 
     //Productos
     useEffect(() => {
@@ -228,11 +227,7 @@ const Matricula = () => {
     }, [selectedProductos, productosFijos, productosMensuales, formData.discount]);
 
     const handleProductoSelection = (productoId) => {
-        setSelectedProductos((prev) =>
-            prev.includes(productoId)
-                ? prev.filter((id) => id !== productoId)
-                : [...prev, productoId]
-        );
+        setSelectedProductos([productoId]); // Reemplaza cualquier selección previa con el nuevo ID
     };
 
     const handlePeriodoChange = async (e) => {
@@ -303,8 +298,8 @@ const Matricula = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Asegurémonos de que `selectedFile` no esté vacío y que se haya seleccionado un archivo.
-        if (!selectedFile) {
+        // Verificación del archivo de pago solo si el método no es "Efectivo"
+        if (formData.paymentMethod !== 'Efectivo' && !selectedFile) {
             console.error("No se ha seleccionado ningún archivo.");
             toast.error("Por favor, selecciona un archivo de pago.");
             return;
@@ -314,8 +309,7 @@ const Matricula = () => {
             toast.error('Debes seleccionar al menos un niño para matricular.');
             return;
         }
-
-
+       
         // Preparar los detalles de la matrícula (productos, monto, días)
         const detalles = selectedProductos.map((productoId) => {
             const producto = [...productosFijos, ...productosMensuales].find(
@@ -330,7 +324,7 @@ const Matricula = () => {
         });
 
         // Generar nombre único para la imagen de comprobante
-        let imagePath = '';
+        let imagePath = formData.paymentMethod === 'Efectivo' ? 'Pago en Efectivo' : '';
         let uniqueFileName = '';
 
         if (selectedFile) {
@@ -345,9 +339,9 @@ const Matricula = () => {
             ...(user.rolId === 3 && { clienteId: user.idUsuario, rollId: user.rolId }),
             ...(user.rolId === 1 && { clienteId: userDetails.idPadre, rollId: userDetails.idRol }),
             metodoPago: formData.paymentMethod,
-            imagenPago: imagePath || 'efectivo',  // Si no hay archivo, se envía una cadena 
+            imagenPago: imagePath || 'Pago en Efectivo',  // Si no hay archivo, se envía una cadena 
             fecha: new Date().toISOString(),
-            referencia: formData.referenceNumber, // Número de referencia
+            referencia: formData.referenceNumber || 0, // Número de referencia
             subtotal: formData.subtotal,
             iva: formData.iva,
             descuento: formData.discount, // Descuento
@@ -376,28 +370,33 @@ const Matricula = () => {
                 console.log('Matrícula registrada exitosamente:', matriculaResponse.data);
                 if (user.rolId === 3) { toast.info('Matrícula enviada para validación de pago') }
 
-                // Si se ha seleccionado una imagen, proceder a enviarla al servidor
-                if (selectedFile) {
+                // Si el método de pago no es "Efectivo" y se ha seleccionado un archivo, proceder a enviarlo al servidor
+                if (formData.paymentMethod !== 'Efectivo' && selectedFile) {
                     console.log('Subiendo imagen de pago...');
                     const imageFormData = new FormData();
                     imageFormData.append('file', selectedFile);
                     imageFormData.append('fileName', 'Comprobante_' + uniqueFileName);
 
-                    const imageResponse = await axios.post(
-                        'https://localhost:44369/Imagenes/GuardarImagenPago',
-                        imageFormData,
-                        {
-                            headers: { 'Content-Type': 'multipart/form-data' },
-                        }
-                    );
+                    try {
+                        const imageResponse = await axios.post(
+                            'https://localhost:44369/Imagenes/GuardarImagenPago',
+                            imageFormData,
+                            {
+                                headers: { 'Content-Type': 'multipart/form-data' },
+                            }
+                        );
 
-                    if (imageResponse.status === 200) {
-                        console.log('Imagen subida exitosamente:', imageResponse.data);
-                        imagePath = imageResponse.data.filePath || imagePath; // Confirmamos la ruta desde el backend
-                    } else {
-                        setError('Error al guardar la imagen de pago');
-                        console.error('Error al subir la imagen:', imageResponse);
-                        return;
+                        if (imageResponse.status === 200) {
+                            console.log('Imagen subida exitosamente:', imageResponse.data);
+                            imagePath = imageResponse.data.filePath || imagePath; // Confirmamos la ruta desde el backend
+                        } else {
+                            setError('Error al guardar la imagen de pago');
+                            console.error('Error al subir la imagen:', imageResponse);
+                            return;
+                        }
+                    } catch (error) {
+                        console.error('Error al subir la imagen:', error);
+                        setError('Error al subir la imagen de pago');
                     }
                 }
 
@@ -465,7 +464,7 @@ const Matricula = () => {
                         <div className="left-section">
                             {user.rolId === 1 && (
                                 <div className="select-parent">
-                                    <label>Selecciona un Padre:</label>
+                                    <h3>Selecciona un Padre:</h3>
                                     <select
                                         onChange={(e) => handleUserSelect(e.target.value)}
                                         value={formData.parentID || ''}
@@ -496,7 +495,7 @@ const Matricula = () => {
                         {/* Sección Derecha (Pagos y Productos) */}
                         <div className="right-section">
                             <div className="payment-section">
-                                <label>Fecha Actual: {new Date().toLocaleDateString()}</label>
+                                <h4>Fecha Actual: {new Date().toLocaleDateString()}</h4>
 
                                 {/* Sección de Pago */}
                                 <div className="payment-section">
@@ -523,8 +522,8 @@ const Matricula = () => {
                                         <label>
                                             Periodo:
                                             <select name="period" value={formData.period} onChange={handlePeriodoChange}>
-                                                <option value="Mensual">Mensual</option>
-                                                <option value="Anual">Anual</option>
+                                                <option value="Mensual">Mensualidad</option>
+                                                <option value="Anual">Anualidad</option>
                                             </select>
                                         </label>
                                     </div>
@@ -534,32 +533,42 @@ const Matricula = () => {
 
                                 <div className="products-selection">
                                     <h3>Seleccionar Productos:</h3>
-                                    <h4>Productos Fijos:</h4>
+                                    {formData.period === 'Anual' ? (
+                                        <>
+                                    <h4>Anualidad:</h4>
                                     {productosFijos.map((producto) => (
                                         <div key={producto.idProducto}>
                                             <label>
                                                 <input
-                                                    type="checkbox"
+                                                    type="radio"
                                                     checked={selectedProductos.includes(producto.idProducto)}
                                                     onChange={() => handleProductoSelection(producto.idProducto)}
+                                                    required
                                                 />
                                                 {producto.nombreProducto} - {producto.monto} colones
                                             </label>
                                         </div>
                                     ))}
-                                    <h4>Productos Mensuales:</h4>
+                                        </>
+                                    ) : (
+                                        <>
+                                
+                                    <h4>Horarios:</h4>
                                     {productosMensuales.map((producto) => (
                                         <div key={producto.idProducto}>
                                             <label>
                                                 <input
-                                                    type="checkbox"
+                                                    type="radio"
                                                     checked={selectedProductos.includes(producto.idProducto)}
                                                     onChange={() => handleProductoSelection(producto.idProducto)}
+                                                    required
                                                 />
                                                 {producto.nombreProducto} - {producto.monto} colones
                                             </label>
                                         </div>
                                     ))}
+                                        </>
+                                    )}
                                 </div>
                                 <label>Subtotal: {formData.subtotal}</label>
                                 <label>IVA (13%): {formData.iva}</label>
@@ -581,7 +590,7 @@ const Matricula = () => {
                             </div>
 
                             <div className="total-amount">
-                                <p>Total a pagar: {formData.totalAmount} colones</p>
+                                <h4>Total a pagar: {formData.totalAmount} colones</h4>
                             </div>
                         </div>
                     </div>
@@ -602,7 +611,7 @@ const Matricula = () => {
 
 const PaymentSection = ({ formData, handleChange, handleImageChange, userRole }) => (
     <div className="payment-section">
-        <h3>Opciones de Pago</h3>
+        <h4>Opciones de Pago</h4>
         <label>
             <input
                 type="radio"
@@ -650,7 +659,7 @@ const PaymentSection = ({ formData, handleChange, handleImageChange, userRole })
 
 const ParentInfo = ({ formData, handleChange, userRole }) => (
     <div className="parent-info">
-        <h3>Información del Padre</h3>
+        <h4>Información del Padre</h4>
         <label>Nombre Completo del Padre:</label>
         <input
             type="text"
@@ -685,15 +694,7 @@ const ParentInfo = ({ formData, handleChange, userRole }) => (
 );
 
 const handleChildSelection = (idAlumno) => {
-    setSelectedChildren((prevSelectedChildren) => {
-        if (prevSelectedChildren.includes(idAlumno)) {
-            // El niño ya está seleccionado, eliminarlo
-            return prevSelectedChildren.filter((id) => id !== idAlumno);
-        } else {
-            // El niño no está seleccionado, agregarlo
-            return [...prevSelectedChildren, idAlumno];
-        }
-    });
+    setSelectedChildren([idAlumno]); // Reemplaza cualquier selección previa con el nuevo ID
 };
 
 const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelection }) => {
@@ -701,13 +702,13 @@ const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelectio
 
     return (
         <div className="children-selection">
-            <h3>Niños a Matricular:</h3>
+            <h3>Seleccionar Niño:</h3>
             {childrenList.length > 0 ? (
                 childrenList.map((child) => (
                     <div key={child.idAlumno}>
                         <label>
                             <input
-                                type="checkbox"
+                                type="radio"
                                 checked={selectedChildren.includes(child.idAlumno)} // Asegúrate de que selectedChildren sea un array
                                 onChange={() => handleChildSelection(child.idAlumno)} // Llama a la función para manejar la selección
                             />
