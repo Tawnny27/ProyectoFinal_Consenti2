@@ -163,9 +163,11 @@ const MainLayout = () => {
                             <FontAwesomeIcon icon={faAddressBook} className="menu-icon" />Expedientes</Link></li>
                         <li className="menu-link"><Link to="/comunicacion">
                             <FontAwesomeIcon icon={faCommentDots} className="menu-icon" />Comunicación</Link></li>
+                        {user.rolId === 1 && (
                         <li className="menu-link"><Link to="/inventario">
-                            <FontAwesomeIcon icon={faBoxesStacked} className="menu-icon" />Inventario</Link></li>
-                        
+                            <FontAwesomeIcon icon={faBoxesStacked} className="menu-icon" />Inventario</Link>
+                        </li>
+                        )}
                         {user.rolId === 3 && (
                             <li>
 

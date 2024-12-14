@@ -136,6 +136,7 @@
     z-index: 2;
 }
 
+
 .survey-form {
     margin-top:100px;
     background: #fff;
@@ -146,3 +147,28 @@
     text-align: center;
     z-index: 2;
 }
+
+.info-message {
+    background-color: #eaf8fc;
+    border-left: 5px solid #3498db;
+    padding: 16px;
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', sans-serif;
+    color: #2c3e50;
+    z-index: 3;
+    margin-top:90px;
+}
+
+    .info-message h3 {
+        margin: 0 0 10px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .info-message p {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.5;
+    }
