@@ -31,6 +31,12 @@ const Matricula = () => {
         discount: 0, // Descuento
     });
 
+    
+    const handleCancel = () => {
+        // Redirige a la página principal
+        navigate('/main');
+    };
+
     const [userDetails, setUserDetails] = useState({
         idPadre: 0,
         idRol: 0
@@ -309,6 +315,11 @@ const Matricula = () => {
             toast.error('Debes seleccionar al menos un niño para matricular.');
             return;
         }
+        // Validación de productos seleccionados
+        if (selectedProductos.length === 0) {
+            toast.error('Debes seleccionar al menos un producto.');
+            return;
+        }
        
         // Preparar los detalles de la matrícula (productos, monto, días)
         const detalles = selectedProductos.map((productoId) => {
@@ -495,7 +506,7 @@ const Matricula = () => {
                         {/* Sección Derecha (Pagos y Productos) */}
                         <div className="right-section">
                             <div className="payment-section">
-                                <h4>Fecha Actual: {new Date().toLocaleDateString()}</h4>
+                                <h3>Fecha Actual: {new Date().toLocaleDateString()}</h3>
 
                                 {/* Sección de Pago */}
                                 <div className="payment-section">
@@ -576,6 +587,7 @@ const Matricula = () => {
 
                                 {user.rolId === 1 && (
                                     <>
+                                        <div className="decuento">
                                         <label>Descuento (%):</label>
                                         <input
                                             type="number"
@@ -584,7 +596,8 @@ const Matricula = () => {
                                             onChange={handleChange}
                                             min="0"
                                             max="100"
-                                        />
+                                            />
+                                        </div>
                                     </>
                                 )}
                             </div>
@@ -596,8 +609,8 @@ const Matricula = () => {
                     </div>
 
                     <div className="buttons">
-                        <button type="submit">Realizar Matrícula</button>
-                        <button type="button" onClick={() => (window.location.href = '/main')}>
+                        <button className="submit-m-button" type="submit">Realizar Envío</button>
+                        <button className="cancel-m-button" type="button" onClick={handleCancel}>
                             Cancelar
                         </button>
                     </div>
@@ -659,14 +672,14 @@ const PaymentSection = ({ formData, handleChange, handleImageChange, userRole })
 
 const ParentInfo = ({ formData, handleChange, userRole }) => (
     <div className="parent-info">
-        <h4>Información del Padre</h4>
+        <h3>Información del Padre</h3>
         <label>Nombre Completo del Padre:</label>
         <input
             type="text"
             name="parentFullName"
             value={formData.parentFullName}
             onChange={handleChange}
-            disabled={userRole === 3}
+            disabled
         />
         <label>Cédula:</label>
         <input
@@ -674,7 +687,7 @@ const ParentInfo = ({ formData, handleChange, userRole }) => (
             name="parentID"
             value={formData.parentID}
             onChange={handleChange}
-            disabled={userRole === 3}
+            disabled
         />
         <label>Teléfono:</label>
         <input
@@ -717,7 +730,8 @@ const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelectio
                     </div>
                 ))
             ) : (
-                <p>No hay niños para mostrar.</p> // Se muestra este mensaje si childrenList está vacío
+                    <p>Se debe seleccionar un padre.</p>
+                    // Se muestra este mensaje si childrenList está vacío
             )}
         </div>
     );
