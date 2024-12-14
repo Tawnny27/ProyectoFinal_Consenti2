@@ -1,5 +1,7 @@
 
 import React from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AlumnoMaintenance from './Alumnos/consultasA';
 import LoginForm from './login/loginForm';
@@ -31,6 +33,9 @@ import Gastos from './Gastos/Gastos';
 function App() {
     return (
         <Router>
+            <div>
+                {/* Componente ToastContainer para notificaciones */}
+                <ToastContainer />
             <Routes>
                 <Route path="/" element={<LoginForm />} />
                 <Route path="/editar-usuario/:id" element={<EditarUsuario />} />
@@ -56,7 +61,7 @@ function App() {
                 <Route path="/inventario" element={<Inventario />} /> 
                 <Route path="/Gastos" element={<Gastos />} /> 
             </Routes>
-                
+                </div>
         </Router>
     );
     

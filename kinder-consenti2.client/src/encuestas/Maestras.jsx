@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
-/*import ReactStars from 'react-rating-stars-component'; // Importar la librería de estrellas*/
+import ReactStars from 'react-rating-stars-component'; // Importar la librería de estrellas*/
 import './encuestas.css';
 
 const MaestrasFeedback = () => {

@@ -1,5 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from '../axios';
 import './matricula.css';
 import { useUser } from '../UserContext';
@@ -10,7 +12,7 @@ const Matricula = () => {
     const navigate = useNavigate();
     const { user, usuario } = useUser();
     const [formData, setFormData] = useState({
-        parentID:0,
+        parentID: 0,
         nombreUsuario: '',
         apellidosUsuario: '',
         cedulaUsuario: '',
@@ -20,7 +22,7 @@ const Matricula = () => {
         selectedChildren: [],
         period: '',
         paymentMethod: '',
-        proofOfPayment: null,
+        proofOfPayment: '',
         lastEnrollmentDate: null,
         date: new Date().toISOString(), // Fecha actual
         referenceNumber: '', // Número de referencia del comprobante
@@ -34,7 +36,17 @@ const Matricula = () => {
         idRol: 0
     });
 
-    const [selectedUser, setSelectedUser] = useState(null); 
+
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState('');
+    const [imageError, setImageError] = useState('');
+    const fileInputRef = useState(null);
+
+    const IMAGE_PATH = '/Pagos/';
+    const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+    const [selectedUser, setSelectedUser] = useState(null);
     const [childrenList, setChildrenList] = useState([]);
     const [userList, setUserList] = useState([]);
     const [error, setError] = useState('');
@@ -58,7 +70,7 @@ const Matricula = () => {
                             parentID: user.cedulaUsuario,
                             phone: user.telefonoUsuario || '',
                             address: user.direccionUsuario || '',
-                            
+
                         }));
 
                         // Llamada para obtener los datos del usuario con el idUsuario del padre
@@ -146,7 +158,7 @@ const Matricula = () => {
             // Aquí podrías hacer algo con esos valores si los necesitas, por ejemplo:
             console.log('ID Padre:', idPadre);
             console.log('ID Rol:', idRol);
-            
+
 
             // Si necesitas guardarlos en el estado o hacer alguna otra acción con ellos, puedes hacerlo aquí.
             // Ejemplo:
@@ -156,7 +168,7 @@ const Matricula = () => {
             });
             // Guardar el usuario seleccionado
             setSelectedUser(selectedUser); // Esto asegura que tienes acceso al usuario seleccionado
-        } 
+        }
     };
 
     const handleChange = (e) => {
@@ -256,39 +268,53 @@ const Matricula = () => {
         }
     };
 
-    const validatePaymentProof = (file) => {
-        if (!file) {
-            throw new Error('Por favor seleccione un comprobante de pago.');
-        }
-        if (!['image/jpeg', 'image/png', 'application/pdf'].includes(file.type)) {
-            throw new Error('Formato no permitido. Use JPG, PNG o PDF');
-        }
-        if (file.size > 10 * 1024 * 1024) {  // 10MB máximo
-            throw new Error('El archivo excede el tamaño máximo de 10MB.');
-        }
+    const validateImage = (file) => {
+        if (!file) throw new Error('Por favor seleccione un archivo válido.');
+        if (!ALLOWED_FILE_TYPES.includes(file.type)) throw new Error('Formato no permitido. Use JPG, PNG o PDF.');
+        if (file.size > MAX_FILE_SIZE) throw new Error('El archivo excede el tamaño máximo de 5MB.');
         return true;
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setImageError('');
+
+        try {
+            if (validateImage(file)) {
+                setSelectedFile(file);
+                // Crear URL temporal para vista previa
+                const previewURL = URL.createObjectURL(file);
+                setPreviewUrl(previewURL);
+            }
+        } catch (error) {
+            setImageError(error.message);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     //Envia datos
     const handleSubmit = async (e) => {
         e.preventDefault();
-        ////if (!formData.selectedChildren.length) {
-        ////    setError('Debes seleccionar al menos un niño para matricular.');
-        ////    return;
-        ////}
-        ////if (!formData.proofOfPayment) {
-        ////    setError('Debes agregar un comprobante de pago.');
-        ////    return;
-        ////}
 
+        // Asegurémonos de que `selectedFile` no esté vacío y que se haya seleccionado un archivo.
+        if (!selectedFile) {
+            console.error("No se ha seleccionado ningún archivo.");
+            toast.error("Por favor, selecciona un archivo de pago.");
+            return;
+        }
+        // Validación de niños (si es necesario)
+        if (!formData.selectedChildren.length) {
+            toast.error('Debes seleccionar al menos un niño para matricular.');
+            return;
+        }
 
-        //// Validar el comprobante de pago antes de enviarlo
-        //try {
-        //    validatePaymentProof(formData.proofOfPayment);
-        //} catch (error) {
-        //    setError(error.message);
-        //    return;
-        //}
 
         // Preparar los detalles de la matrícula (productos, monto, días)
         const detalles = selectedProductos.map((productoId) => {
@@ -303,14 +329,23 @@ const Matricula = () => {
             };
         });
 
+        // Generar nombre único para la imagen de comprobante
+        let imagePath = '';
+        let uniqueFileName = '';
+
+        if (selectedFile) {
+            // Generar nombre único para la imagen
+            const fileExtension = selectedFile.name.split('.').pop();
+            const formattedDate = new Date().toISOString().split('T')[0]; // Formato "YYYY-MM-DD"
+            uniqueFileName = `${formattedDate}_${formData.parentFullName}.${fileExtension}`;
+            imagePath = `${IMAGE_PATH}${uniqueFileName}`;
+        }
+
         const dataToSend = {
             ...(user.rolId === 3 && { clienteId: user.idUsuario, rollId: user.rolId }),
             ...(user.rolId === 1 && { clienteId: userDetails.idPadre, rollId: userDetails.idRol }),
-            //clienteId: user.idUsuario,
-            //rollId:  user.rolId,
             metodoPago: formData.paymentMethod,
-            /*imagenPago: formData.proofOfPayment,*/
-            imagenPago: 'Prueba',
+            imagenPago: imagePath || 'efectivo',  // Si no hay archivo, se envía una cadena 
             fecha: new Date().toISOString(),
             referencia: formData.referenceNumber, // Número de referencia
             subtotal: formData.subtotal,
@@ -322,16 +357,100 @@ const Matricula = () => {
 
         console.log("Datos a enviar:", dataToSend);
 
-        // Enviar datos al backend
         try {
-            const response = await axios.post('https://localhost:44369/EncabezadoFactura/CrearMatricula', dataToSend);
-            console.log('Respuesta del servidor:', response.dataToSend);
-            console.log('Matrícula creada con éxito');
+            console.log('Enviando datos de matrícula:', JSON.stringify(dataToSend, null, 2));
+
+            // Intentamos crear la matrícula primero
+            const matriculaResponse = await axios.post(
+                'https://localhost:44369/EncabezadoFactura/CrearMatricula',
+                dataToSend,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                }
+            );
+
+            if (matriculaResponse.data) {
+                console.log('Matrícula registrada exitosamente:', matriculaResponse.data);
+                if (user.rolId === 3) { toast.info('Matrícula enviada para validación de pago') }
+
+                // Si se ha seleccionado una imagen, proceder a enviarla al servidor
+                if (selectedFile) {
+                    console.log('Subiendo imagen de pago...');
+                    const imageFormData = new FormData();
+                    imageFormData.append('file', selectedFile);
+                    imageFormData.append('fileName', 'Comprobante_' + uniqueFileName);
+
+                    const imageResponse = await axios.post(
+                        'https://localhost:44369/Imagenes/GuardarImagenPago',
+                        imageFormData,
+                        {
+                            headers: { 'Content-Type': 'multipart/form-data' },
+                        }
+                    );
+
+                    if (imageResponse.status === 200) {
+                        console.log('Imagen subida exitosamente:', imageResponse.data);
+                        imagePath = imageResponse.data.filePath || imagePath; // Confirmamos la ruta desde el backend
+                    } else {
+                        setError('Error al guardar la imagen de pago');
+                        console.error('Error al subir la imagen:', imageResponse);
+                        return;
+                    }
+                }
+
+                if (user.rolId === 1) {
+                    toast.success('¡Matrícula registrada y pago procesado con éxito!', {
+                        position: 'top-right',
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }
+            } else {
+                setError('Error al registrar la matrícula');
+                toast.error('Error al registrar la matrícula', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
         } catch (error) {
-            console.error('Error al crear matrícula:', error.response?.dataToSend || error.message);
+            console.error('Error en el proceso de matrícula y pago:', error);
+
+            if (error.response) {
+                console.error('Detalles del error:', {
+                    data: error.response.data,
+                    status: error.response.status,
+                    headers: error.response.headers,
+                });
+
+                if (error.response.data && error.response.data.errors) {
+                    console.error('Errores de validación:', error.response.data.errors);
+                }
+            }
+
+            setError('Error al realizar el proceso de matrícula y pago');
+            toast.error('Error al realizar el proceso de matrícula y pago', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
     };
-
 
 
     return (
@@ -385,6 +504,7 @@ const Matricula = () => {
                                         formData={formData}
                                         handleChange={handleChange}
                                         handleFileChange={handleFileChange}
+                                        handleImageChange={handleImageChange}
                                         userRole={user.rolId}
                                     />
                                     {formData.paymentMethod !== 'Efectivo' && (
@@ -480,7 +600,7 @@ const Matricula = () => {
 }
 
 
-const PaymentSection = ({ formData, handleChange, handleFileChange, userRole }) => (
+const PaymentSection = ({ formData, handleChange, handleImageChange, userRole }) => (
     <div className="payment-section">
         <h3>Opciones de Pago</h3>
         <label>
@@ -516,8 +636,12 @@ const PaymentSection = ({ formData, handleChange, handleFileChange, userRole }) 
         </label>
         {formData.paymentMethod !== 'Efectivo' && (
             <div className="proof-of-payment">
-                <label>Agregar comprobante de pago:</label>
-                <input type="file" onChange={handleFileChange} />
+                <label>Agregar comprobante de pago (JPG, PNG o PDF):</label>
+                <input type="file" id="proofOfPayment"
+                    accept=".jpg,.jpeg,.png,.pdf"
+                    onChange={handleImageChange}
+                    required />
+                
             </div>
         )}
     </div>
