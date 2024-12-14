@@ -4,16 +4,17 @@ import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import { useUser } from '../UserContext'; // Importar el hook del contexto
 
-function AttendancePanel({ navigateToActivities }) {
-    const { user, logout } = useUser(); // Obtener el usuario del contexto
-
+function AttendancePanel() {
+    const { user, setUser } = useUser(); // Obtener el usuario del contexto
+    const [errorMessage, setErrorMessage] = useState(""); // Estado para el mensaje de error
+    
     useEffect(() => {
-        console.log(user)
-        // Valida si el usuario necesita cambiar su contraseña
-        if (user?.rolId != 2) {
-            console.log('No permisos');
+        if (user?.rolId !== 2) {
+            setErrorMessage("No tienes permisos para acceder a esta página.");
+        } else {
+            setErrorMessage(""); 
         }
-    },);
+    }, [user]);
 
     const defaultChildrenList = ["Juan", "María", "Carlos", "Ana"];
     const [attendance, setAttendance] = useState(
@@ -46,6 +47,22 @@ function AttendancePanel({ navigateToActivities }) {
         window.history.back();
     };
 
+    // Solo renderizar el contenido si el rol es 2, de lo contrario solo mostrar el mensaje de error
+    if (user?.rolId !== 2) {
+        console.log(user)
+        return (
+            <div className="user-maintenance-container">
+                <Navbar />
+                <div className="attendance-container">
+                    <div className="error-message" style={{ color: 'red', fontWeight: 'bold' }}>
+                        {errorMessage}
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
+
     return (
         <div className="user-maintenance-container">
             <Navbar />
@@ -55,11 +72,12 @@ function AttendancePanel({ navigateToActivities }) {
                     {user ? (
                         <span>
                             Hola, {user.nombreUsuario} {user.apellidosUsuario}, {'Rol '}({user.rolId})
-                        </span> // Mostrar el nombre del usuario
+                        </span>
                     ) : (
                         <span>Cargando...</span>
                     )}
                 </div>
+
                 {/* Tabla de asistencia */}
                 <table className="attendance-table">
                     <thead>
