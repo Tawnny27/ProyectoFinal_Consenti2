@@ -73,6 +73,8 @@ namespace kinder_consenti2.Server.Controllers
         public ActionResult<string> EliminarGasto(int id)
         {
             var gasto = _context.Gasto.Find(id);
+            if (gasto == null)
+                return NotFound("No se encontraron datos");
             _context.Gasto.Remove(gasto);
             _context.SaveChanges();
             return Ok("Gasto eliminado");

@@ -1,6 +1,7 @@
 ﻿using kinder_consenti2.Server.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace kinder_consenti2.Server.Controllers
 {
@@ -18,47 +19,36 @@ namespace kinder_consenti2.Server.Controllers
         //************** Consultar ActividadHuerta ******************
         [HttpGet]
         [Route("ObtenerActividadHuertas/{gruposId}&{fecha}")]
-        public ActionResult<List<ActividadHuerta>> ObtenerActividadHuertas(int gruposId, DateOnly fecha)
+        public async Task< ActionResult<List<ActividadHuerta>>> ObtenerActividadHuertas(int gruposId, DateOnly fecha)
         {
             try
             {
-                return Ok(_context.ActividadHuerta.ToList().Where(x => x.GruposId == gruposId && x.Fecha == fecha));
+                return Ok(await _context.ActividadHuerta.Where(x => x.GruposId == gruposId && x.Fecha == fecha).ToListAsync());
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error en la ejecución " + ex.Message);
-            }
+            catch (Exception ex){ return BadRequest("Error en la ejecución " + ex.Message);}
         }
 
         //************** Consultar un ActividadHuerta ******************
         [HttpGet]
         [Route("BuscarActividadHuertas/{idAlumno}")]
-        public ActionResult<List<ActividadHuerta>> BuscarActividadHuertas(int idAlumno)
+        public async Task<ActionResult<List<ActividadHuerta>>> BuscarActividadHuertas(int idAlumno)
         {
             try
             {
                 if (idAlumno == 0)
-                {
                     return BadRequest("Debe ingresar un Alumno");
-                }
-                var actividadHuerta = _context.ActividadHuerta.ToList().Where(x => x.AlumnoId == idAlumno);
-                if (actividadHuerta.Any())
-                {
+                var actividadHuerta = await _context.ActividadHuerta.Where(x => x.AlumnoId == idAlumno).ToListAsync();
+                if (actividadHuerta.Count()==0)
                     return Ok("No hay registros");
-                }
                 return Ok(actividadHuerta);
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error en la ejecución " + ex.Message);
-            }
-
+            catch (Exception ex) { return BadRequest("Error en la ejecución " + ex.Message); }
         }
 
         //********************* Crear ActividadHuerta ********************
         [HttpPost]
         [Route("CrearActividadHuerta")]
-        public ActionResult<string> CrearActividadHuerta(List<ActividadHuerta> ListaActividadHuerta)
+        public async Task<ActionResult<string>> CrearActividadHuerta(List<ActividadHuerta> ListaActividadHuerta)
         {
             try
             {
@@ -69,34 +59,26 @@ namespace kinder_consenti2.Server.Controllers
                         return BadRequest("Falta algun dato en almenos un registro");
                 }
                 _context.ActividadHuerta.AddRange(ListaActividadHuerta);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return Ok("Registros insertados");
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error en la ejecución " + ex.Message);
-            }
+            catch (Exception ex){ return BadRequest("Error en la ejecución " + ex.Message); }
         }
 
         //********************* Editar ActividadHuerta ********************
         [HttpPut]
         [Route("EditarActividadHuerta")]
-        public ActionResult<ActividadHuerta> EditarActividadHuerta(ActividadHuerta actividadHuerta)
+        public async Task<ActionResult<ActividadHuerta>> EditarActividadHuerta(ActividadHuerta actividadHuerta)
         {
             try
             {
                 if (actividadHuerta == null)
-                {
                     return BadRequest("Debeingresar Los datos");
-                }
                 _context.ActividadHuerta.Update(actividadHuerta);
-                _context.SaveChanges();
-                return Ok(_context.ActividadHuerta.Find(actividadHuerta.IdActividadHuerta));
+                await _context.SaveChangesAsync();
+                return Ok(await _context.ActividadHuerta.FindAsync(actividadHuerta.IdActividadHuerta));
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error en la ejecución " + ex.Message);
-            }
+            catch (Exception ex) { return BadRequest("Error en la ejecución " + ex.Message); }
         }
     }
 }

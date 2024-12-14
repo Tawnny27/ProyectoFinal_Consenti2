@@ -2,6 +2,7 @@
 {
     public class DetalleDatosMatricula
     {
+        public int EncabezadoFacturaId {  get; set; }
         public int ProductoId { get; set; }
         public int AlumnoId { get; set; }
         public int Monto { get; set; }

@@ -1,5 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from '../axios';
 import './matricula.css';
 import { useUser } from '../UserContext';
@@ -10,7 +12,7 @@ const Matricula = () => {
     const navigate = useNavigate();
     const { user, usuario } = useUser();
     const [formData, setFormData] = useState({
-        parentID:0,
+        parentID: 0,
         nombreUsuario: '',
         apellidosUsuario: '',
         cedulaUsuario: '',
@@ -20,7 +22,7 @@ const Matricula = () => {
         selectedChildren: [],
         period: '',
         paymentMethod: '',
-        proofOfPayment: null,
+        proofOfPayment: '',
         lastEnrollmentDate: null,
         date: new Date().toISOString(), // Fecha actual
         referenceNumber: '', // Número de referencia del comprobante
@@ -29,6 +31,28 @@ const Matricula = () => {
         discount: 0, // Descuento
     });
 
+    
+    const handleCancel = () => {
+        // Redirige a la página principal
+        navigate('/main');
+    };
+
+    const [userDetails, setUserDetails] = useState({
+        idPadre: 0,
+        idRol: 0
+    });
+
+
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState('');
+    const [imageError, setImageError] = useState('');
+    const fileInputRef = useState(null);
+
+    const IMAGE_PATH = '/FotosPagos/';
+    const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+    const [selectedUser, setSelectedUser] = useState(null);
     const [childrenList, setChildrenList] = useState([]);
     const [userList, setUserList] = useState([]);
     const [error, setError] = useState('');
@@ -47,10 +71,12 @@ const Matricula = () => {
                         setFormData((prev) => ({
                             ...prev,
                             id: user.idUsuario,
+                            rol: user.rolId,
                             parentFullName: `${user.nombreUsuario} ${user.apellidosUsuario}`,
                             parentID: user.cedulaUsuario,
                             phone: user.telefonoUsuario || '',
                             address: user.direccionUsuario || '',
+
                         }));
 
                         // Llamada para obtener los datos del usuario con el idUsuario del padre
@@ -99,8 +125,6 @@ const Matricula = () => {
     }, [user]); // Dependencia solo de `user` para evitar la carga infinita
 
 
-
-
     const fetchUsers = async () => {
         try {
             const { data } = await axios.get('https://localhost:44369/Usuarios/ObtenerUsuarios');
@@ -108,6 +132,7 @@ const Matricula = () => {
                 .filter((usuario) => usuario.rolId === 3)
                 .map((usuario) => ({
                     id: usuario.idUsuario,
+                    rol: usuario.rolId,
                     name: `${usuario.nombreUsuario} ${usuario.apellidosUsuario}`,
                     idCard: usuario.cedulaUsuario,
                     children: usuario.alumnos || [], // Asegúrate de que la API devuelve `alumnos`
@@ -134,11 +159,12 @@ const Matricula = () => {
 
             // Obtener idUsuario y idRol
             const idPadre = selectedUser.id;
-            const idRol = selectedUser.rolId;  // Suponiendo que el rol está guardado como 'rolId' en el objeto 'selectedUser'
+            const idRol = selectedUser.rol;  // Suponiendo que el rol está guardado como 'rolId' en el objeto 'selectedUser'
 
             // Aquí podrías hacer algo con esos valores si los necesitas, por ejemplo:
             console.log('ID Padre:', idPadre);
             console.log('ID Rol:', idRol);
+
 
             // Si necesitas guardarlos en el estado o hacer alguna otra acción con ellos, puedes hacerlo aquí.
             // Ejemplo:
@@ -146,6 +172,8 @@ const Matricula = () => {
                 idPadre,
                 idRol
             });
+            // Guardar el usuario seleccionado
+            setSelectedUser(selectedUser); // Esto asegura que tienes acceso al usuario seleccionado
         }
     };
 
@@ -161,11 +189,10 @@ const Matricula = () => {
     const handleChildSelection = (childId) => {
         setFormData((prev) => ({
             ...prev,
-            selectedChildren: prev.selectedChildren.includes(childId)
-                ? prev.selectedChildren.filter((id) => id !== childId)
-                : [...prev.selectedChildren, childId],
+            selectedChildren: [childId], // Solo se permite un único niño seleccionado
         }));
     };
+
 
     //Productos
     useEffect(() => {
@@ -206,11 +233,7 @@ const Matricula = () => {
     }, [selectedProductos, productosFijos, productosMensuales, formData.discount]);
 
     const handleProductoSelection = (productoId) => {
-        setSelectedProductos((prev) =>
-            prev.includes(productoId)
-                ? prev.filter((id) => id !== productoId)
-                : [...prev, productoId]
-        );
+        setSelectedProductos([productoId]); // Reemplaza cualquier selección previa con el nuevo ID
     };
 
     const handlePeriodoChange = async (e) => {
@@ -246,40 +269,58 @@ const Matricula = () => {
         }
     };
 
-    const validatePaymentProof = (file) => {
-        if (!file) {
-            throw new Error('Por favor seleccione un comprobante de pago.');
-        }
-        if (!['image/jpeg', 'image/png', 'application/pdf'].includes(file.type)) {
-            throw new Error('Formato no permitido. Use JPG, PNG o PDF');
-        }
-        if (file.size > 10 * 1024 * 1024) {  // 10MB máximo
-            throw new Error('El archivo excede el tamaño máximo de 10MB.');
-        }
+    const validateImage = (file) => {
+        if (!file) throw new Error('Por favor seleccione un archivo válido.');
+        if (!ALLOWED_FILE_TYPES.includes(file.type)) throw new Error('Formato no permitido. Use JPG, PNG o PDF.');
+        if (file.size > MAX_FILE_SIZE) throw new Error('El archivo excede el tamaño máximo de 5MB.');
         return true;
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setImageError('');
+
+        try {
+            if (validateImage(file)) {
+                setSelectedFile(file);
+                // Crear URL temporal para vista previa
+                const previewURL = URL.createObjectURL(file);
+                setPreviewUrl(previewURL);
+            }
+        } catch (error) {
+            setImageError(error.message);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     //Envia datos
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Verificación del archivo de pago solo si el método no es "Efectivo"
+        if (formData.paymentMethod !== 'Efectivo' && !selectedFile) {
+            console.error("No se ha seleccionado ningún archivo.");
+            toast.error("Por favor, selecciona un archivo de pago.");
+            return;
+        }
+        // Validación de niños (si es necesario)
         if (!formData.selectedChildren.length) {
-            setError('Debes seleccionar al menos un niño para matricular.');
+            toast.error('Debes seleccionar al menos un niño para matricular.');
             return;
         }
-        if (!formData.proofOfPayment) {
-            setError('Debes agregar un comprobante de pago.');
+        // Validación de productos seleccionados
+        if (selectedProductos.length === 0) {
+            toast.error('Debes seleccionar al menos un producto.');
             return;
         }
-
-
-        // Validar el comprobante de pago antes de enviarlo
-        try {
-            validatePaymentProof(formData.proofOfPayment);
-        } catch (error) {
-            setError(error.message);
-            return;
-        }
-
+       
         // Preparar los detalles de la matrícula (productos, monto, días)
         const detalles = selectedProductos.map((productoId) => {
             const producto = [...productosFijos, ...productosMensuales].find(
@@ -293,13 +334,25 @@ const Matricula = () => {
             };
         });
 
+        // Generar nombre único para la imagen de comprobante
+        let imagePath = formData.paymentMethod === 'Efectivo' ? 'Pago en Efectivo' : '';
+        let uniqueFileName = '';
+
+        if (selectedFile) {
+            // Generar nombre único para la imagen
+            const fileExtension = selectedFile.name.split('.').pop();
+            const formattedDate = new Date().toISOString().split('T')[0]; // Formato "YYYY-MM-DD"
+            uniqueFileName = `${formattedDate}_${formData.parentFullName}.${fileExtension}`;
+            imagePath = `${IMAGE_PATH}${uniqueFileName}`;
+        }
+
         const dataToSend = {
-            clienteId: user.idUsuario,
-            rollId: user.rolId, 
+            ...(user.rolId === 3 && { clienteId: user.idUsuario, rollId: user.rolId }),
+            ...(user.rolId === 1 && { clienteId: userDetails.idPadre, rollId: userDetails.idRol }),
             metodoPago: formData.paymentMethod,
-            imagenPago: formData.proofOfPayment,
+            imagenPago: imagePath || 'Pago en Efectivo',  // Si no hay archivo, se envía una cadena 
             fecha: new Date().toISOString(),
-            referencia: formData.referenceNumber, // Número de referencia
+            referencia: formData.referenceNumber || 0, // Número de referencia
             subtotal: formData.subtotal,
             iva: formData.iva,
             descuento: formData.discount, // Descuento
@@ -309,16 +362,105 @@ const Matricula = () => {
 
         console.log("Datos a enviar:", dataToSend);
 
-        // Enviar datos al backend
         try {
-            const response = await axios.post('https://localhost:44369/EncabezadoFactura/CrearMatricula', dataToSend);
-            console.log('Respuesta del servidor:', response.dataToSend);
-            console.log('Matrícula creada con éxito');
+            console.log('Enviando datos de matrícula:', JSON.stringify(dataToSend, null, 2));
+
+            // Intentamos crear la matrícula primero
+            const matriculaResponse = await axios.post(
+                'https://localhost:44369/EncabezadoFactura/CrearMatricula',
+                dataToSend,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                }
+            );
+
+            if (matriculaResponse.data) {
+                console.log('Matrícula registrada exitosamente:', matriculaResponse.data);
+                if (user.rolId === 3) { toast.info('Matrícula enviada para validación de pago') }
+
+                // Si el método de pago no es "Efectivo" y se ha seleccionado un archivo, proceder a enviarlo al servidor
+                if (formData.paymentMethod !== 'Efectivo' && selectedFile) {
+                    console.log('Subiendo imagen de pago...');
+                    const imageFormData = new FormData();
+                    imageFormData.append('file', selectedFile);
+                    imageFormData.append('fileName', 'Comprobante_' + uniqueFileName);
+
+                    try {
+                        const imageResponse = await axios.post(
+                            'https://localhost:44369/Imagenes/GuardarImagenPago',
+                            imageFormData,
+                            {
+                                headers: { 'Content-Type': 'multipart/form-data' },
+                            }
+                        );
+
+                        if (imageResponse.status === 200) {
+                            console.log('Imagen subida exitosamente:', imageResponse.data);
+                            imagePath = imageResponse.data.filePath || imagePath; // Confirmamos la ruta desde el backend
+                        } else {
+                            setError('Error al guardar la imagen de pago');
+                            console.error('Error al subir la imagen:', imageResponse);
+                            return;
+                        }
+                    } catch (error) {
+                        console.error('Error al subir la imagen:', error);
+                        setError('Error al subir la imagen de pago');
+                    }
+                }
+
+                if (user.rolId === 1) {
+                    toast.success('¡Matrícula registrada y pago procesado con éxito!', {
+                        position: 'top-right',
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }
+            } else {
+                setError('Error al registrar la matrícula');
+                toast.error('Error al registrar la matrícula', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
         } catch (error) {
-            console.error('Error al crear matrícula:', error.response?.dataToSend || error.message);
+            console.error('Error en el proceso de matrícula y pago:', error);
+
+            if (error.response) {
+                console.error('Detalles del error:', {
+                    data: error.response.data,
+                    status: error.response.status,
+                    headers: error.response.headers,
+                });
+
+                if (error.response.data && error.response.data.errors) {
+                    console.error('Errores de validación:', error.response.data.errors);
+                }
+            }
+
+            setError('Error al realizar el proceso de matrícula y pago');
+            toast.error('Error al realizar el proceso de matrícula y pago', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
     };
-
 
 
     return (
@@ -333,7 +475,7 @@ const Matricula = () => {
                         <div className="left-section">
                             {user.rolId === 1 && (
                                 <div className="select-parent">
-                                    <label>Selecciona un Padre:</label>
+                                    <h3>Selecciona un Padre:</h3>
                                     <select
                                         onChange={(e) => handleUserSelect(e.target.value)}
                                         value={formData.parentID || ''}
@@ -364,7 +506,7 @@ const Matricula = () => {
                         {/* Sección Derecha (Pagos y Productos) */}
                         <div className="right-section">
                             <div className="payment-section">
-                                <label>Fecha Actual: {new Date().toLocaleDateString()}</label>
+                                <h3>Fecha Actual: {new Date().toLocaleDateString()}</h3>
 
                                 {/* Sección de Pago */}
                                 <div className="payment-section">
@@ -372,22 +514,27 @@ const Matricula = () => {
                                         formData={formData}
                                         handleChange={handleChange}
                                         handleFileChange={handleFileChange}
+                                        handleImageChange={handleImageChange}
                                         userRole={user.rolId}
                                     />
-                                    <label>Número de Referencia del Comprobante:</label>
-                                    <input
-                                        type="text"
-                                        name="referenceNumber"
-                                        value={formData.referenceNumber}
-                                        onChange={handleChange}
-                                    //required
-                                    />
+                                    {formData.paymentMethod !== 'Efectivo' && (
+                                        <>
+                                            <label>Número de Referencia del Comprobante:</label>
+                                            <input
+                                                type="text"
+                                                name="referenceNumber"
+                                                value={formData.referenceNumber}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </>
+                                    )}
                                     <div className="payment-period">
                                         <label>
                                             Periodo:
                                             <select name="period" value={formData.period} onChange={handlePeriodoChange}>
-                                                <option value="Mensual">Mensual</option>
-                                                <option value="Anual">Anual</option>
+                                                <option value="Mensual">Mensualidad</option>
+                                                <option value="Anual">Anualidad</option>
                                             </select>
                                         </label>
                                     </div>
@@ -397,32 +544,42 @@ const Matricula = () => {
 
                                 <div className="products-selection">
                                     <h3>Seleccionar Productos:</h3>
-                                    <h4>Productos Fijos:</h4>
+                                    {formData.period === 'Anual' ? (
+                                        <>
+                                    <h4>Anualidad:</h4>
                                     {productosFijos.map((producto) => (
                                         <div key={producto.idProducto}>
                                             <label>
                                                 <input
-                                                    type="checkbox"
+                                                    type="radio"
                                                     checked={selectedProductos.includes(producto.idProducto)}
                                                     onChange={() => handleProductoSelection(producto.idProducto)}
+                                                    required
                                                 />
                                                 {producto.nombreProducto} - {producto.monto} colones
                                             </label>
                                         </div>
                                     ))}
-                                    <h4>Productos Mensuales:</h4>
+                                        </>
+                                    ) : (
+                                        <>
+                                
+                                    <h4>Horarios:</h4>
                                     {productosMensuales.map((producto) => (
                                         <div key={producto.idProducto}>
                                             <label>
                                                 <input
-                                                    type="checkbox"
+                                                    type="radio"
                                                     checked={selectedProductos.includes(producto.idProducto)}
                                                     onChange={() => handleProductoSelection(producto.idProducto)}
+                                                    required
                                                 />
                                                 {producto.nombreProducto} - {producto.monto} colones
                                             </label>
                                         </div>
                                     ))}
+                                        </>
+                                    )}
                                 </div>
                                 <label>Subtotal: {formData.subtotal}</label>
                                 <label>IVA (13%): {formData.iva}</label>
@@ -430,6 +587,7 @@ const Matricula = () => {
 
                                 {user.rolId === 1 && (
                                     <>
+                                        <div className="decuento">
                                         <label>Descuento (%):</label>
                                         <input
                                             type="number"
@@ -438,20 +596,21 @@ const Matricula = () => {
                                             onChange={handleChange}
                                             min="0"
                                             max="100"
-                                        />
+                                            />
+                                        </div>
                                     </>
                                 )}
                             </div>
 
                             <div className="total-amount">
-                                <p>Total a pagar: {formData.totalAmount} colones</p>
+                                <h4>Total a pagar: {formData.totalAmount} colones</h4>
                             </div>
                         </div>
                     </div>
 
                     <div className="buttons">
-                        <button type="submit">Realizar Matrícula</button>
-                        <button type="button" onClick={(handleSubmit) => (window.location.href = '/main')}>
+                        <button className="submit-m-button" type="submit">Realizar Envío</button>
+                        <button className="cancel-m-button" type="button" onClick={handleCancel}>
                             Cancelar
                         </button>
                     </div>
@@ -463,9 +622,9 @@ const Matricula = () => {
 }
 
 
-const PaymentSection = ({ formData, handleChange, handleFileChange, userRole }) => (
+const PaymentSection = ({ formData, handleChange, handleImageChange, userRole }) => (
     <div className="payment-section">
-        <h3>Opciones de Pago</h3>
+        <h4>Opciones de Pago</h4>
         <label>
             <input
                 type="radio"
@@ -497,12 +656,19 @@ const PaymentSection = ({ formData, handleChange, handleFileChange, userRole }) 
             />
             Efectivo
         </label>
-        <div className="proof-of-payment">
-            <label>Agregar comprobante de pago:</label>
-            <input type="file" onChange={handleFileChange} />
-        </div>
+        {formData.paymentMethod !== 'Efectivo' && (
+            <div className="proof-of-payment">
+                <label>Agregar comprobante de pago (JPG, PNG o PDF):</label>
+                <input type="file" id="proofOfPayment"
+                    accept=".jpg,.jpeg,.png,.pdf"
+                    onChange={handleImageChange}
+                    required />
+                
+            </div>
+        )}
     </div>
 );
+
 
 const ParentInfo = ({ formData, handleChange, userRole }) => (
     <div className="parent-info">
@@ -513,7 +679,7 @@ const ParentInfo = ({ formData, handleChange, userRole }) => (
             name="parentFullName"
             value={formData.parentFullName}
             onChange={handleChange}
-            disabled={userRole === 3}
+            disabled
         />
         <label>Cédula:</label>
         <input
@@ -521,7 +687,7 @@ const ParentInfo = ({ formData, handleChange, userRole }) => (
             name="parentID"
             value={formData.parentID}
             onChange={handleChange}
-            disabled={userRole === 3}
+            disabled
         />
         <label>Teléfono:</label>
         <input
@@ -541,15 +707,7 @@ const ParentInfo = ({ formData, handleChange, userRole }) => (
 );
 
 const handleChildSelection = (idAlumno) => {
-    setSelectedChildren((prevSelectedChildren) => {
-        if (prevSelectedChildren.includes(idAlumno)) {
-            // El niño ya está seleccionado, eliminarlo
-            return prevSelectedChildren.filter((id) => id !== idAlumno);
-        } else {
-            // El niño no está seleccionado, agregarlo
-            return [...prevSelectedChildren, idAlumno];
-        }
-    });
+    setSelectedChildren([idAlumno]); // Reemplaza cualquier selección previa con el nuevo ID
 };
 
 const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelection }) => {
@@ -557,13 +715,13 @@ const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelectio
 
     return (
         <div className="children-selection">
-            <h3>Niños a Matricular:</h3>
+            <h3>Seleccionar Niño:</h3>
             {childrenList.length > 0 ? (
                 childrenList.map((child) => (
                     <div key={child.idAlumno}>
                         <label>
                             <input
-                                type="checkbox"
+                                type="radio"
                                 checked={selectedChildren.includes(child.idAlumno)} // Asegúrate de que selectedChildren sea un array
                                 onChange={() => handleChildSelection(child.idAlumno)} // Llama a la función para manejar la selección
                             />
@@ -572,7 +730,8 @@ const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelectio
                     </div>
                 ))
             ) : (
-                <p>No hay niños para mostrar.</p> // Se muestra este mensaje si childrenList está vacío
+                    <p>Se debe seleccionar un padre.</p>
+                    // Se muestra este mensaje si childrenList está vacío
             )}
         </div>
     );

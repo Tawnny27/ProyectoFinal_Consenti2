@@ -24,7 +24,6 @@ namespace kinder_consenti2.Server.Controllers
         [Route("ObtenerFacturas")]
         public ActionResult<List<EncabezadoFactura>> ObtenerFacturas()
         {
-
             return Ok(_context.EncabezadoFactura.Include(x => x.DetalleFacturas).ToList());
         }
         //---------------------------------------------------------------------------------------------------------------------------
@@ -59,6 +58,8 @@ namespace kinder_consenti2.Server.Controllers
                     if (status == 1) 
                     {
                         var matricula = _context.Matricula.FirstOrDefault(x => x.IdFact == factura.IdFactura);
+                        if (matricula == null)
+                            return NotFound("Revisar no se encontraron datos");
                         matricula.Status = true;
                         _context.Matricula.Update(matricula);
                         _context.SaveChanges();
@@ -99,17 +100,19 @@ namespace kinder_consenti2.Server.Controllers
 
             int idStatus;
             bool status;
-            if (Datos.RollId == 1)
+            // se valida el roll de la persona que envia la solicitud
+            if (Datos.RollId == 1)   // roll adm para el status finalizado de la factura y la matricula
             {
-                idStatus = 1;
+                idStatus = 1; 
                 status = true;
             }
-            else 
+            else // Otros roles para el status pendiente de la factura y la matricula
             { 
                 idStatus = 0; 
                 status = false;
             }
 
+            // Se setea el obj EncabezadoFactura
             EncabezadoFactura factura = new EncabezadoFactura
             {
                 UsuarioId = Datos.ClienteId,
@@ -123,25 +126,44 @@ namespace kinder_consenti2.Server.Controllers
                 Total = Datos.Total,
                 status = idStatus
             };
+            //Se inserta el EncabezadoFactura
             _context.EncabezadoFactura.Add(factura);
             _context.SaveChanges();
             var insertada = _context.EncabezadoFactura.Find(factura.IdFactura);
 
             if (insertada != null)
             {
+                /* foreach (var item in Datos.Detalles)
+                 {
+                     DetalleFactura detalleFact = new DetalleFactura
+                     {
+                         EncabezadoFacturaId = insertada.IdFactura,
+                         ProductoId = item.ProductoId,
+                         AlumnoId = item.AlumnoId,
+                         Monto = item.Monto
+                     };
+                     _context.DetalleFactura.Add(detalleFact);
+                     _context.SaveChanges();
+                 }
+                */
+                //Se insertan los detalles de la factura
+                List<DetalleFactura> Detalle = new List<DetalleFactura>();
                 foreach (var item in Datos.Detalles)
-                {
-                    DetalleFactura detalleFact = new DetalleFactura
+                {                   
+                    DetalleFactura registro = new DetalleFactura
                     {
                         EncabezadoFacturaId = insertada.IdFactura,
                         ProductoId = item.ProductoId,
                         AlumnoId = item.AlumnoId,
-                        Monto = item.Monto
+                        Monto = item.Monto,
                     };
-                    _context.DetalleFactura.Add(detalleFact);
-                    _context.SaveChanges();
-                }
+                    item.EncabezadoFacturaId = insertada.IdFactura;
+                    Detalle.Add(registro);
+                }                
+                _context.DetalleFactura.AddRange(Detalle);
+                _context.SaveChanges();
 
+                // Se extraen los horarios 
                 var Mat = Datos.Detalles.Where(x => x.ProductoId > 3);
                 foreach (var item in Mat)
                 {
@@ -155,7 +177,7 @@ namespace kinder_consenti2.Server.Controllers
                         Status = status
                     };
                     _context.Matricula.Add(Matriculada);
-                    _context.SaveChanges();
+                    _context.SaveChanges(); 
                 }
                 return Ok("Matricula enviada para validacio del pago");
             }            

@@ -1,5 +1,6 @@
 ﻿using kinder_consenti2.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace kinder_consenti2.Server.Controllers
 {
@@ -16,16 +17,16 @@ namespace kinder_consenti2.Server.Controllers
 
         [HttpGet]
         [Route("ObtenerCategorias")]
-        public ActionResult<List<Categoria>> ObtenerCategorias()
+        public async  Task<ActionResult<List<Categoria>>> ObtenerCategorias()
         {
-            return Ok(_context.Categoria.ToList());
+            return Ok(await _context.Categoria.ToListAsync());
         }
 
         [HttpGet]
         [Route("BuscarCategorias/{id}")]
-        public ActionResult<Categoria> BuscarCategorias(int id)
+        public async Task<ActionResult<Categoria>> BuscarCategorias(int id)
         {
-            var categoria = _context.Categoria.Find(id);
+            var categoria = await _context.Categoria.FindAsync(id);
             if (categoria == null)
                 return BadRequest("No encontrado");
             return Ok(categoria);
@@ -33,30 +34,32 @@ namespace kinder_consenti2.Server.Controllers
 
         [HttpPost]
         [Route("CrearCategoria")]
-        public ActionResult<Categoria> CrearCategoria(Categoria categoria)
+        public async Task<ActionResult<Categoria>> CrearCategoria(Categoria categoria)
         {
             _context.Categoria.Add(categoria);
-            _context.SaveChanges();
-            var insertado = _context.Categoria.Find(categoria.IdCategoria);
+            await _context.SaveChangesAsync();
+            var insertado = await _context.Categoria.FindAsync(categoria.IdCategoria);
             return Ok(insertado);
         }
 
         [HttpPut]
         [Route("EditarCategoria")]
-        public ActionResult<Categoria> EditarCategoria(Categoria categoria)
+        public async Task<ActionResult<Categoria>> EditarCategoria(Categoria categoria)
         {
             _context.Categoria.Update(categoria);
-            _context.SaveChanges();
-            return Ok(_context.Categoria.Find(categoria.IdCategoria));
+            await _context.SaveChangesAsync();
+            return Ok(await _context.Categoria.FindAsync(categoria.IdCategoria));
         }
 
         [HttpDelete]
         [Route("EliminarCategoria/{id}")]
-        public ActionResult<string> EliminarCategoria(int id)
+        public async Task<ActionResult<string>> EliminarCategoria(int id)
         {
-            var categoria = _context.Categoria.Find(id);
+            var categoria = await _context.Categoria.FindAsync(id);
+            if (categoria == null)
+                return NotFound("No se encontraron datos a borrar");
             _context.Categoria.Remove(categoria);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok("Categoria eliminada");
         }
 

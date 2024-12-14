@@ -34,9 +34,11 @@ namespace kinder_consenti2.Server.Controllers
             //Validar el cupo de grupo
             int registros = _context.GruposAlumnos.Where(x => x.GrupoId == gruposAlumnos.GrupoId).Count();
             var grupo = _context.Grupos.Find(gruposAlumnos.GrupoId);
+            if (grupo == null)
+                return NotFound("No se encontraron datos favor validar");
             int cupo = grupo.Cupo;
             if (registros >= cupo)
-                return BadRequest("El cupo esta completo, no se puden aghregar mas alumnos");
+                return BadRequest("El cupo esta completo, no se puden agregar mas alumnos");
             //----------------------
 
             //Validar que no este ya registrado al mismo grupo

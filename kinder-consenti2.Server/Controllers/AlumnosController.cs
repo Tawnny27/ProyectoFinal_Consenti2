@@ -22,17 +22,17 @@ namespace kinder_consenti2.Server.Controllers
         //************** Consultar Alumnos ******************
         [HttpGet]
         [Route("ObtenerAlumnos")]
-        public ActionResult<List<Alumno>> ObtenerAlumnos()
+        public async Task <ActionResult<List<Alumno>>> ObtenerAlumnos()
         {
-            return Ok(_context.Alumno.ToList());
+            return Ok(await _context.Alumno.ToListAsync());
         }
 
         //************** Consultar un Alumno******************
         [HttpGet]
         [Route("BuscarAlumno/{id}")]
-        public ActionResult<Alumno> BuscarAlumnos(int id)
+        public async Task<ActionResult<Alumno>> BuscarAlumnos(int id)
         {
-            var alumno = _context.Alumno.Find(id);
+            var alumno = await _context.Alumno.FindAsync(id);
             if (alumno == null)
                 return BadRequest("No encontrado");
             return Ok(alumno);
@@ -41,13 +41,13 @@ namespace kinder_consenti2.Server.Controllers
         //********************* Crear Alumnos **************************
         [HttpPost]
         [Route("CrearAlumno")]
-        public ActionResult<Alumno> CrearAlumno(Alumno alumno)
+        public async Task<ActionResult<Alumno>> CrearAlumno(Alumno alumno)
         {
             try
             {
                 _context.Alumno.Add(alumno);
-                _context.SaveChanges();
-                var insertado = _context.Alumno.Find(alumno.IdAlumno);                
+                 await _context.SaveChangesAsync();
+                var insertado = await _context.Alumno.FindAsync(alumno.IdAlumno);                
                 return Ok(insertado);
             }
             catch (Exception ex)
@@ -59,21 +59,23 @@ namespace kinder_consenti2.Server.Controllers
         //********************* Editar Alumnos **************************
         [HttpPut]
         [Route("EditarAlumno")]
-        public ActionResult<Alumno> EditarAlumno(Alumno alumno)
+        public async Task<ActionResult<Alumno>> EditarAlumno(Alumno alumno)
         {
             _context.Alumno.Update(alumno);
-            _context.SaveChanges();
-            return Ok(_context.Alumno.Find(alumno.IdAlumno));
+            await _context.SaveChangesAsync();
+            return Ok(await _context.Alumno.FindAsync(alumno.IdAlumno));
         }
 
         //********************* Eliminar Alumnos **************************
         [HttpDelete]
         [Route("EliminarAlumno/{id}")]
-        public ActionResult<string> EliminarAlumno(int id)
+        public async Task<ActionResult<string>> EliminarAlumno(int id)
         {
-            var alumno = _context.Alumno.Find(id);
+            var alumno = await _context.Alumno.FindAsync(id);
+            if (alumno == null)
+                return NotFound("No se encontyraron datos");
             _context.Alumno.Remove(alumno);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok("Alumno eliminado");
         }
     }
