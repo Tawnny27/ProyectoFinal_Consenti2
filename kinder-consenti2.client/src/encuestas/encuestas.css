@@ -172,3 +172,8 @@
         font-size: 16px;
         line-height: 1.5;
     }
+
+.locked {
+    opacity: 0.5; /* Desaparece ligeramente la card */
+    pointer-events: none; /* Deshabilita los clics */
+}

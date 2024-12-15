@@ -69,7 +69,7 @@ namespace kinder_consenti2.Server.Controllers
 
         //---------------------Guardar las imagenes o Pdf de pago--------------------------------------
         [HttpPost]
-        [Route("GuardarFotosNiño")]
+        [Route("GuardarFotosNino")]
         public async Task<IActionResult> GuardarFotosNiño(IFormFile file, [FromForm] string fileName)
         {
             try

@@ -1,143 +1,219 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
+import axios from 'axios';
 
-const FotosPorCarpeta = ({ rol, idUsuario }) => {
-    const [carpetas, setCarpetas] = useState([]);
-    const [nuevaCarpeta, setNuevaCarpeta] = useState("");
-    const [idAlumno, setIdAlumno] = useState("");
+const AgregarFotosAlumno = () => {
+    const [alumnos, setAlumnos] = useState([]);
+    const [idAlumnoSeleccionado, setIdAlumnoSeleccionado] = useState("");
     const [mensaje, setMensaje] = useState("");
-    const [isLoading, setIsLoading] = useState(true);
 
+    // Obtener alumnos
     useEffect(() => {
-        const cargarCarpetas = async () => {
-            setIsLoading(true);
+        const cargarAlumnos = async () => {
             try {
-                let url = "/api/fotos/todas";
-                if (rol === 3) {
-                    url = `/api/fotos/porPadre/${idUsuario}`;
-                }
-
-                const response = await fetch(url);
+                const response = await fetch("https://localhost:44369/Alumnos/ObtenerAlumnos");
                 if (response.ok) {
                     const data = await response.json();
-                    setCarpetas(data);
+                    setAlumnos(data);
+                    console.log("Alumnos cargados:", data);  // Agregado para ver los alumnos cargados
                 } else {
-                    setMensaje("Error al cargar las carpetas.");
+                    setMensaje("Error al cargar los alumnos.");
+                    console.error("Error al cargar los alumnos", response); // Agregado para ver el error
                 }
             } catch (error) {
-                setMensaje("Hubo un error al obtener las carpetas.");
-            } finally {
-                setIsLoading(false);
+                setMensaje("Hubo un error al obtener los alumnos.");
+                console.error("Error en la carga de alumnos:", error); // Agregado para ver el error
             }
         };
 
-        cargarCarpetas();
-    }, [rol, idUsuario]);
+        cargarAlumnos();
+    }, []);
 
-    const agregarCarpeta = async () => {
-        if (!nuevaCarpeta || !idAlumno) {
-            setMensaje("Debe completar el nombre de la carpeta y el ID del alumno.");
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState('');
+    const [imageError, setImageError] = useState('');
+    const fileInputRef = useRef(null);
+
+    const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png'];
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    const IMAGE_PATH = '/FotosAlumnos/';
+
+    const validateImage = (file) => {
+        console.log("Validando archivo:", file); // Agregado para ver el archivo
+        if (!file) {
+            throw new Error('Por favor seleccione una imagen');
+        }
+
+        if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+            throw new Error('Formato no permitido. Use JPG, PNG');
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            throw new Error('La imagen excede el tamaño máximo de 5MB');
+        }
+
+        return true;
+    };
+
+    // Manejar la selección de archivos
+    const manejarCambioDeArchivo = (e) => {
+        const file = e.target.files[0];
+        setImageError('');
+        console.log("Archivo seleccionado:", file);  // Agregado para ver el archivo seleccionado
+
+        try {
+            if (validateImage(file)) {
+                setSelectedFile(file);
+                // Crear URL temporal para vista previa
+                const previewURL = URL.createObjectURL(file);
+                setPreviewUrl(previewURL);
+                console.log("Vista previa de la imagen:", previewURL);  // Agregado para ver la URL de la imagen
+            }
+        } catch (error) {
+            setImageError(error.message);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+            console.error("Error de validación de imagen:", error);  // Agregado para ver el error de validación
+        }
+    };
+
+    // Función para agregar fotos
+    const agregarFotos = async (e) => {
+        e.preventDefault();
+        let imagePath = 'default.jpg';
+        let uniqueFileName = '';
+
+        if (selectedFile) {
+            // Generar nombre único para la imagen
+            const fileExtension = selectedFile.name.split('.').pop();
+            uniqueFileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`;
+            imagePath = `${IMAGE_PATH}${uniqueFileName}`;
+            console.log("Nombre único de la imagen:", uniqueFileName);  // Agregado para ver el nombre único de la imagen
+        }
+
+        if (!idAlumnoSeleccionado) {
+            setMensaje("Debe seleccionar un alumno antes de agregar fotos.");
+            console.log("Alumno no seleccionado");  // Agregado para ver si el alumno no está seleccionado
+            return;
+        }
+
+        if (!selectedFile) {
+            setMensaje("Debe seleccionar al menos una foto para cargar.");
+            console.log("No hay fotos seleccionadas");  // Agregado para ver si no hay fotos seleccionadas
             return;
         }
 
         try {
-            const response = await fetch("/api/fotos/agregarCarpeta", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nombre: nuevaCarpeta, idAlumno }),
-            });
+            const alumnoSeleccionado = alumnos.find(
+                (alumno) => alumno.idAlumno === parseInt(idAlumnoSeleccionado)
+            );
+            console.log("Alumno seleccionado:", alumnoSeleccionado);  // Agregado para ver el alumno seleccionado
 
-            if (response.ok) {
-                setMensaje("Carpeta agregada exitosamente.");
-                setNuevaCarpeta("");
-                setIdAlumno("");
-                // Recargar carpetas
-                const updatedCarpetas = await response.json();
-                setCarpetas(updatedCarpetas);
-            } else {
-                setMensaje("Error al agregar la carpeta.");
+            // Crear el objeto de datos a enviar
+            const envioDatos = {
+                
+                alumnoId: alumnoSeleccionado.idAlumno,
+                fecha: new Date().toISOString().split('T')[0], // Fecha actual
+                rutaFoto: imagePath || 'default.jpg',
+                alumno: alumnoSeleccionado
+            };
+
+            console.log("Envio de datos al primer endpoint:", envioDatos);  // Agregado para ver los datos a enviar
+
+            // Enviar los datos al primer endpoint
+            const response = await axios.post(
+                'https://localhost:44369/FotoAlumnoes/CrearFotosAlumno',
+                envioDatos,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                }
+            );
+
+            // Si la respuesta es exitosa y hay una foto para cargar
+            if (response.data) {
+                // Crear FormData para enviar la imagen
+                const imageFormData = new FormData();
+                imageFormData.append('file', selectedFile);
+                imageFormData.append('fileName', uniqueFileName); // Enviar el nombre único
+                console.log("Envio de imagen:", imageFormData);  // Agregado para ver FormData
+
+                // Enviar la foto al segundo endpoint
+                const imageResponse = await axios.post(
+                    'https://localhost:44369/Imagenes/GuardarFotosNino',
+                    imageFormData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    }
+                );
+                console.log("Respuesta de la imagen:", imageResponse);  // Agregado para ver la respuesta del segundo endpoint
             }
-        } catch (error) {
-            setMensaje("Hubo un error al agregar la carpeta.");
+        } catch (data) {
+            console.error("Error:", data);
+            setMensaje("Hubo un error al agregar las fotos.");
         }
     };
 
     return (
         <div style={{ padding: "20px", fontFamily: "Roboto, sans-serif" }}>
             <Navbar />
-            <h2 style={{ color: "#48C9B0" }}>Fotos por Carpeta</h2>
-            {isLoading ? (
-                <p>Cargando carpetas...</p>
-            ) : (
-                <div>
-                    {rol === 1 || rol === 2 ? (
-                        <div style={{ marginBottom: "20px" }}>
-                            <h3>Agregar nueva carpeta</h3>
-                            <input
-                                type="text"
-                                placeholder="Nombre de la carpeta"
-                                value={nuevaCarpeta}
-                                onChange={(e) => setNuevaCarpeta(e.target.value)}
-                                style={{ marginRight: "10px", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
-                            />
-                            <input
-                                type="text"
-                                placeholder="ID del alumno"
-                                value={idAlumno}
-                                onChange={(e) => setIdAlumno(e.target.value)}
-                                style={{ marginRight: "10px", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
-                            />
-                            <button
-                                onClick={agregarCarpeta}
-                                style={{
-                                    padding: "10px 15px",
-                                    backgroundColor: "#3498DB",
-                                    color: "#fff",
-                                    border: "none",
-                                    borderRadius: "5px",
-                                    cursor: "pointer",
-                                }}
-                            >
-                                Agregar Carpeta
-                            </button>
-                        </div>
-                    ) : null}
-                    <div>
-                        {carpetas.length > 0 ? (
-                            carpetas.map((carpeta) => (
-                                <div
-                                    key={carpeta.id}
-                                    style={{
-                                        border: "1px solid #A569BD",
-                                        borderRadius: "8px",
-                                        marginBottom: "15px",
-                                        padding: "15px",
-                                        backgroundColor: "#f9f9f9",
-                                    }}
-                                >
-                                    <h3 style={{ color: "#A569BD" }}>{carpeta.nombre}</h3>
-                                    <ul>
-                                        {carpeta.fotos.map((foto, index) => (
-                                            <li key={index}>
-                                                <a href={foto.url} target="_blank" rel="noopener noreferrer">
-                                                    {foto.nombre}
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No hay carpetas disponibles.</p>
-                        )}
-                    </div>
-                </div>
-            )}
+            <h2 style={{ color: "#A569BD", marginTop: "90px" }}>Agregar Fotos de Alumnos</h2>
+
+            <div style={{ marginBottom: "20px" }}>
+                <h3>Seleccione un alumno</h3>
+                <select
+                    value={idAlumnoSeleccionado}
+                    onChange={(e) => setIdAlumnoSeleccionado(e.target.value)}
+                    style={{
+                        padding: "8px",
+                        borderRadius: "5px",
+                        border: "1px solid #ccc",
+                        marginRight: "10px",
+                        color: "#000",
+                        backgroundColor: "#fff"
+                    }}
+                >
+                    <option value="">Seleccionar alumno</option>
+                    {alumnos.map((alumno) => (
+                        <option key={alumno.idAlumno} value={alumno.idAlumno}>
+                            {alumno.nombreAlumno} {alumno.apellidosAlumno}
+                        </option>
+                    ))}
+                </select>
+
+                <input
+                    type="file"
+                    ref={fileInputRef}  // Usando ref correctamente
+                    onChange={manejarCambioDeArchivo}
+                    accept=".jpg,.jpeg,.png"
+                    style={{ margin: "10px 0" }}
+                />
+
+                <button
+                    onClick={agregarFotos}
+                    style={{
+                        padding: "10px 15px",
+                        backgroundColor: "#3498DB",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                    }}
+                >
+                    Agregar Fotos
+                </button>
+            </div>
+
             {mensaje && <p style={{ color: "#e74c3c" }}>{mensaje}</p>}
             <Footer />
         </div>
     );
 };
 
-export default FotosPorCarpeta;
+export default AgregarFotosAlumno;

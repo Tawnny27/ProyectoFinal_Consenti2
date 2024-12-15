@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import ReactStars from 'react-rating-stars-component'; // Importar la librería de estrellas*/
 import './encuestas.css';
 
@@ -11,6 +13,7 @@ const MaestrasFeedback = () => {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
     const [mensajeExito, setMensajeExito] = useState('');
+
 
     useEffect(() => {
         const fetchTeachersAndAvatars = async () => {
@@ -50,20 +53,49 @@ const MaestrasFeedback = () => {
     };
 
     const handleSubmitFeedback = async () => {
-        if (rating && comment && selectedTeacher) {
-            try {
-                await axios.post('https://localhost:44369/Feedback/EnviarCalificacion', {
-                    teacherId: selectedTeacher.idUsuario,
-                    rating,
-                    comment,
-                });
-                alert('¡Gracias por tu calificación!');
-                setSelectedTeacher(null);
-            } catch  {
-                alert('Error al enviar la calificación:', error);
-            }
+        // Validación de los datos antes de enviarlos
+        if (rating <= 0) {
+            toast.error('Por favor, califica a la maestra con estrellas.');
+            return; // Detiene la ejecución si no hay calificación
+        }
+
+        if (comment.trim() === '') {
+            toast.error('Por favor, escribe un comentario.');
+            return; // Detiene la ejecución si no hay comentario
+        }
+
+
+        try {
+            const evaluacionDocente = {
+                fecha: new Date().toISOString().split('T')[0],
+                UsuarioId: selectedTeacher.idUsuario,
+                Puntos: rating,
+                Comentarios: comment
+            };
+
+            // Agrega un log para ver los datos antes de enviarlos
+            console.log('Datos enviados:', evaluacionDocente);
+
+            // Enviar la evaluación docente al servidor
+            const response = await axios.post('https://localhost:44369/EvaluacionDocentes/CrearEvaluacionDocente', evaluacionDocente, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            // Verifica la respuesta del servidor
+            console.log('Respuesta del servidor:', response.data);
+
+            toast.success('¡Gracias por tu calificación!');
+            setSelectedTeacher(null);
+            setRating(0);
+            setComment('');
+        } catch (error) {
+            console.error('Error al enviar la calificación:', error);
+            toast.error('Error al enviar la calificación');
         }
     };
+
 
     return (
         <div className="teachers-feedback-container">
@@ -81,7 +113,7 @@ const MaestrasFeedback = () => {
                             onClick={() => handleTeacherSelect(teacher)}
                         >
                             <img src={teacher.avatar} alt={teacher.nombreUsuario} className="teacher-photo" />
-                            <h4 className="teacher-name">{teacher.nombreUsuario}</h4>
+                            <h4 className="teacher-name">{teacher.nombreUsuario} {teacher.apellidosUsuario}</h4>
                         </div>
                     ))}
                 </div>
@@ -98,13 +130,14 @@ const MaestrasFeedback = () => {
                             onChange={handleRatingChange}
                         />
                         <textarea
-                            required
+                            
                             className="feedback-textarea"
                             placeholder="Escribe un comentario..."
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
+                            required
                         />
-                        <button type="submit"  className="feedback-submit-button" onClick={handleSubmitFeedback}>
+                        <button type="submit" className="submit-button" onClick={handleSubmitFeedback}>
                             Enviar Calificación
                         </button>
                     </div>
