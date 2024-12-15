@@ -9,10 +9,6 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="src\NewFolder1\**" />
-    <TypeScriptConfiguration Remove="src\NewFolder1\**" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="public\FotosPerfAlumno\" />
     <Folder Include="src\Matricula\" />
     <Folder Include="src\Facturas\" />

@@ -7,8 +7,10 @@
     "bootstrap": "^5.3.3",
     "primeicons": "^7.0.0",
     "primereact": "^10.8.3",
+    "react": "^19.0.0",
     "react-bootstrap": "^2.10.5",
     "react-data-table-component": "^7.6.2",
+    "react-dom": "^19.0.0",
     "react-rating-stars-component": "^2.2.0",
     "react-toastify": "^10.0.6",
     "xlsx": "^0.18.5"
