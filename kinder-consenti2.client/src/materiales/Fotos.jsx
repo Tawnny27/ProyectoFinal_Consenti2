@@ -4,32 +4,40 @@ import Footer from '../componentes/footer';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useUser } from '../UserContext';
 
 const AgregarFotosAlumno = () => {
+    const { user } = useUser();
     const [alumnos, setAlumnos] = useState([]);
     const [idAlumnoSeleccionado, setIdAlumnoSeleccionado] = useState("");
     const [mensaje, setMensaje] = useState("");
+    const [fotos, setFotos] = useState([]); // Estado para almacenar las fotos agregadas
 
-    // Obtener alumnos
     useEffect(() => {
+        // Cargar alumnos desde el backend
         const cargarAlumnos = async () => {
             try {
                 const response = await fetch("https://localhost:44369/Alumnos/ObtenerAlumnos");
                 if (response.ok) {
                     const data = await response.json();
                     setAlumnos(data);
-                    console.log("Alumnos cargados:", data);  // Agregado para ver los alumnos cargados
+                    console.log("Alumnos cargados:", data);
                 } else {
                     setMensaje("Error al cargar los alumnos.");
-                    console.error("Error al cargar los alumnos", response); // Agregado para ver el error
+                    console.error("Error al cargar los alumnos", response);
                 }
             } catch (error) {
                 setMensaje("Hubo un error al obtener los alumnos.");
-                console.error("Error en la carga de alumnos:", error); // Agregado para ver el error
+                console.error("Error en la carga de alumnos:", error);
             }
         };
 
         cargarAlumnos();
+
+        // Cargar las fotos desde localStorage si están disponibles
+        const fotosGuardadas = JSON.parse(localStorage.getItem('fotos')) || [];
+        setFotos(fotosGuardadas);
+
     }, []);
 
     const [selectedFile, setSelectedFile] = useState(null);
@@ -42,7 +50,7 @@ const AgregarFotosAlumno = () => {
     const IMAGE_PATH = '/FotosAlumnos/';
 
     const validateImage = (file) => {
-        console.log("Validando archivo:", file); // Agregado para ver el archivo
+        console.log("Validando archivo:", file);
         if (!file) {
             throw new Error('Por favor seleccione una imagen');
         }
@@ -58,11 +66,10 @@ const AgregarFotosAlumno = () => {
         return true;
     };
 
-    // Manejar la selección de archivos
     const manejarCambioDeArchivo = (e) => {
         const file = e.target.files[0];
         setImageError('');
-        console.log("Archivo seleccionado:", file);  // Agregado para ver el archivo seleccionado
+        console.log("Archivo seleccionado:", file);
 
         try {
             if (validateImage(file)) {
@@ -70,16 +77,24 @@ const AgregarFotosAlumno = () => {
                 // Crear URL temporal para vista previa
                 const previewURL = URL.createObjectURL(file);
                 setPreviewUrl(previewURL);
-                console.log("Vista previa de la imagen:", previewURL);  // Agregado para ver la URL de la imagen
+                console.log("Vista previa de la imagen:", previewURL);
             }
         } catch (error) {
             setImageError(error.message);
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
-            console.error("Error de validación de imagen:", error);  // Agregado para ver el error de validación
+            console.error("Error de validación de imagen:", error);
         }
     };
+
+    const descargarFoto = (rutaFoto) => {
+        const link = document.createElement('a');
+        link.href = rutaFoto; // Ruta de la foto
+        link.download = rutaFoto.split('/').pop(); // Descargar con el nombre del archivo original
+        link.click();
+    };
+
 
     // Función para agregar fotos
     const agregarFotos = async (e) => {
@@ -92,18 +107,18 @@ const AgregarFotosAlumno = () => {
             const fileExtension = selectedFile.name.split('.').pop();
             uniqueFileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`;
             imagePath = `${IMAGE_PATH}${uniqueFileName}`;
-            console.log("Nombre único de la imagen:", uniqueFileName);  // Agregado para ver el nombre único de la imagen
+            console.log("Nombre único de la imagen:", uniqueFileName);
         }
 
         if (!idAlumnoSeleccionado) {
             toast.error("Debe seleccionar un alumno antes de agregar fotos.");
-            console.log("Alumno no seleccionado");  // Agregado para ver si el alumno no está seleccionado
+            console.log("Alumno no seleccionado");
             return;
         }
 
         if (!selectedFile) {
             toast.error("Debe seleccionar al menos una foto para cargar.");
-            console.log("No hay fotos seleccionadas");  // Agregado para ver si no hay fotos seleccionadas
+            console.log("No hay fotos seleccionadas");
             return;
         }
 
@@ -111,18 +126,17 @@ const AgregarFotosAlumno = () => {
             const alumnoSeleccionado = alumnos.find(
                 (alumno) => alumno.idAlumno === parseInt(idAlumnoSeleccionado)
             );
-            console.log("Alumno seleccionado:", alumnoSeleccionado);  // Agregado para ver el alumno seleccionado
+            console.log("Alumno seleccionado:", alumnoSeleccionado);
 
             // Crear el objeto de datos a enviar
             const envioDatos = {
-                
                 alumnoId: alumnoSeleccionado.idAlumno,
                 fecha: new Date().toISOString().split('T')[0], // Fecha actual
                 rutaFoto: imagePath || 'default.jpg',
                 alumno: alumnoSeleccionado
             };
 
-            console.log("Envio de datos al primer endpoint:", envioDatos);  // Agregado para ver los datos a enviar
+            console.log("Envio de datos al primer endpoint:", envioDatos);
 
             // Enviar los datos al primer endpoint
             const response = await axios.post(
@@ -142,7 +156,7 @@ const AgregarFotosAlumno = () => {
                 const imageFormData = new FormData();
                 imageFormData.append('file', selectedFile);
                 imageFormData.append('fileName', uniqueFileName); // Enviar el nombre único
-                console.log("Envio de imagen:", imageFormData);  // Agregado para ver FormData
+                console.log("Envio de imagen:", imageFormData);
 
                 // Enviar la foto al segundo endpoint
                 const imageResponse = await axios.post(
@@ -154,9 +168,23 @@ const AgregarFotosAlumno = () => {
                         },
                     }
                 );
-                toast.success("Imagen enviada con exito");
-                console.log("Respuesta de la imagen:", imageResponse);  // Agregado para ver la respuesta del segundo endpoint
 
+                toast.success("Imagen enviada con exito");
+                console.log("Respuesta de la imagen:", imageResponse);
+
+                // Agregar la foto al estado para mostrarla
+                const nuevaFoto = {
+                    rutaFoto: imagePath,
+                    fecha: new Date().toISOString().split('T')[0],
+                    alumno: alumnoSeleccionado.nombreAlumno
+                };
+
+                setFotos((prevFotos) => {
+                    const fotosActualizadas = [...prevFotos, nuevaFoto];
+                    // Guardar las fotos en localStorage
+                    localStorage.setItem('fotos', JSON.stringify(fotosActualizadas));
+                    return fotosActualizadas;
+                });
             }
         } catch (data) {
             console.error("Error:", data);
@@ -167,10 +195,11 @@ const AgregarFotosAlumno = () => {
     return (
         <div style={{ padding: "20px", fontFamily: "Roboto, sans-serif" }}>
             <Navbar />
-            <h2 style={{ color: "#A569BD", marginTop: "90px" }}>Agregar Fotos de Alumnos</h2>
-
+            
+            <h2 style={{ color: "#A569BD", marginTop: "90px" }}>Fotos de Alumnos</h2>
+            {user.rolId === 1 && (
             <div style={{ marginBottom: "20px" }}>
-                <h3>Seleccione un alumno</h3>
+                <h4>Seleccione un alumno</h4>
                 <select
                     value={idAlumnoSeleccionado}
                     onChange={(e) => setIdAlumnoSeleccionado(e.target.value)}
@@ -213,8 +242,44 @@ const AgregarFotosAlumno = () => {
                     Agregar Fotos
                 </button>
             </div>
+            )}
+            {/* Mostrar las fotos agregadas */}
+            <div style={{ marginTop: "20px", marginBottom: "50px" }}>
+                <h4>Álbum de Fotos</h4>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "15px" }}>
+                    {fotos
+                        .filter(foto => {
+                            // Si el rol es 1 (Administrador), mostramos todas las fotos
+                            if (user.rolId === 1) {
+                                return true;
+                            }
+                            // Si el rol es 3 (Padre), solo mostramos las fotos del alumno cuyo padreId coincide con el idUsuario
+                            return alumnos.some(alumno => alumno.nombreAlumno === foto.alumno && alumno.padreId === user.idUsuario);
+                        })
+                        .map((foto, index) => (
+                            <div key={index} style={{ textAlign: "center", width: "150px" }}>
+                                <img
+                                    src={foto.rutaFoto}
+                                    alt="Foto alumno"
+                                    style={{
+                                        width: "100%",
+                                        height: "150px",
+                                        objectFit: "cover",
+                                        borderRadius: "8px",
+                                        cursor: "pointer",
+                                    }}
+                                    onClick={() => descargarFoto(foto.rutaFoto)}  // Llamar a la función de descarga al hacer clic
+                                />
+                                <p style={{ fontSize: "12px", marginTop: "5px" }}>
+                                    {foto.alumno} - {foto.fecha}
+                                </p>
+                            </div>
+                        ))}
+                </div>
+            </div>
 
-            
+
+
             <Footer />
         </div>
     );
