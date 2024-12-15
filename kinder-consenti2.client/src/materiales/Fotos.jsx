@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AgregarFotosAlumno = () => {
     const [alumnos, setAlumnos] = useState([]);
@@ -94,13 +96,13 @@ const AgregarFotosAlumno = () => {
         }
 
         if (!idAlumnoSeleccionado) {
-            setMensaje("Debe seleccionar un alumno antes de agregar fotos.");
+            toast.error("Debe seleccionar un alumno antes de agregar fotos.");
             console.log("Alumno no seleccionado");  // Agregado para ver si el alumno no está seleccionado
             return;
         }
 
         if (!selectedFile) {
-            setMensaje("Debe seleccionar al menos una foto para cargar.");
+            toast.error("Debe seleccionar al menos una foto para cargar.");
             console.log("No hay fotos seleccionadas");  // Agregado para ver si no hay fotos seleccionadas
             return;
         }
@@ -152,11 +154,13 @@ const AgregarFotosAlumno = () => {
                         },
                     }
                 );
+                toast.success("Imagen enviada con exito");
                 console.log("Respuesta de la imagen:", imageResponse);  // Agregado para ver la respuesta del segundo endpoint
+
             }
         } catch (data) {
             console.error("Error:", data);
-            setMensaje("Hubo un error al agregar las fotos.");
+            toast.error("Hubo un error al agregar las fotos.");
         }
     };
 
@@ -210,7 +214,7 @@ const AgregarFotosAlumno = () => {
                 </button>
             </div>
 
-            {mensaje && <p style={{ color: "#e74c3c" }}>{mensaje}</p>}
+            
             <Footer />
         </div>
     );
