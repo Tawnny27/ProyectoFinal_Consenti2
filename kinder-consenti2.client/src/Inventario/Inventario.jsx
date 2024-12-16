@@ -157,9 +157,16 @@ const Inventario = () => {
             selector: (row) => row.descripcion,
             sortable: true,
         },
+        /*
+        {
+            name: 'CategoriaId',
+            selector: (row) => row.categoriaId,
+            sortable: true,
+        },
+        */
         {
             name: 'Categoria',
-            selector: (row) => row.categoriaId,
+            selector: (row) => row.categoria.nombreCategoria,
             sortable: true,
         },
         {

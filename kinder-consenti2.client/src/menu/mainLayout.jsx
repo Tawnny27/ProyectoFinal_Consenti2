@@ -145,7 +145,7 @@ const MainLayout = () => {
                             </div>
                             {showGestFSubMenu && (
                                 <ul className="submenu">
-                                    <li><Link to="/registrar-pago">
+                                    <li><Link to="/registrar-pago2">
                                         <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Registrar Pago</Link></li>
                                     <li><Link to="/recibo-pago">
                                         <FontAwesomeIcon icon={faFileInvoice} className="menu-icon" /> Recibo de Pagos</Link></li>

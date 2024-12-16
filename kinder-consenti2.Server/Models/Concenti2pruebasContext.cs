@@ -305,8 +305,8 @@ namespace kinder_consenti2.Server.Models
                 .WithMany(x => x.Inventarios)
                 .HasForeignKey(f => f.CategoriaId);
             //Tablas ignoradas
-            modelBuilder.Entity<Inventario>()
-                .Ignore(x => x.Categoria);
+            //modelBuilder.Entity<Inventario>()
+                //.Ignore(x => x.Categoria);
             //******************************************************************
 
             //************************* Tabla MovimientosInventario  ***********                                                                              
@@ -325,8 +325,8 @@ namespace kinder_consenti2.Server.Models
                 .WithMany(x => x.Movimientos)
                 .HasForeignKey(f => f.InventarioId);
             //Tablas ignoradas
-            modelBuilder.Entity<MovimientosInventario>()
-                .Ignore(x => x.Inventario);
+            //modelBuilder.Entity<MovimientosInventario>()
+                //.Ignore(x => x.Inventario);
             //******************************************************************
 
             //************************* Tabla Gasto  ***************************                                                                               

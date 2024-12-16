@@ -19,7 +19,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("ObtenerInventario")]
         public async Task<ActionResult<List<Inventario>>> ObtenerInventario()
         {
-            return Ok( await _context.Inventario.ToListAsync());
+            return Ok( await _context.Inventario.Include(x=> x.Categoria).ToListAsync());
         }
 
         [HttpGet]

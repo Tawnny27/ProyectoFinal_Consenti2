@@ -155,6 +155,7 @@ const Matricula = () => {
                 phone: selectedUser.phone,
                 address: selectedUser.address,
             }));
+
             setChildrenList(selectedUser.children);
 
             // Obtener idUsuario y idRol
