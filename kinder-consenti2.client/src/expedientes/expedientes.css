@@ -1,0 +1,94 @@
+/* Estilos para el modal en el formulario de Expedientes */
+.expedientes-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+    .expedientes-modal .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 60%;
+        max-width: 800px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.3s ease-out;
+    }
+
+        .expedientes-modal .modal-content h3 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .expedientes-modal .modal-content p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .expedientes-modal .modal-content h4 {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+    .expedientes-modal button {
+        padding: 10px 20px;
+        margin: 5px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .expedientes-modal .btn-primary {
+        background-color: #3498DB;
+        color: white;
+        border: none;
+    }
+
+    .expedientes-modal .btn-secondary {
+        background-color: #A569BD;
+        color: white;
+        border: none;
+    }
+
+    .expedientes-modal .btn-primary:hover {
+        background-color: #2980B9;
+    }
+
+    .expedientes-modal .btn-secondary:hover {
+        background-color: #D481F5;
+    }
+
+/* Animación para la aparición del modal */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Estilos para el botón de expediente */
+.btn-expediente {
+    background-color: #3498db; /* Azul claro */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-expediente:hover {
+        background-color: #2980b9; /* Azul más oscuro para el hover */
+    }

@@ -5,6 +5,8 @@
     "@mui/icons-material": "^6.1.5",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "primeicons": "^7.0.0",
     "primereact": "^10.8.3",
     "react": "^19.0.0",

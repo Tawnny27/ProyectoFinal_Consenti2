@@ -29,6 +29,7 @@ import ActivityForm from './actividades/activityForm';
 import Inventario from './Inventario/Inventario';
 import Gastos from './Gastos/Gastos';
 import Comunicacion from './comunicaciones/comunicaciones';
+import Expedientes from './expedientes/Expedientes';
 
 
 
@@ -51,7 +52,8 @@ function App() {
                 <Route path="/GenerarRecibo" element={<GeneradorRecibos />} /> 
                 <Route path="/reset-password" element={<ResetPassword />} /> 
                 <Route path="/change-password" element={<ChangePassword />} /> 
-                <Route path="/matricula" element={<Matricula />} /> 
+                <Route path="/matricula" element={<Matricula />} />
+                <Route path="/expedientes" element={<Expedientes />} /> 
                 <Route path="/reportes" element={<Reportes />} /> 
                 <Route path="/activity-panel" element={<ActivityPanel />} />
                 <Route path="/activity-form" element={<ActivityForm />} /> 
@@ -63,7 +65,9 @@ function App() {
                 <Route path="/materiales" element={<MaterialesDidacticos />} /> 
                 <Route path="/fotos" element={<FotosPorCarpeta />} /> 
                 <Route path="/inventario" element={<Inventario />} /> 
-                <Route path="/Gastos" element={<Gastos />} /> 
+                <Route path="/Gastos" element={<Gastos />} />
+                
+
             </Routes>
                 </div>
         </Router>

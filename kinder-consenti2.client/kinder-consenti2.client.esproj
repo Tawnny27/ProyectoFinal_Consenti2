@@ -16,5 +16,6 @@
     <Folder Include="src\materiales\" />
     <Folder Include="src\Inventario\" />
     <Folder Include="src\Gastos\" />
+    <Folder Include="src\expedientes\" />
   </ItemGroup>
 </Project>
