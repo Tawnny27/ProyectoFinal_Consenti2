@@ -30,7 +30,7 @@ import Inventario from './Inventario/Inventario';
 import Gastos from './Gastos/Gastos';
 import Comunicacion from './comunicaciones/comunicaciones';
 import Expedientes from './expedientes/Expedientes';
-
+import MonitoreoAlumno from './monitoreo/monitoreo';
 
 
 function App() {
@@ -65,7 +65,8 @@ function App() {
                 <Route path="/materiales" element={<MaterialesDidacticos />} /> 
                 <Route path="/fotos" element={<FotosPorCarpeta />} /> 
                 <Route path="/inventario" element={<Inventario />} /> 
-                <Route path="/Gastos" element={<Gastos />} />
+                    <Route path="/Gastos" element={<Gastos />} />
+                    <Route path="/monitoreo" element={<MonitoreoAlumno />} />
                 
 
             </Routes>

@@ -8,7 +8,7 @@ import {
 import logo from '../assets/logo.jpg'; 
 import Footer from '../componentes/footer';
 import { useUser } from '../UserContext';
-import { faAddressBook, faReceipt,faBoxesStacked, faCheck, faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
+import { faAddressBook, faReceipt,faBoxesStacked, faCheck, faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet, faChartSimple } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
 
 
 const MainLayout = () => {
@@ -163,6 +163,8 @@ const MainLayout = () => {
                             <li className="menu-link"><Link to="/expedientes">
                                 <FontAwesomeIcon icon={faAddressBook} className="menu-icon" />Expedientes</Link></li>
                         )}
+                        <li className="menu-link"><Link to="/monitoreo">
+                            <FontAwesomeIcon icon={faChartSimple} className="menu-icon" />Monitoreo</Link></li>
                         <li className="menu-link"><Link to="/comunicacion">
                             <FontAwesomeIcon icon={faCommentDots} className="menu-icon" />Comunicación</Link></li>
                         {user.rolId === 1 && (
