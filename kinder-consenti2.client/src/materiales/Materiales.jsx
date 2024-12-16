@@ -60,7 +60,7 @@ const MaterialesDidacticos = () => {
     useEffect(() => {
         const cargarMateriales = async () => {
             try {
-                const response = await axios.get("https://localhost:44369/MaterialDidacticoes/ObtenerMateriales");
+                const response = await axios.get("https://localhost:44369/MaterialDidacticoes/ObtenerMaterialesDidacticos");
                 console.log("Materiales cargados:", response.data);
                 setMateriales(response.data);
                 setIsLoading(false);
@@ -86,9 +86,39 @@ const MaterialesDidacticos = () => {
         cargarAulas();
     }, []);
 
-    const descargarMaterial = (id, nombre) => {
-        alert(`Se ha descargado el material: ${nombre}`);
+    // Guardar material en el localStorage
+    const guardarMaterialEnStorage = (material) => {
+        if (material && material.documento && material.nombreArchivo) {
+            // Usar URL.createObjectURL para generar una URL temporal del archivo
+            const archivoURL = URL.createObjectURL(material.documento);
+            // Guardar en localStorage como un objeto JSON
+            const materialConArchivo = {
+                ...material,
+                documentoURL: archivoURL // Agregar la URL del archivo
+            };
+            localStorage.setItem('material', JSON.stringify(materialConArchivo)); // Guardar en localStorage
+        } else {
+            console.error('El material es inválido');
+        }
     };
+
+
+    const handleDownload = () => {
+        const materialGuardado = JSON.parse(localStorage.getItem('material'));
+
+        if (materialGuardado && materialGuardado.documentoURL) {
+            const enlace = document.createElement('a');
+            enlace.href = materialGuardado.documentoURL; // Usar la URL almacenada en localStorage
+            enlace.download = materialGuardado.nombreArchivo; // Nombre del archivo para la descarga
+            document.body.appendChild(enlace);
+            enlace.click();
+            document.body.removeChild(enlace);
+        } else {
+            toast.error("No se pudo recuperar el material para descargar.");
+        }
+    };
+
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -97,7 +127,6 @@ const MaterialesDidacticos = () => {
             [name === "nombre" ? "nombreArchivo" : name]: value, // Mapeo personalizado
         }));
     };
-
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -114,6 +143,13 @@ const MaterialesDidacticos = () => {
                 const previewURL = URL.createObjectURL(file);
                 setPreviewUrl(previewURL);
                 console.log("Vista previa de la imagen:", previewURL);
+
+                // Guardar el material en localStorage
+                guardarMaterialEnStorage({
+                    ...nuevoMaterial,
+                    documento: file,
+                    nombreArchivo: nuevoMaterial.nombreArchivo, // Asegúrate de tener el nombre del archivo
+                });
             }
         } catch (error) {
             setImageError(error.message);
@@ -123,8 +159,25 @@ const MaterialesDidacticos = () => {
             console.error("Error de validación de imagen:", error);
         }
     };
+    const handleDelete = async (materialId) => {
+        try {
+            // Llamar a la API para eliminar el material usando el idMaterialDidactico
+            const response = await axios.delete(`https://localhost:44369/MaterialDidacticoes/EliminarMaterialDidactico/${materialId}`);
 
-    
+            if (response.status === 200) {
+                toast.success("Material eliminado con éxito");
+                // Eliminar el material de la lista de materiales
+                setMateriales(materiales.filter(material => material.idMaterialDidactico !== materialId)); // Filtrar por idMaterialDidactico
+            } else {
+                toast.error("No se pudo eliminar el material.");
+            }
+        } catch (error) {
+            console.error("Error al eliminar el material:", error);
+            toast.error("Error al eliminar material");
+        }
+    };
+
+
     const agregarMaterial = async (e) => {
         e.preventDefault();
        
@@ -195,6 +248,25 @@ const MaterialesDidacticos = () => {
 
                 toast.success("Archivo guardado con éxito");
                 console.log("Respuesta de la imagen:", imageResponse);
+
+                // Agregar el nuevo material a la lista de materiales
+                const nuevoMaterialAgregado = {
+                    ...nuevoMaterial,
+                    id: createResponse.data.id, // Suponiendo que la API devuelve un ID
+                    aula: grupoSeleccionado.nombreGrupo, // El nombre del aula
+                    documento: imagePath, // Ruta del archivo
+                };
+                // Cerrar el modal
+                setModalVisible(false);
+                setMateriales((prevMaterials) => [...prevMaterials, nuevoMaterialAgregado]); // Agregar el nuevo material a la lista
+                setNuevoMaterial({
+                    nombreArchivo: "",
+                    descripcion: "",
+                    documento: null,
+                    grupoId: "",
+                    statusAct: true,
+                }); // Limpiar el formulario
+
             }
         } catch (error) {
             console.error("Error al agregar material:", error);
@@ -215,24 +287,31 @@ const MaterialesDidacticos = () => {
                 {isLoading ? (
                     <p className="materiales-loading">Cargando materiales...</p>
                 ) : (
-                    <div className="cards-container">
+                        <div className="cards-container">
+                            <button onClick={() => setModalVisible(true)} className="button-agregar">
+                                Agregar Nuevo Material
+                            </button>
                         {materiales.map((material) => (
-                            <div key={material.id} className="material-card">
-                                <h4>{material.nombre}</h4>
-                                <p className="material-description">{material.descripcion}</p>
-                                <p>Aula: {material.aula}</p>
-                                <p>Documento: {material.documento}</p>
+                            <div key={material.idMaterialDidactico} className="material-card">
+                                <h4>{material.nombreArchivo}</h4>
+                                
+                                <p>Aula: {aulas.find(aula => aula.idGrupos === material.gruposId)?.nombreGrupo || 'Aula no encontrada'}</p>
                                 <button
-                                    onClick={() => descargarMaterial(material.id, material.nombre)}
+                                    onClick={handleDownload}
                                     className="materiales-button"
                                 >
                                     Descargar
                                 </button>
+                                {/* Botón de eliminar */}
+                                <button
+                                    onClick={() => handleDelete(material.idMaterialDidactico)}
+                                    className="materiales-button eliminar"
+                                >
+                                    Eliminar
+                                </button>
                             </div>
                         ))}
-                        <button onClick={() => setModalVisible(true)} className="button-agregar">
-                            Agregar Nuevo Material
-                        </button>
+                        
                     </div>
                 )}
 
@@ -289,14 +368,7 @@ const MaterialesDidacticos = () => {
                     </div>
                 )}
 
-                {mensaje && (
-                    <div className="materiales-empty">
-                        <p>{mensaje}</p>
-                        <button onClick={volverAPrincipal} className="button">
-                            Volver a la página principal
-                        </button>
-                    </div>
-                )}
+                
             </div>
             <Footer />
         </>
