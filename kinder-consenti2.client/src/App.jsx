@@ -14,6 +14,7 @@ import ChangePassword from './login/changePassword';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import RegistroUsuario from './usuarios/RegistroUsuario'; 
 import FormularioRegistroPago from './Pagos/Registropago'; 
+import RegistroPago from './Pagos/Registropago2'; 
 import GeneradorRecibos from './Pagos/GenerarRecibo';
 import Matricula from './matricula/Matricula';
 import Reportes from './Reportes/Reportes';
@@ -45,7 +46,8 @@ function App() {
                 <Route path="/user-maintenance" element={<UserMaintenance />} /> 
                 <Route path="/alumno-maintenance" element={<AlumnoMaintenance />} /> 
                 <Route path="/registrar-usuario" element={<RegistroUsuario />} /> {/* Nueva ruta */}
-                <Route path="/registrar-pago" element={<FormularioRegistroPago />} /> 
+                    {/*<Route path="/registrar-pago" element={<FormularioRegistroPago />} /> */}
+                <Route path="/registrar-pago2" element={<RegistroPago />} /> { /* eddy*/}
                 <Route path="/GenerarRecibo" element={<GeneradorRecibos />} /> 
                 <Route path="/reset-password" element={<ResetPassword />} /> 
                 <Route path="/change-password" element={<ChangePassword />} /> 
