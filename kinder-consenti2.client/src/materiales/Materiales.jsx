@@ -10,6 +10,7 @@ import { useUser } from '../UserContext';
 const MaterialesDidacticos = () => {
     const { user } = useUser();
     const [materiales, setMateriales] = useState([]);
+    const [idGrupoSeleccionado, setIdGrupoSeleccionado] = useState("");
     const [mensaje, setMensaje] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [nuevoMaterial, setNuevoMaterial] = useState({
@@ -93,9 +94,10 @@ const MaterialesDidacticos = () => {
         const { name, value } = e.target;
         setNuevoMaterial((prevState) => ({
             ...prevState,
-            [name]: value,
+            [name === "nombre" ? "nombreArchivo" : name]: value, // Mapeo personalizado
         }));
     };
+
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -122,8 +124,12 @@ const MaterialesDidacticos = () => {
         }
     };
 
+    
     const agregarMaterial = async (e) => {
         e.preventDefault();
+       
+        console.log("grupo selecionado",idGrupoSeleccionado); // Esto te muestra el ID del grupo/aula seleccionado.
+
         let imagePath = 'default.jpg';
         let uniqueFileName = '';
 
@@ -131,57 +137,54 @@ const MaterialesDidacticos = () => {
             const fileExtension = selectedFile.name.split('.').pop();
             uniqueFileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`;
             imagePath = `${IMAGE_PATH}${uniqueFileName}`;
-            console.log("Nombre único de la imagen:", uniqueFileName);
         }
 
-        if (!nuevoMaterial.grupoId) {
+        if (!idGrupoSeleccionado) {
             toast.error("Debe seleccionar un aula.");
-            console.log("Aula no seleccionada");
             return;
         }
 
         if (!selectedFile) {
-            toast.error("Debe seleccionar al menos una foto para cargar.");
-            console.log("No hay fotos seleccionadas");
+            toast.error("Debe seleccionar al menos un archivo para cargar.");
             return;
         }
-
-        console.log("Nuevo Material:", nuevoMaterial);
-        if (!nuevoMaterial.nombreArchivo || !nuevoMaterial.descripcion || !imagePath || !nuevoMaterial.grupoId) {
-            alert("Por favor, completa todos los campos.");
-            return;
-        }
-
-        const envioDatos = {
-            NombreArchivo: nuevoMaterial.nombreArchivo,
-            fecha: new Date().toISOString().split('T')[0], // Fecha actual
-            descripcion: nuevoMaterial.descripcion,
-            RutaFoto: imagePath || 'default.jpg',
-            GruposId: nuevoMaterial.grupoId,
-        };
-        console.log("Envio de datos al primer endpoint:", envioDatos);
 
         try {
-            const createResponse = await axios.post("https://localhost:44369/MaterialDidacticoes/CrearMaterialDidactico", envioDatos,
+            const grupoSeleccionado = aulas.find(
+                (aula) => aula.idGrupos === parseInt(idGrupoSeleccionado)
+                
+            );
+
+            console.log("Grupo seleccionado:", grupoSeleccionado);
+
+            const envioDatos = {
+                NombreArchivo: nuevoMaterial.nombreArchivo,
+                fecha: new Date().toISOString().split('T')[0], // Fecha actual en formato ISO
+                RutaFoto: imagePath,
+                GruposId: grupoSeleccionado.idGrupos,
+                Grupos: grupoSeleccionado,
+            };
+
+            console.log("Datos enviados al primer endpoint:", envioDatos);
+
+            const createResponse = await axios.post(
+                "https://localhost:44369/MaterialDidacticoes/CrearMaterialDidactico",
+                envioDatos,
                 {
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    }
+                        Accept: 'application/json',
+                    },
                 }
             );
 
-            // Si la respuesta es exitosa y hay una foto para cargar
             if (createResponse.data) {
-                // Crear FormData para enviar la imagen
                 const imageFormData = new FormData();
                 imageFormData.append('file', selectedFile);
-                imageFormData.append('fileName', uniqueFileName); // Enviar el nombre único
-                console.log("Envio de imagen:", imageFormData);
+                imageFormData.append('fileName', uniqueFileName);
 
-                // Enviar la foto al segundo endpoint
                 const imageResponse = await axios.post(
-                    'https://localhost:44369/Imagenes/GuardarMaterialDidacticoPdf',
+                    "https://localhost:44369/Imagenes/GuardarMaterialDidacticoPdf",
                     imageFormData,
                     {
                         headers: {
@@ -190,7 +193,7 @@ const MaterialesDidacticos = () => {
                     }
                 );
 
-                toast.success("Archivo guardado con exito");
+                toast.success("Archivo guardado con éxito");
                 console.log("Respuesta de la imagen:", imageResponse);
             }
         } catch (error) {
@@ -198,6 +201,7 @@ const MaterialesDidacticos = () => {
             toast.error("Error al agregar material");
         }
     };
+
 
     const volverAPrincipal = () => {
         window.location.href = "/main";
@@ -240,8 +244,8 @@ const MaterialesDidacticos = () => {
                             <h3>Agregar Nuevo Material</h3>
                             <select
                                 name="grupoId"  // Cambié "aula" por "grupoId" para enlazar correctamente el estado
-                                value={nuevoMaterial.grupoId}
-                                onChange={handleChange}
+                                value={idGrupoSeleccionado}
+                                onChange={(e) => setIdGrupoSeleccionado(e.target.value)}
                                 style={{
                                     color: "#000",
                                     backgroundColor: "#fff",
@@ -253,7 +257,7 @@ const MaterialesDidacticos = () => {
                             >
                                 <option value="">Seleccionar Aula</option>
                                 {aulas.map((aula) => (
-                                    <option key={aula.id} value={aula.id}> {/* Cambié el valor al id del aula */}
+                                    <option key={aula.idGrupos} value={aula.idGrupos}> {/* Cambié el valor al id del aula */}
                                         {aula.nombreGrupo}
                                     </option>
                                 ))}
@@ -262,7 +266,7 @@ const MaterialesDidacticos = () => {
                             <input
                                 type="text"
                                 placeholder="Título"
-                                value={nuevoMaterial.nombre}
+                                value={nuevoMaterial.nombreArchivo}
                                 onChange={handleChange}
                                 name="nombre"
                             />
