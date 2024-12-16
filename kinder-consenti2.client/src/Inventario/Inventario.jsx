@@ -7,8 +7,12 @@ import './Inventario.css';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
+import { toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Inventario = () => {
+    const [searchText, setSearchText] = useState(''); // Estado para el texto de búsqueda
+    const [filteredData, setFilteredData] = useState([]); // Datos filtrados
     const [inventario, setInventario] = useState([]);
     const [categorias, setCategorias] = useState([]);
     const [nuevoInventario, setNuevoInventario] = useState({
@@ -22,6 +26,7 @@ const Inventario = () => {
         try {
             const inventarioResponse = await axios.get('https://localhost:44369/Inventario/ObtenerInventario');
             setInventario(inventarioResponse.data);
+            setFilteredData(inventarioResponse.data);
 
             const categoriasResponse = await axios.get('https://localhost:44369/Categoria/ObtenerCategorias');
             setCategorias(categoriasResponse.data);
@@ -29,6 +34,26 @@ const Inventario = () => {
             console.error('Error al cargar datos:', error);
         }
     };
+
+    // Manejar el cambio del texto de búsqueda
+    const manejarBusqueda = (e) => {
+        const texto = e.target.value.toLowerCase();
+        setSearchText(texto);
+
+        if (texto === '') {
+            // Si el campo está vacío, muestra todo el inventario
+            setFilteredData(inventario);
+        } else {
+            // Filtrar datos según la búsqueda
+            const datosFiltrados = inventario.filter((item) =>
+                item.descripcion.toLowerCase().includes(texto) ||
+                item.categoriaId.toString().includes(texto) ||
+                item.cantidad.toString().includes(texto)
+            );
+            setFilteredData(datosFiltrados);
+        }
+    };
+
 
     
     useEffect(() => {
@@ -48,12 +73,13 @@ const Inventario = () => {
         try {
             const response = await axios.post('https://localhost:44369/Inventario/CrearInventario', nuevoInventario);
             if (response.data) {
-                window.alert('¡Inventario creado exitosamente!');
+                toast.success('Inventario creado exitosamente!');
                 setInventario([...inventario, response.data]);
                 handleCloseModal();
+                cargarDatos();
             }
         } catch (error) {
-            window.alert(error.response?.data || 'Error al crear inventario.');
+            toast.error(error.response?.data || 'Error al crear inventario.');
             console.error('Error al crear inventario:', error);
         }
     };
@@ -63,31 +89,57 @@ const Inventario = () => {
         try {
             const response = await axios.put('https://localhost:44369/Inventario/EditarInventario', nuevoInventario);
             if (response.data) {
-                
+                toast.success('Inventario editado correctamente!');
                 handleCloseModal();
                 cargarDatos();
                 
             }
 
         } catch (error) {
-            window.alert(error.response?.data || 'Error al editar inventario.');
+            toast.error(error.response?.data || 'Error al editar inventario.');
             console.error('Error al editar inventario:', error);
         }
     };
 
-    const manejarEliminar = async (idInventario) => {
-        const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este inventario?');
-        if (confirmDelete) {
-            try {
-                await axios.delete(`https://localhost:44369/Inventario/EliminarInventario/${idInventario}`);
-                setInventario(inventario.filter((item) => item.idInventario !== idInventario));
-               
-            } catch (error) {
-                console.error('Error al eliminar inventario:', error);
-                window.alert('Error al eliminar inventario.');
-            }
+    const manejarEliminar = (idInventario) => {
+        toast(
+            ({ closeToast }) => (
+                <div>
+                    <p>Estas seguro de que deseas eliminar este producto?</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <button
+                            style={{ marginRight: '10px', color: 'white', backgroundColor: 'red' }}
+                            onClick={() => {
+                                confirmarEliminar(idInventario);
+                                closeToast();
+                            }}
+                        >
+                            Si
+                        </button>
+                        <button
+                            style={{ color: 'white', backgroundColor: 'gray' }}
+                            onClick={closeToast}
+                        >
+                            no
+                        </button>
+                    </div>
+                </div>
+            ),
+            { autoClose: false }
+        );
+    };
+
+    const confirmarEliminar = async (idInventario) => {
+        try {
+            await axios.delete(`https://localhost:44369/Inventario/EliminarInventario/${idInventario}`);
+            setInventario((prev) => prev.filter((item) => item.idInventario !== idInventario));
+            toast.success('Inventario eliminado correctamente!');
+        } catch (error) {
+            toast.error('Error al eliminar inventario.');
+            console.error('Error al eliminar inventario:', error);
         }
     };
+
 
     //const handleCloseModal = () => {
     //    setModalIsOpen(false);
@@ -187,10 +239,11 @@ const Inventario = () => {
             if (response.data) {
                 handleCloseModal();
                 cargarDatos();
+                toast.success('Movimiento realizado de manera correcta');
             }
         } catch (error) {
             console.error('Error al registrar movimiento:', error);
-            window.alert('Error al registrar movimiento.');
+            toast.error('Error al registrar movimiento.');
         }
     };
     /** */
@@ -217,7 +270,7 @@ const Inventario = () => {
                 nombreCategoria: nuevoCategoria.nombreCategoria,
             });
             if (response.data) {
-                window.alert('¡Categoría creada exitosamente!');
+                toast.success('Categoria creada exitosamente!');
                 handleCloseModal();
                 // Recargar categorías
                 const categoriasResponse = await axios.get('https://localhost:44369/Categoria/ObtenerCategorias');
@@ -225,7 +278,7 @@ const Inventario = () => {
             }
         } catch (error) {
             console.error('Error al crear categoría:', error);
-            window.alert('Error al crear categoría.');
+            toast.error('Error al crear categoria.');
         }
     };
 
@@ -255,6 +308,7 @@ const Inventario = () => {
     return (
         <div className="inventario-container">
             <Navbar />
+
             <div className="content-wrapper">
                 <div className="inventario-content">
                     <h1 className="inventario-title">Gestion de Inventario</h1>
@@ -272,9 +326,19 @@ const Inventario = () => {
                         </button>
                     </div>
 
+                    <div className="search-container">
+                        <input
+                            type="text"
+                            placeholder="Buscar..."
+                            value={searchText}
+                            onChange={manejarBusqueda}
+                            className="search-input"
+                        />
+                    </div>
+
                     <DataTable
                         columns={columns}
-                        data={inventario}
+                        data={filteredData}
                         pagination
                         highlightOnHover
                         responsive
