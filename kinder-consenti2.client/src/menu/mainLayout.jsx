@@ -159,8 +159,10 @@ const MainLayout = () => {
                         )}
                         <li className="menu-link"><Link to="/matricula">
                             <FontAwesomeIcon icon={faSchoolCircleCheck} className="menu-icon" />  Matrícula</Link></li>
-                        <li className="menu-link"><Link to="/expedientes">
-                            <FontAwesomeIcon icon={faAddressBook} className="menu-icon" />Expedientes</Link></li>
+                        {user.rolId === 1 && (
+                            <li className="menu-link"><Link to="/expedientes">
+                                <FontAwesomeIcon icon={faAddressBook} className="menu-icon" />Expedientes</Link></li>
+                        )}
                         <li className="menu-link"><Link to="/comunicacion">
                             <FontAwesomeIcon icon={faCommentDots} className="menu-icon" />Comunicación</Link></li>
                         {user.rolId === 1 && (

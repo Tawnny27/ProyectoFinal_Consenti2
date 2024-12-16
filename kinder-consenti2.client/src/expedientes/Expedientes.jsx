@@ -129,7 +129,7 @@ const Expedientes = () => {
 
     return (
         <div className="user-maintenance-container">
-            <Navbar />
+            {<Navbar />}
             <h2>Expedientes de Alumnos</h2>
             <div className="form-group">
                 <input
