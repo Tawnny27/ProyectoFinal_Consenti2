@@ -20,10 +20,7 @@ const MonitoreoAlumno = () => {
     const [actividadDormir, setActividadDormir] = useState([]);
     const [actividadHuerta, setActividadHuerta] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [filtro, setFiltro] = useState({
-        nombre: '',
-        cedula: ''
-    });
+    const [filtro, setFiltro] = useState({ nombre: '', cedula: '' });
     const { user } = useUser(); // Suponiendo que 'useUser' te da acceso al usuario actual
 
 
@@ -45,16 +42,19 @@ const MonitoreoAlumno = () => {
     }, []);
 
     // Filtrar alumnos según el rol
-    const alumnosFiltrados = user.rolId === 3
-        ? alumnos.filter(alumno => alumno.padreId === user.idUsuario)  // Si es un padre, mostrar solo sus hijos
-        : alumnos;  // Si no, mostrar todos
+    const alumnosFiltrados = alumnos.filter((alumno) => {
+        const pertenecePadre = user.rolId === 3 ? alumno.padreId === user.idUsuario : true; // Filtra por rol
+        const coincideNombre = alumno.nombreAlumno?.toLowerCase().includes(filtro.nombre.toLowerCase());
+        const coincideCedula = alumno.cedulaAlumno?.includes(filtro.cedula);
+
+        return pertenecePadre && coincideNombre && coincideCedula;
+    });
+
+
 
     const handleFiltroChange = (e) => {
         const { name, value } = e.target;
-        setFiltro((prevFiltro) => ({
-            ...prevFiltro,
-            [name]: value
-        }));
+        setFiltro((prev) => ({ ...prev, [name]: value }));
     };
 
     const fetchActividades = async (idAlumno) => {
@@ -199,7 +199,7 @@ const MonitoreoAlumno = () => {
                                 <td>{alumno.cedulaAlumno}</td>
                                 <td>
                                     <button
-                                        className="btn-monitoreo"
+                                        className="submit-m-button"
                                         onClick={() => handleAlumnoSeleccionado(alumno)}
                                     >
                                         Monitoreo

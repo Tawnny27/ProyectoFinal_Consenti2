@@ -38,9 +38,14 @@ const ComportamientoAlumno = () => {
         fetchAlumnos();
     }, []);
 
-    const alumnosFiltrados = user.rolId === 3
-        ? alumnos.filter(alumno => alumno.padreId === user.idUsuario)
-        : alumnos;
+    // Filtrar alumnos según el rol
+    const alumnosFiltrados = alumnos.filter((alumno) => {
+        const pertenecePadre = user.rolId === 3 ? alumno.padreId === user.idUsuario : true; // Filtra por rol
+        const coincideNombre = alumno.nombreAlumno?.toLowerCase().includes(filtro.nombre.toLowerCase());
+        const coincideCedula = alumno.cedulaAlumno?.includes(filtro.cedula);
+
+        return pertenecePadre && coincideNombre && coincideCedula;
+    });
 
 
     const handleFiltroChange = (e) => {
@@ -144,7 +149,7 @@ const ComportamientoAlumno = () => {
                                 <td>{alumno.apellidosAlumno}</td>
                                 <td>{alumno.cedulaAlumno}</td>
                                 <td>
-                                    <button className="btn-monitoreo" onClick={() => handleAlumnoSeleccionado(alumno)}>
+                                    <button className="submit-m-button" onClick={() => handleAlumnoSeleccionado(alumno)}>
                                         Comportamiento
                                     </button>
                                 </td>

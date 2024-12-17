@@ -164,7 +164,7 @@ const MainLayout = () => {
                                 <FontAwesomeIcon icon={faAddressBook} className="menu-icon" />Expedientes</Link></li>
                         )}
                         <li className="menu-link"><Link to="/monitoreo">
-                            <FontAwesomeIcon icon={faChartSimple} className="menu-icon" />Monitoreo</Link></li>
+                            <FontAwesomeIcon icon={faChartSimple} className="menu-icon" />Monitoreo de actividades</Link></li>
                         <li className="menu-link"><Link to="/comportamiento">
                             <FontAwesomeIcon icon={faGraduationCap} className="menu-icon" />Comportamiento</Link></li>
                         <li className="menu-link"><Link to="/comunicacion">
