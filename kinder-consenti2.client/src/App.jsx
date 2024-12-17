@@ -31,6 +31,7 @@ import Gastos from './Gastos/Gastos';
 import Comunicacion from './comunicaciones/comunicaciones';
 import Expedientes from './expedientes/Expedientes';
 import MonitoreoAlumno from './monitoreo/monitoreo';
+import ComportamientoAlumno from './comportamiento/Comportamiento';
 
 
 function App() {
@@ -61,7 +62,8 @@ function App() {
                 <Route path="/Factura-maintenance" element={<FacturaMaintenance />} /> 
                 <Route path="/registrar-encuesta" element={<Encuesta />} /> 
                 <Route path="/evalua-maestra" element={<MaestrasFeedback />} /> 
-                <Route path="/comunicacion" element={<Comunicacion />} /> 
+                    <Route path="/comunicacion" element={<Comunicacion />} />
+                    <Route path="/comportamiento" element={<ComportamientoAlumno />} />
                 <Route path="/materiales" element={<MaterialesDidacticos />} /> 
                 <Route path="/fotos" element={<FotosPorCarpeta />} /> 
                 <Route path="/inventario" element={<Inventario />} /> 

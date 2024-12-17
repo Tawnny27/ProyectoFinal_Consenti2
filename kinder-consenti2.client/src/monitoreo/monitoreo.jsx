@@ -159,7 +159,7 @@ const MonitoreoAlumno = () => {
     return (
         <div className="user-maintenance-container">
             {<Navbar />}
-            <h2>Monitoreo de Alumno</h2>
+            <h2>Monitoreo de los Niños</h2>
             <div className="form-group">
                 <input
                     type="text"

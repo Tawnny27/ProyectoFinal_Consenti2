@@ -18,5 +18,6 @@
     <Folder Include="src\Gastos\" />
     <Folder Include="src\expedientes\" />
     <Folder Include="src\monitoreo\" />
+    <Folder Include="src\comportamiento\" />
   </ItemGroup>
 </Project>
