@@ -12,9 +12,9 @@ import UserMaintenance from './consultar_usuarios/consultas';
 import ResetPassword from './login/resetPassword';
 import ChangePassword from './login/changePassword';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import RegistroUsuario from './usuarios/RegistroUsuario'; 
-import FormularioRegistroPago from './Pagos/Registropago'; 
-import RegistroPago from './Pagos/Registropago2'; 
+import RegistroUsuario from './usuarios/RegistroUsuario';
+import FormularioRegistroPago from './Pagos/Registropago';
+import RegistroPago from './Pagos/Registropago2';
 import GeneradorRecibos from './Pagos/GenerarRecibo';
 import Matricula from './matricula/Matricula';
 import Reportes from './Reportes/Reportes';
@@ -32,6 +32,7 @@ import Comunicacion from './comunicaciones/comunicaciones';
 import Expedientes from './expedientes/Expedientes';
 import MonitoreoAlumno from './monitoreo/monitoreo';
 import ComportamientoAlumno from './comportamiento/Comportamiento';
+import ListaActividades from './actividades/activityList';
 
 
 function App() {
@@ -40,42 +41,43 @@ function App() {
             <div>
                 {/* Componente ToastContainer para notificaciones */}
                 <ToastContainer />
-            <Routes>
-                <Route path="/" element={<LoginForm />} />
-                <Route path="/editar-usuario/:id" element={<EditarUsuario />} />
-                <Route path="/editar-alumno/:id" element={<EditarAlumno />} />
-                <Route path="/main" element={<MainLayout />} />
-                <Route path="/user-maintenance" element={<UserMaintenance />} /> 
-                <Route path="/alumno-maintenance" element={<AlumnoMaintenance />} /> 
-                <Route path="/registrar-usuario" element={<RegistroUsuario />} /> {/* Nueva ruta */}
+                <Routes>
+                    <Route path="/" element={<LoginForm />} />
+                    <Route path="/editar-usuario/:id" element={<EditarUsuario />} />
+                    <Route path="/editar-alumno/:id" element={<EditarAlumno />} />
+                    <Route path="/main" element={<MainLayout />} />
+                    <Route path="/user-maintenance" element={<UserMaintenance />} />
+                    <Route path="/alumno-maintenance" element={<AlumnoMaintenance />} />
+                    <Route path="/registrar-usuario" element={<RegistroUsuario />} /> {/* Nueva ruta */}
                     {/*<Route path="/registrar-pago" element={<FormularioRegistroPago />} /> */}
-                <Route path="/registrar-pago2" element={<RegistroPago />} /> { /* eddy*/}
-                <Route path="/GenerarRecibo" element={<GeneradorRecibos />} /> 
-                <Route path="/reset-password" element={<ResetPassword />} /> 
-                <Route path="/change-password" element={<ChangePassword />} /> 
-                <Route path="/matricula" element={<Matricula />} />
-                <Route path="/expedientes" element={<Expedientes />} /> 
-                <Route path="/reportes" element={<Reportes />} /> 
-                <Route path="/activity-panel" element={<ActivityPanel />} />
-                <Route path="/activity-form" element={<ActivityForm />} /> 
-                <Route path="/attendance-panel" element={<AttendancePanel />} /> 
-                <Route path="/Factura-maintenance" element={<FacturaMaintenance />} /> 
-                <Route path="/registrar-encuesta" element={<Encuesta />} /> 
-                <Route path="/evalua-maestra" element={<MaestrasFeedback />} /> 
+                    <Route path="/registrar-pago2" element={<RegistroPago />} /> { /* eddy*/}
+                    <Route path="/GenerarRecibo" element={<GeneradorRecibos />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
+                    <Route path="/change-password" element={<ChangePassword />} />
+                    <Route path="/matricula" element={<Matricula />} />
+                    <Route path="/expedientes" element={<Expedientes />} />
+                    <Route path="/reportes" element={<Reportes />} />
+                    <Route path="/activity-panel" element={<ActivityPanel />} />
+                    <Route path="/activity-form" element={<ActivityForm />} />
+                    <Route path="/attendance-panel" element={<AttendancePanel />} />
+                    <Route path="/Factura-maintenance" element={<FacturaMaintenance />} />
+                    <Route path="/registrar-encuesta" element={<Encuesta />} />
+                    <Route path="/evalua-maestra" element={<MaestrasFeedback />} />
                     <Route path="/comunicacion" element={<Comunicacion />} />
                     <Route path="/comportamiento" element={<ComportamientoAlumno />} />
-                <Route path="/materiales" element={<MaterialesDidacticos />} /> 
-                <Route path="/fotos" element={<FotosPorCarpeta />} /> 
-                <Route path="/inventario" element={<Inventario />} /> 
+                    <Route path="/materiales" element={<MaterialesDidacticos />} />
+                    <Route path="/fotos" element={<FotosPorCarpeta />} />
+                    <Route path="/inventario" element={<Inventario />} />
                     <Route path="/Gastos" element={<Gastos />} />
                     <Route path="/monitoreo" element={<MonitoreoAlumno />} />
-                
+                    <Route path="/Lista-actividades" element={<ListaActividades />} />
 
-            </Routes>
-                </div>
+
+                </Routes>
+            </div>
         </Router>
     );
-    
+
 }
 
 export default App;

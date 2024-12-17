@@ -221,6 +221,8 @@ const MainLayout = () => {
                                         <FontAwesomeIcon icon={faFolderOpen} className="menu-icon" />Materiales</Link></li>
                                     <li><Link to="/fotos">
                                         <FontAwesomeIcon icon={faImages} className="menu-icon" />Fotos</Link></li>
+                                    <li><Link to="/Lista-actividades">
+                                        <FontAwesomeIcon icon={faImages} className="menu-icon" />Lista de actividades</Link></li>
                                 </ul>
                             )}
                         </li>

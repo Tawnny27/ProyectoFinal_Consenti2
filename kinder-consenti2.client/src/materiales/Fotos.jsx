@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useUserContext } from '../UserContext';
 
 const AgregarFotosAlumno = () => {
-    const { user } = useUser();
+    const { user } = useUserContext();
     const [alumnos, setAlumnos] = useState([]);
     const [idAlumnoSeleccionado, setIdAlumnoSeleccionado] = useState("");
     const [mensaje, setMensaje] = useState("");
