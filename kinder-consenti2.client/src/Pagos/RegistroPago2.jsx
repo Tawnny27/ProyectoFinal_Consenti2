@@ -85,8 +85,7 @@ const RegistroPago = () => {
             setPago({
                 ...pago,
                 detalles: []
-            });
-            alert("entro");
+            });           
         }
         else {
             setPago({
@@ -97,12 +96,7 @@ const RegistroPago = () => {
             });
         }
         console.log(numControl);
-    }, [detallesTemp]);
-
-    useEffect(() => {
-        console.log(pago);
-        console.log(detallesTemp);
-    }, [pago]);
+    }, [detallesTemp]);  
 
     useEffect(() => {
         cargarDetalles();
@@ -146,72 +140,75 @@ const RegistroPago = () => {
         },
         {
             name: 'Monto',
-            selector: (row) => "¢" + row.monto,
+            selector: (row) => "Â¢" + row.monto,
             sortable: true,
         }
     ];
 
     const enviarDatos = () => { console.log(pago); }
 
-    return (
-        <div className="fondo">
+    return (        
+        <div>
+            <div className="fondo">  
+            {< Navbar />}
+             
+                {/* Formulario */}
+                <div className="form-card">
+                    <h2>Registro de pago</h2>
 
-            {<Navbar />}
-            {/* Formulario */}
-            <div className="form-card">
-                <h2>Registro de pago2</h2>
+                    <form onSubmit={ev => {
+                        ev.preventDefault();
+                        enviarDatos();
+                    }} >
+                        { /* Dropdown*/}
+                        <label>Usuario</label>
+                        <select
+                            name="clienteId"
+                            value={usuarioSelect.idUsuario}
+                            //onChange={manejarCambioUsuario}
+                            onChange={(e) => handleUserSelect(e.target.value)}
+                            required
+                        >
+                            <option value=""> Seleccione una persona</option>
+                            {
+                                usuario.map((us) => (
+                                    <option key={us.idUsuario} value={us.idUsuario}>
+                                        {us.nombreUsuario}
+                                    </option>
+                                ))}
+                        </select>
+                        { /* Dropdown*/}
+                        <div className="form-group" style={{ display: 'none' }}>                            
+                            <input type="text" name="rolId"
+                                value={usuarioSelect.rolId}
+                                disabled />
+                        </div>
 
-                <form onSubmit={ev => {
-                    ev.preventDefault();
-                    enviarDatos();
-                }} >
-                    { /* Dropdown*/}
-                    <select
-                        name="clienteId"
-                        value={usuarioSelect.idUsuario}
-                        //onChange={manejarCambioUsuario}
-                        onChange={(e) => handleUserSelect(e.target.value)}
-                        required
-                    >
-                        <option value=""> Seleccione una persona</option>
-                        {
-                            usuario.map((us) => (
-                                <option key={us.idUsuario} value={us.idUsuario}>
-                                    {us.nombreUsuario}
-                                </option>
-                            ))}
-                    </select>
-                    { /* Dropdown*/}
-                    <div className="form-group" style={{ display: 'none' }}>
-                        <label></label>
-                        <input type="text" name="rolId"
-                            value={usuarioSelect.rolId}
-                            disabled />
-                    </div>
+                        <div className="form-group" >
+                            <label>Apellido:</label>
+                            <input type="text" value={usuarioSelect.apellidosUsuario} disabled />
+                        </div>
 
-                    <div className="form-group" >
-                        <label>Apellido:</label>
-                        <input type="text" value={usuarioSelect.apellidosUsuario} disabled />
-                    </div>
+                        <div className="form-group">
+                            <label>CÃ©dula:</label>
+                            <input type="text" value={usuarioSelect.cedulaUsuario} disabled />
+                        </div>
+                        <div className="form-group">
+                            <label>Subtotal:</label>
+                            <input type="text" name="subtotal" value={pago.subtotal} disabled />
+                            <label>Total:</label>
+                            <input type="text" name="subtotal" value={pago.total} disabled />
+                        </div>
 
-                    <div className="form-group">
-                        <label>Cédula:</label>
-                        <input type="text" value={usuarioSelect.cedulaUsuario} disabled />
-                    </div>
-                    <div className="form-group">
-                        <label>Subtotal:</label>
-                        <input type="text" name="subtotal" value={pago.subtotal} disabled />
-                    </div>
+                        <DataTable
+                            columns={columns}
+                            data={detallesTemp}
+                            noDataComponent={mensaje}
+                            highlightOnHover
+                            responsive
+                        />
 
-                    <DataTable
-                        columns={columns}
-                        data={detallesTemp}
-                        noDataComponent={mensaje}
-                        highlightOnHover
-                        responsive
-                    />
-
-                    {/*
+                        {/*
                             <div className="form-group">
                             <label>Subir factura de pago (Solo PDF):</label>
                             <div className="file-input-wrapper">
@@ -223,14 +220,15 @@ const RegistroPago = () => {
                         </div>                            
                         */ }
 
-                    <div className="button-group">
-                        <button type="submit" className="btn-submit">Enviar</button>
-                        <button type="button" className="btn-cancel">Cancelar</button>
-                    </div>
-                </form>
-            </div>
+                        <div className="button-group">
+                            <button type="submit" className="btn-submit">Enviar</button>
+                            <button type="button" className="btn-cancel">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
 
-            {/*<Footer />*/}
+                {/*<Footer />*/}
+            </div>
         </div>
 
     );

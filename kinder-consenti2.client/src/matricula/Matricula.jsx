@@ -4,13 +4,13 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from '../axios';
 import './matricula.css';
-import { useUser } from '../UserContext';
+import { useUserContext } from '../UserContext';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 
 const Matricula = () => {
     const navigate = useNavigate();
-    const { user, usuario } = useUser();
+    const { user } = useUserContext();
     const [formData, setFormData] = useState({
         parentID: 0,
         nombreUsuario: '',

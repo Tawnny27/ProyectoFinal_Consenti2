@@ -5,10 +5,10 @@ import "./materiales.css";
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useUser } from '../UserContext';
+import { useUserContext } from '../UserContext';
 
 const MaterialesDidacticos = () => {
-    const { user } = useUser();
+    const { user } = useUserContext();
     const [materiales, setMateriales] = useState([]);
     const [idGrupoSeleccionado, setIdGrupoSeleccionado] = useState("");
     const [mensaje, setMensaje] = useState("");

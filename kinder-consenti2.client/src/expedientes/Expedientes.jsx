@@ -172,7 +172,7 @@ const Expedientes = () => {
                                     <td>{calcularEdad(alumno.fechaNacimiento)}</td> {/* Calcula la edad */}
                                     <td>
                                         <button
-                                            className="btn-expediente"
+                                            className="submit-m-button"
                                             onClick={() => {
                                                 setAlumnoSeleccionado(alumno);
                                                 setModalVisible(true);

@@ -1,0 +1,94 @@
+.monitoreo-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+    .monitoreo-modal .monitoreo-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 60%;
+        max-width: 800px;
+        max-height: 80vh; /* Añadir altura máxima */
+        overflow-y: auto; /* Habilitar scroll si el contenido excede la altura */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.3s ease-out;
+    }
+
+        .monitoreo-modal .monitoreo-content h3 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .monitoreo-modal .monitoreo-content p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .monitoreo-modal .monitoreo-content h4 {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+    .monitoreo-modal button {
+        padding: 10px 20px;
+        margin: 5px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .monitoreo-modal .btn-primary {
+        background-color: #3498DB;
+        color: white;
+        border: none;
+    }
+
+    .monitoreo-modal .btn-secondary {
+        background-color: #A569BD;
+        color: white;
+        border: none;
+    }
+
+    .monitoreo-modal .btn-primary:hover {
+        background-color: #2980B9;
+    }
+
+    .monitoreo-modal .btn-secondary:hover {
+        background-color: #D481F5;
+    }
+
+/* Animación para la aparición del modal */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.btn-secondary {
+    background-color: #A569BD;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-secondary:hover {
+        background-color: #D481F5;
+    }
