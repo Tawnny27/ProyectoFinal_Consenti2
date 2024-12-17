@@ -1,0 +1,87 @@
+.comunicacion_container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.comunicacion_titulo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+.comunicacion_formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.comunicacion_label {
+    font-size: 16px;
+    color: #555;
+}
+
+.comunicacion_select {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.comunicacion_input {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+}
+
+.comunicacion_error {
+    color: red;
+    font-size: 14px;
+}
+
+.comunicacion_botones {
+    display: flex;
+    justify-content: space-between;
+}
+
+.comunicacion_boton {
+    padding: 10px 20px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    .comunicacion_boton.enviar {
+        background-color: #4caf50;
+        color: white;
+    }
+
+    .comunicacion_boton.cancelar {
+        background-color: #f44336;
+        color: white;
+    }
+
+.comunicacion_modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}

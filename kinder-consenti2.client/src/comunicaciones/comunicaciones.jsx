@@ -3,7 +3,7 @@ import "./comunicaciones.css";
 import Footer from "../componentes/footer";
 import Navbar from "../componentes/navbar";
 
-const ComunicacionesMejorado = () => {
+const Comunicaciones = () => {
     const [formData, setFormData] = useState({
         destinatario: "",  // Cambiado a "destinatario" en lugar de "destinatarios"
         asunto: "",
@@ -140,4 +140,4 @@ const ComunicacionesMejorado = () => {
     );
 };
 
-export default ComunicacionesMejorado;
+export default Comunicaciones;

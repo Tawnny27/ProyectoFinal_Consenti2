@@ -25,6 +25,7 @@ const MainLayout = () => {
     const [showGestFSubMenu, setShowGestFSubMenu] = useState(false);
     const [showEvaluaSubmenu, setShowEvaluaSubmenu] = useState(false);
     const [showContenidoSubmenu, setShowContenidoSubmenu] = useState(false);
+    const [showComunicacionSubmenu, setShowComunicacionSubmenu] = useState(false);
 
     useEffect(() => {
         console.log(usuario)
@@ -67,6 +68,9 @@ const MainLayout = () => {
     };
     const toggleContenidoSubmenu = () => {
         setShowContenidoSubmenu(!showContenidoSubmenu);
+    };
+    const toggleComunicacionSubmenu = () => {
+        setShowComunicacionSubmenu(!showComunicacionSubmenu);
     };
 
     return (
@@ -163,8 +167,24 @@ const MainLayout = () => {
                             <li className="menu-link"><Link to="/expedientes">
                                 <FontAwesomeIcon icon={faAddressBook} className="menu-icon" />Expedientes</Link></li>
                         )}
+                        <li>
+                            <div onClick={toggleComunicacionSubmenu} className="menu-item">
+                                <span>Comunicación</span>
+                                <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />
+                            </div>
+                            {showComunicacionSubmenu && (
+                                <ul className="submenu">
+                                    <li><Link to="/comunicacion">
+                                        <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Comunicación correo</Link></li>
+                                    <li><Link to="/comunicacion-mensajes">
+                                        <FontAwesomeIcon icon={faFileInvoice} className="menu-icon" /> Comunicación mensajería</Link></li>
+                                    
+                                </ul>
+                            )}
+                        </li>
                         <li className="menu-link"><Link to="/comunicacion">
                             <FontAwesomeIcon icon={faCommentDots} className="menu-icon" />Comunicación</Link></li>
+
                         {user.rolId === 1 && (
                         <li className="menu-link"><Link to="/inventario">
                             <FontAwesomeIcon icon={faBoxesStacked} className="menu-icon" />Inventario</Link>
