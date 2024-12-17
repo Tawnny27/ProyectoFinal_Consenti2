@@ -1,19 +1,30 @@
-import React, { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 
 // Crear el contexto
 const UserContext = createContext();
 
-
 // Proveedor del contexto
-export const UserProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+const UserProvider = ({ children }) => {
+     const [user, setUser] = useState(()=>{
+         const valorGuardado = localStorage.getItem('miContextDatos');
+         return valorGuardado ? JSON.parse(valorGuardado) : {};
+     });    
+
+    useEffect(() => {
+        // Guardar el valor en localStorage cuando cambie
+        localStorage.setItem('miContextDatos', JSON.stringify(user));
+    }, [user]);
 
     return (
         <UserContext.Provider value={{ user, setUser }}>
             {children}
         </UserContext.Provider>
-    );
+     );
+    
 };
+// Hook para usar el contexto 
+const useUserContext = () => {
+    return useContext(UserContext);
+};
+export { UserProvider, useUserContext };
 
-// Hook para usar el contexto fácilmente
-export const useUser = () => useContext(UserContext);

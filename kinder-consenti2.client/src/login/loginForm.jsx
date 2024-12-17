@@ -5,14 +5,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.jpg';
-import { useUser } from '../UserContext'; // Importar el hook del contexto**
+import { useUserContext } from '../UserContext'; // Importar el hook del contexto**
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState(''); 
     const navigate = useNavigate();
-    const { setUser } = useUser(); // Obtener la función para actualizar el usuario**
+    const { setUser } = useUserContext(); // Obtener la función para actualizar el usuario**
 
 
     const handleLogin = async () => {
@@ -25,11 +25,12 @@ const LoginForm = () => {
 
             if (response.status === 200) {
                 const usuario = response.data;
-
                 setUser(usuario); // Guardar el usuario en el contexto**
                 setErrorMessage(''); 
-                navigate('/main', { state: { usuario } });
+                //navigate('/main', { state: { usuario } });
+                navigate('/main');
             }
+
         } catch (error) {
             console.error('Error en el inicio de sesión:', error.response?.data || error.message);
             setErrorMessage(error.response?.data || 'Error en el inicio de sesión. Revisa tus credenciales.');

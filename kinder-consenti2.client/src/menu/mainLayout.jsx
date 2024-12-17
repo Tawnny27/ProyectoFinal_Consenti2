@@ -7,15 +7,17 @@ import {
     faUserEdit, faChartBar  } from '@fortawesome/free-solid-svg-icons';
 import logo from '../assets/logo.jpg'; 
 import Footer from '../componentes/footer';
-import { useUser } from '../UserContext';
-import { faAddressBook, faReceipt, faBoxesStacked, faCheck, faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet, faChartSimple } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
+import { useUserContext } from '../UserContext';
+import { faAddressBook, faReceipt,faBoxesStacked, faCheck, faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet, faChartSimple } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
+import { Nav } from '../../../node_modules/react-bootstrap/esm/index';
+import { use } from 'react';
 
 
 const MainLayout = () => {
     const navigate = useNavigate();
-    const location = useLocation();
-    const usuario = location.state?.usuario; // Obtener el objeto usuario desde el estado
-    const { user } = useUser();
+    //const location = useLocation();
+    //const usuario = location.state?.usuario; // Obtener el objeto usuario desde el estado
+    const {user, setUser} = useUserContext();
 
     const [showCalendarModal, setShowCalendarModal] = useState(false);
     const [importantDate, setImportantDate] = useState('');
@@ -25,7 +27,7 @@ const MainLayout = () => {
     const [showGestFSubMenu, setShowGestFSubMenu] = useState(false);
     const [showEvaluaSubmenu, setShowEvaluaSubmenu] = useState(false);
     const [showContenidoSubmenu, setShowContenidoSubmenu] = useState(false);
-
+    /*
     useEffect(() => {
         console.log(usuario)
         // Valida si el usuario necesita cambiar su contraseña
@@ -33,8 +35,24 @@ const MainLayout = () => {
             navigate('/change-password'); 
         }
     }, [usuario, navigate]);
+    */
+    useEffect(() => {
+        console.log(user)
+        // Valida si el usuario necesita cambiar su contraseña
+        if (user.passGenerico === true) {
+            navigate('/change-password');
+        }
+    }, []);
+   
+    useEffect(() => {
+        if (Object.keys(user).length === 0)
+        {
+            navigate('/'); 
+        }
+    }, [user]);
 
     const handleLogout = () => {
+        setUser({});
         navigate('/'); 
     };
 

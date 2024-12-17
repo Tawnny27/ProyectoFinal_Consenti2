@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import {  useEffect} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt, faHome } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.jpg';
-import { useUser } from '../UserContext'; // Importar el hook del contexto
+import { useUserContext } from '../UserContext'; // Importar el hook del contexto
 
 
 
 function Navbar() {
-    const { user, logout } = useUser(); // Obtener el usuario del contexto
+    const { user, setUser } = useUserContext(); // Obtener el usuario del contexto
     const navigate = useNavigate(); // Inicializa el hook useNavigate
 
     const handleMenuClick = () => {
@@ -16,9 +16,16 @@ function Navbar() {
     };
 
     const handleLogout = () => {
+        setUser({});
         navigate('/'); // Redirigir a la página de inicio de sesión
     };
 
+    useEffect(() => {
+        if (Object.keys(user).length === 0) {
+            navigate('/');
+        }
+    }, [user]);
+    
     return (
         <header className="header">
             <div className="logo-container">

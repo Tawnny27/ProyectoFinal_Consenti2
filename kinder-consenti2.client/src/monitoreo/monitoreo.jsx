@@ -7,7 +7,7 @@ import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import '../expedientes/expedientes';
 import './Monitoreo.css';
-import { useUser } from '../UserContext';
+import { useUserContext } from '../UserContext';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -20,8 +20,16 @@ const MonitoreoAlumno = () => {
     const [actividadDormir, setActividadDormir] = useState([]);
     const [actividadHuerta, setActividadHuerta] = useState([]);
     const [loading, setLoading] = useState(true);
+<<<<<<< Updated upstream
     const [filtro, setFiltro] = useState({ nombre: '', cedula: '' });
     const { user } = useUser(); // Suponiendo que 'useUser' te da acceso al usuario actual
+=======
+    const [filtro, setFiltro] = useState({
+        nombre: '',
+        cedula: ''
+    });
+    const { user } = useUserContext(); // Suponiendo que 'useUser' te da acceso al usuario actual
+>>>>>>> Stashed changes
 
 
     // Obtener alumnos desde el endpoint

@@ -4,7 +4,7 @@ import Footer from '../componentes/footer';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useUser } from '../UserContext';
+import { useUserContext } from '../UserContext';
 
 const AgregarFotosAlumno = () => {
     const { user } = useUser();

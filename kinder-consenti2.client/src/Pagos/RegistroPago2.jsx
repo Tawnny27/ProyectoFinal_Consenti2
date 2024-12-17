@@ -149,8 +149,9 @@ const RegistroPago = () => {
 
     return (        
         <div>
+            <div className="fondo">  
             {< Navbar />}
-            <div className="fondo">   
+             
                 {/* Formulario */}
                 <div className="form-card">
                     <h2>Registro de pago</h2>

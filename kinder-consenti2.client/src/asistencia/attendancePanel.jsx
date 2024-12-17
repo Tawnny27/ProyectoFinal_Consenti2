@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./AttendancePanel.css";
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
-import { useUser } from '../UserContext'; // Importar el hook del contexto
+import { useUserContext } from '../UserContext'; // Importar el hook del contexto
 
 function AttendancePanel() {
-    const { user, setUser } = useUser(); // Obtener el usuario del contexto
+    const { user, setUser } = useUserContext(); // Obtener el usuario del contexto
     const [errorMessage, setErrorMessage] = useState(""); // Estado para el mensaje de error
     
     useEffect(() => {
