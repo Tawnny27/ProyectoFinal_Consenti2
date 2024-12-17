@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
-import { useUser } from '../UserContext';
+import { useUserContext } from '../UserContext';
 import * as XLSX from 'xlsx';
 import '../monitoreo/monitoreo.css';
 import './comportamiento.css';
@@ -20,7 +20,7 @@ const ComportamientoAlumno = () => {
     const [filtro, setFiltro] = useState({ nombre: '', cedula: '' });
     const [fechaInicio, setFechaInicio] = useState('');
     const [fechaFin, setFechaFin] = useState('');
-    const { user } = useUser();
+    const { user } = useUserContext();
 
 
     useEffect(() => {

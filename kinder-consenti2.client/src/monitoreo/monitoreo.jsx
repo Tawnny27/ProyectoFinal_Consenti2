@@ -20,16 +20,11 @@ const MonitoreoAlumno = () => {
     const [actividadDormir, setActividadDormir] = useState([]);
     const [actividadHuerta, setActividadHuerta] = useState([]);
     const [loading, setLoading] = useState(true);
-<<<<<<< Updated upstream
-    const [filtro, setFiltro] = useState({ nombre: '', cedula: '' });
-    const { user } = useUser(); // Suponiendo que 'useUser' te da acceso al usuario actual
-=======
-    const [filtro, setFiltro] = useState({
-        nombre: '',
-        cedula: ''
-    });
+
+    const [filtro, setFiltro] = useState({ nombre: '', cedula: '' });   
+
     const { user } = useUserContext(); // Suponiendo que 'useUser' te da acceso al usuario actual
->>>>>>> Stashed changes
+
 
 
     // Obtener alumnos desde el endpoint
