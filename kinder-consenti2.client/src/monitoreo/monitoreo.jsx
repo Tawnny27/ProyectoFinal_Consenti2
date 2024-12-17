@@ -7,6 +7,7 @@ import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import '../expedientes/expedientes';
 import './Monitoreo.css';
+import { useUser } from '../UserContext';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -23,6 +24,8 @@ const MonitoreoAlumno = () => {
         nombre: '',
         cedula: ''
     });
+    const { user } = useUser(); // Suponiendo que 'useUser' te da acceso al usuario actual
+
 
     // Obtener alumnos desde el endpoint
     useEffect(() => {
@@ -31,6 +34,7 @@ const MonitoreoAlumno = () => {
                 const response = await axios.get('https://localhost:44369/Alumnos/ObtenerAlumnos');
                 setAlumnos(response.data);
                 setLoading(false);
+                console.error('alumno:', response.data);
             } catch (error) {
                 console.error('Error al obtener los alumnos:', error);
                 setLoading(false);
@@ -39,6 +43,11 @@ const MonitoreoAlumno = () => {
 
         fetchAlumnos();
     }, []);
+
+    // Filtrar alumnos según el rol
+    const alumnosFiltrados = user.rolId === 3
+        ? alumnos.filter(alumno => alumno.padreId === user.idUsuario)  // Si es un padre, mostrar solo sus hijos
+        : alumnos;  // Si no, mostrar todos
 
     const handleFiltroChange = (e) => {
         const { name, value } = e.target;
@@ -60,6 +69,7 @@ const MonitoreoAlumno = () => {
             setActividadComidas(Array.isArray(responseComidas.data) ? responseComidas.data : []);
             setActividadDormir(Array.isArray(responseDormir.data) ? responseDormir.data : []);
             setActividadHuerta(Array.isArray(responseHuerta.data) ? responseHuerta.data : []);
+            
         } catch (error) {
             console.error('Error al obtener actividades:', error);
             setActividadBanno([]);
@@ -80,12 +90,13 @@ const MonitoreoAlumno = () => {
         setModalVisible(true);
     };
 
+    // Crear los datos para el gráfico
     const dataBanno = {
-        labels: actividadBanno.map((item, index) => `Actividad ${index + 1}`),
+        labels: actividadBanno.map(item => item.fecha),
         datasets: [
             {
-                label: 'Actividad Baño',
-                data: actividadBanno.map(item => item.length),  // Asegúrate de que 'length' sea válido
+                label: 'Actividad Comidas por día',
+                data: actividadBanno.map(item => item.catidad),
                 fill: false,
                 borderColor: 'rgba(75,192,192,1)',
                 tension: 0.1
@@ -93,11 +104,12 @@ const MonitoreoAlumno = () => {
         ]
     };
 
+
     const dataComidas = {
         labels: actividadComidas.map(item => item.fecha),
         datasets: [
             {
-                label: 'Actividad Comidas',
+                label: 'Actividad Comidas por día',
                 data: actividadComidas.map(item => item.statusComida),
                 fill: false,
                 borderColor: 'rgba(255,99,132,1)',
@@ -106,12 +118,24 @@ const MonitoreoAlumno = () => {
         ]
     };
 
+    //Dormir
+    const convertirTiempoAMinutos = (tiempo) => {
+        const [horas, minutos] = tiempo.split(':').map(Number); // Separar horas y minutos
+        return horas * 60 + minutos; // Convertir a minutos totales
+    };
+
+    const convertirMinutosATiempo = (minutos) => {
+        const horas = Math.floor(minutos / 60);
+        const minutosRestantes = minutos % 60;
+        return `${horas.toString().padStart(2, '0')}:${minutosRestantes.toString().padStart(2, '0')}`;
+    };
+
     const dataDormir = {
-        labels: actividadDormir.map(item => item.fecha),
+        labels: actividadDormir.map(item => item.fecha), // Fechas en el eje X
         datasets: [
             {
-                label: 'Actividad Dormir',
-                data: actividadDormir.map(item => parseInt(item.tiempo) || 0),
+                label: 'Minutos de sueño por día',
+                data: actividadDormir.map(item => convertirTiempoAMinutos(item.tiempo)), // Convertir tiempos a minutos
                 fill: false,
                 borderColor: 'rgba(54,162,235,1)',
                 tension: 0.1
@@ -123,7 +147,7 @@ const MonitoreoAlumno = () => {
         labels: actividadHuerta.map(item => item.fecha),
         datasets: [
             {
-                label: 'Actividad Huerta',
+                label: 'Actividad en la Huerta',
                 data: actividadHuerta.map(item => item.statusParticipacion),
                 fill: false,
                 borderColor: 'rgba(153,102,255,1)',
@@ -168,7 +192,7 @@ const MonitoreoAlumno = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {alumnos.map((alumno) => (
+                            {alumnosFiltrados.map((alumno) => (
                             <tr key={alumno.idAlumno}>
                                 <td>{alumno.nombreAlumno}</td>
                                 <td>{alumno.apellidosAlumno}</td>
