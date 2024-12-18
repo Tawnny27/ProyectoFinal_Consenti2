@@ -153,9 +153,7 @@ const MainLayout = () => {
                                                 <FontAwesomeIcon icon={faChildren} className="menu-icon" /> Actividades (Maestro)
                                             </Link>
                                         </li>
-                                        <li><Link to="/attendance-panel">Asistencia</Link></li>
-                                        {/* <li><Link to="/main">?</Link></li>
-                  <li><Link to="/main">?</Link></li> */}
+                                        <li><Link to="/attendance-panel">Asistencia</Link></li>                                       
                                     </ul>
                                 )}
                             </li>
@@ -173,13 +171,7 @@ const MainLayout = () => {
                                     <li><Link to="/recibo-pago">
                                         <FontAwesomeIcon icon={faFileInvoice} className="menu-icon" /> Recibo de Pagos</Link></li>
                                         <li><Link to="/Factura-maintenance">
-                                            <FontAwesomeIcon icon={faHandHoldingDollar} className="menu-icon" /> Control de pagos</Link></li>
-                                            */
-                                        }   
-                                        
-                                        <li><Link to="/Factura-maintenance">
-                                            <FontAwesomeIcon icon={faHandHoldingDollar} className="menu-icon" /> Control de pagos</Link></li>
-                                        
+                                            <FontAwesomeIcon icon={faHandHoldingDollar} className="menu-icon" /> Control de pagos</Link></li>       
                                         <li><Link to="/Gastos">
                                             <FontAwesomeIcon icon={faReceipt} className="menu-icon" /> Control de gastos</Link></li>
                                     </ul>
