@@ -3,12 +3,13 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './mainLayout.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faUserPlus, faSignOutAlt, faCalendarAlt, faCaretDown, faChildren,faClipboardList,faMoneyBillWave,faGraduationCap,faFileAlt,faCommentDots,faBoxes,
-    faUserEdit, faChartBar  } from '@fortawesome/free-solid-svg-icons';
-import logo from '../assets/logo.jpg'; 
+    faUserPlus, faSignOutAlt, faCalendarAlt, faCaretDown, faChildren, faClipboardList, faMoneyBillWave, faGraduationCap, faFileAlt, faCommentDots, faBoxes,
+    faUserEdit, faChartBar
+} from '@fortawesome/free-solid-svg-icons';
+import logo from '../assets/logo.jpg';
 import Footer from '../componentes/footer';
 import { useUserContext } from '../UserContext';
-import { faAddressBook, faReceipt,faBoxesStacked, faCheck, faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet, faChartSimple } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
+import { faAddressBook, faReceipt, faBoxesStacked, faCheck, faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet, faChartSimple } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
 import { Nav } from '../../../node_modules/react-bootstrap/esm/index';
 import { use } from 'react';
 
@@ -17,7 +18,7 @@ const MainLayout = () => {
     const navigate = useNavigate();
     //const location = useLocation();
     //const usuario = location.state?.usuario; // Obtener el objeto usuario desde el estado
-    const {user, setUser} = useUserContext();
+    const { user, setUser } = useUserContext();
 
     const [showCalendarModal, setShowCalendarModal] = useState(false);
     const [importantDate, setImportantDate] = useState('');
@@ -32,7 +33,7 @@ const MainLayout = () => {
     /*
     useEffect(() => {
         console.log(usuario)
-        // Valida si el usuario necesita cambiar su contraseña
+        // Valida si el usuario necesita cambiar su contraseï¿½a
         if (usuario?.passGenerico === true) {
             navigate('/change-password'); 
         }
@@ -40,22 +41,21 @@ const MainLayout = () => {
     */
     useEffect(() => {
         console.log(user)
-        // Valida si el usuario necesita cambiar su contraseña
+        // Valida si el usuario necesita cambiar su contraseï¿½a
         if (user.passGenerico === true) {
             navigate('/change-password');
         }
     }, []);
-   
+
     useEffect(() => {
-        if (Object.keys(user).length === 0)
-        {
-            navigate('/'); 
+        if (Object.keys(user).length === 0) {
+            navigate('/');
         }
     }, [user]);
 
     const handleLogout = () => {
         setUser({});
-        navigate('/'); 
+        navigate('/');
     };
 
     const handleCalendarClick = () => {
@@ -111,59 +111,57 @@ const MainLayout = () => {
             </header>
             <div className="content-container">
                 <aside className="sidebar">
-                    <h2>Menú</h2>
+                    <h2>Menï¿½</h2>
                     <ul>
                         {user.rolId === 1 && (
-                        <li>
-                            <div onClick={toggleAdminSubmenu} className="menu-item">
-                                <span>Administrativo</span>
-                                <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />
-                            </div>
-                            {showAdminSubmenu && (
-                                <ul className="submenu">
-                                    <li>
-                                        <Link to="/registrar-usuario">
-                                            <FontAwesomeIcon icon={faUserPlus} className="menu-icon" /> Registrar Usuario
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/user-maintenance">
-                                            <FontAwesomeIcon icon={faUserEdit} className="menu-icon" /> Consultar Usuarios
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/reportes">
-                                            <FontAwesomeIcon icon={faChartBar} className="menu-icon" /> Reportes
-                                        </Link>
-                                    </li>
-                                </ul>
-                            )}
-                        </li>
+                            <li>
+                                <div onClick={toggleAdminSubmenu} className="menu-item">
+                                    <span>Administrativo</span>
+                                    <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />
+                                </div>
+                                {showAdminSubmenu && (
+                                    <ul className="submenu">
+                                        <li>
+                                            <Link to="/registrar-usuario">
+                                                <FontAwesomeIcon icon={faUserPlus} className="menu-icon" /> Registrar Usuario
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link to="/user-maintenance">
+                                                <FontAwesomeIcon icon={faUserEdit} className="menu-icon" /> Consultar Usuarios
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link to="/reportes">
+                                                <FontAwesomeIcon icon={faChartBar} className="menu-icon" /> Reportes
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                )}
+                            </li>
                         )}
                         {user.rolId !== 3 && (
-                        <li>
-                            <div onClick={togglePlatformSubmenu} className="menu-item">
-                                <span>Plataforma</span>
-                                <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />
-                            </div>
-                            {showPlatformSubmenu && (
-                                <ul className="submenu">
-                                    <li>
-                                    <Link to="/activity-panel">
-                                        <FontAwesomeIcon icon={faChildren} className="menu-icon" /> Actividades (Maestro)
-                                    </Link>
-                                    </li>
-                                    <li><Link to="/attendance-panel">Asistencia</Link></li>
-                                    {/* <li><Link to="/main">?</Link></li>
-                  <li><Link to="/main">?</Link></li> */}
-                                </ul>
-                            )}
+                            <li>
+                                <div onClick={togglePlatformSubmenu} className="menu-item">
+                                    <span>Plataforma</span>
+                                    <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />
+                                </div>
+                                {showPlatformSubmenu && (
+                                    <ul className="submenu">
+                                        <li>
+                                            <Link to="/activity-panel">
+                                                <FontAwesomeIcon icon={faChildren} className="menu-icon" /> Actividades (Maestro)
+                                            </Link>
+                                        </li>
+                                        <li><Link to="/attendance-panel">Asistencia</Link></li>                                       
+                                    </ul>
+                                )}
                             </li>
                         )}
                         {user.rolId === 1 && (
                         <li>
                             <div onClick={toggleGestFSubMenu} className="menu-item">
-                                <span>Gestión Financiera</span>
+                                <span>Gestiï¿½n Financiera</span>
                                 <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />
                             </div>
                             {showGestFSubMenu && (
@@ -172,47 +170,47 @@ const MainLayout = () => {
                                         <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Registrar Pago</Link></li>
                                     <li><Link to="/recibo-pago">
                                         <FontAwesomeIcon icon={faFileInvoice} className="menu-icon" /> Recibo de Pagos</Link></li>
-                                    <li><Link to="/control-pago">
-                                            <FontAwesomeIcon icon={faHandHoldingDollar} className="menu-icon" /> Control de pagos</Link></li>
+                                        <li><Link to="/Factura-maintenance">
+                                            <FontAwesomeIcon icon={faHandHoldingDollar} className="menu-icon" /> Control de pagos</Link></li>       
                                         <li><Link to="/Gastos">
                                             <FontAwesomeIcon icon={faReceipt} className="menu-icon" /> Control de gastos</Link></li>
-                                </ul>
-                            )}
-                        </li>
+                                    </ul>
+                                )}
+                            </li>
                         )}
                         <li className="menu-link"><Link to="/matricula">
-                            <FontAwesomeIcon icon={faSchoolCircleCheck} className="menu-icon" />  Matrícula</Link></li>
+                            <FontAwesomeIcon icon={faSchoolCircleCheck} className="menu-icon" />  Matrï¿½cula</Link></li>
                         {user.rolId === 1 && (
                             <li className="menu-link"><Link to="/expedientes">
                                 <FontAwesomeIcon icon={faAddressBook} className="menu-icon" />Expedientes</Link></li>
                         )}
                         <li>
                             <div onClick={toggleComunicacionSubmenu} className="menu-item">
-                                <span>Comunicación</span>
+                                <span>Comunicaciï¿½n</span>
                                 <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />
                             </div>
                             {showComunicacionSubmenu && (
                                 <ul className="submenu">
                                     <li><Link to="/comunicacion">
-                                        <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Comunicación correo</Link></li>
+                                        <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Comunicaciï¿½n correo</Link></li>
                                     <li><Link to="/comunicacion-mensajes">
-                                        <FontAwesomeIcon icon={faFileInvoice} className="menu-icon" /> Comunicación mensajería</Link></li>
+                                        <FontAwesomeIcon icon={faFileInvoice} className="menu-icon" /> Comunicaciï¿½n mensajerï¿½a</Link></li>
                                     
                                 </ul>
                             )}
                         </li>
                         
                         {user.rolId === 1 && (
-                        <li className="menu-link"><Link to="/inventario">
-                            <FontAwesomeIcon icon={faBoxesStacked} className="menu-icon" />Inventario</Link>
-                        </li>
+                            <li className="menu-link"><Link to="/inventario">
+                                <FontAwesomeIcon icon={faBoxesStacked} className="menu-icon" />Inventario</Link>
+                            </li>
                         )}
                         {user.rolId === 3 && (
                             <li>
 
                                 <div onClick={toggleEvaluaSubmenu} className="menu-item">
-                                    <span>Evaluación</span>
-                                    
+                                    <span>Evaluaciï¿½n</span>
+
                                     <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />
                                 </div>
                                 {showEvaluaSubmenu && (
@@ -220,7 +218,7 @@ const MainLayout = () => {
                                         <li><Link to="/registrar-encuesta">
                                             <FontAwesomeIcon icon={faSquarePollHorizontal} className="menu-icon" />Encuesta</Link></li>
                                         <li><Link to="/evalua-maestra">
-                                            <FontAwesomeIcon icon={faClipboardList} className="menu-icon" />Evaluación Docente</Link></li>
+                                            <FontAwesomeIcon icon={faClipboardList} className="menu-icon" />Evaluaciï¿½n Docente</Link></li>
                                     </ul>
                                 )}
                             </li>
@@ -245,10 +243,10 @@ const MainLayout = () => {
                 </aside>
                 <main className="main-content">
                     <div className="bienvenidos">
-                        <h1>¡Bienvenido!</h1>
+                        <h1>ï¿½Bienvenido!</h1>
                         <img src='/static/media/logo.347a6ba3d825eb7f06e8.jpg' alt='' style={{ width: '150px', paddingTop: '50px' }} />
                         <p className="welcome-text">
-                            En Kínder Consenti2, nos dedicamos a brindar una experiencia de aprendizaje amorosa y enriquecedora para los más pequeños. Creemos en un ambiente donde cada niño es valorado y respetado, desarrollando sus habilidades a través del juego, la creatividad y la exploración.
+                            En Kï¿½nder Consenti2, nos dedicamos a brindar una experiencia de aprendizaje amorosa y enriquecedora para los mï¿½s pequeï¿½os. Creemos en un ambiente donde cada niï¿½o es valorado y respetado, desarrollando sus habilidades a travï¿½s del juego, la creatividad y la exploraciï¿½n.
                         </p>
                     </div>
                 </main>
@@ -271,7 +269,7 @@ const MainLayout = () => {
                                 />
                             </label>
                             <label>
-                                Descripción de la Actividad:
+                                Descripciï¿½n de la Actividad:
                                 <textarea
                                     className="activity-textarea"
                                     value={activityDescription}

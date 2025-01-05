@@ -200,7 +200,7 @@ const UserMaintenance = () => {
     };
 
     // Configuración de las columnas para el DataTable
-    const columns = [
+    const columns   = [
         {
             name: 'Nombre',
             selector: row => row.name,
