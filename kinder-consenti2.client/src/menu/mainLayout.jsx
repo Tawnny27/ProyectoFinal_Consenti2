@@ -201,9 +201,7 @@ const MainLayout = () => {
                                 </ul>
                             )}
                         </li>
-                        <li className="menu-link"><Link to="/comunicacion">
-                            <FontAwesomeIcon icon={faCommentDots} className="menu-icon" />Comunicación</Link></li>
-
+                        
                         {user.rolId === 1 && (
                         <li className="menu-link"><Link to="/inventario">
                             <FontAwesomeIcon icon={faBoxesStacked} className="menu-icon" />Inventario</Link>

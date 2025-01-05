@@ -7,12 +7,12 @@ import { useUserContext } from '../UserContext'; // Importar el hook del context
 function AttendancePanel() {
     const { user, setUser } = useUserContext(); // Obtener el usuario del contexto
     const [errorMessage, setErrorMessage] = useState(""); // Estado para el mensaje de error
-    
+
     useEffect(() => {
-        if (user?.rolId !== 2) {
+        if (user?.rolId !== 1) {
             setErrorMessage("No tienes permisos para acceder a esta página.");
         } else {
-            setErrorMessage(""); 
+            setErrorMessage("");
         }
     }, [user]);
 
@@ -27,29 +27,34 @@ function AttendancePanel() {
         setAttendance(updatedAttendance);
     };
 
-    const handleSubmit = () => {
-        const unmarkedChildren = attendance.filter((child) => child.status === null);
-        if (unmarkedChildren.length > 0) {
-            alert(
-                `Los siguientes niños no tienen un estado asignado: ${unmarkedChildren
-                    .map((child) => child.name)
-                    .join(", ")}`
-            );
-            return;
-        }
+    const handleSubmit = async () => {
+        try {
+            const payload = {
+                IdListaAsistencia: 1, // ID de la lista de asistencia (puedes cambiarlo dinámicamente)
+                Detalles: attendance.map((child) => ({
+                    Nombre: child.name,
+                    Estado: child.status ? "Presente" : "Ausente"
+                })),
+            };
 
-        console.log("Asistencia guardada:", attendance);
-        alert("¡Asistencia guardada exitosamente!");
-        navigateToActivities();
+            const response = await axios.put(
+                "https://localhost:44369/api/ListaAsistencias/ActualizarAsistencia",
+                payload
+            );
+
+            console.log("Respuesta del backend:", response.data);
+            alert("¡Asistencia guardada exitosamente!");
+        } catch (error) {
+            console.error("Error al guardar la asistencia:", error);
+            alert("Hubo un error al guardar la asistencia.");
+        }
     };
 
     const handleCancel = () => {
         window.history.back();
     };
 
-    // Solo renderizar el contenido si el rol es 2, de lo contrario solo mostrar el mensaje de error
-    if (user?.rolId !== 2) {
-        console.log(user)
+    if (user?.rolId !== 1) {
         return (
             <div className="user-maintenance-container">
                 <Navbar />
@@ -78,7 +83,6 @@ function AttendancePanel() {
                     )}
                 </div>
 
-                {/* Tabla de asistencia */}
                 <table className="attendance-table">
                     <thead>
                         <tr>
