@@ -132,20 +132,7 @@ namespace kinder_consenti2.Server.Controllers
             var insertada = _context.EncabezadoFactura.Find(factura.IdFactura);
 
             if (insertada != null)
-            {
-                /* foreach (var item in Datos.Detalles)
-                 {
-                     DetalleFactura detalleFact = new DetalleFactura
-                     {
-                         EncabezadoFacturaId = insertada.IdFactura,
-                         ProductoId = item.ProductoId,
-                         AlumnoId = item.AlumnoId,
-                         Monto = item.Monto
-                     };
-                     _context.DetalleFactura.Add(detalleFact);
-                     _context.SaveChanges();
-                 }
-                */
+            {               
                 //Se insertan los detalles de la factura
                 List<DetalleFactura> Detalle = new List<DetalleFactura>();
                 foreach (var item in Datos.Detalles)
@@ -185,6 +172,75 @@ namespace kinder_consenti2.Server.Controllers
         }
 
         //********************************Fin de Proceso de Matricula y factiracion de **************************************
+
+
+
+        [HttpPost]
+        [Route("CrearPago")]
+        public ActionResult<EncabezadoFactura> CrearPago(DatosMatricula Datos)
+        {
+
+            int idStatus;
+            bool status;
+            // se valida el roll de la persona que envia la solicitud
+            if (Datos.RollId == 1)   // roll adm para el status finalizado de la factura y la matricula
+            {
+                idStatus = 1;
+                status = true;
+            }
+            else // Otros roles para el status pendiente de la factura y la matricula
+            {
+                idStatus = 0;
+                status = false;
+            }
+
+            // Se setea el obj EncabezadoFactura
+            EncabezadoFactura factura = new EncabezadoFactura
+            {
+                UsuarioId = Datos.ClienteId,
+                Fecha = Datos.Fecha,
+                MetodoPago = Datos.MetodoPago,
+                ImagenPago = Datos.ImagenPago,
+                Referencia = Datos.Referencia,
+                Subtotal = Datos.Subtotal,
+                Descuento = Datos.Descuento,
+                Iva = Datos.Iva,
+                Total = Datos.Total,
+                status = idStatus
+            };
+            //Se inserta el EncabezadoFactura
+            _context.EncabezadoFactura.Add(factura);
+            _context.SaveChanges();
+            var insertada = _context.EncabezadoFactura.Find(factura.IdFactura);
+
+            if (insertada != null)
+            {
+                //Se insertan los detalles de la factura
+                List<DetalleFactura> Detalle = new List<DetalleFactura>();
+                foreach (var item in Datos.Detalles)
+                {
+                    DetalleFactura registro = new DetalleFactura
+                    {
+                        EncabezadoFacturaId = insertada.IdFactura,
+                        ProductoId = item.ProductoId,
+                        AlumnoId = item.AlumnoId,
+                        Monto = item.Monto,
+                    };
+                    item.EncabezadoFacturaId = insertada.IdFactura;
+                    Detalle.Add(registro);
+                }
+                _context.DetalleFactura.AddRange(Detalle);
+                _context.SaveChanges();
+          
+                return Ok("Pago enviada para validacio del pago");
+            }
+            return BadRequest("Algo salio mal, validar con Amnistarcion");
+        }
+
+        //********************************Fin de Proceso de facturacion **************************************
+
+
+
 
     }
 }
