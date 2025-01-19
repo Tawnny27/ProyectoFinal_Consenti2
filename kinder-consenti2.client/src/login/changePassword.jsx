@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import './LoginForm.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -10,13 +10,23 @@ const ChangePassword = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [passwordVisible, setPasswordVisible] = useState(false);   
+    const [passwordconfVisible, setPasswordconfVisible] = useState(false);   
+
     const navigate = useNavigate();
 
+    const togglePasswordVisibility = () => {
+        setPasswordVisible(!passwordVisible);
+    };
+
+    const togglePasswordConfVisibility = () => {
+        setPasswordconfVisible(!passwordconfVisible);
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (newPassword !== confirmPassword) {
-            setSuccessMessage('Las contrase�as no coinciden.');
+            setSuccessMessage('Las contraseñas no coinciden.');
             return;
         }
 
@@ -30,18 +40,18 @@ const ChangePassword = () => {
             if (response.status === 200) {
                 setSuccessMessage(response.data);
                 setTimeout(() => {
-                    navigate('/'); // Redirige despu�s de 5
-                }, 5000); 
+                    navigate('/'); // Redirige después de 5
+                }, 2000); 
             }
         } catch (error) {
-            setSuccessMessage(error.response?.data || "Error al cambiar la contrase�a");
+            setSuccessMessage(error.response?.data || "Error al cambiar la contraseña");
         }
     };
 
     return (
         <div className="login-form-container">
             <form onSubmit={handleSubmit} className="login-form">
-                <h2>Restablecer Contrase�a</h2>
+                <h2>Restablecer Contraseña</h2>
                 {successMessage && (
                     <div className="success-message" style={{ color: 'green' }}>
                         {successMessage}
@@ -49,7 +59,9 @@ const ChangePassword = () => {
                 )}
                 <div className="form-group">
                     <div className="input-icon">
-                        <FontAwesomeIcon icon={faEnvelope} />
+                        <div className="icon-container">
+                            <FontAwesomeIcon icon={faEnvelope} />
+                        </div>                        
                         <input
                             type="email"
                             id="email"
@@ -60,33 +72,47 @@ const ChangePassword = () => {
                         />
                     </div>
                 </div>
+
                 <div className="form-group">
                     <div className="input-icon">
-                        <FontAwesomeIcon icon={faLock} />
-                        <input
-                            type="password"
+                        <div className="icon-container">
+                            <FontAwesomeIcon icon={faLock} />
+                        </div>
+                        <input                            
+                            type={passwordVisible ? 'text' : 'password'}
                             id="newPassword"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
                             required
-                            placeholder="Nueva contrase�a"
+                            placeholder="Nueva contraseña"
                         />
+                        <div className="icon-container" onClick={togglePasswordVisibility}>
+                            <FontAwesomeIcon  icon={passwordVisible ? faEyeSlash : faEye} />
+                        </div>
                     </div>
+                   
                 </div>
+
                 <div className="form-group">
                     <div className="input-icon">
-                        <FontAwesomeIcon icon={faLock} />
+                        <div className="icon-container">
+                            <FontAwesomeIcon icon={faLock} />
+                        </div>
+                        
                         <input
-                            type="password"
+                            type={passwordconfVisible ? 'text' : 'password'}
                             id="confirmPassword"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             required
-                            placeholder="Confirma la nueva contrase�a"
+                            placeholder="Confirma la nueva contraseña"
                         />
+                        <div className="icon-container" onClick={togglePasswordConfVisibility}>
+                            <FontAwesomeIcon icon={passwordconfVisible ? faEyeSlash : faEye} />
+                        </div>
                     </div>
                 </div>
-                <button type="submit">Actualizar Contrase�a</button>
+                <button type="submit">Actualizar Contraseña</button>
             </form>
         </div>
     );

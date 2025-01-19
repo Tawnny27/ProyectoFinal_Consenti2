@@ -28,6 +28,21 @@ namespace kinder_consenti2.Server.Controllers
             return Ok(_context.MaterialDidactico.ToList());
         }
 
+        [HttpGet]
+        [Route("ObtenerMaterialesDidacticosAct")]
+        public ActionResult<ActionResult<List<MaterialDidactico>>> ObtenerMaterialesDidacticosAct()
+        {
+            return Ok(_context.MaterialDidactico.Where(x=> x.StatusAct==true).ToList());
+        }
+
+        [HttpGet]
+        [Route("ObtenerMaterialesDidacticosInact")]
+        public ActionResult<ActionResult<List<MaterialDidactico>>> ObtenerMaterialesDidacticosInact()
+        {
+            return Ok(_context.MaterialDidactico.Where(x => x.StatusAct == false).ToList());
+        }
+
+
         // GET: api/ObtenerMaterialDidactico/
         [HttpGet]
         [Route("ObtenerMaterialDidactico/{id}")]
@@ -72,7 +87,7 @@ namespace kinder_consenti2.Server.Controllers
 
         // PUT: api/EditarMaterialDidactico
         [HttpPut]
-        [Route("EditarMaterialDidactico/{id}")]
+        [Route("InactivarMaterialDidactico/{id}")]
         public ActionResult<MaterialDidactico> InactivarMaterialDidactico(int id)
         {
             var encontrado = _context.MaterialDidactico.Find(id);

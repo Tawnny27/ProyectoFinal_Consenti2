@@ -37,6 +37,7 @@ namespace kinder_consenti2.Server.Models
         public DbSet<EvaluacionKinder> EvaluacionKinder { get; set; }
         public DbSet<FotoAlumno> FotoAlumno { get; set; }
         public DbSet<MaterialDidactico> MaterialDidactico { get; set; }
+        public DbSet<Eventos> Eventos { get; set; }
 
 
 
@@ -55,6 +56,20 @@ namespace kinder_consenti2.Server.Models
                 R.Property(x => x.NombreRol).IsRequired().HasMaxLength(10);
             });
             //***************************************************************
+
+
+            //************************* Tabla Eventos ****************************
+            modelBuilder.Entity<Eventos>(E =>
+            {
+                E.HasKey(x => x.IdEventos);
+                E.Property(x => x.NombreEvento).IsRequired().HasMaxLength(30);
+                E.Property(x => x.DescripcionEvento).IsRequired().HasMaxLength(100);
+                E.Property(x => x.FotoEvento).IsRequired();
+                E.Property(x => x.Fecha).IsRequired();
+            });
+            //***************************************************************
+
+
 
             //************************* Tabla EncabezadoFactura *************
             modelBuilder.Entity<EncabezadoFactura>(E =>
@@ -238,7 +253,8 @@ namespace kinder_consenti2.Server.Models
             modelBuilder.Entity<Alumno>()
                 .HasOne(x => x.Usuario)
                 .WithMany(x => x.Alumnos)
-                .HasForeignKey(f => f.PadreId);
+                .HasForeignKey(f => f.PadreId)
+                .OnDelete(DeleteBehavior.NoAction); 
             //Tablas ignoradas
            
             //******************************************************************

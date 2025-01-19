@@ -3,7 +3,9 @@ using kinder_consenti2.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace kinder_consenti2.Server.Controllers
@@ -123,9 +125,28 @@ namespace kinder_consenti2.Server.Controllers
         [Route("CambiarContrasena")]
         public ActionResult<string> CambiarContrasena(Acceso DatosCambio) // recibe un objeto con el correo, contraseña y contraseña de verificación
         {
+            /*
+             * Espressiones regulares
+              Contenga al menos una mayúscula ((?=.*[A-Z])).
+              Contenga al menos un número ((?=.*\d)).
+              Contenga al menos un carácter especial ((?=.*[@$!%*?&])).
+              Tenga entre 8 y 16 caracteres ([A-Za-z\d@$!%*?&]{8,16}).
+             */          
+
+
             if (DatosCambio.correo!=null&& DatosCambio.contrasenna != null &&
                 DatosCambio.contrasennaValidacion != null && DatosCambio.contrasenna== DatosCambio.contrasennaValidacion)// sevalidan los datos
             {
+                string reglas = @"^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$";
+                if (!Regex.IsMatch(DatosCambio.contrasenna, reglas))
+                {
+                    return BadRequest("La contraseña no cumple con los parametro minimos: " +
+                        "entre 8 y 16 caracteres, " +
+                        "almenos: " +
+                        "una mayuscula, " +
+                        "un caracter especial, " +
+                        "un número.");
+                }
                 var usuario = _context.Usuario.Where(x => x.CorreoUsuario == DatosCambio.correo).FirstOrDefault();// se busca el usuaior en la BD
                 if (usuario != null) 
                 {

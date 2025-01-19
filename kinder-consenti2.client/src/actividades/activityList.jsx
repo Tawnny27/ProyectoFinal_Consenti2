@@ -9,38 +9,278 @@ import 'react-toastify/dist/ReactToastify.css';
 const ListaActividades = () => {
 
     const [listaAct, setListaAct] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
+    //--------------------------------------------------------------------
 
+    const [title, setTitle] = useState("");
+    const [date, setDate] = useState("");
+    const [image, setImage] = useState(null);
+    const [description, setDescription] = useState("");   
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState(false);
+
+    const fileInputRef = useState(null);
+    const [imageError, setImageError] = useState('');
+    const [previewUrl, setPreviewUrl] = useState('');
+    const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png'];
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+    const [hover, setHover] = useState(false);
+    const [nombreUnico, setNombreUnico] = useState('default.jpg');
+    const [selectedFile, setSelectedFile] = useState(null);
+    const IMAGE_PATH = '/FotosEventos/';
+
+
+
+    const envioEvento = {
+        nombreEvento: "",
+        descripcionEvento: "",
+        fotoEvento: "",
+        fecha: new Date().toISOString().split('T')[0],
+    }
+
+    useEffect(() => {
+        if (selectedFile) {
+            // Generar nombre único para la imagen
+            const fileExtension = selectedFile.name.split('.').pop();
+            setNombreUnico(`${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`);
+            console.log("Ojo");
+            console.log(nombreUnico);
+        }
+        else {
+            setNombreUnico('default.jpg');
+        }
+    }, [selectedFile]);
+
+
+    const agregarEvento = async () => {
+        const createEventoResponse = await axios.post(
+            "https://localhost:44369/MaterialDidacticoes/CrearMaterialDidactico",
+            envioEvento,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                },
+            }
+        );
+
+        if (createEventoResponse.data && selectedFile) {
+            // Creamos FormData para enviar la imagen
+            const imageFormData = new FormData();
+            imageFormData.append('file', selectedFile);
+            imageFormData.append('fileName', nombreUnico); // Enviamos el nombre generado
+
+            // Enviamos la imagen al servidor
+            const imageResponse = await axios.post('https://localhost:44369/Imagenes/GuardarImagenPago', imageFormData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            alert(imageResponse.message.toString);
+        }
+
+       
+    }
+
+    //-----------------------------------------------------------------------------------------
+
+    const validateImage = (file) => {
+        if (!file) {
+            throw new Error('Por favor seleccione una imagen');
+        }
+        if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+            throw new Error('Formato no permitido. Use JPG, PNG');
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            throw new Error('La imagen excede el tamaño máximo de 5MB');
+        }
+        return true;
+    };
+
+
+    //------------------------------------------------------------------------------------------
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setImageError('');
+        try {
+            if (validateImage(file)) {
+                setSelectedFile(file);
+                // Crear URL temporal para vista previa
+                const previewURL = URL.createObjectURL(file);
+                setPreviewUrl(previewURL);
+            }
+
+        } catch (error) {
+            setImageError(error.message);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    };
+
+    //-------------------------------------------------------------------------------------------
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!title || !date || !description) {
+            setError("Todos los campos marcados con * son obligatorios.");
+            setSuccess(false);
+            return;
+        }
+        setError("");
+        setSuccess(true);
+        // Aquí puedes enviar los datos a la API o manejarlos como prefieras
+        agregarEvento();      
+        setearDatos();        
+    }
+
+
+    //----------------------------------------------------------------------------
     useEffect(() => {
         const cargarLista = async () => {
             try {
-                const response = await axios.get("https://localhost:44369/Grupos/ObtenerGrupos");
+                const response = await axios.get("https://localhost:44369/Eventos/ObtenerEventosActivos");
                 setListaAct(response.data);
-               
+
             } catch (error) {
-                console.error("Error al cargar las actividades:", error);                
+                console.error("Error al cargar las actividades:", error);
             }
         }
         cargarLista();
-    }, []);  
+    }, []);
+
+    //--------------------------------------------------------------------------------
+    const setearDatos = () => {
+        setTitle("");
+        setDate("");
+        setImage(null);
+        setDescription("");      
+    }
+
+    //-------------------------------------------------------------------------------
+
 
 
     return (
         <div>
-            <Navbar />            
+            <Navbar />
             <div className="act-container">
                 <h1 className="act-header"> Lista de Actividades</h1>
                 <div className="cards-container">
-                    {listaAct.map((act) => (
-                        <div key={act.idGrupos} className="act-card">
-                            <h4>{act.nombreGrupo}</h4>
 
-                            <p>{act.anno}</p>
-                            <img className="card-imagen" src="https://purina.com.pe/sites/default/files/styles/webp/public/2022-10/Que_debes_saber_antes_de_adoptar_un_gatito.jpg.webp?itok=N2sS0lfp" alt=""></img>
-                                                     
+                    <button onClick={() => setModalVisible(true)} className="button-agregar">
+                        Agregar Actividad
+                    </button>
+                    {listaAct.map((act) => (
+                        <div key={act.idEventos} className="act-card">
+                            <h4>{act.nombreEvento}</h4>
+                            <p>{act.fecha}</p>
+
+                            <div className="image-container"
+                                onMouseEnter={() => setHover(true)}
+                                onMouseLeave={() => setHover(false)} >
+                                <img className="card-imagen" src="https://purina.com.pe/sites/default/files/styles/webp/public/2022-10/Que_debes_saber_antes_de_adoptar_un_gatito.jpg.webp?itok=N2sS0lfp" alt=""></img>
+                                {hover && (
+                                    <div className="hover-info">{act.descripcionEvento}</div>
+                                )}
+                            </div>
+
                         </div>
                     ))
                     }
                 </div>
+
+
+                {modalVisible && (
+                    <div className="modal">
+                        <div className="modal-content">
+                            <span className="close" onClick={() => setModalVisible(false)}>&times;</span>
+                            { /*
+                                <div className="activity-form-container">
+                                */}
+
+                            <h2 className="activity-form-title">Agregar Nueva Actividad</h2>
+                            <form className="activity-form" onSubmit={handleSubmit}>
+                                <label className="activity-form-label">
+                                    Título:
+                                    <input
+                                        type="text"
+                                        className="activity-form-input"
+                                        required
+                                        value={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                    />
+                                </label>
+                                <label className="activity-form-label">
+                                    Fecha:
+                                    <input
+                                        type="date"
+                                        className="activity-form-input"
+                                        required
+                                        value={date}
+                                        onChange={(e) => setDate(e.target.value)}
+                                    />
+                                </label>
+
+                                { /****************************************************************************/}
+                                <label className="activity-form-label">
+                                    Imagen:
+                                    <input
+                                        type="file"
+                                        className="activity-form-input"
+                                        ref={fileInputRef}
+                                        onChange={handleImageChange}
+                                        accept=".jpg,.jpeg,.png"
+                                    />
+                                </label>
+                                {previewUrl && (
+                                    <div className="image-preview-container">
+                                        <img
+                                            src={previewUrl}
+                                            alt="Vista previa"
+                                            className="image-preview"
+                                            style={{ maxWidth: '200px', marginTop: '10px' }}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setSelectedFile(null);
+                                                setPreviewUrl('');
+                                                if (fileInputRef.current) {
+                                                    fileInputRef.current.value = '';
+                                                }
+                                            }}
+                                            className="remove-image-btn"
+                                        >
+                                            Eliminar imagen
+                                        </button>
+                                    </div>
+                                )}
+                                { /****************************************************************************/}
+
+                                <label className="activity-form-label">
+                                    Descripción:
+                                    <textarea
+                                        className="activity-form-input"
+                                        value={description}
+                                        required
+                                        onChange={(e) => setDescription(e.target.value)}
+                                    />
+                                </label>
+
+                                {error && <p className="activity-form-error">{error}</p>}
+                                {success && <p className="activity-form-success">Actividad registrada correctamente.</p>}
+                                <button type="submit" className="activity-form-submit">Registrar Actividad</button>
+                            </form>
+                            { /*
+                                    </div>
+                                */}
+
+                        </div>
+                    </div>
+                )}
             </div>
             <Footer />
         </div>

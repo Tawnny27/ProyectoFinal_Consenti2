@@ -7,8 +7,9 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useUserContext } from '../UserContext';
 
+
 const MaterialesDidacticos = () => {
-    const { user } = useUserContext();
+    //const { user } = useUserContext();
     const [materiales, setMateriales] = useState([]);
     const [idGrupoSeleccionado, setIdGrupoSeleccionado] = useState("");
     const [mensaje, setMensaje] = useState("");
@@ -57,31 +58,32 @@ const MaterialesDidacticos = () => {
         return true;
     };
 
+    const cargarMateriales = async () => {
+        try {
+            const response = await axios.get("https://localhost:44369/MaterialDidacticoes/ObtenerMaterialesDidacticosAct");
+            console.log("Materiales cargados:", response.data);
+            setMateriales(response.data);
+            setIsLoading(false);
+        } catch (error) {
+            console.error("Error al cargar los materiales:", error);
+            setMensaje("No se pudieron cargar los materiales.");
+            setIsLoading(false);
+        }
+    };
+
+    const cargarAulas = async () => {
+        try {
+            const response = await axios.get("https://localhost:44369/Grupos/ObtenerGrupos");
+            setAulas(response.data);
+            console.log("Aulas cargadas:", response.data);
+        } catch (error) {
+            console.error("Error al cargar las aulas:", error);
+            setMensaje("No se pudieron cargar las aulas.");
+        }
+    };
+
+
     useEffect(() => {
-        const cargarMateriales = async () => {
-            try {
-                const response = await axios.get("https://localhost:44369/MaterialDidacticoes/ObtenerMaterialesDidacticos");
-                console.log("Materiales cargados:", response.data);
-                setMateriales(response.data);
-                setIsLoading(false);
-            } catch (error) {
-                console.error("Error al cargar los materiales:", error);
-                setMensaje("No se pudieron cargar los materiales.");
-                setIsLoading(false);
-            }
-        };
-
-        const cargarAulas = async () => {
-            try {
-                const response = await axios.get("https://localhost:44369/Grupos/ObtenerGrupos");
-                setAulas(response.data);
-                console.log("Aulas cargadas:", response.data);
-            } catch (error) {
-                console.error("Error al cargar las aulas:", error);
-                setMensaje("No se pudieron cargar las aulas.");
-            }
-        };
-
         cargarMateriales();
         cargarAulas();
     }, []);
@@ -102,7 +104,7 @@ const MaterialesDidacticos = () => {
         }
     };
 
-
+    /*
     const handleDownload = () => {
         const materialGuardado = JSON.parse(localStorage.getItem('material'));
 
@@ -118,7 +120,7 @@ const MaterialesDidacticos = () => {
         }
     };
 
-
+    */
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -162,9 +164,11 @@ const MaterialesDidacticos = () => {
     const handleDelete = async (materialId) => {
         try {
             // Llamar a la API para eliminar el material usando el idMaterialDidactico
-            const response = await axios.delete(`https://localhost:44369/MaterialDidacticoes/EliminarMaterialDidactico/${materialId}`);
-
+            const response = await axios.put(`https://localhost:44369/MaterialDidacticoes/InactivarMaterialDidactico/${materialId}`);
+           
             if (response.status === 200) {
+                cargarMateriales();
+                cargarAulas();
                 toast.success("Material eliminado con éxito");
                 // Eliminar el material de la lista de materiales
                 setMateriales(materiales.filter(material => material.idMaterialDidactico !== materialId)); // Filtrar por idMaterialDidactico
@@ -208,17 +212,16 @@ const MaterialesDidacticos = () => {
                 
             );
 
-            console.log("Grupo seleccionado:", grupoSeleccionado);
+           // console.log("Grupo seleccionado:", grupoSeleccionado);
 
             const envioDatos = {
                 NombreArchivo: nuevoMaterial.nombreArchivo,
                 fecha: new Date().toISOString().split('T')[0], // Fecha actual en formato ISO
                 RutaFoto: imagePath,
-                GruposId: grupoSeleccionado.idGrupos,
-                Grupos: grupoSeleccionado,
+                GruposId: grupoSeleccionado.idGrupos,               
             };
 
-            console.log("Datos enviados al primer endpoint:", envioDatos);
+            //console.log("Datos enviados al primer endpoint:", envioDatos);
 
             const createResponse = await axios.post(
                 "https://localhost:44369/MaterialDidacticoes/CrearMaterialDidactico",
@@ -250,15 +253,20 @@ const MaterialesDidacticos = () => {
                 console.log("Respuesta de la imagen:", imageResponse);
 
                 // Agregar el nuevo material a la lista de materiales
+                /*
                 const nuevoMaterialAgregado = {
                     ...nuevoMaterial,
                     id: createResponse.data.id, // Suponiendo que la API devuelve un ID
                     aula: grupoSeleccionado.nombreGrupo, // El nombre del aula
                     documento: imagePath, // Ruta del archivo
                 };
+                */
+                cargarMateriales();
+                cargarAulas();
                 // Cerrar el modal
                 setModalVisible(false);
-                setMateriales((prevMaterials) => [...prevMaterials, nuevoMaterialAgregado]); // Agregar el nuevo material a la lista
+
+                //setMateriales((prevMaterials) => [...prevMaterials, nuevoMaterialAgregado]); // Agregar el nuevo material a la lista
                 setNuevoMaterial({
                     nombreArchivo: "",
                     descripcion: "",
@@ -274,11 +282,11 @@ const MaterialesDidacticos = () => {
         }
     };
 
-
+    /*
     const volverAPrincipal = () => {
         window.location.href = "/main";
     };
-
+    */
     return (
         <>
             <Navbar />
@@ -293,22 +301,41 @@ const MaterialesDidacticos = () => {
                             </button>
                         {materiales.map((material) => (
                             <div key={material.idMaterialDidactico} className="material-card">
-                                <h4>{material.nombreArchivo}</h4>
+                                <h6 className="titulo">{material.nombreArchivo}</h6>
                                 
-                                <p>Aula: {aulas.find(aula => aula.idGrupos === material.gruposId)?.nombreGrupo || 'Aula no encontrada'}</p>
-                                <button
+                                <p>Aula: {aulas.find(aula => aula.idGrupos === material.gruposId)?.nombreGrupo || 'Aula no encontrada'}</p>  
+
+                                <div>
+                                    <img src="\Fotos\Pdf_icon.png" alt="PDF Icon" style={{ width: '30px', height: '40px' }} /> 
+                                    <p>{material.descripcion}</p>
+                                </div>
+                                                           
+                                {
+                                    /*
+                                    <button
                                     onClick={handleDownload}
                                     className="materiales-button"
                                 >
                                     Descargar
                                 </button>
-                                {/* Botón de eliminar */}
-                                <button
-                                    onClick={() => handleDelete(material.idMaterialDidactico)}
-                                    className="materiales-button eliminar"
-                                >
-                                    Eliminar
-                                </button>
+                                    */
+                                }                                
+                                <div>
+                                    <a href={material.rutaFoto} download={material.rutaFoto}>
+                                        <button className="materiales-button">
+                                            Descargar
+                                        </button>
+                                    </a>
+
+                                    {/* Botón de eliminar */}
+                                    <button
+                                        onClick={() => handleDelete(material.idMaterialDidactico)}
+                                        className="materiales-button eliminar"
+                                    >
+                                        Eliminar
+                                    </button>
+                                </div>
+                                
                             </div>
                         ))}
                         

@@ -7,6 +7,9 @@ body {
     overflow: hidden; /* Opcional, para evitar scrolls si la imagen es más grande que la ventana */
 }
 
+.icono {
+    
+}
 .login-form-container {
     display: flex;
     justify-content: center;
@@ -31,8 +34,13 @@ body {
 
 .icon-container {
     display: flex;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+    margin-left: 5px;
+    margin-right: 5px;
     justify-content: center;
-    margin-bottom: 20px;
+    height: 100px;
 }
 
 .user-icon {
@@ -85,7 +93,7 @@ body {
 
     .input-icon svg {
         color: #A569BD;
-        margin-right: 10px;
+        margin:auto;
     }
 
     .input-icon input::placeholder {

@@ -1,4 +1,4 @@
-using kinder_consenti2.Server.Models;
+ï»¿using kinder_consenti2.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -17,7 +17,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
-        builder => builder.WithOrigins("https://localhost:5173") // Cambia esto según tus necesidades
+        builder => builder.WithOrigins("https://localhost:5173") // Cambia esto segï¿½n tus necesidades
                           .AllowAnyHeader()
                           .AllowAnyMethod());
 });
@@ -35,6 +35,7 @@ app.UseStaticFiles();
 
 // Usar CORS
 app.UseCors("AllowSpecificOrigin");
+
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

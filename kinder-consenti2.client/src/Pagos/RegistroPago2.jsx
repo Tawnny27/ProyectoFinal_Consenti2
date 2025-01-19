@@ -61,7 +61,6 @@ const RegistroPago = () => {
         if (file.size > MAX_FILE_SIZE) {
             throw new Error('La imagen excede el tamaño máximo de 5MB');
         }
-
         return true;
     };
 
@@ -209,32 +208,22 @@ const RegistroPago = () => {
 
     //------------------------------------------------------------------------------------------------------
     //2********
-    useEffect(() => {       
-        console.log(pago.imagenPago);
+    useEffect(() => {            
         setPago({
             ...pago,
             imagenPago: `${IMAGE_PATH}${nombreUnico}`
-        });
-        console.log(nombreUnico);
-        console.log(pago.imagenPago);
+        });        
     }, [nombreUnico]);
 
 
 
     //1*********
 
-    useEffect(() => {
-        //let imagePath = `${IMAGE_PATH}` + 'default.jpg';
-        //let uniqueFileName = '';
-
+    useEffect(() => {      
         if (selectedFile) {
             // Generar nombre único para la imagen
             const fileExtension = selectedFile.name.split('.').pop();
-            setNombreUnico(`${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`);
-            //uniqueFileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`;
-            console.log("Ojo");
-            console.log(nombreUnico);
-            //imagePath = `${IMAGE_PATH}${nombreUnico}`;
+            setNombreUnico(`${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`);              
         }
         else {
             setNombreUnico('default.jpg');
@@ -300,6 +289,7 @@ const RegistroPago = () => {
                 });
                 alert(imageResponse.message.toString);
             }
+
         } catch (error) {
             console.error("Error saving alumno:", error);
             if (error.response) {
@@ -430,8 +420,7 @@ const RegistroPago = () => {
                                                 fileInputRef.current.value = '';
                                             }
                                         }}
-                                        className="remove-image-btn"
-                                    >
+                                        className="remove-image-btn"                                    >
                                         Eliminar imagen
                                     </button>
                                 </div>
