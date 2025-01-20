@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './mainLayout.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -161,7 +161,7 @@ const MainLayout = () => {
                         {user.rolId === 1 && (
                         <li>
                             <div onClick={toggleGestFSubMenu} className="menu-item">
-                                <span>Gesti�n Financiera</span>
+                                <span>Gestión Financiera</span>
                                 <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />
                             </div>
                             {showGestFSubMenu && (
@@ -179,22 +179,22 @@ const MainLayout = () => {
                             </li>
                         )}
                         <li className="menu-link"><Link to="/matricula">
-                            <FontAwesomeIcon icon={faSchoolCircleCheck} className="menu-icon" />  Matr�cula</Link></li>
+                            <FontAwesomeIcon icon={faSchoolCircleCheck} className="menu-icon" />  Matrícula</Link></li>
                         {user.rolId === 1 && (
                             <li className="menu-link"><Link to="/expedientes">
                                 <FontAwesomeIcon icon={faAddressBook} className="menu-icon" />Expedientes</Link></li>
                         )}
                         <li>
                             <div onClick={toggleComunicacionSubmenu} className="menu-item">
-                                <span>Comunicaci�n</span>
+                                <span>Comunicación</span>
                                 <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />
                             </div>
                             {showComunicacionSubmenu && (
                                 <ul className="submenu">
                                     <li><Link to="/comunicacion">
-                                        <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Comunicaci�n correo</Link></li>
+                                        <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Comunicación correo</Link></li>
                                     <li><Link to="/comunicacion-mensajes">
-                                        <FontAwesomeIcon icon={faFileInvoice} className="menu-icon" /> Comunicaci�n mensajer�a</Link></li>
+                                        <FontAwesomeIcon icon={faFileInvoice} className="menu-icon" /> Comunicación mensajería</Link></li>
                                     
                                 </ul>
                             )}
@@ -209,7 +209,7 @@ const MainLayout = () => {
                             <li>
 
                                 <div onClick={toggleEvaluaSubmenu} className="menu-item">
-                                    <span>Evaluaci�n</span>
+                                    <span>Evaluación</span>
 
                                     <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />
                                 </div>
@@ -218,7 +218,7 @@ const MainLayout = () => {
                                         <li><Link to="/registrar-encuesta">
                                             <FontAwesomeIcon icon={faSquarePollHorizontal} className="menu-icon" />Encuesta</Link></li>
                                         <li><Link to="/evalua-maestra">
-                                            <FontAwesomeIcon icon={faClipboardList} className="menu-icon" />Evaluaci�n Docente</Link></li>
+                                            <FontAwesomeIcon icon={faClipboardList} className="menu-icon" />Evaluación Docente</Link></li>
                                     </ul>
                                 )}
                             </li>
@@ -243,10 +243,10 @@ const MainLayout = () => {
                 </aside>
                 <main className="main-content">
                     <div className="bienvenidos">
-                        <h1>�Bienvenido!</h1>
+                        <h1>!Bienvenido!</h1>
                         <img src='/static/media/logo.347a6ba3d825eb7f06e8.jpg' alt='' style={{ width: '150px', paddingTop: '50px' }} />
                         <p className="welcome-text">
-                            En K�nder Consenti2, nos dedicamos a brindar una experiencia de aprendizaje amorosa y enriquecedora para los m�s peque�os. Creemos en un ambiente donde cada ni�o es valorado y respetado, desarrollando sus habilidades a trav�s del juego, la creatividad y la exploraci�n.
+                            En Kínder Consenti2, nos dedicamos a brindar una experiencia de aprendizaje amorosa y enriquecedora para los más pequeños. Creemos en un ambiente donde cada niño es valorado y respetado, desarrollando sus habilidades a través del juego, la creatividad y la exploración.
                         </p>
                     </div>
                 </main>
