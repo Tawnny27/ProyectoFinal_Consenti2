@@ -6,7 +6,6 @@ import logo from '../assets/logo.jpg';
 import { useUserContext } from '../UserContext'; // Importar el hook del contexto
 
 
-
 function Navbar() {
     const { user, setUser } = useUserContext(); // Obtener el usuario del contexto
     const navigate = useNavigate(); // Inicializa el hook useNavigate

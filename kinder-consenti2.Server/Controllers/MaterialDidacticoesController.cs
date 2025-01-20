@@ -42,6 +42,36 @@ namespace kinder_consenti2.Server.Controllers
             return Ok(_context.MaterialDidactico.Where(x => x.StatusAct == false).ToList());
         }
 
+        [HttpGet]
+        [Route("ObtenerMaterialesDidacticosPadre/{idPadre}")]
+        public ActionResult<ActionResult<List<MaterialDidactico>>> ObtenerMaterialesDidacticosPadre(int idPadre)
+        {
+            List<MaterialDidactico> materiales = new List<MaterialDidactico>();
+            var alumnos = _context.Alumno.Where(x => x.PadreId == idPadre).ToList();
+            if (alumnos.Count > 0)
+            {
+                
+                List<int> idsGrupos = new List<int>();
+                foreach (var alumno in alumnos)
+                {
+                    var encontrado = _context.GruposAlumnos.Where(x => x.AlumnoId == alumno.IdAlumno && x.Status== true).FirstOrDefault();
+                    if(encontrado != null)
+                        idsGrupos.Add(encontrado.AlumnoId);
+                }
+                if (idsGrupos.Count > 0) 
+                {
+                    foreach (var item in idsGrupos)
+                    {
+                        var encontrados = _context.MaterialDidactico.Where(x => x.GruposId == item && x.StatusAct == true).ToList();
+                        materiales.AddRange(encontrados);
+                    }
+                }                
+            }
+
+            return Ok(materiales);
+        }
+
+
 
         // GET: api/ObtenerMaterialDidactico/
         [HttpGet]
@@ -85,7 +115,7 @@ namespace kinder_consenti2.Server.Controllers
         }
 
 
-        // PUT: api/EditarMaterialDidactico
+      
         [HttpPut]
         [Route("InactivarMaterialDidactico/{id}")]
         public ActionResult<MaterialDidactico> InactivarMaterialDidactico(int id)
@@ -110,6 +140,7 @@ namespace kinder_consenti2.Server.Controllers
         {
             try
             {
+                materialDidactico.StatusAct = true;
                 _context.MaterialDidactico.Add(materialDidactico);
                 _context.SaveChanges();
                 var insertado = _context.MaterialDidactico.Find(materialDidactico.IdMaterialDidactico);

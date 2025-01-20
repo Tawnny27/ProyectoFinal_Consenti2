@@ -7,9 +7,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useUserContext } from '../UserContext';
 
-
 const MaterialesDidacticos = () => {
-    //const { user } = useUserContext();
+    const { user} = useUserContext();
     const [materiales, setMateriales] = useState([]);
     const [idGrupoSeleccionado, setIdGrupoSeleccionado] = useState("");
     const [mensaje, setMensaje] = useState("");
@@ -23,7 +22,6 @@ const MaterialesDidacticos = () => {
     });
     const [modalVisible, setModalVisible] = useState(false);
     const [aulas, setAulas] = useState([]);
-
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState('');
     const [imageError, setImageError] = useState('');
@@ -59,15 +57,30 @@ const MaterialesDidacticos = () => {
     };
 
     const cargarMateriales = async () => {
-        try {
-            const response = await axios.get("https://localhost:44369/MaterialDidacticoes/ObtenerMaterialesDidacticosAct");
-            console.log("Materiales cargados:", response.data);
-            setMateriales(response.data);
-            setIsLoading(false);
-        } catch (error) {
-            console.error("Error al cargar los materiales:", error);
-            setMensaje("No se pudieron cargar los materiales.");
-            setIsLoading(false);
+        if (user.rolId === 3) {
+
+            try {
+                const response1 = await axios.get(`https://localhost:44369/MaterialDidacticoes/ObtenerMaterialesDidacticosPadre/${user.idUsuario}`);
+                if (response1.status === 200) {
+                    setMateriales(response1.data);
+                    setIsLoading(false);
+                }
+            } catch (error) {
+                console.error("Error al cargar los materiales:", error);
+                setMensaje("No se pudieron cargar los materiales.");
+                setIsLoading(false);
+            }
+        } else {
+            try {
+                const response = await axios.get("https://localhost:44369/MaterialDidacticoes/ObtenerMaterialesDidacticosAct");
+                console.log("Materiales cargados:", response.data);
+                setMateriales(response.data);
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error al cargar los materiales:", error);
+                setMensaje("No se pudieron cargar los materiales.");
+                setIsLoading(false);
+            }
         }
     };
 
@@ -82,9 +95,9 @@ const MaterialesDidacticos = () => {
         }
     };
 
-
     useEffect(() => {
         cargarMateriales();
+
         cargarAulas();
     }, []);
 
@@ -103,24 +116,6 @@ const MaterialesDidacticos = () => {
             console.error('El material es inválido');
         }
     };
-
-    /*
-    const handleDownload = () => {
-        const materialGuardado = JSON.parse(localStorage.getItem('material'));
-
-        if (materialGuardado && materialGuardado.documentoURL) {
-            const enlace = document.createElement('a');
-            enlace.href = materialGuardado.documentoURL; // Usar la URL almacenada en localStorage
-            enlace.download = materialGuardado.nombreArchivo; // Nombre del archivo para la descarga
-            document.body.appendChild(enlace);
-            enlace.click();
-            document.body.removeChild(enlace);
-        } else {
-            toast.error("No se pudo recuperar el material para descargar.");
-        }
-    };
-
-    */
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -165,7 +160,7 @@ const MaterialesDidacticos = () => {
         try {
             // Llamar a la API para eliminar el material usando el idMaterialDidactico
             const response = await axios.put(`https://localhost:44369/MaterialDidacticoes/InactivarMaterialDidactico/${materialId}`);
-           
+
             if (response.status === 200) {
                 cargarMateriales();
                 cargarAulas();
@@ -184,8 +179,8 @@ const MaterialesDidacticos = () => {
 
     const agregarMaterial = async (e) => {
         e.preventDefault();
-       
-        console.log("grupo selecionado",idGrupoSeleccionado); // Esto te muestra el ID del grupo/aula seleccionado.
+
+        console.log("grupo selecionado", idGrupoSeleccionado); // Esto te muestra el ID del grupo/aula seleccionado.
 
         let imagePath = 'default.jpg';
         let uniqueFileName = '';
@@ -209,16 +204,16 @@ const MaterialesDidacticos = () => {
         try {
             const grupoSeleccionado = aulas.find(
                 (aula) => aula.idGrupos === parseInt(idGrupoSeleccionado)
-                
+
             );
 
-           // console.log("Grupo seleccionado:", grupoSeleccionado);
+            // console.log("Grupo seleccionado:", grupoSeleccionado);
 
             const envioDatos = {
                 NombreArchivo: nuevoMaterial.nombreArchivo,
                 fecha: new Date().toISOString().split('T')[0], // Fecha actual en formato ISO
                 RutaFoto: imagePath,
-                GruposId: grupoSeleccionado.idGrupos,               
+                GruposId: grupoSeleccionado.idGrupos,
             };
 
             //console.log("Datos enviados al primer endpoint:", envioDatos);
@@ -250,23 +245,11 @@ const MaterialesDidacticos = () => {
                 );
 
                 toast.success("Archivo guardado con éxito");
-                console.log("Respuesta de la imagen:", imageResponse);
-
-                // Agregar el nuevo material a la lista de materiales
-                /*
-                const nuevoMaterialAgregado = {
-                    ...nuevoMaterial,
-                    id: createResponse.data.id, // Suponiendo que la API devuelve un ID
-                    aula: grupoSeleccionado.nombreGrupo, // El nombre del aula
-                    documento: imagePath, // Ruta del archivo
-                };
-                */
                 cargarMateriales();
                 cargarAulas();
                 // Cerrar el modal
                 setModalVisible(false);
 
-                //setMateriales((prevMaterials) => [...prevMaterials, nuevoMaterialAgregado]); // Agregar el nuevo material a la lista
                 setNuevoMaterial({
                     nombreArchivo: "",
                     descripcion: "",
@@ -282,11 +265,6 @@ const MaterialesDidacticos = () => {
         }
     };
 
-    /*
-    const volverAPrincipal = () => {
-        window.location.href = "/main";
-    };
-    */
     return (
         <>
             <Navbar />
@@ -295,50 +273,43 @@ const MaterialesDidacticos = () => {
                 {isLoading ? (
                     <p className="materiales-loading">Cargando materiales...</p>
                 ) : (
-                        <div className="cards-container">
+                    <div className="cards-container">
+                        {user.rolId != 3 && (
                             <button onClick={() => setModalVisible(true)} className="button-agregar">
                                 Agregar Nuevo Material
                             </button>
+                        )}
                         {materiales.map((material) => (
                             <div key={material.idMaterialDidactico} className="material-card">
                                 <h6 className="titulo">{material.nombreArchivo}</h6>
-                                
-                                <p>Aula: {aulas.find(aula => aula.idGrupos === material.gruposId)?.nombreGrupo || 'Aula no encontrada'}</p>  
+
+                                <p>Aula: {aulas.find(aula => aula.idGrupos === material.gruposId)?.nombreGrupo || 'Aula no encontrada'}</p>
 
                                 <div>
-                                    <img src="\Fotos\Pdf_icon.png" alt="PDF Icon" style={{ width: '30px', height: '40px' }} /> 
+                                    <img src="\Fotos\Pdf_icon.png" alt="PDF Icon" style={{ width: '30px', height: '40px' }} />
                                     <p>{material.descripcion}</p>
                                 </div>
-                                                           
-                                {
-                                    /*
-                                    <button
-                                    onClick={handleDownload}
-                                    className="materiales-button"
-                                >
-                                    Descargar
-                                </button>
-                                    */
-                                }                                
-                                <div>
+
+                                <div className="botones-div">
                                     <a href={material.rutaFoto} download={material.rutaFoto}>
                                         <button className="materiales-button">
                                             Descargar
                                         </button>
                                     </a>
-
                                     {/* Botón de eliminar */}
-                                    <button
-                                        onClick={() => handleDelete(material.idMaterialDidactico)}
-                                        className="materiales-button eliminar"
-                                    >
-                                        Eliminar
-                                    </button>
+                                    {user.rolId != 3 && (                                    
+                                        <button
+                                            onClick={() => handleDelete(material.idMaterialDidactico)}
+                                            className="materiales-button eliminar"
+                                        >
+                                            Eliminar
+                                        </button>
+                                    )}
                                 </div>
-                                
+
                             </div>
                         ))}
-                        
+
                     </div>
                 )}
 
@@ -368,7 +339,7 @@ const MaterialesDidacticos = () => {
                                     </option>
                                 ))}
                             </select>
-                            
+
                             <input
                                 type="text"
                                 placeholder="Título"
@@ -395,7 +366,7 @@ const MaterialesDidacticos = () => {
                     </div>
                 )}
 
-                
+
             </div>
             <Footer />
         </>

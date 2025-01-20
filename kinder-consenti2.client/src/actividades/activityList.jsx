@@ -1,21 +1,24 @@
+import React from 'react';
 import { useEffect, useState } from "react";
 import Navbar from "../componentes/navbar";
 import Footer from "../componentes/footer";
 import "./activityList.css";
 import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
+import { useUserContext } from '../UserContext'; // Importar el hook del contexto
 
 
 const ListaActividades = () => {
 
     const [listaAct, setListaAct] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
+    const { user, setUser } = useUserContext();
     //--------------------------------------------------------------------
 
     const [title, setTitle] = useState("");
     const [date, setDate] = useState("");
     const [image, setImage] = useState(null);
-    const [description, setDescription] = useState("");   
+    const [description, setDescription] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState(false);
 
@@ -33,9 +36,9 @@ const ListaActividades = () => {
 
 
     const envioEvento = {
-        nombreEvento: "",
-        descripcionEvento: "",
-        fotoEvento: "",
+        nombreEvento: title,
+        descripcionEvento: description,
+        fotoEvento: IMAGE_PATH + nombreUnico,
         fecha: new Date().toISOString().split('T')[0],
     }
 
@@ -54,8 +57,10 @@ const ListaActividades = () => {
 
 
     const agregarEvento = async () => {
+        console.log(envioEvento);
+        
         const createEventoResponse = await axios.post(
-            "https://localhost:44369/MaterialDidacticoes/CrearMaterialDidactico",
+            "https://localhost:44369/Eventos/CrearEvento",
             envioEvento,
             {
                 headers: {
@@ -72,15 +77,14 @@ const ListaActividades = () => {
             imageFormData.append('fileName', nombreUnico); // Enviamos el nombre generado
 
             // Enviamos la imagen al servidor
-            const imageResponse = await axios.post('https://localhost:44369/Imagenes/GuardarImagenPago', imageFormData, {
+            const imageResponse = await axios.post('https://localhost:44369/Imagenes/GuardarImagenEvento', imageFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
-            });
-            alert(imageResponse.message.toString);
+            });            
         }
+        cargarLista();
 
-       
     }
 
     //-----------------------------------------------------------------------------------------
@@ -132,36 +136,54 @@ const ListaActividades = () => {
         setError("");
         setSuccess(true);
         // Aquí puedes enviar los datos a la API o manejarlos como prefieras
-        agregarEvento();      
-        setearDatos();        
+        agregarEvento();
+        
+        setearDatos();
+       
+
     }
 
 
     //----------------------------------------------------------------------------
-    useEffect(() => {
-        const cargarLista = async () => {
-            try {
-                const response = await axios.get("https://localhost:44369/Eventos/ObtenerEventosActivos");
-                setListaAct(response.data);
-
-            } catch (error) {
-                console.error("Error al cargar las actividades:", error);
-            }
-        }
+    useEffect(() => {        
         cargarLista();
     }, []);
+
+    const cargarLista = async () => {
+        try {
+            const response = await axios.get("https://localhost:44369/Eventos/ObtenerEventosActivos");
+            setListaAct(response.data);
+
+        } catch (error) {
+            console.error("Error al cargar las actividades:", error);
+        }
+    }
 
     //--------------------------------------------------------------------------------
     const setearDatos = () => {
         setTitle("");
         setDate("");
         setImage(null);
-        setDescription("");      
+        setDescription("");
+        setSelectedFile(null);
+        setPreviewUrl('');
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+        setModalVisible(false)
     }
 
     //-------------------------------------------------------------------------------
 
-
+    const TextoConSaltosDeLinea = (texto) => {
+        const textoConSaltosDeLinea = texto.split('\n').map((linea, index) => (
+            <React.Fragment key={index}>
+                {linea}
+                <br />
+            </React.Fragment>
+        ));
+        return textoConSaltosDeLinea
+    }
 
     return (
         <div>
@@ -169,10 +191,11 @@ const ListaActividades = () => {
             <div className="act-container">
                 <h1 className="act-header"> Lista de Actividades</h1>
                 <div className="cards-container">
-
-                    <button onClick={() => setModalVisible(true)} className="button-agregar">
-                        Agregar Actividad
-                    </button>
+                    {user.rolId != 3 &&(
+                        <button onClick={() => setModalVisible(true)} className="button-agregar">
+                            Agregar Actividad
+                        </button>
+                    )}          
                     {listaAct.map((act) => (
                         <div key={act.idEventos} className="act-card">
                             <h4>{act.nombreEvento}</h4>
@@ -181,9 +204,10 @@ const ListaActividades = () => {
                             <div className="image-container"
                                 onMouseEnter={() => setHover(true)}
                                 onMouseLeave={() => setHover(false)} >
-                                <img className="card-imagen" src="https://purina.com.pe/sites/default/files/styles/webp/public/2022-10/Que_debes_saber_antes_de_adoptar_un_gatito.jpg.webp?itok=N2sS0lfp" alt=""></img>
-                                {hover && (
-                                    <div className="hover-info">{act.descripcionEvento}</div>
+                                
+                                <img className="card-imagen" src={act.fotoEvento } alt=""></img>
+                                {hover && (                                 
+                                    <div className="hover-info">{TextoConSaltosDeLinea(act.descripcionEvento)}</div>                                   
                                 )}
                             </div>
 
@@ -192,15 +216,10 @@ const ListaActividades = () => {
                     }
                 </div>
 
-
                 {modalVisible && (
                     <div className="modal">
                         <div className="modal-content">
-                            <span className="close" onClick={() => setModalVisible(false)}>&times;</span>
-                            { /*
-                                <div className="activity-form-container">
-                                */}
-
+                            <span className="close" onClick={setearDatos}>&times;</span>                        
                             <h2 className="activity-form-title">Agregar Nueva Actividad</h2>
                             <form className="activity-form" onSubmit={handleSubmit}>
                                 <label className="activity-form-label">
@@ -225,39 +244,51 @@ const ListaActividades = () => {
                                 </label>
 
                                 { /****************************************************************************/}
-                                <label className="activity-form-label">
-                                    Imagen:
+                                <div className="form-group">
+                                    <label className="activity-form-label">
+                                        Imagen:
+                                    </label>
                                     <input
                                         type="file"
                                         className="activity-form-input"
+                                        required
                                         ref={fileInputRef}
                                         onChange={handleImageChange}
                                         accept=".jpg,.jpeg,.png"
                                     />
-                                </label>
-                                {previewUrl && (
-                                    <div className="image-preview-container">
-                                        <img
-                                            src={previewUrl}
-                                            alt="Vista previa"
-                                            className="image-preview"
-                                            style={{ maxWidth: '200px', marginTop: '10px' }}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setSelectedFile(null);
-                                                setPreviewUrl('');
-                                                if (fileInputRef.current) {
-                                                    fileInputRef.current.value = '';
-                                                }
-                                            }}
-                                            className="remove-image-btn"
-                                        >
-                                            Eliminar imagen
-                                        </button>
+                                    {previewUrl && (
+                                        <div className="image-preview-container">
+                                            <img
+                                                src={previewUrl}
+                                                alt="Vista previa"
+                                                className="image-preview"
+                                                style={{ maxWidth: '200px', marginTop: '10px' }}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setSelectedFile(null);
+                                                    setPreviewUrl('');
+                                                    if (fileInputRef.current) {
+                                                        fileInputRef.current.value = '';
+                                                    }
+                                                }}
+                                                className="remove-image-btn"
+                                            >
+                                                Eliminar imagen
+                                            </button>
+                                        </div>
+                                    )}
+                                    {imageError && (
+                                        <div className="error-message" style={{ color: 'red', marginTop: '5px' }}>
+                                            {imageError}
+                                        </div>
+                                    )}
+                                    <div className="image-info"
+                                        style={{ fontSize: '0.8rem', color: '#666', marginTop: '5px' }}>
+                                        Formatos permitidos: JPG, PNG. Tamano maximo: 5MB
                                     </div>
-                                )}
+                                </div>
                                 { /****************************************************************************/}
 
                                 <label className="activity-form-label">
@@ -286,5 +317,6 @@ const ListaActividades = () => {
         </div>
 
     );
-};
+    };
+
 export default ListaActividades;

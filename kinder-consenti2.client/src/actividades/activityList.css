@@ -98,6 +98,7 @@
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
     display: flex;
+    text-align:initial;
     align-items: center;
     justify-content: center;
     opacity: 0;

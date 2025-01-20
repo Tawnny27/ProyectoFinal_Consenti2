@@ -17,7 +17,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("ObtenerGrupoAlumnos/{idGrupo}")]
         public ActionResult<List<GruposAlumnos>> ObtenerGrupoAlumnos(int idGrupo)
         {
-            return Ok(_context.GruposAlumnos.Where(x=> x.GrupoId==idGrupo).ToList());
+            return Ok(_context.GruposAlumnos.Where(x=> x.GruposId==idGrupo).ToList());
         }
 
         [HttpGet]
@@ -32,8 +32,8 @@ namespace kinder_consenti2.Server.Controllers
         public ActionResult<GruposAlumnos> CrearGruposAlumno(GruposAlumnos gruposAlumnos)
         {
             //Validar el cupo de grupo
-            int registros = _context.GruposAlumnos.Where(x => x.GrupoId == gruposAlumnos.GrupoId).Count();
-            var grupo = _context.Grupos.Find(gruposAlumnos.GrupoId);
+            int registros = _context.GruposAlumnos.Where(x => x.GruposId == gruposAlumnos.GruposId).Count();
+            var grupo = _context.Grupos.Find(gruposAlumnos.GruposId);
             if (grupo == null)
                 return NotFound("No se encontraron datos favor validar");
             int cupo = grupo.Cupo;
@@ -43,7 +43,7 @@ namespace kinder_consenti2.Server.Controllers
 
             //Validar que no este ya registrado al mismo grupo
             if(_context.GruposAlumnos.Where(x=> x.AlumnoId==gruposAlumnos
-            .AlumnoId && x.GrupoId==gruposAlumnos.GrupoId).Count()>0)
+            .AlumnoId && x.GruposId==gruposAlumnos.GruposId).Count()>0)
                 return BadRequest("No puede ingresar dos veces un alumno a un mismo grupo");
             //-----------------------------------------------
 
@@ -60,7 +60,7 @@ namespace kinder_consenti2.Server.Controllers
             
             
             if (_context.GruposAlumnos.Where(x => x.AlumnoId == gruposAlumnos
-            .AlumnoId && x.GrupoId == gruposAlumnos.GrupoId) != null)
+            .AlumnoId && x.GruposId == gruposAlumnos.GruposId) != null)
                 return BadRequest("No puede ingresar dos veces un alumnoa un mismo grupo");
             _context.GruposAlumnos.Update(gruposAlumnos);
             _context.SaveChanges();

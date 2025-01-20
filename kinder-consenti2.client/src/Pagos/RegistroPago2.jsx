@@ -88,6 +88,7 @@ const RegistroPago = () => {
 
                 if (detallesResponse.ok) {
                     setDetallesTemp(await detallesResponse.json());
+                    console.log(detallesTemp);
                     setMensaje('');
                 } else {
                     setDetallesTemp([]);
@@ -238,28 +239,7 @@ const RegistroPago = () => {
             setIsValid(false);
 
         } else { // Lógica para enviar el formulario o realizar la acción deseada 
-            alert(`Aqui se envian los datosa la BD`);
-            /*
-            let imagePath = `${IMAGE_PATH}` + 'default.jpg';
-            //let uniqueFileName = '';
-
-            if (selectedFile != null) {
-                // Generar nombre único para la imagen
-                const fileExtension = selectedFile.name.split('.').pop();
-                setNombreUnico(`${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`);
-                //uniqueFileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`;
-                imagePath = `${IMAGE_PATH}${nombreUnico}`;
-                setPago({
-                    ...pago,
-                    imagenPago: imagePath
-                });
-            } else {
-                setPago({
-                    ...pago,
-                    imagenPago: imagePath
-                });
-            }
-            */
+            alert(`Aqui se envian los datosa la BD`);   
             envioDatos();
         }
     };
@@ -306,12 +286,6 @@ const RegistroPago = () => {
     }
 
     //--------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
 
 
     return (

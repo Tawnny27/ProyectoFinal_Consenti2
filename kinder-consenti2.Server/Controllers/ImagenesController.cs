@@ -115,5 +115,29 @@ namespace kinder_consenti2.Server.Controllers
             }
         }
 
+        //---------------------Guardar fots de eventos-actividades --------------------------------------
+        [HttpPost]
+        [Route("GuardarImagenEvento")]
+        public async Task<IActionResult> GuardarImagenEvento(IFormFile file, [FromForm] string fileName)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    return BadRequest("No se ha recibido ningún archivo ");
+                }
+                SaveImages saveImages = new SaveImages();
+                MensajeValidacion mensajeValidacion = saveImages.validarExtencion(5, file.FileName);
+                if (mensajeValidacion.Condicion)
+                    return Ok(await _saveImage.GuardarImagen(file, 5, fileName));
+                else
+                    return BadRequest(mensajeValidacion.Mensaje);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Error al guardar la imagen", error = ex.Message });
+            }
+        }
+
     }
 }

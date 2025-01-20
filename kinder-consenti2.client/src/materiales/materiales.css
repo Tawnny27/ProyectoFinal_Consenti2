@@ -65,6 +65,13 @@
 .material-card p {
     margin: 5px 0;
 }
+.botones-div {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+}
 
 .materiales-button {
     padding: 10px 15px;

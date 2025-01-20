@@ -72,27 +72,26 @@ function App() {
                     <Route path="/Gastos" element={<Gastos />} />
                     <Route path="/monitoreo" element={<MonitoreoAlumno />} />
                     <Route path="/Lista-actividades" element={<ListaActividades />} />
+                    <Route path="/registrar-pago2" element={<RegistroPago />} /> { /* eddy*/}
+                    <Route path="/GenerarRecibo" element={<GeneradorRecibos />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
+                    <Route path="/change-password" element={<ChangePassword />} />
+                    <Route path="/matricula" element={<Matricula />} />
+                    <Route path="/expedientes" element={<Expedientes />} />
+                    <Route path="/reportes" element={<Reportes />} />
+                    <Route path="/activity-panel" element={<ActivityPanel />} />
+                    <Route path="/activity-form" element={<ActivityForm />} />
+                    <Route path="/attendance-panel" element={<AttendancePanel />} />
+                    <Route path="/Factura-maintenance" element={<FacturaMaintenance />} />
+                    <Route path="/registrar-encuesta" element={<Encuesta />} />
+                    <Route path="/evalua-maestra" element={<MaestrasFeedback />} />
+                    <Route path="/comunicacion" element={<Comunicacion />} />
+                    <Route path="/comunicacion-mensajes" element={<ComunicacionMensajes />} />
+                    <Route path="/materiales" element={<MaterialesDidacticos />} />
+                    <Route path="/fotos" element={<FotosPorCarpeta />} />
+                    <Route path="/inventario" element={<Inventario />} />
+                    <Route path="/Gastos" element={<Gastos />} />
 
-                <Route path="/registrar-pago2" element={<RegistroPago />} /> { /* eddy*/}
-                <Route path="/GenerarRecibo" element={<GeneradorRecibos />} /> 
-                <Route path="/reset-password" element={<ResetPassword />} /> 
-                <Route path="/change-password" element={<ChangePassword />} /> 
-                <Route path="/matricula" element={<Matricula />} />
-                <Route path="/expedientes" element={<Expedientes />} /> 
-                <Route path="/reportes" element={<Reportes />} /> 
-                <Route path="/activity-panel" element={<ActivityPanel />} />
-                <Route path="/activity-form" element={<ActivityForm />} /> 
-                <Route path="/attendance-panel" element={<AttendancePanel />} /> 
-                <Route path="/Factura-maintenance" element={<FacturaMaintenance />} /> 
-                <Route path="/registrar-encuesta" element={<Encuesta />} /> 
-                <Route path="/evalua-maestra" element={<MaestrasFeedback />} /> 
-                <Route path="/comunicacion" element={<Comunicacion />} />
-                <Route path="/comunicacion-mensajes" element={<ComunicacionMensajes />} /> 
-                <Route path="/materiales" element={<MaterialesDidacticos />} /> 
-                <Route path="/fotos" element={<FotosPorCarpeta />} /> 
-                <Route path="/inventario" element={<Inventario />} /> 
-                <Route path="/Gastos" element={<Gastos />} />
-                
 
                 </Routes>
             </div>

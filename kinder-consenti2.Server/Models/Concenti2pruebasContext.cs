@@ -285,14 +285,15 @@ namespace kinder_consenti2.Server.Models
             modelBuilder.Entity<GruposAlumnos>(GA =>
             {                                                                  
                 GA.HasKey(x => x.IdGruposAlumnos);  
-                GA.Property(x => x.GrupoId).IsRequired();
+                GA.Property(x => x.GruposId).IsRequired();
                 GA.Property(x => x.AlumnoId).IsRequired();
+                GA.Property(x => x.Status).IsRequired();
             });
             //ForeingKey
             modelBuilder.Entity<GruposAlumnos>()
                 .HasOne(x => x.Grupo)
                 .WithMany(x => x.GruposAlumnos)
-                .HasForeignKey(f => f.GrupoId)
+                .HasForeignKey(f => f.GruposId)
                 .OnDelete(DeleteBehavior.NoAction);
             //Tablas ignoradas
             modelBuilder.Entity<GruposAlumnos>()

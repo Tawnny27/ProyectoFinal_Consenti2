@@ -64,10 +64,6 @@ namespace kinder_consenti2.Server.Controllers
         public async Task<ActionResult<Eventos>> EditarEvento(Eventos eventos)
         {            
             try{
-                var eventoEncontrado = await _context.Eventos.FindAsync(eventos.IdEventos);
-                if (eventoEncontrado == null)
-                    return NotFound("No se encontró evento para cambiar");
-
                 _context.Eventos.Update(eventos);
                 await _context.SaveChangesAsync();
                 return Ok(await _context.Eventos.FindAsync(eventos.IdEventos));
