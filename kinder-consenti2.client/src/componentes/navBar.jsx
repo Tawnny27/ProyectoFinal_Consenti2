@@ -1,4 +1,4 @@
-import {  useEffect} from 'react';
+ï»¿import {  useEffect} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt, faHome } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
@@ -16,7 +16,7 @@ function Navbar() {
 
     const handleLogout = () => {
         setUser({});
-        navigate('/'); // Redirigir a la página de inicio de sesión
+        navigate('/'); // Redirigir a la pÃ¡gina de inicio de sesiÃ³n
     };
 
     useEffect(() => {
@@ -45,7 +45,7 @@ function Navbar() {
             </div>
             <div className="header-actions">
                 <button onClick={handleMenuClick} className="home-button">
-                    <FontAwesomeIcon icon={faHome} /> Menú
+                    <FontAwesomeIcon icon={faHome} /> MenÃº
                 </button>
                 <button onClick={handleLogout} className="logout-button">
                     <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar

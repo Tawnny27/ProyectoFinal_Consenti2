@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+ï»¿import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../componentes/navbar';
@@ -38,7 +38,7 @@ const ComportamientoAlumno = () => {
         fetchAlumnos();
     }, []);
 
-    // Filtrar alumnos según el rol
+    // Filtrar alumnos segÃºn el rol
     const alumnosFiltrados = alumnos.filter((alumno) => {
         const pertenecePadre = user.rolId === 3 ? alumno.padreId === user.idUsuario : true; // Filtra por rol
         const coincideNombre = alumno.nombreAlumno?.toLowerCase().includes(filtro.nombre.toLowerCase());
@@ -96,7 +96,7 @@ const ComportamientoAlumno = () => {
     const exportarExcel = () => {
         const datos = [
             ['Fecha', 'Comentario', 'Actividad'],
-            ...comentariosBanno.map(item => [item.fecha, item.comentario, 'Baño']),
+            ...comentariosBanno.map(item => [item.fecha, item.comentario, 'BaÃ±o']),
             ...comentariosComidas.map(item => [item.fecha, item.comentario, 'Comidas']),
             ...comentariosDormir.map(item => [item.fecha, item.comentario, 'Dormir']),
             ...comentariosHuerta.map(item => [item.fecha, item.comentario, 'Huerta']),
@@ -110,7 +110,7 @@ const ComportamientoAlumno = () => {
     return (
         <div className="user-maintenance-container">
             <Navbar />
-            <h2>Comportamiento de los Niños</h2>
+            <h2>Comportamiento de los NiÃ±os</h2>
             <div className="form-group">
                 <input
                     type="text"
@@ -123,7 +123,7 @@ const ComportamientoAlumno = () => {
                 <input
                     type="text"
                     name="cedula"
-                    placeholder="Buscar por cédula"
+                    placeholder="Buscar por cÃ©dula"
                     value={filtro.cedula}
                     onChange={handleFiltroChange}
                     className="form-control"
@@ -138,7 +138,7 @@ const ComportamientoAlumno = () => {
                         <tr>
                             <th>Nombre</th>
                             <th>Apellidos</th>
-                            <th>Cédula</th>
+                            <th>CÃ©dula</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -180,7 +180,7 @@ const ComportamientoAlumno = () => {
                             />
                         </div>
 
-                        <h4>Comentarios de Actividad Baño</h4>
+                        <h4>Comentarios de Actividad BaÃ±o</h4>
                         <ul>
                             {filtrarComentariosPorFecha(comentariosBanno).map((item, index) => (
                                 <li key={index}>

@@ -1,4 +1,4 @@
-// PaymentRegistrationForm.jsx
+﻿// PaymentRegistrationForm.jsx
 import React from 'react';
 import './RegistroPago.css';
 import Navbar from '../componentes/navbar';
@@ -29,7 +29,7 @@ const FormularioRegistroPago = () => {
                     </div>
 
                     <div className="form-group">
-                        <label>C�dula:</label>
+                        <label>Cédula:</label>
                         <input type="text" />
                     </div>
 

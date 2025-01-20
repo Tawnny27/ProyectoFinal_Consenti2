@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+ï»¿import React, { useState } from 'react';
 import './comunicacionesMensajes.css';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
@@ -11,7 +11,7 @@ function ComunicacionMensajes() {
 
     const enviarMensaje = () => {
         if (!mensaje.trim()) {
-            setError('El mensaje no puede ir vacío');
+            setError('El mensaje no puede ir vacÃ­o');
             return;
         }
         setMensajeEnviado(true);
@@ -31,7 +31,7 @@ function ComunicacionMensajes() {
         <div className="user-maintenance-container">
             <Navbar />
             <div className="comunicacion_container mt-5">
-                <h2 className="comunicacion_titulo">Sistema de Mensajería</h2>
+                <h2 className="comunicacion_titulo">Sistema de MensajerÃ­a</h2>
                 <div className="comunicacion_formulario">
                     <label className="comunicacion_label">
                         Tipo de mensaje:
@@ -45,7 +45,7 @@ function ComunicacionMensajes() {
                         </select>
                     </label>
                     <textarea
-                        placeholder="Escribe tu mensaje aquí..."
+                        placeholder="Escribe tu mensaje aquÃ­..."
                         value={mensaje}
                         onChange={(e) => setMensaje(e.target.value)}
                         className="comunicacion_input"
@@ -62,7 +62,7 @@ function ComunicacionMensajes() {
                 </div>
                 {mensajeEnviado && (
                     <div className="comunicacion_modal">
-                        <p>Mensaje enviado con éxito</p>
+                        <p>Mensaje enviado con Ã©xito</p>
                     </div>
                 )}
             </div>

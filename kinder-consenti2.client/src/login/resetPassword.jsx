@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+ï»¿import React, { useState } from 'react';
 import './LoginForm.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -16,9 +16,9 @@ const ResetPassword = () => {
         try {
             const response = await axios.put('https://localhost:44369/Usuarios/RecuperarContrasena', { correo });
             if (response.status === 200) {
-                setMessage('Correo de restablecimiento enviado. Revisa tu bandeja de entrada. Y la proxima vez que ingrese podrá cambiar su contraseña');
+                setMessage('Correo de restablecimiento enviado. Revisa tu bandeja de entrada. Y la proxima vez que ingrese podrÃ¡ cambiar su contraseÃ±a');
                 setTimeout(() => {
-                    navigate('/'); // Redirige después de 10 segundos
+                    navigate('/'); // Redirige despuÃ©s de 10 segundos
                 }, 10000); 
             }
         } catch (error) {
@@ -30,7 +30,7 @@ const ResetPassword = () => {
     return (
         <div className="login-form-container">
             <form onSubmit={handleSubmit} className="login-form">
-                <h2>Restablecer Contraseña</h2>
+                <h2>Restablecer ContraseÃ±a</h2>
                 <div className="form-group">
                     <div className="input-icon">
                         <FontAwesomeIcon icon={faEnvelope} />

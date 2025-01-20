@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+锘縤mport React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../componentes/navbar';
@@ -6,7 +6,7 @@ import Footer from '../componentes/footer';
 
 const EditarAlumno = () => {
     const { id } = useParams(); // Obtener el id del alumno desde la URL
-    const navigate = useNavigate(); // Hook para la navegaci髇
+    const navigate = useNavigate(); // Hook para la navegaci贸n
     const [alumno, setAlumno] = useState({
         idAlumno: '',
         padreId: 0,
@@ -27,10 +27,10 @@ const EditarAlumno = () => {
         telefonoContacto: 0,
         relacionContacto: ''
     });
-    const [mensajeExito, setMensajeExito] = useState(''); // Estado para el mensaje de 閤ito
+    const [mensajeExito, setMensajeExito] = useState(''); // Estado para el mensaje de 茅xito
 
     useEffect(() => {
-        // Funci髇 para obtener el alumno a editar
+        // Funci贸n para obtener el alumno a editar
         const obtenerAlumno = async () => {
             try {
                 const response = await axios.get(`https://localhost:44369/Alumnos/BuscarAlumno/${id}`);
@@ -122,7 +122,7 @@ const EditarAlumno = () => {
                         />
                     </div>
                     <div>
-                        <label>C閐ula</label>
+                        <label>C茅dula</label>
                         <input
                             type="text"
                             name="cedulaAlumno"
@@ -132,7 +132,7 @@ const EditarAlumno = () => {
                         />
                     </div>
                     <div>
-                        <label>G閚ero</label>
+                        <label>G茅nero</label>
                         <input
                             type="text"
                             name="generoAlumno"
@@ -141,7 +141,7 @@ const EditarAlumno = () => {
                         />
                     </div>
                     <div>
-                        <label>Direcci髇</label>
+                        <label>Direcci贸n</label>
                         <input
                             type="text"
                             name="direccionAlumno"
@@ -150,7 +150,7 @@ const EditarAlumno = () => {
                         />
                     </div>
                     <div>
-                        <label>Informaci髇 Adicional</label>
+                        <label>Informaci贸n Adicional</label>
                         <input
                             type="text"
                             name="informacionAdicional"
@@ -177,7 +177,7 @@ const EditarAlumno = () => {
                         />
                     </div>
                     <div>
-                        <label>C閐ula Autorizado</label>
+                        <label>C茅dula Autorizado</label>
                         <input
                             type="text"
                             name="cedulaAutorizado"
@@ -186,7 +186,7 @@ const EditarAlumno = () => {
                         />
                     </div>
                     <div>
-                        <label>Tel閒ono Autorizado</label>
+                        <label>Tel茅fono Autorizado</label>
                         <input
                             type="text"
                             name="telefonoAutorizado"
@@ -195,7 +195,7 @@ const EditarAlumno = () => {
                         />
                     </div>
                     <div>
-                        <label>Relaci髇 Autorizado</label>
+                        <label>Relaci贸n Autorizado</label>
                         <input
                             type="text"
                             name="relacionAutorizado"
@@ -213,7 +213,7 @@ const EditarAlumno = () => {
                         />
                     </div>
                     <div>
-                        <label>C閐ula Contacto</label>
+                        <label>C茅dula Contacto</label>
                         <input
                             type="text"
                             name="cedulaContacto"
@@ -222,7 +222,7 @@ const EditarAlumno = () => {
                         />
                     </div>
                     <div>
-                        <label>Tel閒ono Contacto</label>
+                        <label>Tel茅fono Contacto</label>
                         <input
                             type="text"
                             name="telefonoContacto"
@@ -231,7 +231,7 @@ const EditarAlumno = () => {
                         />
                     </div>
                     <div>
-                        <label>Relaci髇 Contacto</label>
+                        <label>Relaci贸n Contacto</label>
                         <input
                             type="text"
                             name="relacionContacto"

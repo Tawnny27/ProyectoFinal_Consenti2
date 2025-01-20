@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+Ôªøimport React, { useEffect, useState, useRef } from "react";
 import Navbar from "../componentes/navbar";
 import Footer from "../componentes/footer";
 import "./materiales.css";
@@ -50,7 +50,7 @@ const MaterialesDidacticos = () => {
         }
 
         if (file.size > MAX_FILE_SIZE) {
-            throw new Error('El archivo excede el tamaÒo m·ximo de 5MB');
+            throw new Error('El archivo excede el tama√±o m√°ximo de 5MB');
         }
 
         return true;
@@ -113,7 +113,7 @@ const MaterialesDidacticos = () => {
             };
             localStorage.setItem('material', JSON.stringify(materialConArchivo)); // Guardar en localStorage
         } else {
-            console.error('El material es inv·lido');
+            console.error('El material es inv√°lido');
         }
     };
 
@@ -145,7 +145,7 @@ const MaterialesDidacticos = () => {
                 guardarMaterialEnStorage({
                     ...nuevoMaterial,
                     documento: file,
-                    nombreArchivo: nuevoMaterial.nombreArchivo, // Aseg˙rate de tener el nombre del archivo
+                    nombreArchivo: nuevoMaterial.nombreArchivo, // Aseg√∫rate de tener el nombre del archivo
                 });
             }
         } catch (error) {
@@ -153,7 +153,7 @@ const MaterialesDidacticos = () => {
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
-            console.error("Error de validaciÛn de imagen:", error);
+            console.error("Error de validaci√≥n de imagen:", error);
         }
     };
     const handleDelete = async (materialId) => {
@@ -164,7 +164,7 @@ const MaterialesDidacticos = () => {
             if (response.status === 200) {
                 cargarMateriales();
                 cargarAulas();
-                toast.success("Material eliminado con Èxito");
+                toast.success("Material eliminado con √©xito");
                 // Eliminar el material de la lista de materiales
                 setMateriales(materiales.filter(material => material.idMaterialDidactico !== materialId)); // Filtrar por idMaterialDidactico
             } else {
@@ -244,7 +244,7 @@ const MaterialesDidacticos = () => {
                     }
                 );
 
-                toast.success("Archivo guardado con Èxito");
+                toast.success("Archivo guardado con √©xito");
                 cargarMateriales();
                 cargarAulas();
                 // Cerrar el modal
@@ -269,7 +269,7 @@ const MaterialesDidacticos = () => {
         <>
             <Navbar />
             <div className="materiales-container">
-                <h2 className="materiales-header">Material Did·ctico</h2>
+                <h2 className="materiales-header">Material Did√°ctico</h2>
                 {isLoading ? (
                     <p className="materiales-loading">Cargando materiales...</p>
                 ) : (
@@ -296,7 +296,7 @@ const MaterialesDidacticos = () => {
                                             Descargar
                                         </button>
                                     </a>
-                                    {/* BotÛn de eliminar */}
+                                    {/* Bot√≥n de eliminar */}
                                     {user.rolId != 3 && (                                    
                                         <button
                                             onClick={() => handleDelete(material.idMaterialDidactico)}
@@ -320,7 +320,7 @@ const MaterialesDidacticos = () => {
                             <span className="close" onClick={() => setModalVisible(false)}>&times;</span>
                             <h3>Agregar Nuevo Material</h3>
                             <select
-                                name="grupoId"  // CambiÈ "aula" por "grupoId" para enlazar correctamente el estado
+                                name="grupoId"  // Cambi√© "aula" por "grupoId" para enlazar correctamente el estado
                                 value={idGrupoSeleccionado}
                                 onChange={(e) => setIdGrupoSeleccionado(e.target.value)}
                                 style={{
@@ -329,12 +329,12 @@ const MaterialesDidacticos = () => {
                                     border: '1px solid #ccc', /* Borde gris claro */
                                     padding: '8px',
                                     fontSize: '14px',
-                                    width: '100%', /* Ajusta el tamaÒo seg˙n lo necesites */
+                                    width: '100%', /* Ajusta el tama√±o seg√∫n lo necesites */
                                 }}
                             >
                                 <option value="">Seleccionar Aula</option>
                                 {aulas.map((aula) => (
-                                    <option key={aula.idGrupos} value={aula.idGrupos}> {/* CambiÈ el valor al id del aula */}
+                                    <option key={aula.idGrupos} value={aula.idGrupos}> {/* Cambi√© el valor al id del aula */}
                                         {aula.nombreGrupo}
                                     </option>
                                 ))}
@@ -342,13 +342,13 @@ const MaterialesDidacticos = () => {
 
                             <input
                                 type="text"
-                                placeholder="TÌtulo"
+                                placeholder="T√≠tulo"
                                 value={nuevoMaterial.nombreArchivo}
                                 onChange={handleChange}
                                 name="nombre"
                             />
                             <textarea
-                                placeholder="DescripciÛn"
+                                placeholder="Descripci√≥n"
                                 value={nuevoMaterial.descripcion}
                                 onChange={handleChange}
                                 name="descripcion"

@@ -1,6 +1,6 @@
-// src/usuarios/RegistroUsuario.jsx
+ï»¿// src/usuarios/RegistroUsuario.jsx
 import React, { useState, useEffect } from 'react';
-import axios from '../axios'; // Importar configuración de axios
+import axios from '../axios'; // Importar configuraciÃ³n de axios
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
@@ -60,7 +60,7 @@ const RegistroUsuario = () => {
             if (response.data) {
                 setMensajeExito('Usuario registrado exitosamente.');
 
-                // Espera 2 segundos y luego redirige según el rol seleccionado
+                // Espera 2 segundos y luego redirige segÃºn el rol seleccionado
                 setTimeout(() => {
                     if (usuario.rolId === "3") {
                         navigate('/alumno-maintenance');
@@ -74,36 +74,36 @@ const RegistroUsuario = () => {
             let mensajeError = 'Hubo un problema al registrar el usuario.';
 
             if (error.response) {
-                // El servidor respondió con un estado de error
+                // El servidor respondiÃ³ con un estado de error
                 if (error.response.data && error.response.data.message) {
                     mensajeError = error.response.data.message;
                 } else {
                     switch (error.response.status) {
                         case 400:
-                            // Aquí puedes manejar un BadRequest (400)
-                            // Si el servidor envía un mensaje en el body de la respuesta, lo usamos.
+                            // AquÃ­ puedes manejar un BadRequest (400)
+                            // Si el servidor envÃ­a un mensaje en el body de la respuesta, lo usamos.
                             if (error.response.data) {
                                 mensajeError = error.response.data.message || 'La Cedula o Correo Electronico ya se han registrado previamente . Por favor verifique los campos.';
                             } else {
-                                mensajeError = 'La solicitud no es válida. Por favor, verifique los datos enviados.';
+                                mensajeError = 'La solicitud no es vÃ¡lida. Por favor, verifique los datos enviados.';
                             }
                             break;
                         case 401:
-                            mensajeError = 'No autorizado. Por favor inicie sesión nuevamente.';
+                            mensajeError = 'No autorizado. Por favor inicie sesiÃ³n nuevamente.';
                             break;
                         case 409:
                             mensajeError = 'El usuario ya existe en el sistema.';
                             break;
                         case 500:
-                            mensajeError = 'Error interno del servidor. Por favor intente más tarde.';
+                            mensajeError = 'Error interno del servidor. Por favor intente mÃ¡s tarde.';
                             break;
                         default:
                             mensajeError = `Error: ${error.response.status} - Por favor intente nuevamente.`;
                     }
                 }
             } else if (error.request) {
-                // La solicitud se hizo pero no se recibió respuesta
-                mensajeError = 'No se pudo conectar con el servidor. Verifique su conexión a internet.';
+                // La solicitud se hizo pero no se recibiÃ³ respuesta
+                mensajeError = 'No se pudo conectar con el servidor. Verifique su conexiÃ³n a internet.';
             }
 
             console.error("Error al registrar usuario:", error);
@@ -174,7 +174,7 @@ const RegistroUsuario = () => {
                     </div>
 
                     <div className="usuario-form-group">
-                        <label className="usuario-label">Cédula</label>
+                        <label className="usuario-label">CÃ©dula</label>
                         <div className="usuario-input-container">
                             <FontAwesomeIcon icon={faIdCard} className="usuario-input-icon" />
                             <input
@@ -189,7 +189,7 @@ const RegistroUsuario = () => {
                     </div>
 
                     <div className="usuario-form-group">
-                        <label className="usuario-label">Teléfono</label>
+                        <label className="usuario-label">TelÃ©fono</label>
                         <div className="usuario-input-container">
                             <FontAwesomeIcon icon={faPhone} className="usuario-input-icon" />
                             <input
@@ -219,7 +219,7 @@ const RegistroUsuario = () => {
                     </div>
 
                     <div className="usuario-form-group">
-                        <label className="usuario-label">Contraseña</label>
+                        <label className="usuario-label">ContraseÃ±a</label>
                         <div className="usuario-input-container">
                             <FontAwesomeIcon icon={faLock} className="usuario-input-icon" />
                             <input

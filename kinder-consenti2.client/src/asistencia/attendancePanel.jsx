@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+ï»¿import React, { useState, useEffect } from "react";
 import "./AttendancePanel.css";
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
@@ -10,13 +10,13 @@ function AttendancePanel() {
 
     useEffect(() => {
         if (user?.rolId !== 1) {
-            setErrorMessage("No tienes permisos para acceder a esta página.");
+            setErrorMessage("No tienes permisos para acceder a esta pÃ¡gina.");
         } else {
             setErrorMessage("");
         }
     }, [user]);
 
-    const defaultChildrenList = ["Juan", "María", "Carlos", "Ana"];
+    const defaultChildrenList = ["Juan", "MarÃ­a", "Carlos", "Ana"];
     const [attendance, setAttendance] = useState(
         defaultChildrenList.map((name) => ({ name, status: false })) // status es un booleano
     );
@@ -30,7 +30,7 @@ function AttendancePanel() {
     const handleSubmit = async () => {
         try {
             const payload = {
-                IdListaAsistencia: 1, // ID de la lista de asistencia (puedes cambiarlo dinámicamente)
+                IdListaAsistencia: 1, // ID de la lista de asistencia (puedes cambiarlo dinÃ¡micamente)
                 Detalles: attendance.map((child) => ({
                     Nombre: child.name,
                     Estado: child.status ? "Presente" : "Ausente"
@@ -43,7 +43,7 @@ function AttendancePanel() {
             );
 
             console.log("Respuesta del backend:", response.data);
-            alert("¡Asistencia guardada exitosamente!");
+            alert("Â¡Asistencia guardada exitosamente!");
         } catch (error) {
             console.error("Error al guardar la asistencia:", error);
             alert("Hubo un error al guardar la asistencia.");
@@ -86,7 +86,7 @@ function AttendancePanel() {
                 <table className="attendance-table">
                     <thead>
                         <tr>
-                            <th>Nombre del Niño</th>
+                            <th>Nombre del NiÃ±o</th>
                             <th>Estado</th>
                         </tr>
                     </thead>

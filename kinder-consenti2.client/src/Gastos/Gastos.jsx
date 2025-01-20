@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+Ôªøimport React, { useState, useEffect } from 'react';
 import axios from '../axios';
 
 import Navbar from '../componentes/navbar';
@@ -38,7 +38,7 @@ const Gastos = () => {
                 const categoriasResponse = await axios.get('https://localhost:44369/Categoria/ObtenerCategorias');
                 setCategorias(categoriasResponse.data);
             } catch (error) {
-                console.error('Error al cargar categorÌas:', error);
+                console.error('Error al cargar categor√≠as:', error);
             }
         };
         cargarCategorias();
@@ -82,7 +82,7 @@ const Gastos = () => {
             });
 
             if (response.data) {
-                const mensaje = gastoSeleccionado ? '°Gasto editado exitosamente!' : '°Gasto creado exitosamente!';
+                const mensaje = gastoSeleccionado ? '¬°Gasto editado exitosamente!' : '¬°Gasto creado exitosamente!';
                 window.alert(mensaje);
                 setModalIsOpen(false);
                 setNuevoGasto({
@@ -134,19 +134,19 @@ const Gastos = () => {
     const handleEdit = (idGasto) => {
         const gasto = gastos.find(g => g.idGasto === idGasto);
         if (gasto) {
-            setGastoSeleccionado(gasto); // Guarda el gasto seleccionado para ediciÛn
+            setGastoSeleccionado(gasto); // Guarda el gasto seleccionado para edici√≥n
             setNuevoGasto({
                 "idGasto": gasto.idGasto,
                 fecha: gasto.fecha,
                 categoriaId: gasto.categoriaId,
                 monto: gasto.monto
             });
-            setModalIsOpen(true); // Abre el modal de ediciÛn
+            setModalIsOpen(true); // Abre el modal de edici√≥n
         }
     };
 
     const handleDelete = (idGasto) => {
-        const confirmDelete = window.confirm("øEst·s seguro de que deseas eliminar este gasto?");
+        const confirmDelete = window.confirm("¬øEst√°s seguro de que deseas eliminar este gasto?");
         if (confirmDelete) {
             axios.delete(`https://localhost:44369/Gasto/EliminarGasto/${idGasto}`)
                 .then(() => {
@@ -196,7 +196,7 @@ const Gastos = () => {
                             data={gastos}
                             pagination
                             paginationComponentOptions={{
-                                rowsPerPageText: 'Filas por p·gina:',
+                                rowsPerPageText: 'Filas por p√°gina:',
                                 rangeSeparatorText: 'de',
                                 noRowsPerPage: false,
                                 selectAllRowsItem: true,

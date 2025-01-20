@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+ï»¿import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './encuestas.css';
 import { toast } from 'react-toastify';
@@ -19,17 +19,17 @@ const Encuesta = () => {
     const [isFormDisabled, setIsFormDisabled] = useState(false);
     const navigate = useNavigate(); // Inicializar el hook useNavigate
 
-    // Verificar si la encuesta ya ha sido enviada en el último año
+    // Verificar si la encuesta ya ha sido enviada en el Ãºltimo aÃ±o
     useEffect(() => {
         const lastSurveyDate = localStorage.getItem('lastSurveyDate');
         if (lastSurveyDate) {
             const currentDate = new Date();
             const lastSurvey = new Date(lastSurveyDate);
             const timeDifference = currentDate - lastSurvey;
-            const oneYearInMilliseconds = 365 * 24 * 60 * 60 * 1000; // 1 año en milisegundos
+            const oneYearInMilliseconds = 365 * 24 * 60 * 60 * 1000; // 1 aÃ±o en milisegundos
 
             if (timeDifference < oneYearInMilliseconds) {
-                setMessage('Ya has enviado la encuesta este año. Podrás enviar una nueva después de un año.');
+                setMessage('Ya has enviado la encuesta este aÃ±o. PodrÃ¡s enviar una nueva despuÃ©s de un aÃ±o.');
                 setIsFormDisabled(true);
             }
         }
@@ -51,7 +51,7 @@ const Encuesta = () => {
         const PuntosEnsenaza = parseInt(formData.ensenanza, 10);
 
         if (isNaN(PuntosIntalacion) || isNaN(PuntosPersonlAdm) || isNaN(PuntosEnsenaza)) {
-            toast.error('Por favor selecciona una opción válida para cada pregunta.');
+            toast.error('Por favor selecciona una opciÃ³n vÃ¡lida para cada pregunta.');
             return;
         }
 
@@ -70,13 +70,13 @@ const Encuesta = () => {
                 }
             });
             if (response.status === 200) {
-                setMessage('Ya has enviado la encuesta este año. Podrás enviar una nueva después de un año.');
+                setMessage('Ya has enviado la encuesta este aÃ±o. PodrÃ¡s enviar una nueva despuÃ©s de un aÃ±o.');
                 setIsFormDisabled(true);
 
-                // Guardar la fecha del envío en localStorage
+                // Guardar la fecha del envÃ­o en localStorage
                 localStorage.setItem('lastSurveyDate', new Date().toISOString());
 
-                // Redirigir a /main después de un breve retraso
+                // Redirigir a /main despuÃ©s de un breve retraso
                 setTimeout(() => {
                     navigate('/main');
                 }, 2000); // Esperar 2 segundos antes de redirigir
@@ -94,7 +94,7 @@ const Encuesta = () => {
             <form onSubmit={handleSubmit} className="survey-form" style={{ display: isFormDisabled ? 'none' : 'block' }}>
                 <h2>Encuesta del Centro Educativo</h2>
                 <label>
-                    ¿Cómo calificaría la calidad de las instalaciones?
+                    Â¿CÃ³mo calificarÃ­a la calidad de las instalaciones?
                     <select name="instalaciones" value={formData.instalaciones} onChange={handleChange} required>
                         <option value=""></option>
                         <option value="10">Excelente</option>
@@ -103,7 +103,7 @@ const Encuesta = () => {
                     </select>
                 </label>
                 <label>
-                    ¿Cómo calificaría la atención del personal administrativo?
+                    Â¿CÃ³mo calificarÃ­a la atenciÃ³n del personal administrativo?
                     <select name="personal" value={formData.personal} onChange={handleChange} required>
                         <option value=""></option>
                         <option value="10">Excelente</option>
@@ -112,7 +112,7 @@ const Encuesta = () => {
                     </select>
                 </label>
                 <label>
-                    ¿Cómo calificaría la calidad de enseñanza?
+                    Â¿CÃ³mo calificarÃ­a la calidad de enseÃ±anza?
                     <select name="ensenanza" value={formData.ensenanza} onChange={handleChange} required>
                         <option value=""></option>
                         <option value="10">Excelente</option>
@@ -122,7 +122,7 @@ const Encuesta = () => {
                 </label>
                 <label>
                     Sugerencias:
-                    <textarea name="sugerencias" value={formData.sugerencias} onChange={handleChange} required rows="4" placeholder="Escribe aquí tus comentarios"></textarea>
+                    <textarea name="sugerencias" value={formData.sugerencias} onChange={handleChange} required rows="4" placeholder="Escribe aquÃ­ tus comentarios"></textarea>
                 </label>
                 <button type="submit" className="submit-button" disabled={isFormDisabled}>Enviar Encuesta</button>
             </form>

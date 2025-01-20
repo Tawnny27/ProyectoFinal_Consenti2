@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import './estilos.css';
 
 
@@ -21,7 +21,7 @@ function ModalCalendar ({ showCalendarModal, handleDateSubmit, importantDate, se
                             />
                         </label>
                         <label>
-                            Descripci�n de la Actividad:
+                            Descripción de la Actividad:
                             <textarea
                                 className="activity-textarea"
                                 value={activityDescription}

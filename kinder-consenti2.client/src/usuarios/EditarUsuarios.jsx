@@ -1,4 +1,4 @@
-
+ï»¿
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -10,7 +10,7 @@ import './EditarUsuarios.css';
 
 const EditarUsuario = () => {
     const { id } = useParams(); // Obtener el id del usuario desde la URL
-    const navigate = useNavigate(); // Hook para la navegación
+    const navigate = useNavigate(); // Hook para la navegaciÃ³n
     const [usuario, setUsuario] = useState({
         idUsuario: '',
         rolId: '',
@@ -22,10 +22,10 @@ const EditarUsuario = () => {
         estado: false,
         rol: { idRol: '', nombreRol: '' },
     });
-    const [mensajeExito, setMensajeExito] = useState(''); // Estado para el mensaje de éxito
+    const [mensajeExito, setMensajeExito] = useState(''); // Estado para el mensaje de Ã©xito
 
     useEffect(() => {
-        // Función para obtener el usuario a editar
+        // FunciÃ³n para obtener el usuario a editar
         const obtenerUsuario = async () => {
             try {
                 const response = await axios.get(`https://localhost:44369/Usuarios/BuscarUsuarios/${id}`);
@@ -144,7 +144,7 @@ const EditarUsuario = () => {
                                 value={usuario.cedulaUsuario}
                                 onChange={manejarCambio}
                                 required
-                                placeholder="Cédula"
+                                placeholder="CÃ©dula"
                             />
                         </div>
                     </div>
@@ -158,7 +158,7 @@ const EditarUsuario = () => {
                                 value={usuario.telefonoUsuario}
                                 onChange={manejarCambio}
                                 required
-                                placeholder="Teléfono"
+                                placeholder="TelÃ©fono"
                             />
                         </div>
                     </div>

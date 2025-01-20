@@ -1,4 +1,4 @@
-import React from 'react';
+ï»¿import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
@@ -10,7 +10,7 @@ import './estilos.css';
 function Sidebar ({ showAdminSubmenu, toggleAdminSubmenu, showPlatformSubmenu, togglePlatformSubmenu, showGestFSubMenu, toggleGestFSubMenu }) {
     return (
         <aside className="sidebar">
-            <h2>Menú</h2>
+            <h2>MenÃº</h2>
             <ul>
                 <li>
                     <div onClick={toggleAdminSubmenu} className="menu-item">
@@ -39,7 +39,7 @@ function Sidebar ({ showAdminSubmenu, toggleAdminSubmenu, showPlatformSubmenu, t
                 </li>
                 <li>
                     <div onClick={toggleGestFSubMenu} className="menu-item">
-                        <span>Gestión Financiera</span>
+                        <span>GestiÃ³n Financiera</span>
                         <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />
                     </div>
                     {showGestFSubMenu && (
@@ -50,9 +50,9 @@ function Sidebar ({ showAdminSubmenu, toggleAdminSubmenu, showPlatformSubmenu, t
                         </ul>
                     )}
                 </li>
-                <li><Link to="/matricula">Matrícula</Link></li>
+                <li><Link to="/matricula">MatrÃ­cula</Link></li>
                 <li><Link to="/expedientes">Expedientes</Link></li>
-                <li><Link to="/comunicacion">Comunicación</Link></li>
+                <li><Link to="/comunicacion">ComunicaciÃ³n</Link></li>
                 <li><Link to="/inventario">Inventario</Link></li>
                 
             </ul>

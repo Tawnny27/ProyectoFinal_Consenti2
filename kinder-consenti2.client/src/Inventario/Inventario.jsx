@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+ï»¿import React, { useState, useEffect } from 'react';
 import axios from '../axios';
 
 import Navbar from '../componentes/navbar';
@@ -11,7 +11,7 @@ import { toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Inventario = () => {
-    const [searchText, setSearchText] = useState(''); // Estado para el texto de búsqueda
+    const [searchText, setSearchText] = useState(''); // Estado para el texto de bÃºsqueda
     const [filteredData, setFilteredData] = useState([]); // Datos filtrados
     const [inventario, setInventario] = useState([]);
     const [categorias, setCategorias] = useState([]);
@@ -35,16 +35,16 @@ const Inventario = () => {
         }
     };
 
-    // Manejar el cambio del texto de búsqueda
+    // Manejar el cambio del texto de bÃºsqueda
     const manejarBusqueda = (e) => {
         const texto = e.target.value.toLowerCase();
         setSearchText(texto);
 
         if (texto === '') {
-            // Si el campo está vacío, muestra todo el inventario
+            // Si el campo estÃ¡ vacÃ­o, muestra todo el inventario
             setFilteredData(inventario);
         } else {
-            // Filtrar datos según la búsqueda
+            // Filtrar datos segÃºn la bÃºsqueda
             const datosFiltrados = inventario.filter((item) =>
                 item.descripcion.toLowerCase().includes(texto) ||
                 item.categoriaId.toString().includes(texto) ||
@@ -279,17 +279,17 @@ const Inventario = () => {
             if (response.data) {
                 toast.success('Categoria creada exitosamente!');
                 handleCloseModal();
-                // Recargar categorías
+                // Recargar categorÃ­as
                 const categoriasResponse = await axios.get('https://localhost:44369/Categoria/ObtenerCategorias');
                 setCategorias(categoriasResponse.data);
             }
         } catch (error) {
-            console.error('Error al crear categoría:', error);
+            console.error('Error al crear categorÃ­a:', error);
             toast.error('Error al crear categoria.');
         }
     };
 
-    // Modificar handleCloseModal para incluir reseteo de categoría
+    // Modificar handleCloseModal para incluir reseteo de categorÃ­a
     const handleCloseModal = () => {
         setModalIsOpen(false);
         setModalMovimientoIsOpen(false);
@@ -329,7 +329,7 @@ const Inventario = () => {
                         className="inventario-add-btn"
                         onClick={() => setModalCategoriaIsOpen(true)}
                     >
-                        Agregar Categoría
+                        Agregar CategorÃ­a
                         </button>
                     </div>
 
@@ -364,7 +364,7 @@ const Inventario = () => {
                                         name="descripcion"
                                         value={nuevoInventario.descripcion}
                                         onChange={manejarCambio}
-                                        placeholder="Descripción"
+                                        placeholder="DescripciÃ³n"
                                         required
                                     />
                                     <select
@@ -373,7 +373,7 @@ const Inventario = () => {
                                         onChange={manejarCambio}
                                         required
                                     >
-                                        <option value="">Seleccione una categoría</option>
+                                        <option value="">Seleccione una categorÃ­a</option>
                                         {categorias.map((cat) => (
                                             <option key={cat.idCategoria} value={cat.idCategoria}>
                                                 {cat.nombreCategoria}
@@ -431,13 +431,13 @@ const Inventario = () => {
                         <div className="inventario-modal-overlay" onClick={() => handleCloseModal()}>
                             <div className="inventario-modal-content" onClick={(e) => e.stopPropagation()}>
                                 <form onSubmit={manejarEnvioCategoria} className="inventario-form">
-                                    <h2>Agregar Nueva Categoría</h2>
+                                    <h2>Agregar Nueva CategorÃ­a</h2>
                                     <input
                                         type="text"
                                         name="nombreCategoria"
                                         value={nuevoCategoria.nombreCategoria}
                                         onChange={manejarCambioCategoria}
-                                        placeholder="Nombre de la Categoría"
+                                        placeholder="Nombre de la CategorÃ­a"
                                         required
                                     />
                                     <button type="submit">Guardar</button>

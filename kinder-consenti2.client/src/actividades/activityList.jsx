@@ -1,4 +1,4 @@
-import React from 'react';
+ï»¿import React from 'react';
 import { useEffect, useState } from "react";
 import Navbar from "../componentes/navbar";
 import Footer from "../componentes/footer";
@@ -44,7 +44,7 @@ const ListaActividades = () => {
 
     useEffect(() => {
         if (selectedFile) {
-            // Generar nombre único para la imagen
+            // Generar nombre Ãºnico para la imagen
             const fileExtension = selectedFile.name.split('.').pop();
             setNombreUnico(`${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`);
             console.log("Ojo");
@@ -98,7 +98,7 @@ const ListaActividades = () => {
         }
 
         if (file.size > MAX_FILE_SIZE) {
-            throw new Error('La imagen excede el tamaño máximo de 5MB');
+            throw new Error('La imagen excede el tamaÃ±o mÃ¡ximo de 5MB');
         }
         return true;
     };
@@ -135,7 +135,7 @@ const ListaActividades = () => {
         }
         setError("");
         setSuccess(true);
-        // Aquí puedes enviar los datos a la API o manejarlos como prefieras
+        // AquÃ­ puedes enviar los datos a la API o manejarlos como prefieras
         agregarEvento();
         
         setearDatos();
@@ -223,7 +223,7 @@ const ListaActividades = () => {
                             <h2 className="activity-form-title">Agregar Nueva Actividad</h2>
                             <form className="activity-form" onSubmit={handleSubmit}>
                                 <label className="activity-form-label">
-                                    Título:
+                                    TÃ­tulo:
                                     <input
                                         type="text"
                                         className="activity-form-input"
@@ -292,7 +292,7 @@ const ListaActividades = () => {
                                 { /****************************************************************************/}
 
                                 <label className="activity-form-label">
-                                    Descripción:
+                                    DescripciÃ³n:
                                     <textarea
                                         className="activity-form-input"
                                         value={description}

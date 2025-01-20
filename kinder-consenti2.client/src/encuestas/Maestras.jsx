@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+锘縤mport React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ReactStars from 'react-rating-stars-component'; // Importar la librer韆 de estrellas*/
+import ReactStars from 'react-rating-stars-component'; // Importar la librer铆a de estrellas*/
 import './encuestas.css';
 
 const MaestrasFeedback = () => {
@@ -31,7 +31,7 @@ const MaestrasFeedback = () => {
                     return { ...teacher, avatar: avatarUrl };
                 });
 
-                // Asignar avatares din醡icamente
+                // Asignar avatares din谩micamente
                 const teachersWithAvatars = await Promise.all(avatarPromises);
                 setTeachers(teachersWithAvatars);
             } catch (error) {
@@ -53,15 +53,15 @@ const MaestrasFeedback = () => {
     };
 
     const handleSubmitFeedback = async () => {
-        // Validaci髇 de los datos antes de enviarlos
+        // Validaci贸n de los datos antes de enviarlos
         if (rating <= 0) {
             toast.error('Por favor, califica a la maestra con estrellas.');
-            return; // Detiene la ejecuci髇 si no hay calificaci髇
+            return; // Detiene la ejecuci贸n si no hay calificaci贸n
         }
 
         if (comment.trim() === '') {
             toast.error('Por favor, escribe un comentario.');
-            return; // Detiene la ejecuci髇 si no hay comentario
+            return; // Detiene la ejecuci贸n si no hay comentario
         }
 
 
@@ -76,7 +76,7 @@ const MaestrasFeedback = () => {
             // Agrega un log para ver los datos antes de enviarlos
             console.log('Datos enviados:', evaluacionDocente);
 
-            // Enviar la evaluaci髇 docente al servidor
+            // Enviar la evaluaci贸n docente al servidor
             const response = await axios.post('https://localhost:44369/EvaluacionDocentes/CrearEvaluacionDocente', evaluacionDocente, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -86,13 +86,13 @@ const MaestrasFeedback = () => {
             // Verifica la respuesta del servidor
             console.log('Respuesta del servidor:', response.data);
 
-            toast.success('racias por tu calificaci髇!');
+            toast.success('隆Gracias por tu calificaci贸n!');
             setSelectedTeacher(null);
             setRating(0);
             setComment('');
         } catch (error) {
-            console.error('Error al enviar la calificaci髇:', error);
-            toast.error('Error al enviar la calificaci髇');
+            console.error('Error al enviar la calificaci贸n:', error);
+            toast.error('Error al enviar la calificaci贸n');
         }
     };
 
@@ -101,7 +101,7 @@ const MaestrasFeedback = () => {
         <div className="teachers-feedback-container">
             <Navbar />
             <div className="feedback-form-container" style={{ marginTop: '100px' }}>
-                <h2 className="feedback-title">Retroalimentaci髇 y Calificaci髇 de Maestras</h2>
+                <h2 className="feedback-title">Retroalimentaci贸n y Calificaci贸n de Maestras</h2>
 
                 {mensajeExito && <div className="success-message">{mensajeExito}</div>}
 
@@ -138,7 +138,7 @@ const MaestrasFeedback = () => {
                             required
                         />
                         <button type="submit" className="submit-button" onClick={handleSubmitFeedback}>
-                            Enviar Calificaci髇
+                            Enviar Calificaci贸n
                         </button>
                     </div>
                 )}

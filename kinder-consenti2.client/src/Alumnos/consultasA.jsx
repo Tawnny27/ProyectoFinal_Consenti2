@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+Ôªøimport React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DataTable from 'react-data-table-component';
@@ -52,7 +52,7 @@ function AlumnoMaintenance() {
         }
 
         if (file.size > MAX_FILE_SIZE) {
-            throw new Error('La imagen excede el tamaÒo m·ximo de 5MB');
+            throw new Error('La imagen excede el tama√±o m√°ximo de 5MB');
         }
 
         return true;
@@ -107,7 +107,7 @@ function AlumnoMaintenance() {
         let uniqueFileName = '';
 
         if (selectedFile) {
-            // Generar nombre ˙nico para la imagen
+            // Generar nombre √∫nico para la imagen
             const fileExtension = selectedFile.name.split('.').pop();
             uniqueFileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`;
             imagePath = `${IMAGE_PATH}${uniqueFileName}`;
@@ -121,17 +121,17 @@ function AlumnoMaintenance() {
             fechaNacimiento: formData.fechaNacimiento ?
                 new Date(formData.fechaNacimiento).toISOString() :
                 new Date().toISOString(),
-            cedulaAlumno: formData.cedulaAlumno || 'Sin cÈdula',
+            cedulaAlumno: formData.cedulaAlumno || 'Sin c√©dula',
             generoAlumno: formData.generoAlumno || 'NA',
-            direccionAlumno: formData.direccionAlumno || 'Sin direcciÛn',
-            informacionAdicional: formData.informacionAdicional || 'Sin informaciÛn',
+            direccionAlumno: formData.direccionAlumno || 'Sin direcci√≥n',
+            informacionAdicional: formData.informacionAdicional || 'Sin informaci√≥n',
             fotoAlumno: imagePath || 'default.jpg',
             nombreCompAutorizado: formData.nombreCompAutorizado || 'Sin autorizado',
-            cedulaAutorizado: formData.cedulaAutorizado || 'Sin cÈdula',
+            cedulaAutorizado: formData.cedulaAutorizado || 'Sin c√©dula',
             telefonoAutorizado: parseInt(formData.telefonoAutorizado) || 0,
             relacionAutorizado: formData.relacionAutorizado || 'No especificada',
             nombreCompContacto: formData.nombreCompContacto || 'Sin contacto',
-            cedulaContacto: formData.cedulaContacto || 'Sin cÈdula',
+            cedulaContacto: formData.cedulaContacto || 'Sin c√©dula',
             telefonoContacto: parseInt(formData.telefonoContacto) || 0,
             relacionContacto: formData.relacionContacto || 'No especificada'
         };
@@ -179,8 +179,8 @@ function AlumnoMaintenance() {
 
     const handleDelete = (alumnoId) => {
         confirmDialog({
-            message: 'øEst·s seguro de que deseas eliminar este alumno?',
-            header: 'Confirmar EliminaciÛn',
+            message: '¬øEst√°s seguro de que deseas eliminar este alumno?',
+            header: 'Confirmar Eliminaci√≥n',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 axios.delete(`https://localhost:44369/Alumnos/EliminarAlumno/${alumnoId}`)
@@ -226,7 +226,7 @@ function AlumnoMaintenance() {
             sortable: true
         },
         {
-            name: 'InformaciÛn Adicional',
+            name: 'Informaci√≥n Adicional',
             selector: row => row.informacionAdicional,
             sortable: true
         },
@@ -282,12 +282,12 @@ function AlumnoMaintenance() {
 
                 {/* Contenido principal */}
                 <div className="alumno-registry-content">
-                    <h1 className="alumno-registry-title">Registro de NiÒos</h1>
+                    <h1 className="alumno-registry-title">Registro de Ni√±os</h1>
 
                     {/* Botones principales */}
                     <div className="alumno-registry-main-buttons">
                         <button className="alumno-registry-add-child-btn" onClick={openModal}>
-                            Agregar NiÒo
+                            Agregar Ni√±o
                         </button>
                         <button className="alumno-registry-cancel-btn">
                             Cancelar
@@ -301,7 +301,7 @@ function AlumnoMaintenance() {
                                     data={alumnos}
                                     pagination
                                     paginationComponentOptions={{
-                                        rowsPerPageText: 'Filas por p·gina:',
+                                        rowsPerPageText: 'Filas por p√°gina:',
                                         rangeSeparatorText: 'de',
                                         noRowsPerPage: false,
                                         selectAllRowsItem: true,

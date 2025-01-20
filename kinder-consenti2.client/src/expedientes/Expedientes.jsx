@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+ï»¿import React, { useState, useEffect } from 'react';
 import 'primeicons/primeicons.css';
 import { useNavigate } from 'react-router-dom';
 import axios from '../axios';
@@ -7,7 +7,7 @@ import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import './expedientes.css';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable'; // Importar autotable si estás utilizando esta extensión para tablas
+import 'jspdf-autotable'; // Importar autotable si estÃ¡s utilizando esta extensiÃ³n para tablas
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -44,24 +44,24 @@ const Expedientes = () => {
     };
 
     const handleExportarPDF = () => {
-        if (!alumnoSeleccionado) return; // Asegúrate de que haya un alumno seleccionado
+        if (!alumnoSeleccionado) return; // AsegÃºrate de que haya un alumno seleccionado
 
         const doc = new jsPDF();
 
-        // Agregar título del documento
+        // Agregar tÃ­tulo del documento
         doc.setFontSize(16);
         doc.text('Expediente del Alumno', 105, 20, { align: 'center' });
 
-        // Agregar tabla de información personal
+        // Agregar tabla de informaciÃ³n personal
         const datosPersonales = [
             ['Nombre', alumnoSeleccionado.nombreAlumno],
             ['Apellidos', alumnoSeleccionado.apellidosAlumno],
-            ['Cédula', alumnoSeleccionado.cedulaAlumno],
+            ['CÃ©dula', alumnoSeleccionado.cedulaAlumno],
             ['Fecha de Nacimiento', new Date(alumnoSeleccionado.fechaNacimiento).toLocaleDateString()],
             ['Edad', calcularEdad(alumnoSeleccionado.fechaNacimiento)],
-            ['Género', alumnoSeleccionado.generoAlumno],
-            ['Dirección', alumnoSeleccionado.direccionAlumno],
-            ['Información Adicional', alumnoSeleccionado.informacionAdicional || 'No disponible'],
+            ['GÃ©nero', alumnoSeleccionado.generoAlumno],
+            ['DirecciÃ³n', alumnoSeleccionado.direccionAlumno],
+            ['InformaciÃ³n Adicional', alumnoSeleccionado.informacionAdicional || 'No disponible'],
         ];
         doc.autoTable({
             startY: 30,
@@ -73,9 +73,9 @@ const Expedientes = () => {
         // Agregar tabla de contacto autorizado
         const contactoAutorizado = [
             ['Nombre', alumnoSeleccionado.nombreCompAutorizado],
-            ['Cédula', alumnoSeleccionado.cedulaAutorizado],
-            ['Relación', alumnoSeleccionado.relacionAutorizado],
-            ['Teléfono', alumnoSeleccionado.telefonoAutorizado],
+            ['CÃ©dula', alumnoSeleccionado.cedulaAutorizado],
+            ['RelaciÃ³n', alumnoSeleccionado.relacionAutorizado],
+            ['TelÃ©fono', alumnoSeleccionado.telefonoAutorizado],
         ];
         doc.text('Contacto Autorizado', 14, doc.lastAutoTable.finalY + 10);
         doc.autoTable({
@@ -88,9 +88,9 @@ const Expedientes = () => {
         // Agregar tabla de contacto de emergencia
         const contactoEmergencia = [
             ['Nombre', alumnoSeleccionado.nombreCompContacto],
-            ['Cédula', alumnoSeleccionado.cedulaContacto],
-            ['Relación', alumnoSeleccionado.relacionContacto],
-            ['Teléfono', alumnoSeleccionado.telefonoContacto],
+            ['CÃ©dula', alumnoSeleccionado.cedulaContacto],
+            ['RelaciÃ³n', alumnoSeleccionado.relacionContacto],
+            ['TelÃ©fono', alumnoSeleccionado.telefonoContacto],
         ];
         doc.text('Contacto de Emergencia', 14, doc.lastAutoTable.finalY + 10);
         doc.autoTable({
@@ -102,7 +102,7 @@ const Expedientes = () => {
 
         // Guardar el documento
         doc.save(`${alumnoSeleccionado.nombreAlumno}_expediente.pdf`);
-        toast.success("Expediente exportado con éxito!");
+        toast.success("Expediente exportado con Ã©xito!");
     };
 
 
@@ -143,7 +143,7 @@ const Expedientes = () => {
                 <input
                     type="text"
                     name="cedula"
-                    placeholder="Buscar por cédula"
+                    placeholder="Buscar por cÃ©dula"
                     value={filtro.cedula}
                     onChange={handleFiltroChange}
                     className="form-control"
@@ -158,7 +158,7 @@ const Expedientes = () => {
                         <tr>
                             <th>Nombre</th>
                             <th>Apellidos</th>
-                            <th>Cédula</th>
+                            <th>CÃ©dula</th>
                             <th>Edad</th>
                             <th>Acciones</th>
                         </tr>
@@ -195,22 +195,22 @@ const Expedientes = () => {
                         <h3>Detalles del Alumno</h3>
                         <p>Nombre: {alumnoSeleccionado.nombreAlumno}</p>
                         <p>Apellidos: {alumnoSeleccionado.apellidosAlumno}</p>
-                        <p>Cédula: {alumnoSeleccionado.cedulaAlumno}</p>
+                        <p>CÃ©dula: {alumnoSeleccionado.cedulaAlumno}</p>
                         <p>Fecha de Nacimiento: {new Date(alumnoSeleccionado.fechaNacimiento).toLocaleDateString()}</p>
                         <p>Edad: {calcularEdad(alumnoSeleccionado.fechaNacimiento)}</p>
-                        <p>Género: {alumnoSeleccionado.generoAlumno}</p>
-                        <p>Dirección: {alumnoSeleccionado.direccionAlumno}</p>
-                        <p>Información Adicional: {alumnoSeleccionado.informacionAdicional || "No disponible"}</p>
+                        <p>GÃ©nero: {alumnoSeleccionado.generoAlumno}</p>
+                        <p>DirecciÃ³n: {alumnoSeleccionado.direccionAlumno}</p>
+                        <p>InformaciÃ³n Adicional: {alumnoSeleccionado.informacionAdicional || "No disponible"}</p>
                         <h4>Contacto Autorizado</h4>
                         <p>Nombre: {alumnoSeleccionado.nombreCompAutorizado}</p>
-                        <p>Cédula: {alumnoSeleccionado.cedulaAutorizado}</p>
-                        <p>Relación: {alumnoSeleccionado.relacionAutorizado}</p>
-                        <p>Teléfono: {alumnoSeleccionado.telefonoAutorizado}</p>
+                        <p>CÃ©dula: {alumnoSeleccionado.cedulaAutorizado}</p>
+                        <p>RelaciÃ³n: {alumnoSeleccionado.relacionAutorizado}</p>
+                        <p>TelÃ©fono: {alumnoSeleccionado.telefonoAutorizado}</p>
                         <h4>Contacto de Emergencia</h4>
                         <p>Nombre: {alumnoSeleccionado.nombreCompContacto}</p>
-                        <p>Cédula: {alumnoSeleccionado.cedulaContacto}</p>
-                        <p>Relación: {alumnoSeleccionado.relacionContacto}</p>
-                        <p>Teléfono: {alumnoSeleccionado.telefonoContacto}</p>
+                        <p>CÃ©dula: {alumnoSeleccionado.cedulaContacto}</p>
+                        <p>RelaciÃ³n: {alumnoSeleccionado.relacionContacto}</p>
+                        <p>TelÃ©fono: {alumnoSeleccionado.telefonoContacto}</p>
                         <button className="btn-primary" onClick={handleExportarPDF}>
                             Exportar a PDF
                         </button>

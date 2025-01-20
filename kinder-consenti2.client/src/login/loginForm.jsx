@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+ï»¿import React, { useState } from 'react';
 import axios from 'axios';
 import './LoginForm.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,7 +12,7 @@ const LoginForm = () => {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState(''); 
     const navigate = useNavigate();
-    const { setUser } = useUserContext(); // Obtener la función para actualizar el usuario**
+    const { setUser } = useUserContext(); // Obtener la funciÃ³n para actualizar el usuario**
 
 
     const handleLogin = async () => {
@@ -32,14 +32,14 @@ const LoginForm = () => {
             }
 
         } catch (error) {
-            console.error('Error en el inicio de sesión:', error.response?.data || error.message);
-            setErrorMessage(error.response?.data || 'Error en el inicio de sesión. Revisa tus credenciales.');
+            console.error('Error en el inicio de sesiÃ³n:', error.response?.data || error.message);
+            setErrorMessage(error.response?.data || 'Error en el inicio de sesiÃ³n. Revisa tus credenciales.');
         }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        handleLogin(); // Llama a la función para iniciar sesión
+        handleLogin(); // Llama a la funciÃ³n para iniciar sesiÃ³n
     };
 
     return (
@@ -73,17 +73,17 @@ const LoginForm = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            placeholder="Ingresa tu contraseña"
+                            placeholder="Ingresa tu contraseÃ±a"
                         />
                     </div>
                     {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Mensaje de error */}
                     <div className="form-options">
                         <div className="forgot-password">
-                            <Link to="/reset-password">Olvidé mi contraseña</Link>
+                            <Link to="/reset-password">OlvidÃ© mi contraseÃ±a</Link>
                         </div>
                     </div>
                 </div>
-                <button type="submit">Iniciar Sesión</button>
+                <button type="submit">Iniciar SesiÃ³n</button>
             </form>
         </div>
     );

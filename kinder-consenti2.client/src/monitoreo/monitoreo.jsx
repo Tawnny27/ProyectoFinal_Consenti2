@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+ï»¿import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../componentes/navbar';
@@ -44,7 +44,7 @@ const MonitoreoAlumno = () => {
         fetchAlumnos();
     }, []);
 
-    // Filtrar alumnos según el rol
+    // Filtrar alumnos segÃºn el rol
     const alumnosFiltrados = alumnos.filter((alumno) => {
         const pertenecePadre = user.rolId === 3 ? alumno.padreId === user.idUsuario : true; // Filtra por rol
         const coincideNombre = alumno.nombreAlumno?.toLowerCase().includes(filtro.nombre.toLowerCase());
@@ -67,7 +67,7 @@ const MonitoreoAlumno = () => {
             const responseDormir = await axios.get(`https://localhost:44369/ActividadDormir/BuscarActividadDormirs/${idAlumno}`);
             const responseHuerta = await axios.get(`https://localhost:44369/api/ActividadHuerta/BuscarActividadHuertas/${idAlumno}`);
 
-            // Verificación de que los datos sean arreglos antes de asignarlos
+            // VerificaciÃ³n de que los datos sean arreglos antes de asignarlos
             setActividadBanno(Array.isArray(responseBanno.data) ? responseBanno.data : []);
             setActividadComidas(Array.isArray(responseComidas.data) ? responseComidas.data : []);
             setActividadDormir(Array.isArray(responseDormir.data) ? responseDormir.data : []);
@@ -93,12 +93,12 @@ const MonitoreoAlumno = () => {
         setModalVisible(true);
     };
 
-    // Crear los datos para el gráfico
+    // Crear los datos para el grÃ¡fico
     const dataBanno = {
         labels: actividadBanno.map(item => item.fecha),
         datasets: [
             {
-                label: 'Actividad Comidas por día',
+                label: 'Actividad Comidas por dÃ­a',
                 data: actividadBanno.map(item => item.catidad),
                 fill: false,
                 borderColor: 'rgba(75,192,192,1)',
@@ -112,7 +112,7 @@ const MonitoreoAlumno = () => {
         labels: actividadComidas.map(item => item.fecha),
         datasets: [
             {
-                label: 'Actividad Comidas por día',
+                label: 'Actividad Comidas por dÃ­a',
                 data: actividadComidas.map(item => item.statusComida),
                 fill: false,
                 borderColor: 'rgba(255,99,132,1)',
@@ -137,7 +137,7 @@ const MonitoreoAlumno = () => {
         labels: actividadDormir.map(item => item.fecha), // Fechas en el eje X
         datasets: [
             {
-                label: 'Minutos de sueño por día',
+                label: 'Minutos de sueÃ±o por dÃ­a',
                 data: actividadDormir.map(item => convertirTiempoAMinutos(item.tiempo)), // Convertir tiempos a minutos
                 fill: false,
                 borderColor: 'rgba(54,162,235,1)',
@@ -162,7 +162,7 @@ const MonitoreoAlumno = () => {
     return (
         <div className="user-maintenance-container">
             {<Navbar />}
-            <h2>Monitoreo de los Niños</h2>
+            <h2>Monitoreo de los NiÃ±os</h2>
             <div className="form-group">
                 <input
                     type="text"
@@ -175,7 +175,7 @@ const MonitoreoAlumno = () => {
                 <input
                     type="text"
                     name="cedula"
-                    placeholder="Buscar por cédula"
+                    placeholder="Buscar por cÃ©dula"
                     value={filtro.cedula}
                     onChange={handleFiltroChange}
                     className="form-control"
@@ -190,7 +190,7 @@ const MonitoreoAlumno = () => {
                         <tr>
                             <th>Nombre</th>
                             <th>Apellidos</th>
-                            <th>Cédula</th>
+                            <th>CÃ©dula</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -218,7 +218,7 @@ const MonitoreoAlumno = () => {
                 <div className="monitoreo-modal">
                     <div className="monitoreo-content">
                         <h3>Monitoreo de {alumnoSeleccionado.nombreAlumno}</h3>
-                        <h4>Actividad Baño</h4>
+                        <h4>Actividad BaÃ±o</h4>
                         <Line data={dataBanno} />
                         <h4>Actividad Comidas</h4>
                         <Line data={dataComidas} />

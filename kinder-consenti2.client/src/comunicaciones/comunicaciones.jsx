@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+ï»¿import React, { useState } from "react";
 import "./comunicaciones.css";
 import Footer from "../componentes/footer";
 import Navbar from "../componentes/navbar";
@@ -23,15 +23,15 @@ const Comunicaciones = () => {
         const file = e.target.files[0];
         if (file) {
             const fileType = file.type.split('/')[0]; // Tipo de archivo (imagen, pdf, etc.)
-            const fileSize = file.size; // Tamaño del archivo en bytes
+            const fileSize = file.size; // TamaÃ±o del archivo en bytes
 
-            // Validación de tipo de archivo
+            // ValidaciÃ³n de tipo de archivo
             if (fileType !== 'image' && fileType !== 'application') {
                 setError("Solo se permiten archivos de tipo imagen o documento.");
                 return;
             }
 
-            // Validación de tamaño máximo de archivo (por ejemplo, 5MB)
+            // ValidaciÃ³n de tamaÃ±o mÃ¡ximo de archivo (por ejemplo, 5MB)
             if (fileSize > 5 * 1024 * 1024) {
                 setError("El archivo debe ser menor a 5MB.");
                 return;
@@ -55,7 +55,7 @@ const Comunicaciones = () => {
         setSuccess("Enviando mensaje...");
         setIsSending(true);
 
-        // Simula la llamada a la API (aquí es donde integrarías la llamada real)
+        // Simula la llamada a la API (aquÃ­ es donde integrarÃ­as la llamada real)
         setTimeout(() => {
             setIsSending(false);
             setSuccess("El mensaje ha sido enviado exitosamente.");
@@ -72,7 +72,7 @@ const Comunicaciones = () => {
         <div className="user-maintenance-container">
             <Navbar/>
             <div className="comunicacion_container">
-                <h1 className="comunicacion_title">Sección de Mensajería</h1>
+                <h1 className="comunicacion_title">SecciÃ³n de MensajerÃ­a</h1>
                 <form className="comunicacion_form" onSubmit={handleSubmit}>
                     <label className="comunicacion_label">
                         Destinatario:
@@ -91,7 +91,7 @@ const Comunicaciones = () => {
                             type="text"
                             name="asunto"
                             className="comunicacion_input"
-                            placeholder="Ej. Progreso académico"
+                            placeholder="Ej. Progreso acadÃ©mico"
                             value={formData.asunto}
                             onChange={handleInputChange}
                         />
@@ -101,7 +101,7 @@ const Comunicaciones = () => {
                         <textarea
                             name="mensaje"
                             className="comunicacion_textarea"
-                            placeholder="Escribe tu mensaje aquí..."
+                            placeholder="Escribe tu mensaje aquÃ­..."
                             value={formData.mensaje}
                             onChange={handleInputChange}
                         ></textarea>

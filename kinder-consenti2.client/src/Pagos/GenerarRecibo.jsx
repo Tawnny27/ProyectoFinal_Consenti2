@@ -1,4 +1,4 @@
-// PaymentRegistrationForm.jsx
+﻿// PaymentRegistrationForm.jsx
 import React from 'react';
 import './GenerarRecibo.css';
 
@@ -29,7 +29,7 @@ const GeneradorRecibos = () => {
 
                         <div className="info-row">
                             <label>Apellido:</label>
-                            <span>P�rez</span>
+                            <span>Pérez</span>
                         </div>
 
                         <div className="info-row">

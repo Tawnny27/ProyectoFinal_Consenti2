@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+ï»¿import React, { useState } from "react";
 import "./ActivityForm.css";
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
@@ -21,7 +21,7 @@ const ActivityForm = () => {
         }
         setError("");
         setSuccess(true);
-        // Aquí puedes enviar los datos a la API o manejarlos como prefieras
+        // AquÃ­ puedes enviar los datos a la API o manejarlos como prefieras
         console.log({ title, date, image, description, additional });
         setTitle("");
         setDate("");
@@ -37,7 +37,7 @@ const ActivityForm = () => {
                 <h2 className="activity-form-title">Agregar Nueva Actividad</h2>
                 <form className="activity-form" onSubmit={handleSubmit}>
                     <label className="activity-form-label">
-                        Título: *
+                        TÃ­tulo: *
                         <input
                             type="text"
                             className="activity-form-input"
@@ -64,7 +64,7 @@ const ActivityForm = () => {
                         />
                     </label>
                     <label className="activity-form-label">
-                        Descripción: *
+                        DescripciÃ³n: *
                         <textarea
                             className="activity-form-input"
                             value={description}

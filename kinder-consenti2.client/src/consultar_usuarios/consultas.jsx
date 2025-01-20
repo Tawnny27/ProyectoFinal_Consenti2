@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+ï»¿import React, { useState, useEffect } from 'react';
 import 'primeicons/primeicons.css';
 import { useNavigate } from 'react-router-dom';
 import axios from '../axios';
@@ -31,7 +31,7 @@ const UserMaintenance = () => {
     const [modalType, setModalType] = useState('');
     const navigate = useNavigate();
 
-    // Función para obtener el nombre del rol desde la API utilizando el rolId
+    // FunciÃ³n para obtener el nombre del rol desde la API utilizando el rolId
     const fetchRoleName = async (rolId) => {
         try {
             const response = await axios.get(`https://localhost:44369/Roles/BuscarRol/${rolId}`);
@@ -45,7 +45,7 @@ const UserMaintenance = () => {
         }
     };
 
-    // Función para obtener los datos de los usuarios desde la API
+    // FunciÃ³n para obtener los datos de los usuarios desde la API
     const fetchUsers = async () => {
         try {
             const response = await axios.get('https://localhost:44369/Usuarios/ObtenerUsuarios', { params: filters });
@@ -116,7 +116,7 @@ const UserMaintenance = () => {
         // Encuentra el usuario que coincida con el userId
         const userToDelete = userList.find((user) => user.id === userId);
 
-        // Verifica si el usuario está inactivo y tiene más de 2 años de inactividad
+        // Verifica si el usuario estÃ¡ inactivo y tiene mÃ¡s de 2 aÃ±os de inactividad
         const canDeleteUser = (user) => {
             if (user && user.status.toLowerCase() === 'inactivo') {
                 const currentDate = new Date();
@@ -127,21 +127,21 @@ const UserMaintenance = () => {
             return false;
         };
 
-        // Si el usuario es encontrado, procede con la confirmación
+        // Si el usuario es encontrado, procede con la confirmaciÃ³n
         if (userToDelete && canDeleteUser(userToDelete)) {
             confirmDialog({
                 message: (
                     <>
-                        ¿Está seguro de que desea eliminar al usuario <strong>{userToDelete.name}</strong>?
+                        Â¿EstÃ¡ seguro de que desea eliminar al usuario <strong>{userToDelete.name}</strong>?
                         <br />
-                        Esta acción no se puede deshacer.
+                        Esta acciÃ³n no se puede deshacer.
                     </>
                 ),
-                header: 'Confirmación',
+                header: 'ConfirmaciÃ³n',
                 icon: 'pi-exclamation-triangle', // Icono de advertencia
-                className: 'custom-confirm-dialog', // Clase personalizada para el diálogo
-                acceptClassName: 'custom-accept-button', // Clase para el botón de aceptar
-                rejectClassName: 'custom-reject-button', // Clase para el botón de rechazar
+                className: 'custom-confirm-dialog', // Clase personalizada para el diÃ¡logo
+                acceptClassName: 'custom-accept-button', // Clase para el botÃ³n de aceptar
+                rejectClassName: 'custom-reject-button', // Clase para el botÃ³n de rechazar
                 accept: async () => {
                     try {
                         await axios.delete(`https://localhost:44369/Usuarios/EliminarUsuario/${userId}`);
@@ -152,7 +152,7 @@ const UserMaintenance = () => {
                     }
                 },
                 reject: () => {
-                    console.log('Eliminación cancelada');
+                    console.log('EliminaciÃ³n cancelada');
                 },
             });
         } else {
@@ -161,7 +161,7 @@ const UserMaintenance = () => {
                     <>
                         No se puede eliminar al usuario <strong>{userToDelete.name}</strong>
                         <br />
-                        Asegúrate de que está inactivo y tiene más de 2 años de inactividad.
+                        AsegÃºrate de que estÃ¡ inactivo y tiene mÃ¡s de 2 aÃ±os de inactividad.
                     </>
                 ),
             })
@@ -185,11 +185,11 @@ const UserMaintenance = () => {
     };
 
     const handleLogout = () => {
-        alert('Cerrando sesión...');
-        navigate('/login'); // Redirigir a la página de login
+        alert('Cerrando sesiÃ³n...');
+        navigate('/login'); // Redirigir a la pÃ¡gina de login
     };
 
-    // Nueva función para exportar a Excel
+    // Nueva funciÃ³n para exportar a Excel
     const exportToExcel = () => {
         const ws = XLSX.utils.json_to_sheet(filteredUsers);
         const wb = XLSX.utils.book_new();
@@ -199,7 +199,7 @@ const UserMaintenance = () => {
         XLSX.writeFile(wb, 'usuarios.xlsx');
     };
 
-    // Configuración de las columnas para el DataTable
+    // ConfiguraciÃ³n de las columnas para el DataTable
     const columns   = [
         {
             name: 'Nombre',
@@ -207,7 +207,7 @@ const UserMaintenance = () => {
             sortable: true
         },
         {
-            name: 'Cédula',
+            name: 'CÃ©dula',
             selector: row => row.idCard,
             sortable: true
         },
@@ -263,7 +263,7 @@ const UserMaintenance = () => {
                     />
                 </div>
                 <div className="filter-group">
-                    <label htmlFor="idCard">Cédula</label>
+                    <label htmlFor="idCard">CÃ©dula</label>
                     <input
                         type="text"
                         id="idCard"
@@ -323,15 +323,15 @@ const UserMaintenance = () => {
                     data={filteredUsers}
                     pagination
                     paginationComponentOptions={{
-                        rowsPerPageText: 'Filas por página:',
+                        rowsPerPageText: 'Filas por pÃ¡gina:',
                         rangeSeparatorText: 'de',
-                        noRowsPerPage: false, // Muestra el selector de filas por página
+                        noRowsPerPage: false, // Muestra el selector de filas por pÃ¡gina
                         selectAllRowsItem: true,
                         selectAllRowsItemText: 'Todos'
                     }}
                     highlightOnHover
                     fixedHeader
-                    responsive // Hace la tabla adaptable a diferentes tamaños de pantalla
+                    responsive // Hace la tabla adaptable a diferentes tamaÃ±os de pantalla
                 />
             </div>
             {showModal && (

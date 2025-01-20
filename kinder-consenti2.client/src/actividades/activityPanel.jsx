@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+ï»¿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ActivityPanel.css';
 import Navbar from '../componentes/navbar';
@@ -9,9 +9,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 function ActivityPanel() {
     const [selectedActivity, setSelectedActivity] = useState("");
     const [childrenData, setChildrenData] = useState([
-        { name: "Juan Pérez", status: "Bueno", comments: "Comió todo" },
-        { name: "María López", status: "Regular", comments: "No quiso la sopa" },
-        { name: "Carlos Sánchez", status: "Malo", comments: "No comió nada" }
+        { name: "Juan PÃ©rez", status: "Bueno", comments: "ComiÃ³ todo" },
+        { name: "MarÃ­a LÃ³pez", status: "Regular", comments: "No quiso la sopa" },
+        { name: "Carlos SÃ¡nchez", status: "Malo", comments: "No comiÃ³ nada" }
     ]);
 
     const navigate = useNavigate();
@@ -56,10 +56,10 @@ function ActivityPanel() {
                             Dormir
                         </button>
                         <button
-                            className={`activity-button ${selectedActivity === 'Ir al Baño' ? 'active' : ''}`}
-                            onClick={() => handleActivitySelect('Ir al Baño')}
+                            className={`activity-button ${selectedActivity === 'Ir al BaÃ±o' ? 'active' : ''}`}
+                            onClick={() => handleActivitySelect('Ir al BaÃ±o')}
                         >
-                            Ir al Baño
+                            Ir al BaÃ±o
                         </button>
                         <button
                             className={`activity-button ${selectedActivity === 'Huerta' ? 'active' : ''}`}
@@ -76,7 +76,7 @@ function ActivityPanel() {
                             <table className="activity-table">
                                 <thead>
                                     <tr>
-                                        <th>Nombre del Niño</th>
+                                        <th>Nombre del NiÃ±o</th>
                                         <th>Estatus de Comida</th>
                                         <th>Comentarios</th>
                                     </tr>
@@ -118,7 +118,7 @@ function ActivityPanel() {
                             <table className="activity-table">
                                 <thead>
                                     <tr>
-                                        <th>Nombre del Niño</th>
+                                        <th>Nombre del NiÃ±o</th>
                                         <th>Hora de Inicio</th>
                                         <th>Hora de Fin</th>
                                         <th>Comentarios</th>
@@ -155,15 +155,15 @@ function ActivityPanel() {
                         </div>
                     )}
 
-                    {/* Tabla de datos para "Ir al Baño" */}
-                    {selectedActivity === "Ir al Baño" && (
+                    {/* Tabla de datos para "Ir al BaÃ±o" */}
+                    {selectedActivity === "Ir al BaÃ±o" && (
                         <div>
-                            <h2 className="activity-subtitle">Estado de Baño</h2>
+                            <h2 className="activity-subtitle">Estado de BaÃ±o</h2>
                             <table className="activity-table">
                                 <thead>
                                     <tr>
-                                        <th>Nombre del Niño</th>
-                                        <th>Veces que fue al baño</th>
+                                        <th>Nombre del NiÃ±o</th>
+                                        <th>Veces que fue al baÃ±o</th>
                                         <th>Comentarios</th>
                                     </tr>
                                 </thead>
@@ -200,8 +200,8 @@ function ActivityPanel() {
                             <table className="activity-table">
                                 <thead>
                                     <tr>
-                                        <th>Nombre del Niño</th>
-                                        <th>Participación</th>
+                                        <th>Nombre del NiÃ±o</th>
+                                        <th>ParticipaciÃ³n</th>
                                         <th>Comentarios</th>
                                     </tr>
                                 </thead>
