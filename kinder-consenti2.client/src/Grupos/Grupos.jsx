@@ -76,7 +76,7 @@ const Grupos = () => {
                                 <label>
                                     Filtro por usuario:
                                 </label>
-                                <input name="user" onChange={handleFilterChange} value={userFilter} />   
+                                <input className="filter" name="user" onChange={handleFilterChange} value={userFilter} />   
                             </div>
                                                     
                         </div>                     

@@ -8,6 +8,10 @@ h1 {
 
 .content {
     width: 80%;
+    font-family: "Roboto", sans-serif;   
+    height: 95vh; /* Para cubrir toda la pantalla */   
+    flex-direction: column; 
+    padding-top: 80px; /* Para dar espacio al navbar */   
 }
 
 .group {
@@ -36,16 +40,16 @@ label {
     display: flex;
     width: 16%;
     margin-top:40px;
+    margin-bottom:40px;
     border-radius: 4px;
     cursor: pointer;    
     color: white;
     transition: background-color 0.3s ease;
 }
 
-input {
-    width: 100%;
-    margin: 0 10px 20px 0;
-    padding: 5px;
+.filter {
+    width: 100%;   
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
