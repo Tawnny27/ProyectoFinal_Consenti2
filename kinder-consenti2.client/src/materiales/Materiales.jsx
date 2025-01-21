@@ -1,6 +1,7 @@
-﻿import React, { useEffect, useState, useRef } from "react";
+﻿import  { useEffect, useState, useRef } from "react";
 import Navbar from "../componentes/navbar";
 import Footer from "../componentes/footer";
+import Sidebar from "../componentes/Sidebar";
 import "./materiales.css";
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -266,9 +267,14 @@ const MaterialesDidacticos = () => {
     };
 
     return (
-        <>
+        <div>
             <Navbar />
-            <div className="materiales-container">
+            <div className="content-container">
+                <Sidebar />
+
+                <main className="main-content">
+                    <div className="materiales-container">
+
                 <h2 className="materiales-header">Material Didáctico</h2>
                 {isLoading ? (
                     <p className="materiales-loading">Cargando materiales...</p>
@@ -366,10 +372,11 @@ const MaterialesDidacticos = () => {
                     </div>
                 )}
 
-
+                    </div>
+                </main>
             </div>
             <Footer />
-        </>
+        </div>
     );
 };
 

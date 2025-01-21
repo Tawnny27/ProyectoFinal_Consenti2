@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../componentes/navbar";
 import Footer from "../componentes/footer";
+import Sidebar from "../componentes/Sidebar";
 import "./activityList.css";
 import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,7 +13,7 @@ const ListaActividades = () => {
 
     const [listaAct, setListaAct] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
-    const { user, setUser } = useUserContext();
+    const { user } = useUserContext();
     //--------------------------------------------------------------------
 
     const [title, setTitle] = useState("");
@@ -58,7 +59,7 @@ const ListaActividades = () => {
 
     const agregarEvento = async () => {
         console.log(envioEvento);
-        
+
         const createEventoResponse = await axios.post(
             "https://localhost:44369/Eventos/CrearEvento",
             envioEvento,
@@ -81,7 +82,7 @@ const ListaActividades = () => {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
-            });            
+            });
         }
         cargarLista();
 
@@ -137,15 +138,15 @@ const ListaActividades = () => {
         setSuccess(true);
         // Aquí puedes enviar los datos a la API o manejarlos como prefieras
         agregarEvento();
-        
+
         setearDatos();
-       
+
 
     }
 
 
     //----------------------------------------------------------------------------
-    useEffect(() => {        
+    useEffect(() => {
         cargarLista();
     }, []);
 
@@ -188,135 +189,140 @@ const ListaActividades = () => {
     return (
         <div>
             <Navbar />
-            <div className="act-container">
-                <h1 className="act-header"> Lista de Actividades</h1>
-                <div className="cards-container">
-                    {user.rolId != 3 &&(
-                        <button onClick={() => setModalVisible(true)} className="button-agregar">
-                            Agregar Actividad
-                        </button>
-                    )}          
-                    {listaAct.map((act) => (
-                        <div key={act.idEventos} className="act-card">
-                            <h4>{act.nombreEvento}</h4>
-                            <p>{act.fecha}</p>
+            <div className="content-container">
+                <Sidebar />
+                <main className="main-content">
+                <div className="act-container">
+                    <h1 className="act-header"> Lista de Actividades</h1>
+                    <div className="cards-container">
+                        {user.rolId != 3 && (
+                            <button onClick={() => setModalVisible(true)} className="button-agregar">
+                                Agregar Actividad
+                            </button>
+                        )}
+                        {listaAct.map((act) => (
+                            <div key={act.idEventos} className="act-card">
+                                <h4>{act.nombreEvento}</h4>
+                                <p>{act.fecha}</p>
 
-                            <div className="image-container"
-                                onMouseEnter={() => setHover(true)}
-                                onMouseLeave={() => setHover(false)} >
-                                
-                                <img className="card-imagen" src={act.fotoEvento } alt=""></img>
-                                {hover && (                                 
-                                    <div className="hover-info">{TextoConSaltosDeLinea(act.descripcionEvento)}</div>                                   
-                                )}
-                            </div>
+                                <div className="image-container"
+                                    onMouseEnter={() => setHover(true)}
+                                    onMouseLeave={() => setHover(false)} >
 
-                        </div>
-                    ))
-                    }
-                </div>
-
-                {modalVisible && (
-                    <div className="modal">
-                        <div className="modal-content">
-                            <span className="close" onClick={setearDatos}>&times;</span>                        
-                            <h2 className="activity-form-title">Agregar Nueva Actividad</h2>
-                            <form className="activity-form" onSubmit={handleSubmit}>
-                                <label className="activity-form-label">
-                                    Título:
-                                    <input
-                                        type="text"
-                                        className="activity-form-input"
-                                        required
-                                        value={title}
-                                        onChange={(e) => setTitle(e.target.value)}
-                                    />
-                                </label>
-                                <label className="activity-form-label">
-                                    Fecha:
-                                    <input
-                                        type="date"
-                                        className="activity-form-input"
-                                        required
-                                        value={date}
-                                        onChange={(e) => setDate(e.target.value)}
-                                    />
-                                </label>
-
-                                { /****************************************************************************/}
-                                <div className="form-group">
-                                    <label className="activity-form-label">
-                                        Imagen:
-                                    </label>
-                                    <input
-                                        type="file"
-                                        className="activity-form-input"
-                                        required
-                                        ref={fileInputRef}
-                                        onChange={handleImageChange}
-                                        accept=".jpg,.jpeg,.png"
-                                    />
-                                    {previewUrl && (
-                                        <div className="image-preview-container">
-                                            <img
-                                                src={previewUrl}
-                                                alt="Vista previa"
-                                                className="image-preview"
-                                                style={{ maxWidth: '200px', marginTop: '10px' }}
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setSelectedFile(null);
-                                                    setPreviewUrl('');
-                                                    if (fileInputRef.current) {
-                                                        fileInputRef.current.value = '';
-                                                    }
-                                                }}
-                                                className="remove-image-btn"
-                                            >
-                                                Eliminar imagen
-                                            </button>
-                                        </div>
+                                    <img className="card-imagen" src={act.fotoEvento} alt=""></img>
+                                    {hover && (
+                                        <div className="hover-info">{TextoConSaltosDeLinea(act.descripcionEvento)}</div>
                                     )}
-                                    {imageError && (
-                                        <div className="error-message" style={{ color: 'red', marginTop: '5px' }}>
-                                            {imageError}
-                                        </div>
-                                    )}
-                                    <div className="image-info"
-                                        style={{ fontSize: '0.8rem', color: '#666', marginTop: '5px' }}>
-                                        Formatos permitidos: JPG, PNG. Tamano maximo: 5MB
-                                    </div>
                                 </div>
-                                { /****************************************************************************/}
 
-                                <label className="activity-form-label">
-                                    Descripción:
-                                    <textarea
-                                        className="activity-form-input"
-                                        value={description}
-                                        required
-                                        onChange={(e) => setDescription(e.target.value)}
-                                    />
-                                </label>
+                            </div>
+                        ))
+                        }
+                    </div>
 
-                                {error && <p className="activity-form-error">{error}</p>}
-                                {success && <p className="activity-form-success">Actividad registrada correctamente.</p>}
-                                <button type="submit" className="activity-form-submit">Registrar Actividad</button>
-                            </form>
-                            { /*
+                    {modalVisible && (
+                        <div className="modal">
+                            <div className="modal-content">
+                                <span className="close" onClick={setearDatos}>&times;</span>
+                                <h2 className="activity-form-title">Agregar Nueva Actividad</h2>
+                                <form className="activity-form" onSubmit={handleSubmit}>
+                                    <label className="activity-form-label">
+                                        Título:
+                                        <input
+                                            type="text"
+                                            className="activity-form-input"
+                                            required
+                                            value={title}
+                                            onChange={(e) => setTitle(e.target.value)}
+                                        />
+                                    </label>
+                                    <label className="activity-form-label">
+                                        Fecha:
+                                        <input
+                                            type="date"
+                                            className="activity-form-input"
+                                            required
+                                            value={date}
+                                            onChange={(e) => setDate(e.target.value)}
+                                        />
+                                    </label>
+
+                                    { /****************************************************************************/}
+                                    <div className="form-group">
+                                        <label className="activity-form-label">
+                                            Imagen:
+                                        </label>
+                                        <input
+                                            type="file"
+                                            className="activity-form-input"
+                                            required
+                                            ref={fileInputRef}
+                                            onChange={handleImageChange}
+                                            accept=".jpg,.jpeg,.png"
+                                        />
+                                        {previewUrl && (
+                                            <div className="image-preview-container">
+                                                <img
+                                                    src={previewUrl}
+                                                    alt="Vista previa"
+                                                    className="image-preview"
+                                                    style={{ maxWidth: '200px', marginTop: '10px' }}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setSelectedFile(null);
+                                                        setPreviewUrl('');
+                                                        if (fileInputRef.current) {
+                                                            fileInputRef.current.value = '';
+                                                        }
+                                                    }}
+                                                    className="remove-image-btn"
+                                                >
+                                                    Eliminar imagen
+                                                </button>
+                                            </div>
+                                        )}
+                                        {imageError && (
+                                            <div className="error-message" style={{ color: 'red', marginTop: '5px' }}>
+                                                {imageError}
+                                            </div>
+                                        )}
+                                        <div className="image-info"
+                                            style={{ fontSize: '0.8rem', color: '#666', marginTop: '5px' }}>
+                                            Formatos permitidos: JPG, PNG. Tamano maximo: 5MB
+                                        </div>
+                                    </div>
+                                    { /****************************************************************************/}
+
+                                    <label className="activity-form-label">
+                                        Descripción:
+                                        <textarea
+                                            className="activity-form-input"
+                                            value={description}
+                                            required
+                                            onChange={(e) => setDescription(e.target.value)}
+                                        />
+                                    </label>
+
+                                    {error && <p className="activity-form-error">{error}</p>}
+                                    {success && <p className="activity-form-success">Actividad registrada correctamente.</p>}
+                                    <button type="submit" className="activity-form-submit">Registrar Actividad</button>
+                                </form>
+                                { /*
                                     </div>
                                 */}
 
+                            </div>
                         </div>
+                    )}
                     </div>
-                )}
+                </main>
             </div>
             <Footer />
         </div>
 
     );
-    };
+};
 
 export default ListaActividades;

@@ -96,11 +96,18 @@ body {
 }
 
 .sidebar {
-    width: 250px;
+    width: 275px;
     background-color: #A569BD;
     color: white;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+    margin-bottom: 50px;
+    opacity: 90%;
+    scroll-behavior: smooth;
+    max-height: calc(100vh - 50px); /* Ajusta según el margen superior */
+    overflow-y: auto;
+    font-family: 'Roboto', sans-serif;
 }
 
     .sidebar h2 {

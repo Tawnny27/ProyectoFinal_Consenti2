@@ -34,6 +34,7 @@ import MonitoreoAlumno from './monitoreo/monitoreo';
 import ComportamientoAlumno from './comportamiento/Comportamiento';
 import ListaActividades from './actividades/activityList';
 import ComunicacionMensajes from './comunicaciones/comunicacionesMensajes';
+import Grupos from './Grupos/Grupos';
 
 
 function App() {
@@ -89,8 +90,8 @@ function App() {
                     <Route path="/comunicacion-mensajes" element={<ComunicacionMensajes />} />
                     <Route path="/materiales" element={<MaterialesDidacticos />} />
                     <Route path="/fotos" element={<FotosPorCarpeta />} />
-                    <Route path="/inventario" element={<Inventario />} />
-                    <Route path="/Gastos" element={<Gastos />} />
+                    <Route path="/inventario" element={<Inventario />} />                    
+                    <Route path="/Grupos" element={<Grupos />} />
 
 
                 </Routes>
