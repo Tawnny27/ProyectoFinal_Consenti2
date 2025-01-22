@@ -1,9 +1,13 @@
 ﻿
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Grupos.css';
 import Navbar from "../componentes/navbar";
 import Footer from "../componentes/footer";
 import Sidebar from "../componentes/Sidebar";
+import axios from 'axios';
+import DataTable from 'react-data-table-component';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileExcel, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const Grupos = () => {
     const [data, setData] = useState([]);
@@ -12,6 +16,19 @@ const Grupos = () => {
     const [userFilter, setUserFilter] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [newRecord, setNewRecord] = useState({ usuario: '', grupo: '' });
+    const [group, setGroup] = useState([]);
+
+
+    const cargarGrupos = async () => {
+        const groups = await axios.get('https://localhost:44369/Grupos/ObtenerGrupos');
+        setGroup(groups.data);
+        console.log(group);
+    }
+
+    useEffect(() => {
+        cargarGrupos();
+        console.log(group);
+    },[]);
 
     const handleFilterChange = (e) => {
         if (e.target.name === 'status') setStatusFilter(e.target.value);
@@ -45,8 +62,49 @@ const Grupos = () => {
         setFilteredData(updatedData);
     };
 
+    const cargaStatus = (status) => {
+        if (status == true)
+            return "Activo";
+        else
+            return "inactivo";
+    }
+
+
+    const columns = [
+        {
+            name: "Grupo",
+            selector: row => row.nombreGrupo,
+            with: '30px',
+            sortable: true
+        },
+        {
+            name: "Usuario",
+            selector: row => row.usuario.nombreUsuario,
+            with: '30px',
+            sortable: true            
+        },
+        {
+            name: "Status",
+            selector: row => cargaStatus(row.status),
+            with: '30px',
+            sortable: true
+        },
+        {
+            name: "Acciones",
+            with:'5px',            
+            cell: (row) => (
+                <div className="acciones">
+                    <button className="acciones-button" onClick={() => alert('Ver y Editar')}>
+                        <FontAwesomeIcon icon={faEdit} />
+                    </button>
+                    <button className="acciones-button" onClick={() => handleStatusChange(row.status)}>X</button>
+                </div>                 
+            ),
+        }
+    ];
+
     return (
-        <div className="App">
+        <div >
 
             <Navbar />
             <div className="content-container">
@@ -80,30 +138,51 @@ const Grupos = () => {
                             </div>
                                                     
                         </div>                     
-
-                        <table>
+                        <div className="table-container">   
+                            <DataTable
+                                columns={columns}
+                                data={group}
+                                pagination
+                                paginationComponentOptions={{
+                                    rowsPerPageText: 'Filas por página:',
+                                    rangeSeparatorText: 'de',
+                                    noRowsPerPage: false, // Muestra el selector de filas por página
+                                    selectAllRowsItem: true,
+                                    selectAllRowsItemText: 'Todos'
+                                }}
+                                highlightOnHover
+                                fixedHeader
+                                fixedHeaderScrollHeight="300px"
+                                responsive 
+                            />
+                            { /*
+                                <table>
                             <thead>
                                 <tr>
-                                    <th>Grupo</th>
-                                    <th>Usuario</th>
-                                    <th>Status</th>
-                                    <th>Acción</th>
+                                        <th className="otros">Grupo</th>
+                                        <th className="otros">Usuario</th>
+                                        <th className="otros">Status</th>
+                                        <th className="acciones">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredData.map((item, index) => (
+                                {group.map((item, index) => (
                                     <tr key={index}>
-                                        <td>{item.grupo}</td>
-                                        <td>{item.usuario}</td>
-                                        <td>{item.status}</td>
-                                        <td>
+                                        <td className="otros">{item.nombreGrupo}</td>
+                                        <td className="otros">{item.usuario.nombreUsuario}</td>
+                                        <td className="otros">{cargaStatus(item.status)}</td>
+                                        <td className="acciones">
                                             <button onClick={() => alert('Ver y Editar')}>Ver/Editar</button>
                                             <button onClick={() => handleStatusChange(index)}>Cambiar Status</button>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
-                        </table>
+                            </table>
+                            */}
+
+                        
+                        </div>
                         {showModal && (
                             <div className="modal">
                                 <h2>Nuevo Registro</h2>

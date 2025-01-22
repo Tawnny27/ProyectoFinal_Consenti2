@@ -277,8 +277,7 @@ namespace kinder_consenti2.Server.Models
                 .WithMany(x => x.Grupos)
                 .HasForeignKey(f => f.UsuarioId);
             //Tablas ignoradas
-            modelBuilder.Entity<Grupos>()
-                .Ignore(x => x.Usuario);
+           
             //******************************************************************
 
             //************************* Tabla GruposAlumnos  *******************                                                                               

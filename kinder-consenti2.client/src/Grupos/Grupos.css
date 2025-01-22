@@ -7,11 +7,13 @@ h1 {
 }
 
 .content {
-    width: 80%;
+    width: 95%;
+    margin-bottom:50px;
     font-family: "Roboto", sans-serif;   
-    height: 95vh; /* Para cubrir toda la pantalla */   
+     /* Para cubrir toda la pantalla */   
     flex-direction: column; 
-    padding-top: 80px; /* Para dar espacio al navbar */   
+    padding-top: 80px; /* Para dar espacio al navbar */  
+   
 }
 
 .group {
@@ -27,6 +29,22 @@ h1 {
     width: 50%;
 }
 
+div.acciones {
+    padding-right: 0px;
+    display: flex;
+    gap: 10px; /* Espacio entre los botones */
+    justify-content: center;
+}
+
+.acciones-button {
+    background-color: #f1c40f;
+    border: none;
+    color: white;
+    padding: 10px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
 
 select {
     width: 100%;
@@ -36,11 +54,11 @@ label {
     text-align: center;
 }
 
-.new {
-    display: flex;
-    width: 16%;
-    margin-top:40px;
-    margin-bottom:40px;
+.new {    
+    text-align:center;
+    width: 30%;
+    margin-top:10px;
+    margin-bottom:10px;
     border-radius: 4px;
     cursor: pointer;    
     color: white;
@@ -53,29 +71,45 @@ label {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+   
+    /*****************************************************************************************/
 
-
-    button:hover {
-        background-color: #0056b3;
-        
-    }
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+.table-container {
+    /*max-height: 300px; /* Ajusta la altura según sea necesario */
+    overflow-y: auto;
 }
 
-th, td {
+thead {
+  position: sticky;
+  top: 0;
+  background-color: white; /* Asegúrate de que el fondo del encabezado sea consistente */
+  z-index: 1; /* Asegúrate de que el encabezado esté por encima de las filas */
+}
+
+div.otros {
+    width: 20%;
+    text-align:center;
+}
+/*********************************************************************************************/
+
+/*
+table {
+    width: 100%;
+    border-collapse: collapse;   
+}
+
+td {
     padding: 10px;
     border: 1px solid #ddd;
     text-align: left;
 }
 
 th {
-    background-color: #f7f7f7;
+    background-color: #f2f2f2;
     text-align: center;
 }
+   
+*/
 
 .modal {
     position: fixed;
