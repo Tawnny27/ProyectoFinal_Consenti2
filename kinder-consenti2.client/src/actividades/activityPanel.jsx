@@ -34,7 +34,7 @@ function ActivityPanel() {
         setChildrenData(updatedData);
     };
 
-    const cargarMaestra = async () => {
+    const cargarMaestraAlumnos = async () => {
         try {
             const response = await axios.get(`https://localhost:44369/Usuarios/BuscarUsuarios/${5}`);
             console.log(response.data)
@@ -52,9 +52,64 @@ function ActivityPanel() {
         }
     };
 
+    const handleApiCall = async (activity) => {
+        switch (activity) {
+            case 'Comida':
+                try {
+                    const response = await axios.put(`https://localhost:44369/ActividadComidas/EditarActividadComidas/${5}`);
+                    if (response == 200) {
+                        console.log('Success');
+                    }
+       
+                } catch (error) {
+                    console.error("Error :", error);
+                    
+                }
+                
+                break;
+            case 'Huerta':
+                try {
+                    const response = await axios.put(`https://localhost:44369/ActividadHuerta/EditarActividadHuerta/${5}`);
+                    if (response == 200) {
+                        console.log('Success');
+                    }
+
+                } catch (error) {
+                    console.error("Error :", error);
+
+                }
+                break;
+            case 'Dormir':
+                try {
+                    const response = await axios.put(`https://localhost:44369/ActividadDormir/EditarActividadDormir/${5}`);
+                    if (response == 200) {
+                        console.log('Success');
+                    }
+
+                } catch (error) {
+                    console.error("Error :", error);
+
+                }
+                break;
+            case 'Ir al Baño':
+                try {
+                    const response = await axios.put(`https://localhost:44369/ActividadBanno/EditarActividadBanno/${5}`);
+                    if (response == 200) {
+                        console.log('Success');
+                    }
+
+                } catch (error) {
+                    console.error("Error :", error);
+
+                }
+                break;
+            default:
+                console.log("No hay actividad seleccionada");
+        }
+    };
 
     useEffect(() => { 
-        cargarMaestra();
+        cargarMaestraAlumnos();
 
     }, []);
 
@@ -265,6 +320,23 @@ function ActivityPanel() {
                         <button className="activity-form-button" onClick={goToActivityForm}>
                             Crear Actividad
                         </button>
+                    </div>
+                    <div>
+                        
+
+                        {/* Mostrar los botones según la actividad seleccionada */}
+                        {selectedActivity === 'Comida' && (
+                            <button onClick={() => handleApiCall('Comida')}>Enviar a API Comida</button>
+                        )}
+                        {selectedActivity === 'Huerta' && (
+                            <button onClick={() => handleApiCall('Huerta')}>Enviar a API Huerta</button>
+                        )}
+                        {selectedActivity === 'Ir al Baño' && (
+                            <button onClick={() => handleApiCall('Ir al Baño')}>Enviar a API Bano 3</button>
+                        )}
+                        {selectedActivity === 'Dormir' && (
+                            <button onClick={() => handleApiCall('Dormir')}>Enviar a API Dormir 4</button>
+                        )}
                     </div>
                 </div>
             </div>

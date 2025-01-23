@@ -294,9 +294,8 @@ namespace kinder_consenti2.Server.Models
                 .WithMany(x => x.GruposAlumnos)
                 .HasForeignKey(f => f.GruposId)
                 .OnDelete(DeleteBehavior.NoAction);
-            //Tablas ignoradas
-            modelBuilder.Entity<GruposAlumnos>()
-                .Ignore(x => x.Grupo);
+            
+          
             //***************************************************************
 
             //************************* Tabla Categoria  ********************                                                                              

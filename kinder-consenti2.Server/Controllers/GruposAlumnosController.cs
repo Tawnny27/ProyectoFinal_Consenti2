@@ -1,5 +1,6 @@
 ﻿using kinder_consenti2.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace kinder_consenti2.Server.Controllers
 {
@@ -17,7 +18,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("ObtenerGrupoAlumnos/{idGrupo}")]
         public ActionResult<List<GruposAlumnos>> ObtenerGrupoAlumnos(int idGrupo)
         {
-            return Ok(_context.GruposAlumnos.Where(x=> x.GruposId==idGrupo).ToList());
+            return Ok(_context.GruposAlumnos.Include(x=> x.Alumno).Where(x=> x.GruposId==idGrupo).ToList());
         }
 
         [HttpGet]
