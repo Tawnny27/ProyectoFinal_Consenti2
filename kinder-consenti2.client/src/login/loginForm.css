@@ -167,3 +167,34 @@ button {
     margin: 10px 0;
     font-size: 16px;
 }
+
+.input-icon {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0 10px;
+    position: relative; /* Asegura que los íconos se posicionen correctamente */
+}
+
+    .input-icon input {
+        border: none;
+        outline: none;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .input-icon .toggle-password {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0 10px;
+        color: #A569BD;
+        font-size: 18px;
+        position: absolute;
+        right: 10px;
+    }
+
+        .input-icon .toggle-password:hover {
+            color: #5ad8bf;
+        }

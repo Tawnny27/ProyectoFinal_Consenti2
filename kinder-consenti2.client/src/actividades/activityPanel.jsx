@@ -1,20 +1,20 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ActivityPanel.css';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import { faCarrot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useUserContext } from '../UserContext';
+import axios from 'axios';
 
 function ActivityPanel() {
     const [selectedActivity, setSelectedActivity] = useState("");
-    const [childrenData, setChildrenData] = useState([
-        { name: "Juan Pérez", status: "Bueno", comments: "Comió todo" },
-        { name: "María López", status: "Regular", comments: "No quiso la sopa" },
-        { name: "Carlos Sánchez", status: "Malo", comments: "No comió nada" }
-    ]);
+    const [childrenData, setChildrenData] = useState([]);
+
 
     const navigate = useNavigate();
+    const { user } = useUserContext();
 
     const handleActivitySelect = (activity) => {
         setSelectedActivity(activity);
@@ -33,6 +33,30 @@ function ActivityPanel() {
         updatedData[index][field] = value;
         setChildrenData(updatedData);
     };
+
+    const cargarMaestra = async () => {
+        try {
+            const response = await axios.get(`https://localhost:44369/Usuarios/BuscarUsuarios/${5}`);
+            console.log(response.data)
+            // Mapea los datos de la API a la estructura necesaria
+            const formattedData = response.data.alumnos.map(child => ({
+                name: child.nombreAlumno || "Sin nombre", 
+                status: "Bueno",    
+                comments: ""        
+            }));
+
+            setChildrenData(formattedData);
+            console.log("Datos cargados:", formattedData);
+        } catch (error) {
+            console.error("Error al cargar los datos:", error);
+        }
+    };
+
+
+    useEffect(() => { 
+        cargarMaestra();
+
+    }, []);
 
     return (
         <div className="user-maintenance-container">
