@@ -1,5 +1,6 @@
 ﻿using kinder_consenti2.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace kinder_consenti2.Server.Controllers
 {
@@ -17,7 +18,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("ObtenerGrupos")]
         public ActionResult<List<Grupos>> ObtenerGrupos()
         {
-            return Ok(_context.Grupos.ToList());
+            return Ok(_context.Grupos.Include(x=> x.Usuario).ToList());
         }
 
         [HttpGet]

@@ -8,7 +8,6 @@ import './registro.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserShield, faIdCard, faPhone, faInfoCircle, faLock } from '@fortawesome/free-solid-svg-icons';
 
-
 const RegistroUsuario = () => {
     const navigate = useNavigate();
     const [roles, setRoles] = useState([]);
@@ -24,7 +23,6 @@ const RegistroUsuario = () => {
     });
     const [mensajeExito, setMensajeExito] = useState('');
     const [error, setError] = useState('');
-    
 
     const manejarCambio = (e) => {
         const { name, value } = e.target;
@@ -35,32 +33,24 @@ const RegistroUsuario = () => {
     };
 
     useEffect(() => {
-        
         const fetchRoles = async () => {
-            const response = await fetch('https://localhost:44369/Roles/ObtenerRoles'); 
+            const response = await fetch('https://localhost:44369/Roles/ObtenerRoles');
             const data = await response.json();
             setRoles(data);
         };
         fetchRoles();
     }, []);
 
-
-
-
     const manejarEnvio = async (e) => {
         e.preventDefault();
         try {
-            // Limpiar mensajes anteriores
             setError('');
             setMensajeExito('');
 
             const response = await axios.post('https://localhost:44369/Usuarios/CrearUsuario/', usuario);
 
-            // Verificar si la respuesta es exitosa
             if (response.data) {
                 setMensajeExito('Usuario registrado exitosamente.');
-
-                // Espera 2 segundos y luego redirige según el rol seleccionado
                 setTimeout(() => {
                     if (usuario.rolId === "3") {
                         navigate('/alumno-maintenance');
@@ -70,23 +60,15 @@ const RegistroUsuario = () => {
                 }, 2000);
             }
         } catch (error) {
-            // Manejo detallado de errores
             let mensajeError = 'Hubo un problema al registrar el usuario.';
 
             if (error.response) {
-                // El servidor respondió con un estado de error
                 if (error.response.data && error.response.data.message) {
                     mensajeError = error.response.data.message;
                 } else {
                     switch (error.response.status) {
                         case 400:
-                            // Aquí puedes manejar un BadRequest (400)
-                            // Si el servidor envía un mensaje en el body de la respuesta, lo usamos.
-                            if (error.response.data) {
-                                mensajeError = error.response.data.message || 'La Cedula o Correo Electronico ya se han registrado previamente . Por favor verifique los campos.';
-                            } else {
-                                mensajeError = 'La solicitud no es válida. Por favor, verifique los datos enviados.';
-                            }
+                            mensajeError = error.response.data?.message || 'La Cedula o Correo Electronico ya se han registrado previamente. Por favor verifique los campos.';
                             break;
                         case 401:
                             mensajeError = 'No autorizado. Por favor inicie sesión nuevamente.';
@@ -102,7 +84,6 @@ const RegistroUsuario = () => {
                     }
                 }
             } else if (error.request) {
-                // La solicitud se hizo pero no se recibió respuesta
                 mensajeError = 'No se pudo conectar con el servidor. Verifique su conexión a internet.';
             }
 
@@ -111,27 +92,24 @@ const RegistroUsuario = () => {
         }
     };
 
-
     return (
-        <div className="usuario-maintenance-container">
+        <div className="usuario-maintenance-containerR">
             <Navbar />
-            <div className="usuario-form-container">
-                <h1 className="usuario-title">Registrar Usuario</h1>
-                {mensajeExito && <div className="usuario-success-message">{mensajeExito}</div>}
+            <div className="usuario-form-containerR">
+                <h1 className="usuario-titleR">Registrar Usuario</h1>
+                {mensajeExito && <div className="usuario-success-messageR">{mensajeExito}</div>}
 
-                <form onSubmit={manejarEnvio} className="usuario-form">
-                    <div className="usuario-form-group">
-                        <label className="usuario-label">ID Rol</label>
-                        <div className="usuario-input-container">
-                            
+                <form onSubmit={manejarEnvio} className="usuario-formR">
+                    <div className="usuario-form-groupR">
+                        <label className="usuario-labelR">ID Rol</label>
+                        <div className="usuario-input-containerR">
                             <select
                                 name="rolId"
                                 value={usuario.rolId}
                                 onChange={manejarCambio}
-                                className="usuario-select"
+                                className="usuario-selectR"
                                 required
                             >
-
                                 <option value="">Seleccione un rol</option>
                                 {roles.map((rol) => (
                                     <option key={rol.idRol} value={rol.idRol}>
@@ -139,107 +117,105 @@ const RegistroUsuario = () => {
                                     </option>
                                 ))}
                             </select>
-
                         </div>
                     </div>
 
-                    <div className="usuario-form-group">
-                        <label className="usuario-label">Nombre</label>
-                        <div className="usuario-input-container">
-                            <FontAwesomeIcon icon={faUser} className="usuario-input-icon" />
+                    <div className="usuario-form-groupR">
+                        <label className="usuario-labelR">Nombre</label>
+                        <div className="usuario-input-containerR">
+                            <FontAwesomeIcon icon={faUser} className="usuario-input-iconR" />
                             <input
                                 type="text"
                                 name="nombreUsuario"
                                 value={usuario.nombreUsuario}
                                 onChange={manejarCambio}
-                                className="usuario-input"
+                                className="usuario-inputR"
                                 required
                             />
                         </div>
                     </div>
 
-                    <div className="usuario-form-group">
-                        <label className="usuario-label">Apellidos</label>
-                        <div className="usuario-input-container">
-                            <FontAwesomeIcon icon={faUser} className="usuario-input-icon" />
+                    <div className="usuario-form-groupR">
+                        <label className="usuario-labelR">Apellidos</label>
+                        <div className="usuario-input-containerR">
+                            <FontAwesomeIcon icon={faUser} className="usuario-input-iconR" />
                             <input
                                 type="text"
                                 name="apellidosUsuario"
                                 value={usuario.apellidosUsuario}
                                 onChange={manejarCambio}
-                                className="usuario-input"
+                                className="usuario-inputR"
                                 required
                             />
                         </div>
                     </div>
 
-                    <div className="usuario-form-group">
-                        <label className="usuario-label">Cédula</label>
-                        <div className="usuario-input-container">
-                            <FontAwesomeIcon icon={faIdCard} className="usuario-input-icon" />
+                    <div className="usuario-form-groupR">
+                        <label className="usuario-labelR">Cédula</label>
+                        <div className="usuario-input-containerR">
+                            <FontAwesomeIcon icon={faIdCard} className="usuario-input-iconR" />
                             <input
                                 type="text"
                                 name="cedulaUsuario"
                                 value={usuario.cedulaUsuario}
                                 onChange={manejarCambio}
-                                className="usuario-input"
+                                className="usuario-inputR"
                                 required
                             />
                         </div>
                     </div>
 
-                    <div className="usuario-form-group">
-                        <label className="usuario-label">Teléfono</label>
-                        <div className="usuario-input-container">
-                            <FontAwesomeIcon icon={faPhone} className="usuario-input-icon" />
+                    <div className="usuario-form-groupR">
+                        <label className="usuario-labelR">Teléfono</label>
+                        <div className="usuario-input-containerR">
+                            <FontAwesomeIcon icon={faPhone} className="usuario-input-iconR" />
                             <input
                                 type="text"
                                 name="telefonoUsuario"
                                 value={usuario.telefonoUsuario}
                                 onChange={manejarCambio}
-                                className="usuario-input"
+                                className="usuario-inputR"
                                 required
                             />
                         </div>
                     </div>
 
-                    <div className="usuario-form-group">
-                        <label className="usuario-label">Correo</label>
-                        <div className="usuario-input-container">
-                            <FontAwesomeIcon icon={faInfoCircle} className="usuario-input-icon" />
+                    <div className="usuario-form-groupR">
+                        <label className="usuario-labelR">Correo</label>
+                        <div className="usuario-input-containerR">
+                            <FontAwesomeIcon icon={faInfoCircle} className="usuario-input-iconR" />
                             <input
                                 type="email"
                                 name="correoUsuario"
                                 value={usuario.correoUsuario}
                                 onChange={manejarCambio}
-                                className="usuario-input"
+                                className="usuario-inputR"
                                 required
                             />
                         </div>
                     </div>
 
-                    <div className="usuario-form-group">
-                        <label className="usuario-label">Contraseña</label>
-                        <div className="usuario-input-container">
-                            <FontAwesomeIcon icon={faLock} className="usuario-input-icon" />
+                    <div className="usuario-form-groupR">
+                        <label className="usuario-labelR">Contraseña</label>
+                        <div className="usuario-input-containerR">
+                            <FontAwesomeIcon icon={faLock} className="usuario-input-iconR" />
                             <input
                                 type="password"
                                 name="contrasennaUsuario"
                                 value={usuario.contrasennaUsuario}
                                 onChange={manejarCambio}
-                                className="usuario-input"
+                                className="usuario-inputR"
                                 required
                             />
                         </div>
                     </div>
 
-                    <button type="submit" className="usuario-button-save">Registrar Usuario</button>
-                    {error && <div className="usuario-error-message">{error}</div>}
+                    <button type="submit" className="usuario-button-saveR">Registrar Usuario</button>
+                    {error && <div className="usuario-error-messageR">{error}</div>}
                 </form>
             </div>
             <Footer />
         </div>
-
     );
 };
 

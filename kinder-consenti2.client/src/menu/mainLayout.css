@@ -70,6 +70,7 @@ body {
 .content-container {
     display: flex;
     height: 100%;
+    width:100%;
     opacity: 80%;
 }
 
@@ -80,7 +81,7 @@ body {
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     margin-top: 30px;
-    margin-bottom: 50px;
+    margin-bottom: 0px;
     opacity: 90%;
     scroll-behavior: smooth;
     max-height: calc(100vh - 50px); /* Ajusta según el margen superior */
@@ -192,7 +193,7 @@ body {
 
 .main-content {
     flex-grow: 1;
-    padding: 20px;
+    padding: 40px;
     background: url('../assets/background.jpg') no-repeat center center fixed;
     background-size: cover;
     display: flex;

@@ -1,5 +1,4 @@
-
-.alumno-input-icon {
+.alumno-input-iconR {
     position: absolute;
     left: 12px;
     top: 50%;
@@ -7,7 +6,7 @@
     color: #A569BD;
 }
 
-form {
+formR {
     /* Contenedor del formulario */
     width: 300px;
     margin: 0 auto;
@@ -18,12 +17,12 @@ form {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-label {
+labelR {
     display: block;
     margin-bottom: 5px;
 }
 
-.input-form {
+.input-formR {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -31,7 +30,7 @@ label {
     border-radius: 3px;
 }
 
-button {
+buttonR {
     padding: 10px 20px;
     background-color: #4CAF50; /* Verde */
     color: #fff;
@@ -40,12 +39,11 @@ button {
     cursor: pointer;
 }
 
-    button:hover {
+    buttonR:hover {
         background-color: #3e8e41; /* Verde más oscuro al pasar el ratón */
     }
 
-
-.error-message {
+.error-messageR {
     color: red;
     margin: 10px 0;
     padding: 10px;
@@ -54,7 +52,7 @@ button {
     background-color: rgba(255, 0, 0, 0.1);
 }
 
-.success-message {
+.success-messageR {
     color: green;
     margin: 10px 0;
     padding: 10px;
@@ -63,10 +61,9 @@ button {
     background-color: rgba(0, 255, 0, 0.1);
 }
 
-
 /**ACTUALIZACION: No se borra lo anterior por que por alguna razon afecta a otras partes*/
 
-.usuario-maintenance-container {
+.usuario-maintenance-containerR {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -75,10 +72,9 @@ button {
     background-size: cover;
     min-height: 100vh;
     padding: 20px;
-    /*margin: 150px;*/
 }
 
-.usuario-form-container {
+.usuario-form-containerR {
     background-color: white;
     border-radius: 8px;
     padding: 24px;
@@ -88,14 +84,14 @@ button {
     margin: 150px;
 }
 
-.usuario-title {
+.usuario-titleR {
     text-align: center;
     color: #9370DB;
     margin-bottom: 20px;
     font-size: 24px;
 }
 
-.usuario-success-message {
+.usuario-success-messageR {
     background-color: #4caf50;
     color: white;
     padding: 10px;
@@ -104,56 +100,54 @@ button {
     text-align: center;
 }
 
-.usuario-form {
+.usuario-formR {
     display: flex;
     flex-direction: column;
     gap: 16px;
     width: 100%;
 }
 
-.usuario-form-group {
+.usuario-form-groupR {
     display: flex;
     flex-direction: column;
 }
 
-.usuario-label {
+.usuario-labelR {
     display: block;
     margin-bottom: 8px;
     color: #A569BD;
     font-size: 14px;
 }
 
-.usuario-input-container {
+.usuario-input-containerR {
     position: relative;
     border: 1px solid #e0e0e0;
     border-radius: 6px;
     overflow: hidden;
-    
+    display: flex; /* Asegura que los elementos internos se alineen correctamente */
+    align-items: center; /* Centra verticalmente */
 }
 
-.usuario-input-icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
+.usuario-input-iconR {
+    margin-left: 10px; /* Ajustar margen para separar del borde */
     color: #A569BD;
 }
 
-.usuario-input {
-    width: 100%;
-    padding: 12px 12px 12px 40px;
+.usuario-inputR {
+    flex: 1; /* Asegura que el input ocupe el espacio restante */
+    padding: 12px;
+    padding-left: 40px; /* Deja suficiente espacio para el ícono */
     border: none;
     outline: none;
     font-size: 14px;
     background: white;
 }
-
-    .usuario-input:focus {
+    .usuario-inputR:focus {
         border-color: #2196f3;
         box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
     }
 
-.usuario-select {
+.usuario-selectR {
     width: 100%;
     padding: 12px;
     border: 1px solid #e0e0e0;
@@ -165,7 +159,7 @@ button {
     cursor: pointer;
 }
 
-.usuario-button-save {
+.usuario-button-saveR {
     background-color: #4caf50;
     color: white;
     border: none;
@@ -178,11 +172,11 @@ button {
     font-weight: bold;
 }
 
-    .usuario-button-save:hover {
+    .usuario-button-saveR:hover {
         background-color: #43a047;
     }
 
-.usuario-error-message {
+.usuario-error-messageR {
     background-color: #e74c3c;
     color: white;
     padding: 10px;
@@ -193,12 +187,12 @@ button {
 
 /* Responsivo */
 @media (max-width: 768px) {
-    .usuario-form-group {
+    .usuario-form-groupR {
         width: 100%;
     }
 
-    .usuario-input,
-    .usuario-select {
+    .usuario-inputR,
+    .usuario-selectR {
         font-size: 16px;
     }
 }

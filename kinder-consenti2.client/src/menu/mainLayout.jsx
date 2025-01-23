@@ -8,6 +8,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import logo from '../assets/logo.jpg';
 import Footer from '../componentes/footer';
+import Sidebar from "../componentes/Sidebar";
 import { useUserContext } from '../UserContext';
 import { faAddressBook, faReceipt, faBoxesStacked, faCheck, faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet, faChartSimple } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
 import { Nav } from '../../../node_modules/react-bootstrap/esm/index';
@@ -71,6 +72,7 @@ const MainLayout = () => {
         setShowCalendarModal(false);
     };
 
+    /*
     const toggleAdminSubmenu = () => {
         setShowAdminSubmenu(!showAdminSubmenu);
     };
@@ -91,9 +93,10 @@ const MainLayout = () => {
     const toggleComunicacionSubmenu = () => {
         setShowComunicacionSubmenu(!showComunicacionSubmenu);
     };
-
+    */
     return (
         <div className="main-layout">
+            { /* Navbar*/}
             <header className="header">
                 <div className="logo-container">
                     <img src={logo} alt="Logo" className="logo-main" />
@@ -109,9 +112,12 @@ const MainLayout = () => {
                     </button>
                 </div>
             </header>
+            { /* Lateral */}
             <div className="content-container">
-                <aside className="sidebar">
-                    <h2>Men�</h2>
+                <Sidebar />
+                { /* 
+                     <aside className="sidebar">
+                    <h2>Menú</h2>
                     <ul>
                         {user.rolId === 1 && (
                             <li>
@@ -178,6 +184,10 @@ const MainLayout = () => {
                                 )}
                             </li>
                         )}
+                        <li>
+                            <Link to="/Grupos">Aulas</Link>
+                        </li>
+
                         <li className="menu-link"><Link to="/matricula">
                             <FontAwesomeIcon icon={faSchoolCircleCheck} className="menu-icon" />  Matrícula</Link></li>
                         {user.rolId === 1 && (
@@ -241,6 +251,10 @@ const MainLayout = () => {
                         </li>
                     </ul>
                 </aside>
+                
+                */}
+               
+
                 <main className="main-content">
                     <div className="bienvenidos">
                         <h1>!Bienvenido!</h1>
@@ -251,6 +265,8 @@ const MainLayout = () => {
                     </div>
                 </main>
             </div>
+
+            { /* Fin de Lateral*/}
 
             {/* Modal para el calendario */}
             {showCalendarModal && (
@@ -286,6 +302,8 @@ const MainLayout = () => {
                     </div>
                 </div>
             )}
+            {/* Fin  Modal para el calendario */}
+
             <Footer />
         </div>
     );
