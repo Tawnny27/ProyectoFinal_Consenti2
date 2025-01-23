@@ -32,6 +32,7 @@ const UserMaintenance = () => {
     const navigate = useNavigate();
 
     // Función para obtener el nombre del rol desde la API utilizando el rolId
+    /*
     const fetchRoleName = async (rolId) => {
         try {
             const response = await axios.get(`https://localhost:44369/Roles/BuscarRol/${rolId}`);
@@ -44,6 +45,7 @@ const UserMaintenance = () => {
             return 'Desconocido'; // En caso de error
         }
     };
+    */
 
     // Función para obtener los datos de los usuarios desde la API
     const fetchUsers = async () => {
@@ -55,13 +57,13 @@ const UserMaintenance = () => {
                 // Obtener el nombre del rol para cada usuario
                 const formattedUsers = await Promise.all(
                     usuariosData.map(async (usuario) => {
-                        const roleName = await fetchRoleName(usuario.rolId); // Llamar a la API para obtener el nombre del rol
+                        //const roleName = await fetchRoleName(usuario.rolId); // Llamar a la API para obtener el nombre del rol
                         return {
                             id: usuario.idUsuario,
                             name: `${usuario.nombreUsuario} ${usuario.apellidosUsuario}`,
                             idCard: usuario.cedulaUsuario,
                             entryDate: usuario.fechaIngreso ? usuario.fechaIngreso.split('T')[0] : '2023-01-01', // Ajuste de formato de fecha
-                            role: roleName || 'Desconocido', // Asignar el nombre del rol obtenido o "Desconocido"
+                            role: usuario.rol.nombreRol || 'Desconocido', // Asignar el nombre del rol obtenido o "Desconocido"
                             status: usuario.estado ? 'Activo' : 'Inactivo' // Mapeo del estado booleano
                         };
                     })

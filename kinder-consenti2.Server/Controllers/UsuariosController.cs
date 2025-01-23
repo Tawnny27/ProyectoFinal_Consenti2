@@ -28,7 +28,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("ObtenerUsuarios")]
         public ActionResult<List<Usuario>> ObtenerUsuarios()
         {
-            return Ok(_context.Usuario.Include(p => p.Alumnos).ToList());
+            return Ok(_context.Usuario.Include(p => p.Alumnos).Include(p=> p.Rol).ToList());
         }
 
         //************** Consultar Maestros ******************
@@ -79,7 +79,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("BuscarUsuarios/{id}")]
         public ActionResult<Usuario> BuscarUsuarios(int id)
         {
-            var usuario = _context.Usuario.Include(p => p.Alumnos).FirstOrDefault(x=> x.IdUsuario==id);
+            var usuario = _context.Usuario.Include(p => p.Alumnos).Include(p=> p.Rol).FirstOrDefault(x=> x.IdUsuario==id);
             if (usuario == null)
                 return BadRequest("No encontrado");
             return Ok(usuario);

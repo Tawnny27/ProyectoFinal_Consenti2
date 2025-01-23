@@ -30,9 +30,11 @@ const EditarUsuario = () => {
             try {
                 const response = await axios.get(`https://localhost:44369/Usuarios/BuscarUsuarios/${id}`);
                 setUsuario(response.data);
+                console.log(response.data);
             } catch (error) {
                 console.error("Error al obtener el usuario:", error);
             }
+
         };
 
         obtenerUsuario();

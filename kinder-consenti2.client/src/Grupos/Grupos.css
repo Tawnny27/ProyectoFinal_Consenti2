@@ -8,12 +8,12 @@ h1 {
 
 .content {
     width: 95%;
-    margin-bottom:50px;
-    font-family: "Roboto", sans-serif;   
-     /* Para cubrir toda la pantalla */   
-    flex-direction: column; 
-    padding-top: 80px; /* Para dar espacio al navbar */  
-   
+    height: 95vh;
+    
+    font-family: "Roboto", sans-serif;
+    /* Para cubrir toda la pantalla */
+    flex-direction: column;
+    padding-top: 80px; /* Para dar espacio al navbar */
 }
 
 .group {
