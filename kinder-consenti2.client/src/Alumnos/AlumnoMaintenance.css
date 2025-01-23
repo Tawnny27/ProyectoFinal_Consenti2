@@ -296,24 +296,25 @@
     border: 1px solid #e0e0e0;
     border-radius: 6px;
     overflow: hidden;
+    display: flex; /* Asegura que los elementos internos se alineen horizontalmente */
+    align-items: center; /* Centra verticalmente */
 }
 
 .alumno-input-icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
+    margin-left: 10px; /* Ajustar margen para separar del borde */
     color: #A569BD;
 }
 
 .alumno-input {
-    width: 100%;
-    padding: 12px 12px 12px 40px;
+    flex: 1; /* Permite que el input ocupe el espacio restante */
+    padding: 12px;
+    padding-left: 40px; /* Deja suficiente espacio para el ícono */
     border: none;
     outline: none;
     font-size: 14px;
     background: white;
 }
+
 
     .alumno-input:focus {
         border-color: #2196f3;

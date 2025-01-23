@@ -7,7 +7,10 @@ import './Factura.css';
 
 const FacturaMaintenance = () => {
     const [facturas, setFacturas] = useState([]);
+    const [facturasFiltradas, setFacturasFiltradas] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [filtroUsuarioId, setFiltroUsuarioId] = useState(''); // Filtro por Usuario ID
+    const [filtroEstado, setFiltroEstado] = useState(''); // Filtro por Estado
     const [modalOpen, setModalOpen] = useState(false);
     const [imagenSeleccionada, setImagenSeleccionada] = useState('');
 
@@ -18,6 +21,7 @@ const FacturaMaintenance = () => {
             const response = await axios.get('https://localhost:44369/EncabezadoFactura/ObtenerFacturasPendientes');
             if (response.status === 200) {
                 setFacturas(response.data);
+                setFacturasFiltradas(response.data); // Inicializar facturas filtradas con todas las facturas
             }
         } catch (error) {
             console.error('Error al obtener las facturas:', error);
@@ -26,7 +30,27 @@ const FacturaMaintenance = () => {
         }
     };
 
-    // Función para actualizar el estado de una factura
+    // Filtrar facturas por Usuario ID y Estado
+    useEffect(() => {
+        let facturasFiltradas = facturas;
+
+        // Filtrar por Usuario ID
+        if (filtroUsuarioId.trim() !== '') {
+            facturasFiltradas = facturasFiltradas.filter((factura) =>
+                factura.usuarioId.toString().includes(filtroUsuarioId)
+            );
+        }
+
+        // Filtrar por Estado
+        if (filtroEstado !== '') {
+            facturasFiltradas = facturasFiltradas.filter(
+                (factura) => factura.status.toString() === filtroEstado
+            );
+        }
+
+        setFacturasFiltradas(facturasFiltradas);
+    }, [filtroUsuarioId, filtroEstado, facturas]);
+
     const actualizarEstado = async (idFactura, nuevoEstado) => {
         try {
             const response = await axios.put(`https://localhost:44369/EncabezadoFactura/DarAltaFactura/${idFactura}&${nuevoEstado}`);
@@ -45,19 +69,14 @@ const FacturaMaintenance = () => {
     };
 
     const abrirModal = (imagen) => {
-        // Separar la ruta en directorio y nombre del archivo
         const partesRuta = imagen.split('/');
-        const directorio = partesRuta.slice(0, -1).join('/'); 
-        const nombreArchivo = partesRuta.slice(-1)[0]; 
-
-        // Concatenar "Comprobante_" al nombre del archivo
+        const directorio = partesRuta.slice(0, -1).join('/');
+        const nombreArchivo = partesRuta.slice(-1)[0];
         const nombreCompleto = `Comprobante_${nombreArchivo}`;
-
-        // Construir la ruta completa
         const rutaCompleta = `${directorio}/${nombreCompleto}`;
 
-        setImagenSeleccionada(rutaCompleta); // Actualizar el estado con la ruta correcta
-        setModalOpen(true); // Abrir el modal
+        setImagenSeleccionada(rutaCompleta);
+        setModalOpen(true);
     };
 
     const cerrarModal = () => {
@@ -82,7 +101,7 @@ const FacturaMaintenance = () => {
         },
         {
             name: 'Fecha',
-            selector: (row) => row.fecha ? row.fecha.split('T')[0] : 'Sin fecha',
+            selector: (row) => (row.fecha ? row.fecha.split('T')[0] : 'Sin fecha'),
         },
         {
             name: 'Método de Pago',
@@ -126,13 +145,35 @@ const FacturaMaintenance = () => {
         <div className="Fact-maintenance-container">
             <Navbar />
             <h2>Mantenimiento de Facturas</h2>
+
+            {/* Filtros */}
+            <div className="filtros-container">
+                <input
+                    type="text"
+                    placeholder="Buscar por Usuario ID"
+                    value={filtroUsuarioId}
+                    onChange={(e) => setFiltroUsuarioId(e.target.value)}
+                    className="buscador-input"
+                />
+                <select
+                    value={filtroEstado}
+                    onChange={(e) => setFiltroEstado(e.target.value)}
+                    className="filtro-estado"
+                >
+                    <option value="">Todos los Estados</option>
+                    <option value="1">Pagado</option>
+                    <option value="0">Pendiente</option>
+                    <option value="2">No Pagado</option>
+                </select>
+            </div>
+
             <div className="data-table-wrapper">
                 {loading ? (
                     <p>Cargando...</p>
                 ) : (
                     <DataTable
                         columns={columns}
-                        data={facturas}
+                        data={facturasFiltradas} // Mostrar facturas filtradas
                         pagination
                         highlightOnHover
                         fixedHeader
@@ -146,11 +187,11 @@ const FacturaMaintenance = () => {
                     />
                 )}
             </div>
+
             {modalOpen && (
                 <div
                     className="modal-overlay"
                     onClick={(e) => {
-                        
                         if (e.target.className === 'modal-overlay') {
                             cerrarModal();
                         }
