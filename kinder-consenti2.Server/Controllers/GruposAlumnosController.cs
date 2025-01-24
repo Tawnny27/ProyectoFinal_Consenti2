@@ -22,6 +22,19 @@ namespace kinder_consenti2.Server.Controllers
         }
 
         [HttpGet]
+        [Route("ObtenerGrupoAlumnosXmaesto/{idMaestro}")]
+        public ActionResult<List<GruposAlumnos>> ObtenerGrupoAlumnosXmaesto(int idMaestro)
+        {
+            var grupo = _context.Grupos.Where(x => x.UsuarioId == idMaestro && x.Status == true).FirstOrDefault();
+            if(grupo!=null)
+                return Ok(_context.GruposAlumnos.Include(x => x.Alumno).Where(x => x.GruposId == grupo.IdGrupos).ToList());
+            return NotFound("No hay grupos asociados");
+
+        }
+
+
+
+        [HttpGet]
         [Route("BuscarGruposAlumno/{idAlumno}")]
         public ActionResult<GruposAlumnos> BuscarGruposAlumno(int idAlumno)
         {
