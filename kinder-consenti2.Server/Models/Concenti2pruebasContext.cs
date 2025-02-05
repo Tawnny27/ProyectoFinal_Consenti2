@@ -91,8 +91,8 @@ namespace kinder_consenti2.Server.Models
                 .HasForeignKey(f => f.UsuarioId)
                 .OnDelete(DeleteBehavior.NoAction);
             //Tablas ignoradas
-            modelBuilder.Entity<EncabezadoFactura>()
-                .Ignore(x => x.Usuario);
+            //modelBuilder.Entity<EncabezadoFactura>()
+                //Ignore(x => x.Usuario);
             //***************************************************************
 
             //************************* Tabla DetalleFactura ****************
@@ -119,9 +119,7 @@ namespace kinder_consenti2.Server.Models
                 .HasForeignKey(f => f.AlumnoId);
             //Tablas ignoradas
             modelBuilder.Entity<DetalleFactura>()
-                .Ignore(x => x.EncabezadoFactura)
-                .Ignore(x => x.Producto)
-                .Ignore(x => x.Alumno);
+                .Ignore(x => x.EncabezadoFactura);                
             //***************************************************************
 
             //************************* Tabla Producto **********************

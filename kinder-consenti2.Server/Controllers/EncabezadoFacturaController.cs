@@ -2,6 +2,7 @@
 using kinder_consenti2.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
 
 namespace kinder_consenti2.Server.Controllers
 {
@@ -47,30 +48,66 @@ namespace kinder_consenti2.Server.Controllers
 
         public ActionResult <string> DarAltaFactura(int idfact, int status) 
         {
-            if (status == 1 || status == 2) // 1-finalizada  2-Rechazada
+            try
             {
-                var factura = _context.EncabezadoFactura.FirstOrDefault(x=> x.IdFactura== idfact);
-                if (factura != null)
-                { 
-                    factura.status = status;
-                    _context.EncabezadoFactura.Update(factura);
-                    _context.SaveChanges();                    
-                    if (status == 1) 
+                if (status == 1 || status == 2) // 1-finalizada  2-Rechazada
+                {
+                    var factura = _context.EncabezadoFactura
+                        .Include(x => x.DetalleFacturas)
+                        .ThenInclude(df=> df.Producto)
+                        .Include(x => x.DetalleFacturas)
+                        .ThenInclude(df => df.Alumno)
+                        .Include(x => x.Usuario)
+                        .FirstOrDefault(x => x.IdFactura == idfact);
+                    if (factura != null)
                     {
-                        var matricula = _context.Matricula.FirstOrDefault(x => x.IdFact == factura.IdFactura);
-                        if (matricula == null)
-                            return NotFound("Revisar no se encontraron datos");
-                        matricula.Status = true;
-                        _context.Matricula.Update(matricula);
+                        factura.status = status;
+                        _context.EncabezadoFactura.Update(factura);
                         _context.SaveChanges();
-                        return Ok("Factura finalizada");
-                    }                        
-                    else
-                        return Ok("Factura rechazada");                    
+                        if (status == 1)
+                        {
+                            var matricula = _context.Matricula.FirstOrDefault(x => x.IdFact == factura.IdFactura);
+                            if (matricula != null)
+                            {
+                                matricula.Status = true;
+                                _context.Matricula.Update(matricula);
+                                _context.SaveChanges();
+                            }
+                            //-----------------------------------------------------------
+                            string numFactura = factura.IdFactura.ToString();
+                            string numFinal = "0";
+                            if (numFactura.Length > 10)
+                                numFinal = numFactura;
+                            else
+                            {
+                                for (int i = 0; i < (10 - numFactura.Length); i++)
+                                    numFinal = numFinal + "0";
+                                numFinal = numFinal + numFactura;
+                            }
+                            //-----------------------------------------------------------
+
+                            CorreoEnvio correo = new();
+                            var datosCorreo = _context.SetingCorreo.FirstOrDefault();
+                            correo.EnviarCorreoPDF(587,
+                                                   datosCorreo.CorreoOrigen,
+                                                   datosCorreo.ContrasennaOrigen,
+                                                   factura.Usuario.CorreoUsuario,
+                                                   datosCorreo.smtpClient,
+                                                   "Comprobante de pago Factura #"+ numFinal,
+                                                   "Adjunto encontrara su factura referente al pago del " + factura.Fecha,
+                                                   factura);
+                            return Ok("Factura finalizada");
+                        }
+                        else
+                            return Ok("Factura rechazada");
+                    }
+                    return BadRequest("Algo salió mal revisar los datos enviados");
                 }
                 return BadRequest("Algo salió mal revisar los datos enviados");
-            } 
-            return BadRequest("Algo salió mal revisar los datos enviados");
+            }
+            catch (Exception e) { 
+                return BadRequest("Error: "+e.Message);
+            }
         }
         //*****************************************Pasar factura a estatus finalizado o rechazado ************************************
 
@@ -81,10 +118,16 @@ namespace kinder_consenti2.Server.Controllers
         [Route("BuscarFactura/{id}")]
         public ActionResult<EncabezadoFactura> BuscarFactura(int id)
         {
-            var facturaEncontrada = _context.EncabezadoFactura.
-                Include(x => x.DetalleFacturas).FirstOrDefault(x => x.IdFactura == id);
+            var facturaEncontrada = _context.EncabezadoFactura
+                .Include(x => x.DetalleFacturas)
+                .ThenInclude(df => df.Producto)
+                .Include(x => x.DetalleFacturas)
+                .ThenInclude(df => df.Alumno)
+                .Include(x=> x.Usuario)
+                .FirstOrDefault(x => x.IdFactura == id);
+
             if (facturaEncontrada == null)
-                return BadRequest("Factura no encontrada");
+                return BadRequest("Factura no encontrada");   
             return Ok(facturaEncontrada);
         }
         //---------------------------------------------------------------------------------------------------------------------------

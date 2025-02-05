@@ -1,6 +1,9 @@
 ﻿using kinder_consenti2.Server.Models;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 using System.Text.Json.Serialization;
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
