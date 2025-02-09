@@ -5,6 +5,7 @@ import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useUserContext } from '../UserContext'; // Importar el hook del contexto
 import { faUser, faCalendar, faIdCard, faVenusMars, faHome, faInfoCircle, faCamera, faUserShield, faPhone } from '@fortawesome/free-solid-svg-icons';
 
 //import axios from '../../../node_modules/axios/index';
@@ -12,6 +13,8 @@ import axios from '../axios';
 
 
 const RegistroPago = () => {
+
+    const { user } = useUserContext();
 
     const [usuario, setUsuario] = useState([]);
     const [detallesTemp, setDetallesTemp] = useState([]);
@@ -24,9 +27,17 @@ const RegistroPago = () => {
         cedulaUsuario: ''
     });
 
+    const [errorMessages, setErrorMessages] = useState({
+        idUsuario: '',
+        rolId: '',
+        nombreUsuario: '',
+        apellidosUsuario: '',
+        cedulaUsuario: ''
+    });
+
     const [pago, setPago] = useState({
         clienteId: 0,
-        rolId: 0,
+        rollId: 0,
         fecha: new Date().toISOString(),
         metodoPago: '',
         imagenPago: '/FotosPagos/default.jpg',
@@ -50,6 +61,35 @@ const RegistroPago = () => {
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     const IMAGE_PATH = '/FotosPagos/';
 
+
+    const limpiarDatos = () => {
+
+        setPago({
+            clienteId: 0,
+            rollId: 0,
+            fecha: new Date().toISOString(),
+            metodoPago: '',
+            imagenPago: '/FotosPagos/default.jpg',
+            referencia: '0',
+            subtotal: 0,
+            descuento: 0,
+            iva: 0.13,
+            total: 0,
+            detalles: [],
+        });
+
+        setUsuarioSelect({
+            idUsuario: 0,
+            rolId: 0,
+            nombreUsuario: '',
+            apellidosUsuario: '',
+            cedulaUsuario: ''
+        });
+
+        setDetallesTemp([]);
+    };
+
+
     const validateImage = (file) => {
         if (!file) {
             throw new Error('Por favor seleccione una imagen');
@@ -64,15 +104,16 @@ const RegistroPago = () => {
         return true;
     };
 
-    useEffect(() => {
-        const cargarDatos = async () => {
-            try {
-                const usuarioResponse = await axios.get('https://localhost:44369/Usuarios/ObtenerPadres');
-                setUsuario(usuarioResponse.data);
-            } catch (error) {
-                console.error('Error al cargar los datos :', error);
-            }
+    const cargarDatos = async () => {
+        try {
+            const usuarioResponse = await axios.get('https://localhost:44369/Usuarios/ObtenerPadres');
+            setUsuario(usuarioResponse.data);
+        } catch (error) {
+            console.error('Error al cargar los datos :', error);
         }
+    }
+
+    useEffect(() => {
         cargarDatos();
     }, []);
 
@@ -97,11 +138,15 @@ const RegistroPago = () => {
                 setPago({
                     ...pago,
                     clienteId: usuarioSelect.idUsuario,
-                    rolId: usuarioSelect.rolId,
+                    rollId: user.rolId,
                     subtotal: 0,
                     total: 0,
                     detalles: []
                 });
+            }
+            else {
+                setDetallesTemp([]);
+                setMensaje('');
             }
         } catch (error) {
             console.error('Error al cargar los datos :', error);
@@ -144,7 +189,30 @@ const RegistroPago = () => {
                 apellidosUsuario: usSelect.apellidosUsuario,
                 cedulaUsuario: usSelect.cedulaUsuario,
             }));
+
+            setErrorMessages(() => ({
+                idUsuario: '',
+                rolId: '',
+                nombreUsuario: '',
+                apellidosUsuario: '',
+                cedulaUsuario: ''
+            }));
         }
+
+    }
+
+
+    const validacionDatos = () => {
+        let Valid = true;
+        let errors = {};
+        for (let key in usuarioSelect) {
+            if (!usuarioSelect[key]) {
+                errors[key] = `Por favor, completa el campo ${key}.`;
+                Valid = false;
+            }
+        }
+        setErrorMessages(errors);
+        return Valid;
     }
 
     const columns = [
@@ -169,12 +237,12 @@ const RegistroPago = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        if (value != '') {            
+        if (value != '') {
             setPago({ ...pago, [name]: value });
         } else {
             setPago({ ...pago, [name]: '0' });
         }
-        
+
     };
 
 
@@ -187,6 +255,8 @@ const RegistroPago = () => {
         setIsValid(true);
     }
 
+
+
     //------------------------------------combio en la imagen------------------------------------------------
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -197,7 +267,7 @@ const RegistroPago = () => {
                 // Crear URL temporal para vista previa
                 const previewURL = URL.createObjectURL(file);
                 setPreviewUrl(previewURL);
-            }             
+            }
 
         } catch (error) {
             setImageError(error.message);
@@ -209,38 +279,40 @@ const RegistroPago = () => {
 
     //------------------------------------------------------------------------------------------------------
     //2********
-    useEffect(() => {            
+    useEffect(() => {
         setPago({
             ...pago,
             imagenPago: `${IMAGE_PATH}${nombreUnico}`
-        });        
+        });
     }, [nombreUnico]);
 
 
 
     //1*********
 
-    useEffect(() => {      
+    useEffect(() => {
         if (selectedFile) {
             // Generar nombre único para la imagen
             const fileExtension = selectedFile.name.split('.').pop();
-            setNombreUnico(`${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`);              
+            setNombreUnico(`${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`);
         }
         else {
             setNombreUnico('default.jpg');
         }
-    },[selectedFile]);
+    }, [selectedFile]);
 
     // ---------------------------------------envio de datos-------------------------------------------------
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (selectedCheckbox === null) {
-            setIsValid(false);
-
-        } else { // Lógica para enviar el formulario o realizar la acción deseada 
-            alert(`Aqui se envian los datosa la BD`);   
-            envioDatos();
+        if (validacionDatos()) {
+            if (selectedCheckbox === null) {
+                setIsValid(false);
+            } else { // Lógica para enviar el formulario o realizar la acción deseada 
+                console.log(pago);
+                //alert(`Aqui se envian los datosa la BD`);
+                envioDatos();
+            }
         }
     };
     //-----------------------------------------------------------------------------------------------------------------
@@ -267,7 +339,9 @@ const RegistroPago = () => {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-                alert(imageResponse.message.toString);
+
+                limpiarDatos();
+                alert(imageResponse.message.status);
             }
 
         } catch (error) {
@@ -299,37 +373,44 @@ const RegistroPago = () => {
 
                     <form onSubmit={handleSubmit} >
                         { /* Dropdown*/}
-                        <label>Usuario</label>
-                        <select
-                            name="clienteId"
-                            value={usuarioSelect.idUsuario}
-                            //onChange={manejarCambioUsuario}
-                            onChange={(e) => handleUserSelect(e.target.value)}
-                            required
-                        >
-                            <option value=""> Seleccione una persona</option>
-                            {
-                                usuario.map((us) => (
-                                    <option key={us.idUsuario} value={us.idUsuario}>
-                                        {us.nombreUsuario}
-                                    </option>
-                                ))}
-                        </select>
+
+                        <div className="form-group">
+                            <label>Usuario</label>
+                            <select
+                                name="clienteId"
+                                value={usuarioSelect.idUsuario}
+                                //onChange={manejarCambioUsuario}
+                                onChange={(e) => handleUserSelect(e.target.value)}
+                                required
+                            >
+                                <option key="0" value="0"> Seleccione una persona</option>
+                                {
+                                    usuario.map((us) => (
+                                        <option key={us.idUsuario} value={us.idUsuario}>
+                                            {us.nombreUsuario}
+                                        </option>
+                                    ))}
+                            </select>
+
+                        </div>
+
                         { /* Dropdown*/}
                         <div className="form-group" style={{ display: 'none' }}>
-                            <input type="text" name="rolId"
-                                value={usuarioSelect.rolId}
+                            <input type="text" name="rollId"
+                                value={usuarioSelect.rollId}
                                 disabled />
                         </div>
 
                         <div className="form-group" >
                             <label>Apellido:</label>
-                            <input type="text" value={usuarioSelect.apellidosUsuario} disabled />
+                            <input type="text" value={usuarioSelect.apellidosUsuario} disabled required />
+                            {errorMessages.apellidosUsuario && <div style={{ color: 'red' }}>{errorMessages.apellidosUsuario}</div>}
                         </div>
 
                         <div className="form-group">
                             <label>Cédula:</label>
-                            <input type="text" value={usuarioSelect.cedulaUsuario} disabled />
+                            <input type="text" value={usuarioSelect.cedulaUsuario} disabled required />
+                            {errorMessages.cedulaUsuario && <div style={{ color: 'red' }}>{errorMessages.cedulaUsuario}</div>}
                         </div>
 
                         <div className="form-group">
@@ -337,20 +418,25 @@ const RegistroPago = () => {
                             <input type="number"
                                 name="referencia"
                                 value={usuarioSelect.referencia}
+                                required
                                 onChange={handleInputChange}
                             />
                         </div>
 
                         <div>
                             {['Efectivo', 'Simpe', 'Transferencia'].map((label, index) => (
-                                <label key={index}>
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedCheckbox === index}
-                                        onChange={() => handleCheckboxChange(index, label)}
-                                    />
-                                    {label}
-                                </label>
+                                <div key={index}>
+                                    <label key={index}>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedCheckbox === index}
+                                            onChange={() => handleCheckboxChange(index, label)}
+                                        />
+                                        {label}
+
+                                    </label>
+                                    <br />
+                                </div>
                             ))}
                             {!isValid && <p style={{ color: 'red' }}>Debe seleccionar al menos una opción.</p>}
                         </div>
@@ -359,7 +445,7 @@ const RegistroPago = () => {
                         <div className="form-group">
 
                             <label>Subtotal:</label>
-                            <input type="text" name="subtotal" value={pago.subtotal} disabled />
+                            <input type="text" name="subtotal" value={pago.subtotal} disabled />                           
                             <label>Total:</label>
                             <input type="text" name="subtotal" value={pago.total} disabled />
                         </div>
@@ -419,21 +505,9 @@ const RegistroPago = () => {
                             responsive
                         />
 
-                        {/*
-                            <div className="form-group">
-                            <label>Subir factura de pago (Solo PDF):</label>
-                            <div className="file-input-wrapper">
-                                <input type="file" id="file-input" accept=".pdf" />
-                                <label htmlFor="file-input" className="file-label">
-                                    Seleccionar archivo
-                                </label>
-                            </div>
-                        </div>           
-                        
-                        */ }
-
                         <div className="button-group">
                             <button type="submit" className="btn-submit" onClick={handleSubmit}>Enviar</button>
+                            <button type="button" className="btn-submit" onClick={limpiarDatos}>Limpiar</button>
                             <button type="button" className="btn-cancel">Cancelar</button>
                         </div>
                     </form>

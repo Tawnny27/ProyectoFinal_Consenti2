@@ -13,10 +13,12 @@ namespace kinder_consenti2.Server.Controllers
     {
 
         private readonly Concenti2pruebasContext _context;
+        private readonly CorreoEnvio _correoEnvio;
 
-        public EncabezadoFacturaController(Concenti2pruebasContext context)
+        public EncabezadoFacturaController(Concenti2pruebasContext context, CorreoEnvio correoEnvio)
         {
             _context = context;
+            _correoEnvio = correoEnvio; 
         }
 
         //---------------------------------------------------------------------------------------------------------------------------
@@ -28,7 +30,6 @@ namespace kinder_consenti2.Server.Controllers
             return Ok(_context.EncabezadoFactura.Include(x => x.DetalleFacturas).ToList());
         }
         //---------------------------------------------------------------------------------------------------------------------------
-
 
         //------------------------------------------Obtener factura en estatus pendiente---------------------------------------------
         [HttpGet]
@@ -52,13 +53,8 @@ namespace kinder_consenti2.Server.Controllers
             {
                 if (status == 1 || status == 2) // 1-finalizada  2-Rechazada
                 {
-                    var factura = _context.EncabezadoFactura
-                        .Include(x => x.DetalleFacturas)
-                        .ThenInclude(df=> df.Producto)
-                        .Include(x => x.DetalleFacturas)
-                        .ThenInclude(df => df.Alumno)
-                        .Include(x => x.Usuario)
-                        .FirstOrDefault(x => x.IdFactura == idfact);
+                    var factura = _context.EncabezadoFactura.Find(idfact);
+
                     if (factura != null)
                     {
                         factura.status = status;
@@ -73,30 +69,16 @@ namespace kinder_consenti2.Server.Controllers
                                 _context.Matricula.Update(matricula);
                                 _context.SaveChanges();
                             }
-                            //-----------------------------------------------------------
-                            string numFactura = factura.IdFactura.ToString();
-                            string numFinal = "0";
-                            if (numFactura.Length > 10)
-                                numFinal = numFactura;
-                            else
-                            {
-                                for (int i = 0; i < (10 - numFactura.Length); i++)
-                                    numFinal = numFinal + "0";
-                                numFinal = numFinal + numFactura;
-                            }
-                            //-----------------------------------------------------------
 
-                            CorreoEnvio correo = new();
+                            // Envio de factura                         
                             var datosCorreo = _context.SetingCorreo.FirstOrDefault();
-                            correo.EnviarCorreoPDF(587,
+                            _correoEnvio.EnviarCorreoPDF(587,
                                                    datosCorreo.CorreoOrigen,
-                                                   datosCorreo.ContrasennaOrigen,
-                                                   factura.Usuario.CorreoUsuario,
-                                                   datosCorreo.smtpClient,
-                                                   "Comprobante de pago Factura #"+ numFinal,
-                                                   "Adjunto encontrara su factura referente al pago del " + factura.Fecha,
-                                                   factura);
-                            return Ok("Factura finalizada");
+                                                   datosCorreo.ContrasennaOrigen,                                                  
+                                                   datosCorreo.smtpClient,    
+                                                   factura.IdFactura);
+                            return Ok("Factura finalizada y enviada");
+
                         }
                         else
                             return Ok("Factura rechazada");
@@ -110,7 +92,6 @@ namespace kinder_consenti2.Server.Controllers
             }
         }
         //*****************************************Pasar factura a estatus finalizado o rechazado ************************************
-
 
         //-----------------------------------------------------------------------------------------------------------------------------
 
@@ -132,8 +113,6 @@ namespace kinder_consenti2.Server.Controllers
         }
         //---------------------------------------------------------------------------------------------------------------------------
 
-
-
         //-----------------------------------Proceso de Matricula y factiracion de ---------------------------------------------------
 
         [HttpPost]
@@ -144,6 +123,7 @@ namespace kinder_consenti2.Server.Controllers
             int idStatus;
             bool status;
             // se valida el roll de la persona que envia la solicitud
+
             if (Datos.RollId == 1)   // roll adm para el status finalizado de la factura y la matricula
             {
                 idStatus = 1; 
@@ -154,7 +134,6 @@ namespace kinder_consenti2.Server.Controllers
                 idStatus = 0; 
                 status = false;
             }
-
             // Se setea el obj EncabezadoFactura
             EncabezadoFactura factura = new EncabezadoFactura
             {
@@ -209,6 +188,20 @@ namespace kinder_consenti2.Server.Controllers
                     _context.Matricula.Add(Matriculada);
                     _context.SaveChanges(); 
                 }
+
+
+                if (Datos.RollId == 1)   // Envio de factura
+                {                    
+                   
+                    var datosCorreo = _context.SetingCorreo.FirstOrDefault();
+                    _correoEnvio.EnviarCorreoPDF(587,
+                                           datosCorreo.CorreoOrigen,
+                                           datosCorreo.ContrasennaOrigen,                                          
+                                           datosCorreo.smtpClient,     
+                                           insertada.IdFactura);
+                    return Ok("Matricula Efectuada y factura enviada");
+                }
+                
                 return Ok("Matricula enviada para validacio del pago");
             }            
              return BadRequest("Algo salio mal, validar con Amnistarcion");
@@ -216,26 +209,17 @@ namespace kinder_consenti2.Server.Controllers
 
         //********************************Fin de Proceso de Matricula y factiracion de **************************************
 
-
-
         [HttpPost]
         [Route("CrearPago")]
         public ActionResult<EncabezadoFactura> CrearPago(DatosMatricula Datos)
         {
 
-            int idStatus;
-            bool status;
+            int idStatus;           
             // se valida el roll de la persona que envia la solicitud
             if (Datos.RollId == 1)   // roll adm para el status finalizado de la factura y la matricula
-            {
                 idStatus = 1;
-                status = true;
-            }
             else // Otros roles para el status pendiente de la factura y la matricula
-            {
                 idStatus = 0;
-                status = false;
-            }
 
             // Se setea el obj EncabezadoFactura
             EncabezadoFactura factura = new EncabezadoFactura
@@ -255,7 +239,6 @@ namespace kinder_consenti2.Server.Controllers
             _context.EncabezadoFactura.Add(factura);
             _context.SaveChanges();
             var insertada = _context.EncabezadoFactura.Find(factura.IdFactura);
-
             if (insertada != null)
             {
                 //Se insertan los detalles de la factura
@@ -274,9 +257,21 @@ namespace kinder_consenti2.Server.Controllers
                 }
                 _context.DetalleFactura.AddRange(Detalle);
                 _context.SaveChanges();
-          
-                return Ok("Pago enviada para validacio del pago");
+
+                if (Datos.RollId == 1)
+                {
+                    // Envio de factura                 
+                    var datosCorreo = _context.SetingCorreo.FirstOrDefault();
+                    _correoEnvio.EnviarCorreoPDF(587,
+                                           datosCorreo.CorreoOrigen,
+                                           datosCorreo.ContrasennaOrigen,
+                                           datosCorreo.smtpClient,
+                                           factura.IdFactura);
+                    return Ok("Factura finalizada y enviada");
+                }                    
+                return Ok("Pago enviado para validacio del pago");
             }
+
             return BadRequest("Algo salio mal, validar con Amnistarcion");
         }
 
