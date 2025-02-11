@@ -15,10 +15,12 @@ namespace kinder_consenti2.Server.Controllers
     public class UsuariosController : ControllerBase
     {
         private readonly Concenti2pruebasContext _context;
+        private readonly CorreoEnvio _correoEnvio;
 
-        public UsuariosController(Concenti2pruebasContext context)
+        public UsuariosController(Concenti2pruebasContext context, CorreoEnvio correoEnvio)
         {
             _context = context;
+            _correoEnvio = correoEnvio;
         }
       
 
@@ -106,8 +108,7 @@ namespace kinder_consenti2.Server.Controllers
                 insertado.ContrasennaUsuario = clavegenerica;
 
                 var dat = _context.SetingCorreo.Find(1);
-                CorreoEnvio correoEnvio = new CorreoEnvio();
-                correoEnvio.EnviarCorreo(587, dat.CorreoOrigen, dat.ContrasennaOrigen, usuario.CorreoUsuario, dat.smtpClient, dat.asunto, dat.cuerpo, clavegenerica);
+                _correoEnvio.EnviarCorreo(587, dat.CorreoOrigen, dat.ContrasennaOrigen, usuario.CorreoUsuario, dat.smtpClient, dat.asunto, dat.cuerpo, clavegenerica);
 
                 return Ok(insertado);
             }
@@ -179,8 +180,7 @@ namespace kinder_consenti2.Server.Controllers
                     _context.Usuario.Update(usuario); // se actulizan los datos
                     _context.SaveChanges();// se actulizan en la BD
                     var dat = _context.SetingCorreo.Find(1); // traen los datos del servidor de correo gmail
-                    CorreoEnvio correoEnvio = new CorreoEnvio();
-                    correoEnvio.EnviarCorreo(587, dat.CorreoOrigen, dat.ContrasennaOrigen,
+                    _correoEnvio.EnviarCorreo(587, dat.CorreoOrigen, dat.ContrasennaOrigen,
                         usuario.CorreoUsuario, dat.smtpClient, dat.asunto, dat.cuerpo, clavegenerica);// se envia el correo con la clave generica
                     return Ok("Revisar correo de recuperación");
                 }

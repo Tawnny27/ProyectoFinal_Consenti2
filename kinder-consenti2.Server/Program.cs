@@ -1,6 +1,10 @@
-﻿using kinder_consenti2.Server.Models;
+﻿using kinder_consenti2.Server.Herramientas;
+using kinder_consenti2.Server.Models;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 using System.Text.Json.Serialization;
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +28,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<Concenti2pruebasContext>(opciones =>
     opciones.UseSqlServer(builder.Configuration.GetConnectionString("concenti2pruebaContex")));
+
+builder.Services.AddTransient<CorreoEnvio>();
 
 var app = builder.Build();
 

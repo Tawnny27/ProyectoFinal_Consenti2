@@ -13,8 +13,14 @@
     font-family: system-ui, -apple-system, sans-serif;
 }
 
+.form-group label {
+    text-align: left;
+}
 
-
+.checkbox {
+    display: block;
+    margin-bottom: 8px; /* Espacio entre los checkboxes */
+}
 
 /* Tarjeta del recibo */
 .receipt-card {
