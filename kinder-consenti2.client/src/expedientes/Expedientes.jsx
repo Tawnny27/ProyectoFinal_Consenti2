@@ -7,12 +7,9 @@ import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import './expedientes.css';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable'; // Importar autotable si estás utilizando esta extensión para tablas
+import 'jspdf-autotable';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
-
 
 const Expedientes = () => {
     const [alumnos, setAlumnos] = useState([]);
@@ -21,20 +18,17 @@ const Expedientes = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    // Obtener alumnos desde el endpoint
     useEffect(() => {
         const fetchAlumnos = async () => {
             try {
                 const response = await axios.get('https://localhost:44369/Alumnos/ObtenerAlumnos');
                 setAlumnos(response.data);
                 setLoading(false);
-                console.error('alumnos:', data);
             } catch (error) {
                 console.error('Error al obtener los alumnos:', error);
                 setLoading(false);
             }
         };
-
         fetchAlumnos();
     }, []);
 
@@ -42,7 +36,6 @@ const Expedientes = () => {
         const { name, value } = e.target;
         setFiltro((prev) => ({ ...prev, [name]: value }));
     };
-
     const handleExportarPDF = () => {
         if (!alumnoSeleccionado) return; // Asegúrate de que haya un alumno seleccionado
 
@@ -105,8 +98,6 @@ const Expedientes = () => {
         toast.success("Expediente exportado con éxito!");
     };
 
-
-
     const calcularEdad = (fechaNacimiento) => {
         const hoy = new Date();
         const nacimiento = new Date(fechaNacimiento);
@@ -118,20 +109,37 @@ const Expedientes = () => {
         return edad;
     };
 
-
     const alumnosFiltrados = alumnos.filter((alumno) =>
         (alumno.nombreAlumno?.toLowerCase() || '').includes(filtro.nombre.toLowerCase()) &&
         (alumno.cedulaAlumno || '').includes(filtro.cedula)
     );
 
-    console.log(alumnos); // Verifica el contenido de la lista de alumnos
-
+    const columnas = [
+        { name: 'Nombre', selector: row => row.nombreAlumno, sortable: true },
+        { name: 'Apellidos', selector: row => row.apellidosAlumno, sortable: true },
+        { name: 'Cédula', selector: row => row.cedulaAlumno, sortable: true },
+        { name: 'Edad', selector: row => calcularEdad(row.fechaNacimiento), sortable: true },
+        {
+            name: 'Acciones',
+            cell: (row) => (
+                <button
+                    className="submit-m-button"
+                    onClick={() => {
+                        setAlumnoSeleccionado(row);
+                        setModalVisible(true);
+                    }}
+                >
+                    Expediente
+                </button>
+            ),
+        },
+    ];
 
     return (
         <div className="user-maintenance-container">
-            {<Navbar />}
+            <Navbar />
             <h2>Expedientes de Alumnos</h2>
-            <div className="form-group">
+            <div className="form-group" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <input
                     type="text"
                     name="nombre"
@@ -153,74 +161,77 @@ const Expedientes = () => {
             {loading ? (
                 <p>Cargando...</p>
             ) : (
-                <table className="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Apellidos</th>
-                            <th>Cédula</th>
-                            <th>Edad</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                        <tbody>
-                            {alumnosFiltrados.map((alumno) => (
-                                <tr key={alumno.idAlumno}>
-                                    <td>{alumno.nombreAlumno}</td>
-                                    <td>{alumno.apellidosAlumno}</td>
-                                    <td>{alumno.cedulaAlumno}</td>
-                                    <td>{calcularEdad(alumno.fechaNacimiento)}</td> {/* Calcula la edad */}
-                                    <td>
-                                        <button
-                                            className="submit-m-button"
-                                            onClick={() => {
-                                                setAlumnoSeleccionado(alumno);
-                                                setModalVisible(true);
-                                            }}
-                                        >
-                                            Expediente
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                </table>
+                <DataTable
+                    columns={columnas}
+                    data={alumnosFiltrados}
+                    pagination
+                    highlightOnHover
+                    striped
+                    responsive
+                />
             )}
-
-            
 
             {modalVisible && alumnoSeleccionado && (
-                <div className="expedientes-modal">
-                    <div className="modal-content">
-                        <h3>Detalles del Alumno</h3>
-                        <p>Nombre: {alumnoSeleccionado.nombreAlumno}</p>
-                        <p>Apellidos: {alumnoSeleccionado.apellidosAlumno}</p>
-                        <p>Cédula: {alumnoSeleccionado.cedulaAlumno}</p>
-                        <p>Fecha de Nacimiento: {new Date(alumnoSeleccionado.fechaNacimiento).toLocaleDateString()}</p>
-                        <p>Edad: {calcularEdad(alumnoSeleccionado.fechaNacimiento)}</p>
-                        <p>Género: {alumnoSeleccionado.generoAlumno}</p>
-                        <p>Dirección: {alumnoSeleccionado.direccionAlumno}</p>
-                        <p>Información Adicional: {alumnoSeleccionado.informacionAdicional || "No disponible"}</p>
-                        <h4>Contacto Autorizado</h4>
-                        <p>Nombre: {alumnoSeleccionado.nombreCompAutorizado}</p>
-                        <p>Cédula: {alumnoSeleccionado.cedulaAutorizado}</p>
-                        <p>Relación: {alumnoSeleccionado.relacionAutorizado}</p>
-                        <p>Teléfono: {alumnoSeleccionado.telefonoAutorizado}</p>
-                        <h4>Contacto de Emergencia</h4>
-                        <p>Nombre: {alumnoSeleccionado.nombreCompContacto}</p>
-                        <p>Cédula: {alumnoSeleccionado.cedulaContacto}</p>
-                        <p>Relación: {alumnoSeleccionado.relacionContacto}</p>
-                        <p>Teléfono: {alumnoSeleccionado.telefonoContacto}</p>
-                        <button className="btn-primary" onClick={handleExportarPDF}>
-                            Exportar a PDF
-                        </button>
-                        <button onClick={() => setModalVisible(false)} className="btn-secondary">
-                            Cerrar
-                        </button>
-                    </div>
-                </div>
-            )}
 
+                <div className="expedientes-modal">
+
+                    <div className="modal-content">
+
+                        <h3>Detalles del Alumno</h3>
+
+                        <p>Nombre: {alumnoSeleccionado.nombreAlumno}</p>
+
+                        <p>Apellidos: {alumnoSeleccionado.apellidosAlumno}</p>
+
+                        <p>Cédula: {alumnoSeleccionado.cedulaAlumno}</p>
+
+                        <p>Fecha de Nacimiento: {new Date(alumnoSeleccionado.fechaNacimiento).toLocaleDateString()}</p>
+
+                        <p>Edad: {calcularEdad(alumnoSeleccionado.fechaNacimiento)}</p>
+
+                        <p>Género: {alumnoSeleccionado.generoAlumno}</p>
+
+                        <p>Dirección: {alumnoSeleccionado.direccionAlumno}</p>
+
+                        <p>Información Adicional: {alumnoSeleccionado.informacionAdicional || "No disponible"}</p>
+
+                        <h4>Contacto Autorizado</h4>
+
+                        <p>Nombre: {alumnoSeleccionado.nombreCompAutorizado}</p>
+
+                        <p>Cédula: {alumnoSeleccionado.cedulaAutorizado}</p>
+
+                        <p>Relación: {alumnoSeleccionado.relacionAutorizado}</p>
+
+                        <p>Teléfono: {alumnoSeleccionado.telefonoAutorizado}</p>
+
+                        <h4>Contacto de Emergencia</h4>
+
+                        <p>Nombre: {alumnoSeleccionado.nombreCompContacto}</p>
+
+                        <p>Cédula: {alumnoSeleccionado.cedulaContacto}</p>
+
+                        <p>Relación: {alumnoSeleccionado.relacionContacto}</p>
+
+                        <p>Teléfono: {alumnoSeleccionado.telefonoContacto}</p>
+
+                        <button className="btn-primary" onClick={handleExportarPDF}>
+
+                            Exportar a PDF
+
+                        </button>
+
+                        <button onClick={() => setModalVisible(false)} className="btn-secondary">
+
+                            Cerrar
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            )}
             <Footer />
         </div>
     );
