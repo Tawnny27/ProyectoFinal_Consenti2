@@ -97,16 +97,17 @@ body {
 }
 
 .sidebar {
-    width: 275px;
+    width: 500px;
     background-color: #A569BD;
     color: white;
-    padding: 20px;
+    padding: 10px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    margin-top: 30px;
-    margin-bottom: 10px;
+    margin-top: 50px;
+    /* margin-bottom: 10px;*/
     opacity: 90%;
-    scroll-behavior: smooth;
-    max-height: calc(100vh - 50px); /* Ajusta según el margen superior */
+    scroll-behavior: smooth;    
+    max-height: calc(80vh - 50px); /* Ajusta según el margen superior */
+   
     overflow-y: auto;
     font-family: 'Roboto', sans-serif;
 }
@@ -173,10 +174,11 @@ body {
             }
 
 .main-content {
-    flex-grow: 1;      
+    flex-grow: 1;
     padding: 40px;
     background: url('../assets/background.jpg') no-repeat center center fixed;
     /*background-size: cover;*/
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;

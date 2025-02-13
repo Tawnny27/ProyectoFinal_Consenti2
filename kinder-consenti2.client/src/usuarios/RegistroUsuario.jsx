@@ -101,7 +101,7 @@ const RegistroUsuario = () => {
 
                 <form onSubmit={manejarEnvio} className="usuario-formR">
                     <div className="usuario-form-groupR">
-                        <label className="usuario-labelR">ID Rol</label>
+                        <label className="usuario-labelR">Rol</label>
                         <div className="usuario-input-containerR">
                             <select
                                 name="rolId"
@@ -194,8 +194,8 @@ const RegistroUsuario = () => {
                             />
                         </div>
                     </div>
-
-                    <div className="usuario-form-groupR">
+                    {/*
+                        <div className="usuario-form-groupR">
                         <label className="usuario-labelR">Contraseña</label>
                         <div className="usuario-input-containerR">
                             <FontAwesomeIcon icon={faLock} className="usuario-input-iconR" />
@@ -209,6 +209,9 @@ const RegistroUsuario = () => {
                             />
                         </div>
                     </div>
+
+                        */ }
+                    
 
                     <button type="submit" className="usuario-button-saveR">Registrar Usuario</button>
                     {error && <div className="usuario-error-messageR">{error}</div>}
