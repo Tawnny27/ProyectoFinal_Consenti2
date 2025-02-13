@@ -4,6 +4,7 @@ import "./AttendancePanel.css";
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import { useUserContext } from '../UserContext';
+import { toast } from 'react-toastify';
 import DataTable from 'react-data-table-component';
 import * as XLSX from 'xlsx';
 
@@ -80,36 +81,49 @@ function AttendancePanel() {
 
     const handleSubmit = async () => {
         try {
-            const payload = {
-                IdListaAsistencia: 1,
-                Detalles: attendance.map((child) => ({
-                    AlumnoId: child.id,
-                    Estado: child.status ? "Presente" : "Ausente",
-                    Comentario: child.comment
-                })),
-            };
+            const fechaISO = new Date().toISOString().split("T")[0]; // Formato YYYY-MM-DD
 
-            const response = await axios.put("https://localhost:44369/ListaAsistencias/ActualizarAsistencia", payload);
-            alert("¡Asistencia guardada exitosamente!");
+            const payload = attendance.map((child) => ({
+                alumnoId: child.id,
+                gruposId: Number(selectedGroup),
+                fecha: fechaISO,
+                comentario: child.comment || "",
+                statusAsistencia: child.status ? 1 : 0
+            }));
+
+            console.log("Datos enviados:", JSON.stringify(payload, null, 2)); // Muestra los datos en consola
+
+            const response = await axios.post("https://localhost:44369/ListaAsistencias/CrearListaAsistencia", payload);
+            
+            toast.success("¡Asistencia guardada exitosamente!");
         } catch (error) {
-            alert("Hubo un error al guardar la asistencia.");
+            console.error("Error al guardar la asistencia:", error);
+
+            toast.error("Hubo un error al guardar la asistencia.");
         }
     };
+
+
+
 
     const handleCancel = () => {
         window.history.back();
     };
 
     const handleExportToExcel = () => {
+        const fechaISO = currentDate; 
+        const fileName = `Lista_de_Asistencia_${fechaISO}.xlsx`; 
+
         const ws = XLSX.utils.json_to_sheet(attendance.map((item) => ({
             Nombre: item.name,
             Estado: item.status ? "Presente" : "Ausente",
-            Comentario: item.comment
+            Comentario: item.comment,
+            Fecha: fechaISO
         })));
 
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Asistencia");
-        XLSX.writeFile(wb, "Lista_de_Asistencia.xlsx");
+        XLSX.writeFile(wb, fileName);
     };
 
     const columns = [
@@ -127,7 +141,7 @@ function AttendancePanel() {
                         checked={row.status}
                         onChange={(e) => handleStatusChange(row.id, e.target.checked)}
                     />
-                    {row.status ? "Presente" : "Ausente"}
+                    {row.status ? " Presente" : " Ausente"}
                 </div>
             ),
             sortable: false
@@ -144,6 +158,7 @@ function AttendancePanel() {
             ),
             sortable: false
         }
+       
     ];
 
     return (
@@ -151,15 +166,15 @@ function AttendancePanel() {
             <Navbar />
             <div className="attendance-container">
                 <h1 className="attendance-title">Lista de Asistencia</h1>
-                <div className="user-info">
-                    {user ? (
-                        <span>
-                            Hola, {user.nombreUsuario} {user.apellidosUsuario}
-                        </span>
-                    ) : (
-                        <span>Cargando...</span>
-                    )}
-                </div>
+                {/*<div className="user-info">*/}
+                {/*    {user ? (*/}
+                {/*        <span>*/}
+                {/*            Hola, {user.nombreUsuario} {user.apellidosUsuario}*/}
+                {/*        </span>*/}
+                {/*    ) : (*/}
+                {/*        <span>Cargando...</span>*/}
+                {/*    )}*/}
+                {/*</div>*/}
                 <div className="attendance-date">
                     <label>Fecha de Asistencia: </label>
                     <span>{currentDate}</span>
@@ -177,11 +192,18 @@ function AttendancePanel() {
                     </select>
                 </div>
 
-                <div className="select-all">
-                    <button onClick={handleSelectAll}>
-                        {selectAll ? "Deseleccionar todos" : "Seleccionar todos"}
-                    </button>
-                </div>
+                {selectedGroup && (
+                    <div className="attendance-actions">
+                        <button onClick={handleSelectAll}>
+                            {selectAll ? "Deseleccionar todos" : "Seleccionar todos"}
+                        </button>
+                        <div style={{ flex: 1 }}></div> {/* Espaciador */}
+                        <button className="attendance-export-button" onClick={handleExportToExcel}>
+                            Exportar a Excel
+                        </button>
+                    </div>
+                )}
+
 
                 <DataTable
                     columns={columns}
@@ -205,9 +227,7 @@ function AttendancePanel() {
                     <button className="attendance-cancel-button" onClick={handleCancel}>
                         Cancelar
                     </button>
-                    <button className="attendance-export-button" onClick={handleExportToExcel}>
-                        Exportar a Excel
-                    </button>
+                    
                 </div>
             </div>
             <Footer />

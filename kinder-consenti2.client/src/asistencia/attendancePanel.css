@@ -125,3 +125,24 @@
     }
 }
 
+.attendance-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.attendance-export-button {
+    background-color: #3498DB;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    
+}
+
+    .attendance-export-button:hover {
+        background-color: #2980B9;
+    }
