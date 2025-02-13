@@ -17,6 +17,7 @@ function ActivityPanel() {
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
     const { user } = useUserContext();
+    const currentDate = new Date().toISOString().slice(0, 10);
 
     // Función para obtener grupos
     const obtenerGrupos = async () => {
@@ -31,16 +32,20 @@ function ActivityPanel() {
     // Función para obtener alumnos por grupo seleccionado
     const obtenerAlumnosPorGrupoSeleccionado = async (groupId) => {
         try {
-            if (!groupId) return; 
+            if (!groupId) return;
 
-            const response = await axios.get(`https://localhost:44369/GruposAlumnos/ObtenerGrupoAlumnos/${groupId}`);           
+            const response = await axios.get(`https://localhost:44369/GruposAlumnos/ObtenerGrupoAlumnos/${groupId}`);
             if (response.data) {
                 const formattedData = response.data.map(child => ({
-                    name: child.alumno.nombreAlumno + ' ' + child.alumno.apellidosAlumno || "Sin nombre",
-                    status: "Bueno",
-                    comments: ""
+                    alumnoId: child.alumno.idAlumno,
+                    gruposId: groupId,
+                    fecha: currentDate,
+                    descripcion: "", // Valor por defecto
+                    statusParticipacion: 1, // Valor por defecto
+                    comentario: "", // Valor por defecto
+                    catidad: 0,
+                    name: child.alumno.nombreAlumno + ' ' + child.alumno.apellidosAlumno || "Sin nombre"
                 }));
-
                 setChildrenData(formattedData);
             }
         } catch (error) {
@@ -85,51 +90,75 @@ function ActivityPanel() {
         switch (activity) {
             case 'Comida':
                 try {
-                    const response = await axios.put(`https://localhost:44369/ActividadComidas/CrearActividadComidas`);
-                    if (response == 200) {
-                        console.log('Success');
-                    }
+                     console.log(childrenData)
+                    const response = await axios.post(
+                        `https://localhost:44369/ActividadComidas/CrearActividadComidas`,
+                        childrenData
+                    );
 
+                    if (response.status === 200) {
+                        console.log('Success:', response.data);
+                        alert('Actividad de Comida guardada con éxito!');
+                    } else {
+                        console.error('Error:', response.status, response.data);
+                        alert('Hubo un error al guardar la actividad de Comida.');
+                    }
                 } catch (error) {
                     console.error("Error :", error);
-
+                    alert('Error al guardar la actividad de Comida: ' + error.message);
                 }
-
                 break;
             case 'Huerta':
                 try {
-                    const response = await axios.put(`https://localhost:44369/ActividadHuerta/CrearActividadHuerta`);
-                    if (response == 200) {
-                        console.log('Success');
-                    }
+                    console.log(childrenData)
 
+                    const response = await axios.post(
+                        `https://localhost:44369/ActividadHuerta/CrearActividadHuerta`,
+                        childrenData
+                    );
+                    if (response.status === 200) {
+                        console.log('Success:', response.data);
+                        alert('Actividad de Huerta guardada con éxito!');
+                    } else {
+                        console.error('Error:', response.status, response.data);
+                        alert('Hubo un error al guardar la actividad de Huerta.');
+                    }
                 } catch (error) {
                     console.error("Error :", error);
-
+                    alert('Error al guardar la actividad de Huerta: ' + error.message);
                 }
                 break;
             case 'Dormir':
                 try {
-                    const response = await axios.put(`https://localhost:44369/ActividadDormir/CrearActividadDormir`);
-                    if (response == 200) {
-                        console.log('Success');
+                    const response = await axios.post(
+                        `https://localhost:44369/ActividadDormir/CrearActividadDormir`,
+                        childrenData
+                    );
+                    if (response.status === 200) {
+                        console.log('Success:', response.data);
+                        alert('Actividad de Dormir guardada con éxito!');
+                    } else {
+                        console.error('Error:', response.status, response.data);
+                        alert('Hubo un error al guardar la actividad de Dormir.');
                     }
-
                 } catch (error) {
                     console.error("Error :", error);
-
+                    alert('Error al guardar la actividad de Dormir: ' + error.message);
                 }
                 break;
             case 'Ir al Baño':
                 try {
-                    const response = await axios.put(`https://localhost:44369/ActividadBanno/CrearActividadBanno`);
-                    if (response == 200) {
-                        console.log('Success');
+                    const response = await axios.post(`https://localhost:44369/ActividadBanno/CrearActividadBanno`, childrenData);
+                    if (response.status === 200) {
+                        console.log('Success:', response.data);
+                        alert('Actividad de Baño guardada con éxito!');
+                    } else {
+                        console.error('Error:', response.status, response.data);
+                        alert('Hubo un error al guardar la actividad de Baño.');
                     }
-
                 } catch (error) {
                     console.error("Error :", error);
-
+                    alert('Error al guardar la actividad de Baño: ' + error.message);
                 }
                 break;
             default:
@@ -147,8 +176,6 @@ function ActivityPanel() {
             <div className="activity-container" style={{ marginTop: '200px' }}>
                 <div className="activity-panel">
                     <h1 className="activity-title">Panel de Actividades</h1>
-
-                    {/* Selector de Grupo */}
                     <div className="group-selector">
                         <label>Selecciona un grupo: </label>
                         <Select
@@ -158,14 +185,18 @@ function ActivityPanel() {
                             placeholder="Selecciona un grupo"
                         />
                     </div>
-
-                    {/* Botones para seleccionar la actividad */}
                     <div className="activity-buttons">
                         <button
                             className={`activity-button fa-light fa-carrot ${selectedActivity === 'Comida' ? 'active' : ''}`}
                             onClick={() => handleActivitySelect('Comida')}
                         >
                             Comida  <FontAwesomeIcon icon={faCarrot} />
+                        </button>
+                        <button
+                            className={`activity-button ${selectedActivity === 'Huerta' ? 'active' : ''}`}
+                            onClick={() => handleActivitySelect('Huerta')}
+                        >
+                            Huerta
                         </button>
                         <button
                             className={`activity-button ${selectedActivity === 'Dormir' ? 'active' : ''}`}
@@ -179,15 +210,7 @@ function ActivityPanel() {
                         >
                             Ir al Baño
                         </button>
-                        <button
-                            className={`activity-button ${selectedActivity === 'Huerta' ? 'active' : ''}`}
-                            onClick={() => handleActivitySelect('Huerta')}
-                        >
-                            Huerta
-                        </button>
                     </div>
-
-                    {/* Tabla de datos para "Comida" */}
                     {selectedActivity === "Comida" && (
                         <div>
                             <h2 className="activity-subtitle">Estado de Comida</h2>
@@ -195,6 +218,7 @@ function ActivityPanel() {
                                 <thead>
                                     <tr>
                                         <th>Nombre del Niño</th>
+                                        <th>Tipo de Comida</th>
                                         <th>Estatus de Comida</th>
                                         <th>Comentarios</th>
                                     </tr>
@@ -205,20 +229,31 @@ function ActivityPanel() {
                                             <td>{child.name}</td>
                                             <td>
                                                 <select
-                                                    value={child.status}
-                                                    onChange={(e) => handleInputChange(index, 'status', e.target.value)}
+                                                    value={child.tipoComida}
+                                                    onChange={(e) => handleInputChange(index, 'tipoComida', e.target.value)}
                                                     className="activity-select"
                                                 >
-                                                    <option value="Bueno">Bueno</option>
-                                                    <option value="Regular">Regular</option>
-                                                    <option value="Malo">Malo</option>
+                                                    <option value="Normal">Normal</option>
+                                                    <option value="Vegetariana">Vegetariana</option>
+                                                    <option value="Vegana">Vegana</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select
+                                                    value={child.statusComida}
+                                                    onChange={(e) => handleInputChange(index, 'statusComida', parseInt(e.target.value))}
+                                                    className="activity-select"
+                                                >
+                                                    <option value="1">Bueno</option>
+                                                    <option value="2">Regular</option>
+                                                    <option value="3">Malo</option>
                                                 </select>
                                             </td>
                                             <td>
                                                 <input
                                                     type="text"
-                                                    value={child.comments}
-                                                    onChange={(e) => handleInputChange(index, 'comments', e.target.value)}
+                                                    value={child.comentario}
+                                                    onChange={(e) => handleInputChange(index, 'comentario', e.target.value)}
                                                     className="activity-input"
                                                 />
                                             </td>
@@ -228,8 +263,55 @@ function ActivityPanel() {
                             </table>
                         </div>
                     )}
-
-                    {/* Tabla de datos para "Dormir" */}
+                    {selectedActivity === "Huerta" && (
+                        <div>
+                            <h2 className="activity-subtitle">Estado de Huerta</h2>
+                            <table className="activity-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre del Niño</th>
+                                        <th>Descripción</th>
+                                        <th>Participación</th>
+                                        <th>Comentarios</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {childrenData.map((child, index) => (
+                                        <tr key={index}>
+                                            <td>{child.name}</td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    value={child.descripcion}
+                                                    onChange={(e) => handleInputChange(index, 'descripcion', e.target.value)}
+                                                    className="activity-input"
+                                                />
+                                            </td>
+                                            <td>
+                                                <select
+                                                    value={child.statusParticipacion}
+                                                    onChange={(e) => handleInputChange(index, 'statusParticipacion', parseInt(e.target.value))}
+                                                    className="activity-select"
+                                                >
+                                                    <option value="1">Muy participativo</option>
+                                                    <option value="2">Participativo</option>
+                                                    <option value="3">Poco participativo</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    value={child.comentario}
+                                                    onChange={(e) => handleInputChange(index, 'comentario', e.target.value)}
+                                                    className="activity-input"
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                     {selectedActivity === "Dormir" && (
                         <div>
                             <h2 className="activity-subtitle">Estado de Dormir</h2>
@@ -272,8 +354,6 @@ function ActivityPanel() {
                             </table>
                         </div>
                     )}
-
-                    {/* Tabla de datos para "Ir al Baño" */}
                     {selectedActivity === "Ir al Baño" && (
                         <div>
                             <h2 className="activity-subtitle">Estado de Baño</h2>
@@ -310,48 +390,6 @@ function ActivityPanel() {
                             </table>
                         </div>
                     )}
-
-                    {/* Tabla de datos para "Huerta" */}
-                    {selectedActivity === "Huerta" && (
-                        <div>
-                            <h2 className="activity-subtitle">Estado de Huerta</h2>
-                            <table className="activity-table">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre del Niño</th>
-                                        <th>Participación</th>
-                                        <th>Comentarios</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {childrenData.map((child, index) => (
-                                        <tr key={index}>
-                                            <td>{child.name}</td>
-                                            <td>
-                                                <select
-                                                    className="activity-select"
-                                                >
-                                                    <option value="Muy participativo">Muy participativo</option>
-                                                    <option value="Participativo">Participativo</option>
-                                                    <option value="Poco participativo">Poco participativo</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    value={child.comments}
-                                                    onChange={(e) => handleInputChange(index, 'comments', e.target.value)}
-                                                    className="activity-input"
-                                                />
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-
-                    {/* Botones de cancelar y nuevo formulario */}
                     <div className="activity-buttons mt-5">
                         <button className="activity-cancel-button" onClick={handleCancel}>
                             Cancelar
