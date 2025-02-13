@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+Ôªøimport React, { useEffect, useState, useRef } from "react";
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import axios from 'axios';
@@ -34,7 +34,7 @@ const AgregarFotosAlumno = () => {
 
         cargarAlumnos();
 
-        // Cargar las fotos desde localStorage si est·n disponibles
+        // Cargar las fotos desde localStorage si est√°n disponibles
         const fotosGuardadas = JSON.parse(localStorage.getItem('fotos')) || [];
         setFotos(fotosGuardadas);
 
@@ -60,7 +60,7 @@ const AgregarFotosAlumno = () => {
         }
 
         if (file.size > MAX_FILE_SIZE) {
-            throw new Error('La imagen excede el tamaÒo m·ximo de 5MB');
+            throw new Error('La imagen excede el tama√±o m√°ximo de 5MB');
         }
 
         return true;
@@ -84,7 +84,7 @@ const AgregarFotosAlumno = () => {
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
-            console.error("Error de validaciÛn de imagen:", error);
+            console.error("Error de validaci√≥n de imagen:", error);
         }
     };
 
@@ -96,18 +96,18 @@ const AgregarFotosAlumno = () => {
     };
 
 
-    // FunciÛn para agregar fotos
+    // Funci√≥n para agregar fotos
     const agregarFotos = async (e) => {
         e.preventDefault();
         let imagePath = 'default.jpg';
         let uniqueFileName = '';
 
         if (selectedFile) {
-            // Generar nombre ˙nico para la imagen
+            // Generar nombre √∫nico para la imagen
             const fileExtension = selectedFile.name.split('.').pop();
             uniqueFileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`;
             imagePath = `${IMAGE_PATH}${uniqueFileName}`;
-            console.log("Nombre ˙nico de la imagen:", uniqueFileName);
+            console.log("Nombre √∫nico de la imagen:", uniqueFileName);
         }
 
         if (!idAlumnoSeleccionado) {
@@ -139,6 +139,7 @@ const AgregarFotosAlumno = () => {
             console.log("Envio de datos al primer endpoint:", envioDatos);
 
             // Enviar los datos al primer endpoint
+          
             const response = await axios.post(
                 'https://localhost:44369/FotoAlumnoes/CrearFotosAlumno',
                 envioDatos,
@@ -155,7 +156,7 @@ const AgregarFotosAlumno = () => {
                 // Crear FormData para enviar la imagen
                 const imageFormData = new FormData();
                 imageFormData.append('file', selectedFile);
-                imageFormData.append('fileName', uniqueFileName); // Enviar el nombre ˙nico
+                imageFormData.append('fileName', uniqueFileName); // Enviar el nombre √∫nico
                 console.log("Envio de imagen:", imageFormData);
 
                 // Enviar la foto al segundo endpoint
@@ -220,7 +221,7 @@ const AgregarFotosAlumno = () => {
                     ))}
                 </select>
 
-                <input
+                    <input
                     type="file"
                     ref={fileInputRef}  // Usando ref correctamente
                     onChange={manejarCambioDeArchivo}
@@ -245,7 +246,7 @@ const AgregarFotosAlumno = () => {
             )}
             {/* Mostrar las fotos agregadas */}
             <div style={{ marginTop: "20px", marginBottom: "50px" }}>
-                <h4>¡lbum de Fotos</h4>
+                <h4>√Ålbum de Fotos</h4>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "15px" }}>
                     {fotos
                         .filter(foto => {
@@ -268,7 +269,7 @@ const AgregarFotosAlumno = () => {
                                         borderRadius: "8px",
                                         cursor: "pointer",
                                     }}
-                                    onClick={() => descargarFoto(foto.rutaFoto)}  // Llamar a la funciÛn de descarga al hacer clic
+                                    onClick={() => descargarFoto(foto.rutaFoto)}  // Llamar a la funci√≥n de descarga al hacer clic
                                 />
                                 <p style={{ fontSize: "12px", marginTop: "5px" }}>
                                     {foto.alumno} - {foto.fecha}

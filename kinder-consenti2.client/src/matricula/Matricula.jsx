@@ -7,6 +7,7 @@ import './matricula.css';
 import { useUserContext } from '../UserContext';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
+import Sidebar from "../componentes/Sidebar";
 
 const Matricula = () => {
     const navigate = useNavigate();
@@ -31,7 +32,7 @@ const Matricula = () => {
         discount: 0, // Descuento
     });
 
-    
+
     const handleCancel = () => {
         // Redirige a la página principal
         navigate('/main');
@@ -321,7 +322,7 @@ const Matricula = () => {
             toast.error('Debes seleccionar al menos un producto.');
             return;
         }
-       
+
         // Preparar los detalles de la matrícula (productos, monto, días)
         const detalles = selectedProductos.map((productoId) => {
             const producto = [...productosFijos, ...productosMensuales].find(
@@ -465,162 +466,180 @@ const Matricula = () => {
 
 
     return (
-        <div className="enrollment-form-container">
+        <div >
             <Navbar />
-            <div className="enrollment-form">
-                <h2>Formulario de Matrícula</h2>
-                {error && <p className="error">{error}</p>}
-                <form onSubmit={handleSubmit}>
-                    <div className="form-layout">
-                        {/* Sección Izquierda (Información del Usuario e Hijos) */}
-                        <div className="left-section">
-                            {user.rolId === 1 && (
-                                <div className="select-parent">
-                                    <h3>Selecciona un Padre:</h3>
-                                    <select
-                                        onChange={(e) => handleUserSelect(e.target.value)}
-                                        value={formData.parentID || ''}
-                                    >
-                                        <option value="">Selecciona un padre</option>
-                                        {userList.map((user) => (
-                                            <option key={user.id} value={user.id}>
-                                                {user.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            )}
+            <div className="content-container">
+                <Sidebar />
+                <main className="main-content">
+                    <div className="content-matricula">
+                        
+                            <div className="enrollment-form">
+                                <h2>Formulario de Matrícula</h2>
+                                {error && <p className="error">{error}</p>}
+                                <form onSubmit={handleSubmit}>
+                                    <div className="form-layout">
+                                        {/* Sección Izquierda (Información del Usuario e Hijos) */}
+                                        <div className="left-section">
+                                            {user.rolId === 1 && (
+                                                <div className="select-parent">
+                                                    <h3>Selecciona un Padre:</h3>
+                                                    <select
+                                                        onChange={(e) => handleUserSelect(e.target.value)}
+                                                        value={formData.parentID || ''}
+                                                    >
+                                                        <option value="">Selecciona un padre</option>
+                                                        {userList.map((user) => (
+                                                            <option key={user.id} value={user.id}>
+                                                                {user.name}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            )}
 
-                            <div className="parent-info">
-                                <ParentInfo formData={formData} handleChange={handleChange} userRole={user.rolId} />
-                            </div>
+                                            <div className="parent-info">
+                                                <ParentInfo formData={formData} handleChange={handleChange} userRole={user.rolId} />
+                                            </div>
 
-                            <div className="children-selection">
-                                <ChildrenSelection
-                                    childrenList={childrenList}
-                                    selectedChildren={formData.selectedChildren}
-                                    handleChildSelection={handleChildSelection}
-                                />
-                            </div>
-                        </div>
+                                            <div className="children-selection">
+                                                <ChildrenSelection
+                                                    childrenList={childrenList}
+                                                    selectedChildren={formData.selectedChildren}
+                                                    handleChildSelection={handleChildSelection}
+                                                />
+                                            </div>
+                                        </div>
 
-                        {/* Sección Derecha (Pagos y Productos) */}
-                        <div className="right-section">
-                            <div className="payment-section">
-                                <h3>Fecha Actual: {new Date().toLocaleDateString()}</h3>
+                                        {/* Sección Derecha (Pagos y Productos) */}
+                                        <div className="right-section">
+                                            <div className="payment-section">
+                                                <h3>Fecha Actual: {new Date().toLocaleDateString()}</h3>
 
-                                {/* Sección de Pago */}
-                                <div className="payment-section">
-                                    <PaymentSection
-                                        formData={formData}
-                                        handleChange={handleChange}
-                                        handleFileChange={handleFileChange}
-                                        handleImageChange={handleImageChange}
-                                        userRole={user.rolId}
-                                    />
-                                    {formData.paymentMethod !== 'Efectivo' && (
-                                        <>
-                                            <label>Número de Referencia del Comprobante:</label>
-                                            <input
-                                                type="text"
-                                                name="referenceNumber"
-                                                value={formData.referenceNumber}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </>
-                                    )}
-                                    <div className="payment-period">
-                                        <label>
-                                            Periodo:
-                                            <select name="period" value={formData.period} onChange={handlePeriodoChange}>
-                                                <option value="Mensual">Mensualidad</option>
-                                                <option value="Anual">Anualidad</option>
-                                            </select>
-                                        </label>
+                                                {/* Sección de Pago */}
+                                                <div className="payment-section">
+                                                    <PaymentSection
+                                                        formData={formData}
+                                                        handleChange={handleChange}
+                                                        handleFileChange={handleFileChange}
+                                                        handleImageChange={handleImageChange}
+                                                        userRole={user.rolId}
+                                                    />
+                                                    {formData.paymentMethod !== 'Efectivo' && (
+                                                        <>
+                                                            <label>Número de Referencia del Comprobante:</label>
+                                                            <input
+                                                                type="text"
+                                                                name="referenceNumber"
+                                                                value={formData.referenceNumber}
+                                                                onChange={handleChange}
+                                                                required
+                                                            />
+                                                        </>
+                                                    )}
+                                                    <div className="payment-period">
+                                                        <label>
+                                                            Periodo:
+                                                            <select name="period" value={formData.period} onChange={handlePeriodoChange}>
+                                                                <option value="Mensual">Mensualidad</option>
+                                                                <option value="Anual">Anualidad</option>
+                                                            </select>
+                                                        </label>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div className="right-section">
+
+                                            <div className="products-selection">
+                                                <h3>Seleccionar Productos:</h3>
+                                                {formData.period === 'Anual' ? (
+                                                    <>
+                                                        <h4>Anualidad:</h4>
+                                                        {productosFijos.map((producto) => (
+                                                            <div key={producto.idProducto}>
+                                                                <label>
+                                                                    <input
+                                                                        type="radio"
+                                                                        checked={selectedProductos.includes(producto.idProducto)}
+                                                                        onChange={() => handleProductoSelection(producto.idProducto)}
+                                                                        required
+                                                                    />
+                                                                    {producto.nombreProducto} - {producto.monto} colones
+                                                                </label>
+                                                            </div>
+                                                        ))}
+                                                    </>
+                                                ) : (
+                                                    <>
+
+                                                        <h4>Horarios:</h4>
+                                                        {productosMensuales.map((producto) => (
+                                                            <div key={producto.idProducto}>
+                                                                <label>
+                                                                    <input
+                                                                        type="radio"
+                                                                        checked={selectedProductos.includes(producto.idProducto)}
+                                                                        onChange={() => handleProductoSelection(producto.idProducto)}
+                                                                        required
+                                                                    />
+                                                                    {producto.nombreProducto} - {producto.monto} colones
+                                                                </label>
+                                                            </div>
+                                                        ))}
+                                                    </>
+                                                )}
+                                            </div>
+                                            <label>Subtotal: {formData.subtotal}</label>
+                                            <label>IVA (13%): {formData.iva}</label>
+
+
+                                            {user.rolId === 1 && (
+                                                <>
+                                                    <div className="decuento">
+                                                        <label>Descuento (%):</label>
+                                                        <input
+                                                            type="number"
+                                                            name="discount"
+                                                            value={formData.discount}
+                                                            onChange={handleChange}
+                                                            min="0"
+                                                            max="100"
+                                                        />
+                                                    </div>
+                                                </>
+                                            )}
+
+
+                                            <div className="total-amount">
+                                                <h4>Total a pagar: {formData.totalAmount} colones</h4>
+                                            </div>
+                                        </div>
+
+
                                     </div>
 
-                                </div>
-
-
-                                <div className="products-selection">
-                                    <h3>Seleccionar Productos:</h3>
-                                    {formData.period === 'Anual' ? (
-                                        <>
-                                    <h4>Anualidad:</h4>
-                                    {productosFijos.map((producto) => (
-                                        <div key={producto.idProducto}>
-                                            <label>
-                                                <input
-                                                    type="radio"
-                                                    checked={selectedProductos.includes(producto.idProducto)}
-                                                    onChange={() => handleProductoSelection(producto.idProducto)}
-                                                    required
-                                                />
-                                                {producto.nombreProducto} - {producto.monto} colones
-                                            </label>
-                                        </div>
-                                    ))}
-                                        </>
-                                    ) : (
-                                        <>
-                                
-                                    <h4>Horarios:</h4>
-                                    {productosMensuales.map((producto) => (
-                                        <div key={producto.idProducto}>
-                                            <label>
-                                                <input
-                                                    type="radio"
-                                                    checked={selectedProductos.includes(producto.idProducto)}
-                                                    onChange={() => handleProductoSelection(producto.idProducto)}
-                                                    required
-                                                />
-                                                {producto.nombreProducto} - {producto.monto} colones
-                                            </label>
-                                        </div>
-                                    ))}
-                                        </>
-                                    )}
-                                </div>
-                                <label>Subtotal: {formData.subtotal}</label>
-                                <label>IVA (13%): {formData.iva}</label>
-
-
-                                {user.rolId === 1 && (
-                                    <>
-                                        <div className="decuento">
-                                        <label>Descuento (%):</label>
-                                        <input
-                                            type="number"
-                                            name="discount"
-                                            value={formData.discount}
-                                            onChange={handleChange}
-                                            min="0"
-                                            max="100"
-                                            />
-                                        </div>
-                                    </>
-                                )}
+                                    <div className="buttons">
+                                        <button className="submit-m-button" type="submit">Realizar Envío</button>
+                                        <button className="cancel-m-button" type="button" onClick={handleCancel}>
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
-
-                            <div className="total-amount">
-                                <h4>Total a pagar: {formData.totalAmount} colones</h4>
-                            </div>
-                        </div>
+                       
                     </div>
-
-                    <div className="buttons">
-                        <button className="submit-m-button" type="submit">Realizar Envío</button>
-                        <button className="cancel-m-button" type="button" onClick={handleCancel}>
-                            Cancelar
-                        </button>
-                    </div>
-                </form>
+                </main>
             </div>
             <Footer />
         </div>
     );
 }
+
+
+//-------------------------------------------------------------------------------------------------------------
 
 
 const PaymentSection = ({ formData, handleChange, handleImageChange, userRole }) => (
@@ -664,7 +683,7 @@ const PaymentSection = ({ formData, handleChange, handleImageChange, userRole })
                     accept=".jpg,.jpeg,.png,.pdf"
                     onChange={handleImageChange}
                     required />
-                
+
             </div>
         )}
     </div>
@@ -731,8 +750,8 @@ const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelectio
                     </div>
                 ))
             ) : (
-                    <p>Se debe seleccionar un padre.</p>
-                    // Se muestra este mensaje si childrenList está vacío
+                <p>Se debe seleccionar un padre.</p>
+                // Se muestra este mensaje si childrenList está vacío
             )}
         </div>
     );

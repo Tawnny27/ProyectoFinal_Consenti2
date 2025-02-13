@@ -70,6 +70,22 @@ const Grupos = () => {
     }
 
 
+
+    const customStyles = {
+        headCells: {
+            style: {
+                backgroundColor: '#41b89a', // Color de fondo
+                color: 'white',             // Color de la letra
+                padding: '15px',            // Espacio interno
+                textAlign: 'center',        // Alineación del texto
+                fontSize: '16px',           // Tamaño de la letra
+                fontWeight: 'bold',         // Negrita
+            },
+        },
+    };
+
+
+
     const columns = [
         {
             name: "Grupo",
@@ -105,7 +121,6 @@ const Grupos = () => {
 
     return (
         <div >
-
             <Navbar />
             <div className="content-container">
                 <Sidebar />
@@ -142,6 +157,7 @@ const Grupos = () => {
                             <DataTable
                                 columns={columns}
                                 data={group}
+                                customStyles={customStyles}
                                 pagination
                                 paginationComponentOptions={{
                                     rowsPerPageText: 'Filas por página:',
@@ -154,33 +170,7 @@ const Grupos = () => {
                                 fixedHeader
                                 fixedHeaderScrollHeight="300px"
                                 responsive 
-                            />
-                            { /*
-                                <table>
-                            <thead>
-                                <tr>
-                                        <th className="otros">Grupo</th>
-                                        <th className="otros">Usuario</th>
-                                        <th className="otros">Status</th>
-                                        <th className="acciones">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {group.map((item, index) => (
-                                    <tr key={index}>
-                                        <td className="otros">{item.nombreGrupo}</td>
-                                        <td className="otros">{item.usuario.nombreUsuario}</td>
-                                        <td className="otros">{cargaStatus(item.status)}</td>
-                                        <td className="acciones">
-                                            <button onClick={() => alert('Ver y Editar')}>Ver/Editar</button>
-                                            <button onClick={() => handleStatusChange(index)}>Cambiar Status</button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                            </table>
-                            */}
-
+                            />                       
                         
                         </div>
                         {showModal && (

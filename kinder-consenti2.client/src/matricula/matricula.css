@@ -2,7 +2,7 @@
 .enrollment-form-container {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* El contenedor ocupa toda la altura de la pantalla */
+    min-height: 90vh; /* El contenedor ocupa toda la altura de la pantalla */
     background: url('../assets/background.jpg') no-repeat center center fixed;
     background-size: cover;
     font-family: 'Roboto', sans-serif;
@@ -130,7 +130,7 @@ select {
 
 /* Estilos para el botón de enviar */
 .submit-m-button {
-    background-color: #48C9B0;
+    background-color: #48C9B0; 
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -158,5 +158,16 @@ select {
         background-color: #D481F5;
     }
 
+.content-matricula {
+    width: 100%;
+    height: 95vh;
+    font-family: "Roboto", sans-serif;
+    /* Para cubrir toda la pantalla */
+    flex-direction: column;
+    padding-top: 10px; /* Para dar espacio al navbar */
+}
 
+    .content-matricula label {
+        text-align: left;
+    }
 

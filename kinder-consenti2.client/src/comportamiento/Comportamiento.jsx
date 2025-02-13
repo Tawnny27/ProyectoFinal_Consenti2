@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
+import Sidebar from "../componentes/Sidebar";
+import DataTable from 'react-data-table-component';
 import { useUserContext } from '../UserContext';
 import * as XLSX from 'xlsx';
 import '../monitoreo/monitoreo.css';
@@ -107,128 +109,219 @@ const ComportamientoAlumno = () => {
         XLSX.writeFile(wb, 'comentarios.xlsx');
     };
 
+
+    const customStyles = {
+        headCells: {
+            style: {
+                backgroundColor: '#41b89a', // Color de fondo
+                color: 'white',             // Color de la letra
+                padding: '15px',            // Espacio interno
+                textAlign: 'center',        // Alineación del texto
+                fontSize: '16px',           // Tamaño de la letra
+                fontWeight: 'bold',         // Negrita
+            },
+        },
+    };
+
+
+    const columns = [
+        {
+            name: "Nombre",
+            selector: row => row.nombreAlumno,
+            with: '30px',
+            sortable: true
+        },
+        {
+            name: "Apellidos",
+            selector: row => row.apellidosAlumno,
+            with: '30px',
+            sortable: true
+        },
+        {
+            name: "Cédula",
+            selector: row => row.cedulaAlumno,
+            with: '30px',
+            sortable: true
+        },
+        {
+            name: "Acciones",
+            with: '5px',
+            cell: (row) => (
+                <div className="acciones">
+
+                    <button className="submit-m-button" onClick={() => handleAlumnoSeleccionado(row)}>
+                        Comportamiento
+                    </button>
+                </div>
+            ),
+        }
+    ];
+
+
+
     return (
-        <div className="user-maintenance-container">
+        <div>
             <Navbar />
-            <h2>Comportamiento de los Niños</h2>
-            <div className="form-group">
-                <input
-                    type="text"
-                    name="nombre"
-                    placeholder="Buscar por nombre"
-                    value={filtro.nombre}
-                    onChange={handleFiltroChange}
-                    className="form-control"
-                />
-                <input
-                    type="text"
-                    name="cedula"
-                    placeholder="Buscar por cédula"
-                    value={filtro.cedula}
-                    onChange={handleFiltroChange}
-                    className="form-control"
-                />
-            </div>
+            <div className="content-container">
 
-            {loading ? (
-                <p>Cargando...</p>
-            ) : (
-                <table className="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Apellidos</th>
-                            <th>Cédula</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {alumnosFiltrados.map((alumno) => (
-                            <tr key={alumno.idAlumno}>
-                                <td>{alumno.nombreAlumno}</td>
-                                <td>{alumno.apellidosAlumno}</td>
-                                <td>{alumno.cedulaAlumno}</td>
-                                <td>
-                                    <button className="submit-m-button" onClick={() => handleAlumnoSeleccionado(alumno)}>
-                                        Comportamiento
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
+                <Sidebar />
 
-            {modalVisible && alumnoSeleccionado && (
-                <div className="comportamiento-modal">
-                    <div className="comportamiento-content">
-                        <h2>Comportamiento de {alumnoSeleccionado.nombreAlumno}</h2>
+                <main className="main-content">
+                <div className="content">
 
-                        <div className="fecha-filtro">
-                            <label>Fecha Inicio:</label>
+                    {/* <div className="user-maintenance-container">*/}
+                    <h2>Comportamiento de los Niños</h2>
+                    <div className="group">
+
+                        <div className="seccion">
                             <input
-                                type="date"
-                                value={fechaInicio}
-                                onChange={(e) => setFechaInicio(e.target.value)}
-                            />
-                            <label>Fecha Fin:</label>
-                            <input
-                                type="date"
-                                value={fechaFin}
-                                onChange={(e) => setFechaFin(e.target.value)}
-                                min={fechaInicio}
+                                type="text"
+                                name="nombre"
+                                placeholder="Buscar por nombre"
+                                value={filtro.nombre}
+                                onChange={handleFiltroChange}
+                                className="form-control"
                             />
                         </div>
-
-                        <h4>Comentarios de Actividad Baño</h4>
-                        <ul>
-                            {filtrarComentariosPorFecha(comentariosBanno).map((item, index) => (
-                                <li key={index}>
-                                    <strong>{item.fecha}:</strong> {item.comentario}
-                                </li>
-                            ))}
-                        </ul>
-
-                        <h4>Comentarios de Actividad Comidas</h4>
-                        <ul>
-                            {filtrarComentariosPorFecha(comentariosComidas).map((item, index) => (
-                                <li key={index}>
-                                    <strong>{item.fecha}:</strong> {item.comentario}
-                                </li>
-                            ))}
-                        </ul>
-
-                        <h4>Comentarios de Actividad Dormir</h4>
-                        <ul>
-                            {filtrarComentariosPorFecha(comentariosDormir).map((item, index) => (
-                                <li key={index}>
-                                    <strong>{item.fecha}:</strong> {item.comentario}
-                                </li>
-                            ))}
-                        </ul>
-
-                        <h4>Comentarios de Actividad Huerta</h4>
-                        <ul>
-                            {filtrarComentariosPorFecha(comentariosHuerta).map((item, index) => (
-                                <li key={index}>
-                                    <strong>{item.fecha}:</strong> {item.comentario}
-                                </li>
-                            ))}
-                        </ul>
-
-                        <button onClick={exportarExcel} className="btn-primary">
-                            Descargar en Excel
-                        </button>
-
-                        <button onClick={() => setModalVisible(false)} className="btn-secondary">
-                            Cerrar
-                        </button>
+                        <div className="seccion">
+                            <input
+                                type="text"
+                                name="cedula"
+                                placeholder="Buscar por cédula"
+                                value={filtro.cedula}
+                                onChange={handleFiltroChange}
+                                className="form-control"
+                            />
+                        </div>
                     </div>
-                </div>
-            )}
 
+                    {/*
+                            <table className="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Apellidos</th>
+                                        <th>Cédula</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {alumnosFiltrados.map((alumno) => (
+                                        <tr key={alumno.idAlumno}>
+                                            <td>{alumno.nombreAlumno}</td>
+                                            <td>{alumno.apellidosAlumno}</td>
+                                            <td>{alumno.cedulaAlumno}</td>
+                                            <td>
+                                                <button className="submit-m-button" onClick={() => handleAlumnoSeleccionado(alumno)}>
+                                                    Comportamiento
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table> */}
+
+
+
+
+                    {loading ? (
+                        <p>Cargando...</p>
+                    ) : (
+
+                        <DataTable
+                            columns={columns}
+                            data={alumnosFiltrados}
+                            customStyles={customStyles}
+                            pagination
+                            paginationComponentOptions={{
+                                rowsPerPageText: 'Filas por página:',
+                                rangeSeparatorText: 'de',
+                                noRowsPerPage: false, // Muestra el selector de filas por página
+                                selectAllRowsItem: true,
+                                selectAllRowsItemText: 'Todos'
+                            }}
+                            highlightOnHover
+                            fixedHeader
+                            fixedHeaderScrollHeight="500px"
+                            responsive
+                        />
+
+                        )}
+
+                    </div>
+
+                    {modalVisible && alumnoSeleccionado && (
+                        <div className="comportamiento-modal">
+                            <div className="comportamiento-content">
+                                <h2>Comportamiento de {alumnoSeleccionado.nombreAlumno}</h2>
+
+                                <div className="fecha-filtro">
+                                    <label>Fecha Inicio:</label>
+                                    <input
+                                        type="date"
+                                        value={fechaInicio}
+                                        onChange={(e) => setFechaInicio(e.target.value)}
+                                    />
+                                    <label>Fecha Fin:</label>
+                                    <input
+                                        type="date"
+                                        value={fechaFin}
+                                        onChange={(e) => setFechaFin(e.target.value)}
+                                        min={fechaInicio}
+                                    />
+                                </div>
+
+                                <h4>Comentarios de Actividad Baño</h4>
+                                <ul>
+                                    {filtrarComentariosPorFecha(comentariosBanno).map((item, index) => (
+                                        <li key={index}>
+                                            <strong>{item.fecha}:</strong> {item.comentario}
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                <h4>Comentarios de Actividad Comidas</h4>
+                                <ul>
+                                    {filtrarComentariosPorFecha(comentariosComidas).map((item, index) => (
+                                        <li key={index}>
+                                            <strong>{item.fecha}:</strong> {item.comentario}
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                <h4>Comentarios de Actividad Dormir</h4>
+                                <ul>
+                                    {filtrarComentariosPorFecha(comentariosDormir).map((item, index) => (
+                                        <li key={index}>
+                                            <strong>{item.fecha}:</strong> {item.comentario}
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                <h4>Comentarios de Actividad Huerta</h4>
+                                <ul>
+                                    {filtrarComentariosPorFecha(comentariosHuerta).map((item, index) => (
+                                        <li key={index}>
+                                            <strong>{item.fecha}:</strong> {item.comentario}
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                <button onClick={exportarExcel} className="btn-primary">
+                                    Descargar en Excel
+                                </button>
+
+                                <button onClick={() => setModalVisible(false)} className="btn-secondary">
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                </main>
+            </div >
             <Footer />
-        </div>
+        </div >
     );
 };
 
