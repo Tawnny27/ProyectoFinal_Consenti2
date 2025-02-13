@@ -7,14 +7,61 @@ import { faCarrot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from '../UserContext';
 import axios from 'axios';
+import Select from 'react-select';
 
 function ActivityPanel() {
     const [selectedActivity, setSelectedActivity] = useState("");
     const [childrenData, setChildrenData] = useState([]);
-
-
+    const [groups, setGroups] = useState([]);
+    const [selectedGroup, setSelectedGroup] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
     const { user } = useUserContext();
+
+    // Función para obtener grupos
+    const obtenerGrupos = async () => {
+        try {
+            const response = await axios.get("https://localhost:44369/Grupos/ObtenerGrupos");
+            setGroups(response.data.map(group => ({ value: group.idGrupo || group.id || group.idGrupos || group.id_grupo, label: group.nombreGrupo || "Sin nombre" })));
+        } catch (error) {
+            setErrorMessage("Error al obtener los grupos.");
+        }
+    };
+
+    // Función para obtener alumnos por grupo seleccionado
+    const obtenerAlumnosPorGrupoSeleccionado = async (groupId) => {
+        try {
+            if (!groupId) return; 
+
+            const response = await axios.get(`https://localhost:44369/GruposAlumnos/ObtenerGrupoAlumnos/${groupId}`);           
+            if (response.data) {
+                const formattedData = response.data.map(child => ({
+                    name: child.alumno.nombreAlumno + ' ' + child.alumno.apellidosAlumno || "Sin nombre",
+                    status: "Bueno",
+                    comments: ""
+                }));
+
+                setChildrenData(formattedData);
+            }
+        } catch (error) {
+            setErrorMessage("Error al obtener los alumnos del grupo.");
+        }
+    };
+
+    // Manejador de cambio en el select
+    const handleSelectChange = async (optionSelected) => {
+        setSelectedGroup(optionSelected.value);
+
+        if (optionSelected.value !== null && optionSelected.value !== undefined) {
+            await obtenerAlumnosPorGrupoSeleccionado(optionSelected.value);
+        }
+
+        if (!optionSelected.value) {
+            // Limpiar datos cuando se deselecciona todo.
+            setChildrenData([]);
+        }
+
+    };
 
     const handleActivitySelect = (activity) => {
         setSelectedActivity(activity);
@@ -34,42 +81,24 @@ function ActivityPanel() {
         setChildrenData(updatedData);
     };
 
-    const cargarMaestraAlumnos = async () => {
-        try {
-            const response = await axios.get(`https://localhost:44369/Usuarios/BuscarUsuarios/${5}`);
-            console.log(response.data)
-            // Mapea los datos de la API a la estructura necesaria
-            const formattedData = response.data.alumnos.map(child => ({
-                name: child.nombreAlumno || "Sin nombre", 
-                status: "Bueno",    
-                comments: ""        
-            }));
-
-            setChildrenData(formattedData);
-            console.log("Datos cargados:", formattedData);
-        } catch (error) {
-            console.error("Error al cargar los datos:", error);
-        }
-    };
-
     const handleApiCall = async (activity) => {
         switch (activity) {
             case 'Comida':
                 try {
-                    const response = await axios.put(`https://localhost:44369/ActividadComidas/EditarActividadComidas/${5}`);
+                    const response = await axios.put(`https://localhost:44369/ActividadComidas/CrearActividadComidas`);
                     if (response == 200) {
                         console.log('Success');
                     }
-       
+
                 } catch (error) {
                     console.error("Error :", error);
-                    
+
                 }
-                
+
                 break;
             case 'Huerta':
                 try {
-                    const response = await axios.put(`https://localhost:44369/ActividadHuerta/EditarActividadHuerta/${5}`);
+                    const response = await axios.put(`https://localhost:44369/ActividadHuerta/CrearActividadHuerta`);
                     if (response == 200) {
                         console.log('Success');
                     }
@@ -81,7 +110,7 @@ function ActivityPanel() {
                 break;
             case 'Dormir':
                 try {
-                    const response = await axios.put(`https://localhost:44369/ActividadDormir/EditarActividadDormir/${5}`);
+                    const response = await axios.put(`https://localhost:44369/ActividadDormir/CrearActividadDormir`);
                     if (response == 200) {
                         console.log('Success');
                     }
@@ -93,7 +122,7 @@ function ActivityPanel() {
                 break;
             case 'Ir al Baño':
                 try {
-                    const response = await axios.put(`https://localhost:44369/ActividadBanno/EditarActividadBanno/${5}`);
+                    const response = await axios.put(`https://localhost:44369/ActividadBanno/CrearActividadBanno`);
                     if (response == 200) {
                         console.log('Success');
                     }
@@ -108,9 +137,8 @@ function ActivityPanel() {
         }
     };
 
-    useEffect(() => { 
-        cargarMaestraAlumnos();
-
+    useEffect(() => {
+        obtenerGrupos();
     }, []);
 
     return (
@@ -120,11 +148,22 @@ function ActivityPanel() {
                 <div className="activity-panel">
                     <h1 className="activity-title">Panel de Actividades</h1>
 
+                    {/* Selector de Grupo */}
+                    <div className="group-selector">
+                        <label>Selecciona un grupo: </label>
+                        <Select
+                            options={groups}
+                            value={selectedGroup ? { value: selectedGroup, label: groups.find(g => g.value === selectedGroup)?.label } : null}
+                            onChange={handleSelectChange}
+                            placeholder="Selecciona un grupo"
+                        />
+                    </div>
+
                     {/* Botones para seleccionar la actividad */}
                     <div className="activity-buttons">
                         <button
-                            className={`activity-button fa-light fa-carrot ${selectedActivity === 'Comida' ? 'active' : ''}`} 
-                            onClick={() => handleActivitySelect('Comida')} 
+                            className={`activity-button fa-light fa-carrot ${selectedActivity === 'Comida' ? 'active' : ''}`}
+                            onClick={() => handleActivitySelect('Comida')}
                         >
                             Comida  <FontAwesomeIcon icon={faCarrot} />
                         </button>
@@ -317,26 +356,24 @@ function ActivityPanel() {
                         <button className="activity-cancel-button" onClick={handleCancel}>
                             Cancelar
                         </button>
-                        <button className="activity-form-button" onClick={goToActivityForm}>
-                            Crear Actividad
-                        </button>
-                    </div>
-                    <div>
                         
-
                         {/* Mostrar los botones según la actividad seleccionada */}
                         {selectedActivity === 'Comida' && (
-                            <button onClick={() => handleApiCall('Comida')}>Enviar a API Comida</button>
+                            <button className="activity-form-button" onClick={() => handleApiCall('Comida')}>Enviar actividad Comida</button>
                         )}
                         {selectedActivity === 'Huerta' && (
-                            <button onClick={() => handleApiCall('Huerta')}>Enviar a API Huerta</button>
+                            <button className="activity-form-button" onClick={() => handleApiCall('Huerta')}>Enviar actividad Huerta</button>
                         )}
                         {selectedActivity === 'Ir al Baño' && (
-                            <button onClick={() => handleApiCall('Ir al Baño')}>Enviar a API Bano 3</button>
+                            <button className="activity-form-button" onClick={() => handleApiCall('Ir al Baño')}>Enviar actividad Baño</button>
                         )}
                         {selectedActivity === 'Dormir' && (
-                            <button onClick={() => handleApiCall('Dormir')}>Enviar a API Dormir 4</button>
+                            <button className="activity-form-button" onClick={() => handleApiCall('Dormir')}>Enviar actividad Dormir</button>
                         )}
+                        
+                    </div>
+                    <div>
+                        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                     </div>
                 </div>
             </div>
