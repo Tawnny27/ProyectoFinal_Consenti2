@@ -1,42 +1,83 @@
 /* PaymentRegistrationForm.css */
 
-.fondo {
-    background: url('../assets/background.jpg') no-repeat center center;
-    width: 100%;
-    background-size: cover;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    display: flex;
-}
-/*.form-container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    font-family: system-ui, -apple-system, sans-serif;
-    
-}*/
-/* Tarjeta del formulario */
-.form-card {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 600px;
-    z-index: 10;
-   margin-block: 100px;
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
 }
 
-    .form-card h2 {
-        color: #9333ea;
-        text-align: center;
-        margin-top: 1rem;       
-        font-size: 1.5rem;
-    }
+.grid-item {
+    background-color: #f4f4f4;
+    padding: 20px;
+    border: 1px solid #ccc;
+    min-height: 200px; /* Ajusta esto según tus necesidades */
+
+}
+
+
+
+.inline {
+    margin-left: 2px;
+    margin-right: 2px;
+    display: inline-block;
+    width: 25%; /* ajusta según tu necesidad */
+    vertical-align: top; /* opcional, para alinear verticalmente */
+}
+
+.inline1 {
+
+    margin-left: 2px;
+    margin-right: 2px;
+    display: inline-block;
+    width: 18%; /* ajusta según tu necesidad */
+    vertical-align: top; /* opcional, para alinear verticalmente */
+}
+
+.inline2 {
+    margin-left: 2px;
+    margin-right: 2px;
+    display: inline-block;
+    width: 45%; /* ajusta según tu necesidad */
+    vertical-align: top; /* opcional, para alinear verticalmente */
+}
+
+
+
+/* Tarjeta del formulario */
+.form-card {  
+    background-color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 100%;
+    z-index: 1;
+    margin-block: 50px;
+}
+
+.inputsOrder {
+    text-align: left;
+}
+.check {
+    color:black;
+}
+
+.form-card h2 {
+    color: #9333ea;
+    text-align: center;   
+    font-size: 2rem;
+}
+
+.contenLabel {
+    text-align: left;
+    color: #14b8a6;
+}
+
+labelCheck {      
+    color: #14b8a6;
+    font-size: 0.875rem;
+}
 
 /* Grupos de formulario */
 .form-group {

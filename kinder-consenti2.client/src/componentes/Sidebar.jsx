@@ -1,10 +1,10 @@
 ﻿import './estilos.css';
 import { useState } from 'react';
-import { Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faUserPlus, faCaretDown, faChildren, faClipboardList, faUserEdit, faChartBar} from '@fortawesome/free-solid-svg-icons';
+import { faUserPlus, faCaretDown, faChildren, faClipboardList, faUserEdit, faChartBar } from '@fortawesome/free-solid-svg-icons';
 import { useUserContext } from '../UserContext';
-import { faAddressBook, faReceipt, faBoxesStacked,  faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
+import { faAddressBook, faReceipt, faBoxesStacked, faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
 
 function Sidebar() {
 
@@ -41,7 +41,7 @@ function Sidebar() {
 
 
     return (
-        
+
         <aside className="sidebar">
             <h2>Menú</h2>
             <ul>
@@ -110,6 +110,22 @@ function Sidebar() {
                         )}
                     </li>
                 )}
+
+                { /*-----------------------------------------------------------------------------------*/}
+
+                {user.rolId === 3 && (
+                    <li>
+                        <Link to="/registrar-pago2">
+                            <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Registrar Pago</Link>
+                    </li>
+                )}
+
+                { /*-----------------------------------------------------------------------------------*/}
+                <li>                   
+                    <Link to="/comportamiento">
+                        <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Comportamiento</Link>
+                </li>
+
                 <li>
                     <Link to="/Grupos">Aulas</Link>
                 </li>
@@ -177,7 +193,7 @@ function Sidebar() {
                 </li>
             </ul>
         </aside>
-        
+
     );
 }
 

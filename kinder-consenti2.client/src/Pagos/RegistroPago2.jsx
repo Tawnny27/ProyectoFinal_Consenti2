@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import './RegistroPago.css';
 import Navbar from '../componentes/navbar';
+import Sidebar from '../componentes/Sidebar';
 import Footer from '../componentes/footer';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,7 +15,8 @@ import axios from '../axios';
 
 const RegistroPago = () => {
 
-    const { user } = useUserContext();
+    const { user } = useUserContext();   
+
 
     const [usuario, setUsuario] = useState([]);
     const [detallesTemp, setDetallesTemp] = useState([]);
@@ -26,6 +28,8 @@ const RegistroPago = () => {
         apellidosUsuario: '',
         cedulaUsuario: ''
     });
+
+   
 
     const [errorMessages, setErrorMessages] = useState({
         idUsuario: '',
@@ -87,8 +91,15 @@ const RegistroPago = () => {
         });
 
         setDetallesTemp([]);
-    };
+        setSelectedFile(null);
+        setPreviewUrl('');
+        fileInputRef.current.value = '';    
 
+        setNombreUnico('default.jpg');
+        setSelectedCheckbox(null);
+        setIsValid(true);
+    };
+  
 
     const validateImage = (file) => {
         if (!file) {
@@ -106,8 +117,24 @@ const RegistroPago = () => {
 
     const cargarDatos = async () => {
         try {
-            const usuarioResponse = await axios.get('https://localhost:44369/Usuarios/ObtenerPadres');
-            setUsuario(usuarioResponse.data);
+
+            if (user.rolId == 3) {
+                const usuarioResponse = await axios.get(`https://localhost:44369/Usuarios/BuscarUsuarios/${user.idUsuario}`);
+
+                setUsuarioSelect(() => ({
+                    idUsuario: usuarioResponse.data.idUsuario,
+                    rolId: usuarioResponse.data.rolId,
+                    nombreUsuario: usuarioResponse.data.nombreUsuario,
+                    apellidosUsuario: usuarioResponse.data.apellidosUsuario,
+                    cedulaUsuario: usuarioResponse.data.cedulaUsuario,
+                }));
+
+            }
+            else if (user.rolId == 1) {
+                const usuarioResponse = await axios.get('https://localhost:44369/Usuarios/ObtenerPadres');
+                setUsuario(usuarioResponse.data);
+            }
+
         } catch (error) {
             console.error('Error al cargar los datos :', error);
         }
@@ -247,7 +274,8 @@ const RegistroPago = () => {
 
 
     const handleCheckboxChange = (index, label) => {
-        setSelectedCheckbox(index);
+        setSelectedCheckbox(selectedCheckbox === index ? null : index);
+        //setSelectedCheckbox(index);
         setPago({
             ...pago,
             metodoPago: label
@@ -265,8 +293,8 @@ const RegistroPago = () => {
             if (validateImage(file)) {
                 setSelectedFile(file);
                 // Crear URL temporal para vista previa
-                const previewURL = URL.createObjectURL(file);
-                setPreviewUrl(previewURL);
+                //const previewURL = URL.createObjectURL(file);
+                setPreviewUrl(URL.createObjectURL(file));
             }
 
         } catch (error) {
@@ -312,6 +340,7 @@ const RegistroPago = () => {
                 console.log(pago);
                 //alert(`Aqui se envian los datosa la BD`);
                 envioDatos();
+               
             }
         }
     };
@@ -339,7 +368,6 @@ const RegistroPago = () => {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-
                 limpiarDatos();
                 alert(imageResponse.message.status);
             }
@@ -364,157 +392,191 @@ const RegistroPago = () => {
 
     return (
         <div>
-            <div className="fondo">
-                {< Navbar />}
 
-                {/* Formulario */}
-                <div className="form-card">
-                    <h2>Registro de pago</h2>
+            {< Navbar />}
+            <div className="content-container">
+                {<Sidebar />}
 
-                    <form onSubmit={handleSubmit} >
-                        { /* Dropdown*/}
+                <main className="main-content">
+                    {/* Formulario */}
+                   
+                    <div className="form-card">
+                     
 
-                        <div className="form-group">
-                            <label>Usuario</label>
-                            <select
-                                name="clienteId"
-                                value={usuarioSelect.idUsuario}
-                                //onChange={manejarCambioUsuario}
-                                onChange={(e) => handleUserSelect(e.target.value)}
-                                required
-                            >
-                                <option key="0" value="0"> Seleccione una persona</option>
-                                {
-                                    usuario.map((us) => (
-                                        <option key={us.idUsuario} value={us.idUsuario}>
-                                            {us.nombreUsuario}
-                                        </option>
-                                    ))}
-                            </select>
+                        <form onSubmit={handleSubmit} >
 
-                        </div>
+                            <div className="inline1">
 
-                        { /* Dropdown*/}
-                        <div className="form-group" style={{ display: 'none' }}>
-                            <input type="text" name="rollId"
-                                value={usuarioSelect.rollId}
-                                disabled />
-                        </div>
+                                <div className="form-group">
 
-                        <div className="form-group" >
-                            <label>Apellido:</label>
-                            <input type="text" value={usuarioSelect.apellidosUsuario} disabled required />
-                            {errorMessages.apellidosUsuario && <div style={{ color: 'red' }}>{errorMessages.apellidosUsuario}</div>}
-                        </div>
+                                    { /* Dropdown*/}
+                                    {user.rolId === 1 && (
+                                        <div >
+                                            <label>Usuario</label>
+                                            <select
+                                                name="clienteId"
+                                                value={usuarioSelect.idUsuario}
+                                                //onChange={manejarCambioUsuario}
+                                                onChange={(e) => handleUserSelect(e.target.value)}
+                                                required
+                                            >
+                                                <option key="0" value="0"> Seleccione una persona</option>
+                                                {
+                                                    usuario.map((us) => (
+                                                        <option key={us.idUsuario} value={us.idUsuario}>
+                                                            {us.nombreUsuario}
+                                                        </option>
+                                                    ))}
+                                            </select>
 
-                        <div className="form-group">
-                            <label>Cédula:</label>
-                            <input type="text" value={usuarioSelect.cedulaUsuario} disabled required />
-                            {errorMessages.cedulaUsuario && <div style={{ color: 'red' }}>{errorMessages.cedulaUsuario}</div>}
-                        </div>
+                                        </div>
+                                    )}
+                                    { /* Dropdown*/}
 
-                        <div className="form-group">
-                            <label># de referencia:</label>
-                            <input type="number"
-                                name="referencia"
-                                value={usuarioSelect.referencia}
-                                required
-                                onChange={handleInputChange}
-                            />
-                        </div>
+                                    <div style={{ display: 'none' }}>
+                                        <input type="text" name="rollId"
+                                            value={usuarioSelect.rollId}
+                                            disabled />
+                                    </div>
 
-                        <div>
-                            {['Efectivo', 'Simpe', 'Transferencia'].map((label, index) => (
-                                <div key={index}>
-                                    <label key={index}>
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedCheckbox === index}
-                                            onChange={() => handleCheckboxChange(index, label)}
+                                    {user.rolId === 3 && (
+                                        <div >
+                                            <label>Nombre:</label>
+                                            <input type="text" value={usuarioSelect.nombreUsuario} disabled required />
+                                        </div>
+                                    )}
+
+
+                                    <div >
+                                        <label>Apellido:</label>
+                                        <input type="text" value={usuarioSelect.apellidosUsuario} disabled required />
+                                        {errorMessages.apellidosUsuario && <div style={{ color: 'red' }}>{errorMessages.apellidosUsuario}</div>}
+                                    </div>
+
+                                    <div >
+                                        <label>Cédula:</label>
+                                        <input type="text" value={usuarioSelect.cedulaUsuario} disabled required />
+                                        {errorMessages.cedulaUsuario && <div style={{ color: 'red' }}>{errorMessages.cedulaUsuario}</div>}
+                                    </div>
+
+                                    <div >
+                                        <label># de referencia:</label>
+                                        <input type="number"
+                                            name="referencia"
+                                            value={usuarioSelect.referencia}
+                                            required
+                                            onChange={handleInputChange}
                                         />
-                                        {label}
+                                    </div>                                  
+                                </div>       
 
-                                    </label>
-                                    <br />
+                            </div>
+
+                            <div className="inline2">
+                                <div className="inline2">
+                                { /*Partirlo*/}                              
+                                <div className="contenLabel">
+                                    <label className="labelCheck">Tipo de Pago</label>
+                                        {['Efectivo', 'SINPE MOVIL', 'Transferencia'].map((label, index) => (
+                                            <div key={index} className="inputsOrder">
+                                                <label className="check" key={index}>
+                                                    <input
+
+                                                        type="checkbox"
+                                                        checked={selectedCheckbox === index}
+                                                        onChange={() => handleCheckboxChange(index, label)}
+                                                    />
+                                                    {label}
+
+                                                </label>
+                                                <br />
+                                            </div>
+                                        ))}
+                                        {!isValid && <p style={{ color: 'red' }}>Debe seleccionar al menos una opción.</p>}
+                                    </div>  
+                                {/*-----------------------------------------------------------------------------*/}
                                 </div>
-                            ))}
-                            {!isValid && <p style={{ color: 'red' }}>Debe seleccionar al menos una opción.</p>}
-                        </div>
+                                <div className="inline2">
+                                    <div className="form-group">
+                                        <label>Subtotal:</label>
+                                        <input type="text" name="subtotal" value={pago.subtotal} disabled />
+                                        <label>Total:</label>
+                                        <input type="text" name="subtotal" value={pago.total} disabled />
+                                    </div>
 
 
-                        <div className="form-group">
+                                </div>
 
-                            <label>Subtotal:</label>
-                            <input type="text" name="subtotal" value={pago.subtotal} disabled />                           
-                            <label>Total:</label>
-                            <input type="text" name="subtotal" value={pago.total} disabled />
-                        </div>
-
-                        {/*-----------------------------------------------------------------------------*/}
-                        <div className="alumno-form-group">
-                            <label className="alumno-label">Foto del la transaccion</label>
-                            <div className="alumno-input-container">
-                                <FontAwesomeIcon icon={faCamera} className="alumno-input-icon" />
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    onChange={handleImageChange}
-                                    accept=".jpg,.jpeg,.png"
-                                    className="alumno-input"
+                                <DataTable
+                                    columns={columns}
+                                    data={detallesTemp}
+                                    noDataComponent={mensaje}
+                                    highlightOnHover
+                                    responsive
                                 />
                             </div>
-                            {previewUrl && (
-                                <div className="image-preview-container">
-                                    <img
-                                        src={previewUrl}
-                                        alt="Vista previa"
-                                        className="image-preview"
-                                        style={{ maxWidth: '200px', marginTop: '10px' }}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setSelectedFile(null);
-                                            setPreviewUrl('');
-                                            if (fileInputRef.current) {
-                                                fileInputRef.current.value = '';
-                                            }
-                                        }}
-                                        className="remove-image-btn"                                    >
-                                        Eliminar imagen
-                                    </button>
-                                </div>
-                            )}
-                            {imageError && (
-                                <div className="error-message" style={{ color: 'red', marginTop: '5px' }}>
-                                    {imageError}
-                                </div>
-                            )}
-                            <div className="image-info"
-                                style={{ fontSize: '0.8rem', color: '#666', marginTop: '5px' }}>
-                                Formatos permitidos: JPG, PNG. Tamano maximo: 5MB
+
+                            {/*-----------------------------------------------------------------------------*/}
+
+                            <div className="inline">
+                                <div className="alumno-form-group">
+                                    <label className="alumno-label">Foto del la transaccion</label>
+                                    <div className="alumno-input-container">
+                                        <FontAwesomeIcon icon={faCamera} className="alumno-input-icon" />
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            onChange={handleImageChange}
+                                            accept=".jpg,.jpeg,.png"
+                                            className="alumno-input"
+                                        />
+                                    </div>
+                                    {previewUrl && (
+                                        <div className="image-preview-container">
+                                            <img
+                                                src={previewUrl}
+                                                alt="Vista previa"
+                                                className="image-preview"
+                                                style={{ maxWidth: '200px', marginTop: '10px' }}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setSelectedFile(null);
+                                                    setPreviewUrl('');
+                                                    if (fileInputRef.current) {
+                                                        fileInputRef.current.value = '';
+                                                    }
+                                                }}
+                                                className="remove-image-btn"                                    >
+                                                Eliminar imagen
+                                            </button>
+                                        </div>
+                                    )}
+                                    {imageError && (
+                                        <div className="error-message" style={{ color: 'red', marginTop: '5px' }}>
+                                            {imageError}
+                                        </div>
+                                    )}
+                                    <div className="image-info"
+                                        style={{ fontSize: '0.8rem', color: '#666', marginTop: '5px' }}>
+                                        Formatos permitidos: JPG, PNG. Tamano maximo: 5MB
+                                    </div>
+                                </div>                              
+                                
                             </div>
-                        </div>
-                        {/*-----------------------------------------------------------------------------*/}
+                            <div className="button-group">
+                                <button type="submit" className="btn-submit" onClick={handleSubmit}>Enviar</button>
+                                <button type="button" className="btn-submit" onClick={limpiarDatos}>Limpiar</button>
+                                <button type="button" className="btn-cancel">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
 
-                        <DataTable
-                            columns={columns}
-                            data={detallesTemp}
-                            noDataComponent={mensaje}
-                            highlightOnHover
-                            responsive
-                        />
-
-                        <div className="button-group">
-                            <button type="submit" className="btn-submit" onClick={handleSubmit}>Enviar</button>
-                            <button type="button" className="btn-submit" onClick={limpiarDatos}>Limpiar</button>
-                            <button type="button" className="btn-cancel">Cancelar</button>
-                        </div>
-                    </form>
-                </div>
-
-                {/*<Footer />*/}
+                </main>
             </div>
+
+            {<Footer />}
         </div>
 
     );

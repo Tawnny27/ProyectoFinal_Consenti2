@@ -37,7 +37,7 @@ function Navbar() {
             <div className="user-info">
                 {user ? (
                     <span>
-                        Hola, {user.nombreUsuario} {user.apellidosUsuario}, {'Rol '}({user.rolId})
+                        Hola, {user.nombreUsuario} {user.apellidosUsuario}
                     </span> // Mostrar el nombre del usuario
                 ) : (
                     <span>Cargando...</span>

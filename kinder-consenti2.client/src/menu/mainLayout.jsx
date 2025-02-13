@@ -8,6 +8,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import logo from '../assets/logo.jpg';
 import Footer from '../componentes/footer';
+import Navbar from "../componentes/navbar";
 import Sidebar from "../componentes/Sidebar";
 import { useUserContext } from '../UserContext';
 import { faAddressBook, faReceipt, faBoxesStacked, faCheck, faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet, faChartSimple } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
@@ -97,21 +98,25 @@ const MainLayout = () => {
     return (
         <div className="main-layout">
             { /* Navbar*/}
-            <header className="header">
-                <div className="logo-container">
-                    <img src={logo} alt="Logo" className="logo-main" />
-                    <h1>Consenti2</h1>
-                </div>
-                <div className="spacer"></div>
-                <div className="header-actions">
-                    <button onClick={handleCalendarClick} className="calendar-button">
-                        <FontAwesomeIcon icon={faCalendarAlt} /> Calendario
-                    </button>
-                    <button onClick={handleLogout} className="logout-button">
-                        <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar
-                    </button>
-                </div>
-            </header>
+            {/*
+                <header className="header">
+                    <div className="logo-container">
+                        <img src={logo} alt="Logo" className="logo-main" />
+                        <h1>Consenti2</h1>
+                    </div>
+                    <div className="spacer"></div>
+                    <div className="header-actions">
+                        <button onClick={handleCalendarClick} className="calendar-button">
+                            <FontAwesomeIcon icon={faCalendarAlt} /> Calendario
+                        </button>
+                        <button onClick={handleLogout} className="logout-button">
+                            <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar
+                        </button>
+                    </div>
+                </header>
+            */}
+
+            <Navbar />
             { /* Lateral */}
             <div className="content-container">
                 <Sidebar />
