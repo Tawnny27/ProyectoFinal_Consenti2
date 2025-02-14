@@ -8,9 +8,10 @@ import './Factura.css';
 const FacturaMaintenance = () => {
     const [facturas, setFacturas] = useState([]);
     const [facturasFiltradas, setFacturasFiltradas] = useState([]);
+    const [usuarios, setUsuarios] = useState({}); // Guardamos los nombres de los usuarios por su ID
     const [loading, setLoading] = useState(true);
-    const [filtroUsuarioId, setFiltroUsuarioId] = useState(''); // Filtro por Usuario ID
-    const [filtroEstado, setFiltroEstado] = useState(''); // Filtro por Estado
+    const [filtroUsuarioId, setFiltroUsuarioId] = useState('');
+    const [filtroEstado, setFiltroEstado] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
     const [imagenSeleccionada, setImagenSeleccionada] = useState('');
 
@@ -21,7 +22,8 @@ const FacturaMaintenance = () => {
             const response = await axios.get('https://localhost:44369/EncabezadoFactura/ObtenerFacturasPendientes');
             if (response.status === 200) {
                 setFacturas(response.data);
-                setFacturasFiltradas(response.data); // Inicializar facturas filtradas con todas las facturas
+                setFacturasFiltradas(response.data);
+                await fetchUsuarios(response.data); // Obtener usuarios de las facturas
             }
         } catch (error) {
             console.error('Error al obtener las facturas:', error);
@@ -30,18 +32,42 @@ const FacturaMaintenance = () => {
         }
     };
 
+    // Función para obtener los datos de un usuario
+    const fetchUsuario = async (usuarioId) => {
+        try {
+            const response = await axios.get(`https://localhost:44369/Usuarios/BuscarUsuarios/${usuarioId}`);
+            if (response.status === 200) {
+                return response.data.nombreUsuario; // Suponiendo que la respuesta tiene un campo `nombre`
+            }
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+        }
+        return 'Usuario no encontrado'; // Valor por defecto en caso de error
+    };
+
+    // Función para obtener todos los usuarios y almacenarlos en el estado
+    const fetchUsuarios = async (facturas) => {
+        const usuariosData = {};
+        for (let factura of facturas) {
+            const usuarioId = factura.usuarioId;
+            if (!usuariosData[usuarioId]) {
+                const nombreUsuario = await fetchUsuario(usuarioId);
+                usuariosData[usuarioId] = nombreUsuario;
+            }
+        }
+        setUsuarios(usuariosData);
+    };
+
     // Filtrar facturas por Usuario ID y Estado
     useEffect(() => {
         let facturasFiltradas = facturas;
 
-        // Filtrar por Usuario ID
         if (filtroUsuarioId.trim() !== '') {
             facturasFiltradas = facturasFiltradas.filter((factura) =>
                 factura.usuarioId.toString().includes(filtroUsuarioId)
             );
         }
 
-        // Filtrar por Estado
         if (filtroEstado !== '') {
             facturasFiltradas = facturasFiltradas.filter(
                 (factura) => factura.status.toString() === filtroEstado
@@ -88,7 +114,6 @@ const FacturaMaintenance = () => {
         fetchFacturas();
     }, []);
 
-    // Configuración de columnas para la tabla
     const columns = [
         {
             name: 'ID Factura',
@@ -96,8 +121,8 @@ const FacturaMaintenance = () => {
             sortable: true,
         },
         {
-            name: 'Usuario ID',
-            selector: (row) => row.usuarioId,
+            name: 'Usuario',
+            selector: (row) => usuarios[row.usuarioId] || 'Cargando...',
         },
         {
             name: 'Fecha',
@@ -173,7 +198,7 @@ const FacturaMaintenance = () => {
                 ) : (
                     <DataTable
                         columns={columns}
-                        data={facturasFiltradas} // Mostrar facturas filtradas
+                        data={facturasFiltradas}
                         pagination
                         highlightOnHover
                         fixedHeader

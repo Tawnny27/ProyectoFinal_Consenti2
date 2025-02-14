@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
+import './EditarAlumno.css';
 
 const EditarAlumno = () => {
     const { id } = useParams(); // Obtener el id del alumno desde la URL
@@ -65,32 +66,30 @@ const EditarAlumno = () => {
     };
 
     return (
-        <div className="student-maintenance-container">
+        <div className="unique-student-maintenance-container">
             <Navbar />
-            <div className="form-container">
+            <div className="unique-form-container">
                 <h1>Editar Alumno</h1>
-                {mensajeExito && <div className="success-message">{mensajeExito}</div>}
+                {mensajeExito && <div className="unique-success-message">{mensajeExito}</div>}
                 <form onSubmit={manejarEnvio}>
-                    <div>
-                        {/*<label>ID Alumno</label>*/}
-                        <input
-                            type="text"
-                            name="idAlumno"
-                            value={alumno.idAlumno}
-                            onChange={manejarCambio}
-                            disabled
-                            style={{ display: 'none' }}
-                        />
-                    </div>
-                    <div>
-                        <label>ID Padre</label>
-                        <input
-                            type="text"
-                            name="padreId"
-                            value={alumno.padreId}
-                            onChange={manejarCambio}
-                        />
-                    </div>
+                    <input
+                        type="text"
+                        name="idAlumno"
+                        value={alumno.idAlumno}
+                        onChange={manejarCambio}
+                        disabled
+                        style={{ display: 'none' }}
+                    />
+
+                    <input
+                        type="text"
+                        name="padreId"
+                        value={alumno.padreId}
+                        disabled
+                        onChange={manejarCambio}
+                        style={{ display: 'none' }}
+                    />
+
                     <div>
                         <label>Nombre</label>
                         <input
@@ -101,6 +100,7 @@ const EditarAlumno = () => {
                             required
                         />
                     </div>
+
                     <div>
                         <label>Apellidos</label>
                         <input
@@ -111,6 +111,7 @@ const EditarAlumno = () => {
                             required
                         />
                     </div>
+
                     <div>
                         <label>Fecha de Nacimiento</label>
                         <input
@@ -121,25 +122,46 @@ const EditarAlumno = () => {
                             required
                         />
                     </div>
+
                     <div>
                         <label>Cédula</label>
                         <input
                             type="text"
                             name="cedulaAlumno"
                             value={alumno.cedulaAlumno}
-                            onChange={manejarCambio}
+                            onChange={(e) => {
+                                const { value } = e.target;
+                                if (/^\d*$/.test(value) && value.length <= 9) {
+                                    manejarCambio(e);
+                                }
+                            }}
                             required
                         />
+
+                        {alumno.cedulaAlumno.length > 0 && alumno.cedulaAlumno.length < 9 && (
+                            <span style={{ color: 'red' }}>La cédula debe tener al menos 9 dígitos.</span>
+                        )}
                     </div>
+
                     <div>
-                        <label>Género</label>
+                        <label>Teléfono Contacto</label>
                         <input
                             type="text"
-                            name="generoAlumno"
-                            value={alumno.generoAlumno}
-                            onChange={manejarCambio}
+                            name="telefonoContacto"
+                            value={alumno.telefonoContacto}
+                            onChange={(e) => {
+                                const { value } = e.target;
+                                if (/^\d*$/.test(value) && value.length <= 8) {
+                                    manejarCambio(e);
+                                }
+                            }}
+                            required
                         />
+                        {alumno.telefonoContacto.length > 0 && alumno.telefonoContacto.length < 8 && (
+                            <span style={{ color: 'red'}}>El teléfono debe tener exactamente 8 dígitos.</span>
+                        )}
                     </div>
+
                     <div>
                         <label>Dirección</label>
                         <input
@@ -149,87 +171,7 @@ const EditarAlumno = () => {
                             onChange={manejarCambio}
                         />
                     </div>
-                    <div>
-                        <label>Información Adicional</label>
-                        <input
-                            type="text"
-                            name="informacionAdicional"
-                            value={alumno.informacionAdicional}
-                            onChange={manejarCambio}
-                        />
-                    </div>
-                    <div>
-                        <label>Foto</label>
-                        <input
-                            type="text"
-                            name="fotoAlumno"
-                            value={alumno.fotoAlumno}
-                            onChange={manejarCambio}
-                        />
-                    </div>
-                    <div>
-                        <label>Nombre Autorizado</label>
-                        <input
-                            type="text"
-                            name="nombreCompAutorizado"
-                            value={alumno.nombreCompAutorizado}
-                            onChange={manejarCambio}
-                        />
-                    </div>
-                    <div>
-                        <label>Cédula Autorizado</label>
-                        <input
-                            type="text"
-                            name="cedulaAutorizado"
-                            value={alumno.cedulaAutorizado}
-                            onChange={manejarCambio}
-                        />
-                    </div>
-                    <div>
-                        <label>Teléfono Autorizado</label>
-                        <input
-                            type="text"
-                            name="telefonoAutorizado"
-                            value={alumno.telefonoAutorizado}
-                            onChange={manejarCambio}
-                        />
-                    </div>
-                    <div>
-                        <label>Relación Autorizado</label>
-                        <input
-                            type="text"
-                            name="relacionAutorizado"
-                            value={alumno.relacionAutorizado}
-                            onChange={manejarCambio}
-                        />
-                    </div>
-                    <div>
-                        <label>Nombre Contacto</label>
-                        <input
-                            type="text"
-                            name="nombreCompContacto"
-                            value={alumno.nombreCompContacto}
-                            onChange={manejarCambio}
-                        />
-                    </div>
-                    <div>
-                        <label>Cédula Contacto</label>
-                        <input
-                            type="text"
-                            name="cedulaContacto"
-                            value={alumno.cedulaContacto}
-                            onChange={manejarCambio}
-                        />
-                    </div>
-                    <div>
-                        <label>Teléfono Contacto</label>
-                        <input
-                            type="text"
-                            name="telefonoContacto"
-                            value={alumno.telefonoContacto}
-                            onChange={manejarCambio}
-                        />
-                    </div>
+
                     <div>
                         <label>Relación Contacto</label>
                         <input
@@ -239,12 +181,14 @@ const EditarAlumno = () => {
                             onChange={manejarCambio}
                         />
                     </div>
+
                     <button type="submit">Guardar Cambios</button>
                 </form>
             </div>
             <Footer />
         </div>
     );
+
 };
 
 export default EditarAlumno;

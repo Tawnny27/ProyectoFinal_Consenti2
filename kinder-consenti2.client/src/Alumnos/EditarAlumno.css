@@ -1,0 +1,78 @@
+/* Contenedor del formulario */
+.unique-form-container {
+    width: 40%; /* Reducir el ancho */
+    max-width: 400px; /* Evita que se haga muy grande en pantallas grandes */
+    margin: auto;
+    margin-top: 7rem;
+    margin-bottom: 5rem;
+    background: #ffffff;
+    padding: 1.5rem; /* Reducir el padding para que ocupe menos espacio */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    /* Estilo de los inputs */
+    .unique-form-container input {
+        width: 100%;
+        padding: 8px; /* Reducir padding para inputs más pequeños */
+        font-size: 14px; /* Texto más pequeño */
+        border: 1px solid #ddd; /* Añadir borde sutil */
+        border-radius: 4px; /* Bordes redondeados */
+        margin-bottom: 12px; /* Espacio entre inputs */
+        box-sizing: border-box; /* Incluir padding en el cálculo del tamaño */
+    }
+
+    /* Estilo de las etiquetas */
+    .unique-form-container label {
+        font-size: 14px; /* Etiquetas más pequeñas */
+        display: block;
+        margin-bottom: 6px;
+        font-weight: bold; /* Hacer las etiquetas en negrita */
+    }
+
+/* Estilo del mensaje de éxito */
+.success-message {
+    color: green;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+/* Estilo del botón de envío */
+button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #4CAF50; /* Verde */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    button[type="submit"]:hover {
+        background-color: #45a049; /* Color más oscuro al pasar el ratón */
+    }
+
+/* Estilo de los mensajes de error */
+span-alumno {
+    font-size: 12px;
+    color: red;
+}
+
+/* Adaptación para pantallas más pequeñas */
+@media (max-width: 600px) {
+    .unique-form-container {
+        width: 90%; /* Que ocupe casi toda la pantalla en móviles */
+        padding: 1rem; /* Menos padding */
+    }
+
+        .unique-form-container input {
+            font-size: 12px;
+            padding: 6px;
+        }
+
+        .unique-form-container label {
+            font-size: 12px;
+        }
+}
