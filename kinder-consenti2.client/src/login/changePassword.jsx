@@ -31,7 +31,7 @@ const ChangePassword = () => {
         }
 
         try {
-            const response = await axios.put('https://localhost:44369/Usuarios/CambiarContrasena', {
+            const response = await axios.put('https://localhost:44369/api/Usuarios/CambiarContrasena', {
                 correo: email,
                 contrasenna: newPassword,
                 contrasennaValidacion: confirmPassword
@@ -41,7 +41,7 @@ const ChangePassword = () => {
                 setSuccessMessage(response.data);
                 setTimeout(() => {
                     navigate('/'); // Redirige después de 5
-                }, 2000); 
+                }, 500); 
             }
         } catch (error) {
             setSuccessMessage(error.response?.data || "Error al cambiar la contraseña");

@@ -12,7 +12,7 @@ namespace kinder_consenti2.Server.Controllers
 
 {
     [ApiController]
-    [Route("[controller]")]    
+    [Route("api/")]    
     public class EventosController : ControllerBase
     {
         private readonly Concenti2pruebasContext _context;

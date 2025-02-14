@@ -22,7 +22,7 @@ function ActivityPanel() {
     // Función para obtener grupos
     const obtenerGrupos = async () => {
         try {
-            const response = await axios.get("https://localhost:44369/Grupos/ObtenerGrupos");
+            const response = await axios.get("https://localhost:44369/api/Grupos/ObtenerGrupos");
             setGroups(response.data.map(group => ({ value: group.idGrupo || group.id || group.idGrupos || group.id_grupo, label: group.nombreGrupo || "Sin nombre" })));
         } catch (error) {
             setErrorMessage("Error al obtener los grupos.");
@@ -34,7 +34,7 @@ function ActivityPanel() {
         try {
             if (!groupId) return;
 
-            const response = await axios.get(`https://localhost:44369/GruposAlumnos/ObtenerGrupoAlumnos/${groupId}`);
+            const response = await axios.get(`https://localhost:44369/api/GruposAlumnos/ObtenerGrupoAlumnos/${groupId}`);
             if (response.data) {
                 const formattedData = response.data.map(child => ({
                     alumnoId: child.alumno.idAlumno,
@@ -92,7 +92,7 @@ function ActivityPanel() {
                 try {
                      console.log(childrenData)
                     const response = await axios.post(
-                        `https://localhost:44369/ActividadComidas/CrearActividadComidas`,
+                        `https://localhost:44369/api/ActividadComidas/CrearActividadComidas`,
                         childrenData
                     );
 
@@ -113,7 +113,7 @@ function ActivityPanel() {
                     console.log(childrenData)
 
                     const response = await axios.post(
-                        `https://localhost:44369/ActividadHuerta/CrearActividadHuerta`,
+                        `https://localhost:44369/api/ActividadHuerta/CrearActividadHuerta`,
                         childrenData
                     );
                     if (response.status === 200) {
@@ -131,7 +131,7 @@ function ActivityPanel() {
             case 'Dormir':
                 try {
                     const response = await axios.post(
-                        `https://localhost:44369/ActividadDormir/CrearActividadDormir`,
+                        `https://localhost:44369/api/ActividadDormir/CrearActividadDormir`,
                         childrenData
                     );
                     if (response.status === 200) {
@@ -148,7 +148,7 @@ function ActivityPanel() {
                 break;
             case 'Ir al Baño':
                 try {
-                    const response = await axios.post(`https://localhost:44369/ActividadBanno/CrearActividadBanno`, childrenData);
+                    const response = await axios.post(`https://localhost:44369/api/ActividadBanno/CrearActividadBanno`, childrenData);
                     if (response.status === 200) {
                         console.log('Success:', response.data);
                         alert('Actividad de Baño guardada con éxito!');

@@ -13,8 +13,7 @@ import ResetPassword from './login/resetPassword';
 import ChangePassword from './login/changePassword';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import RegistroUsuario from './usuarios/RegistroUsuario';
-import FormularioRegistroPago from './Pagos/Registropago';
-import RegistroPago from './Pagos/Registropago2';
+import RegistroPago from './Pagos/Registropago';
 import GeneradorRecibos from './Pagos/GenerarRecibo';
 import Matricula from './matricula/Matricula';
 import Reportes from './Reportes/Reportes';
@@ -51,9 +50,8 @@ function App() {
                     <Route path="/main" element={<MainLayout />} />
                     <Route path="/user-maintenance" element={<UserMaintenance />} />
                     <Route path="/alumno-maintenance" element={<AlumnoMaintenance />} />
-                    <Route path="/registrar-usuario" element={<RegistroUsuario />} /> {/* Nueva ruta */}
-                    {/*<Route path="/registrar-pago" element={<FormularioRegistroPago />} /> */}
-                    <Route path="/registrar-pago2" element={<RegistroPago />} /> { /* eddy*/}
+                    <Route path="/registrar-usuario" element={<RegistroUsuario />} /> {/* Nueva ruta */}                  
+                    <Route path="/registrar-pago" element={<RegistroPago />} /> { /* eddy*/}
                     <Route path="/GenerarRecibo" element={<GeneradorRecibos />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/change-password" element={<ChangePassword />} />
@@ -73,8 +71,7 @@ function App() {
                     <Route path="/inventario" element={<Inventario />} />
                     <Route path="/Gastos" element={<Gastos />} />
                     <Route path="/monitoreo" element={<MonitoreoAlumno />} />
-                    <Route path="/Lista-actividades" element={<ListaActividades />} />
-                    <Route path="/registrar-pago2" element={<RegistroPago />} /> { /* eddy*/}
+                    <Route path="/Lista-actividades" element={<ListaActividades />} />                   
                     <Route path="/GenerarRecibo" element={<GeneradorRecibos />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/change-password" element={<ChangePassword />} />

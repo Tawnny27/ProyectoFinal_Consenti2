@@ -20,7 +20,7 @@ const Grupos = () => {
 
 
     const cargarGrupos = async () => {
-        const groups = await axios.get('https://localhost:44369/Grupos/ObtenerGrupos');
+        const groups = await axios.get('https://localhost:44369/api/Grupos/ObtenerGrupos');
         setGroup(groups.data);
         console.log(group);
     }

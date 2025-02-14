@@ -98,7 +98,7 @@ function Sidebar() {
                         </div>
                         {showGestFSubMenu && (
                             <ul className="submenu">
-                                <li><Link to="/registrar-pago2">
+                                <li><Link to="/registrar-pago">
                                     <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Registrar Pago</Link></li>
                                 <li><Link to="/FacturasPagadas">
                                     <FontAwesomeIcon icon={faFileInvoice} className="menu-icon" /> Recibo de Pagos</Link></li>
@@ -115,7 +115,7 @@ function Sidebar() {
 
                 {user.rolId === 3 && (
                     <li>
-                        <Link to="/registrar-pago2">
+                        <Link to="/registrar-pago">
                             <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Registrar Pago</Link>
                     </li>
                 )}

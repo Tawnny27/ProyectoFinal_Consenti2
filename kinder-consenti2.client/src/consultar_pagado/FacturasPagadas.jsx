@@ -16,7 +16,7 @@ const FacturasPagadas = () => {
     const fetchFacturasPagadas = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await axios.get('https://localhost:44369/EncabezadoFactura/ObtenerFacturasPagadas');
+            const response = await axios.get('https://localhost:44369/api/EncabezadoFactura/ObtenerFacturasPagadas');
             if (response.status === 200) {
                 setFacturasPagadas(response.data);
             }
@@ -35,7 +35,7 @@ const FacturasPagadas = () => {
 
     const abrirModalDetalles = async (idFactura) => {
         try {
-            const response = await axios.get(`https://localhost:44369/EncabezadoFactura/BuscarFactura/${idFactura}`);
+            const response = await axios.get(`https://localhost:44369/api/EncabezadoFactura/BuscarFactura/${idFactura}`);
             if (response.status === 200) {
                 setFacturaDetalles(response.data);
             } else {

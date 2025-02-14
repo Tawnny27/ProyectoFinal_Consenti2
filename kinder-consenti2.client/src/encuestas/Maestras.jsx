@@ -19,7 +19,7 @@ const MaestrasFeedback = () => {
         const fetchTeachersAndAvatars = async () => {
             try {
                 // Obtener maestras de la API
-                const response = await axios.get('https://localhost:44369/Usuarios/ObtenerUsuarios');
+                const response = await axios.get('https://localhost:44369/api/Usuarios/ObtenerUsuarios');
                 const filteredTeachers = response.data.filter((user) => user.rolId === 2);
 
                 // Obtener avatares de la API
@@ -77,7 +77,7 @@ const MaestrasFeedback = () => {
             console.log('Datos enviados:', evaluacionDocente);
 
             // Enviar la evaluación docente al servidor
-            const response = await axios.post('https://localhost:44369/EvaluacionDocentes/CrearEvaluacionDocente', evaluacionDocente, {
+            const response = await axios.post('https://localhost:44369/api/EvaluacionDocentes/CrearEvaluacionDocente', evaluacionDocente, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

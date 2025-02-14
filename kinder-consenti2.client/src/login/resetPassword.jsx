@@ -14,7 +14,7 @@ const ResetPassword = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.put('https://localhost:44369/Usuarios/RecuperarContrasena', { correo });
+            const response = await axios.put('https://localhost:44369/api/Usuarios/RecuperarContrasena', { correo });
             if (response.status === 200) {
                 setMessage('Correo de restablecimiento enviado. Revisa tu bandeja de entrada. Y la proxima vez que ingrese podrá cambiar su contraseña');
                 setTimeout(() => {

@@ -33,8 +33,12 @@ builder.Services.AddTransient<CorreoEnvio>();
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+if(app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 
 app.UseDefaultFiles();
 app.UseStaticFiles();

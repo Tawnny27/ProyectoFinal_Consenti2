@@ -12,6 +12,7 @@
     <WebStackScaffolding_DbContextTypeFullName>kinder_consenti2.Server.Models.Concenti2pruebasContext</WebStackScaffolding_DbContextTypeFullName>
     <WebStackScaffolding_IsAsyncSelected>False</WebStackScaffolding_IsAsyncSelected>
     <WebStackScaffolding_IsViewGenerationSelected>False</WebStackScaffolding_IsViewGenerationSelected>
+    <NameOfLastUsedPublishProfile>C:\Repositorio\Git\ProyectoFinal_Consenti2\kinder-consenti2.Server\Properties\PublishProfiles\kinder-consenti2Server20250214002352 - Zip Deploy.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>

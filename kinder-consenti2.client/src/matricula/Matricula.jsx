@@ -81,7 +81,7 @@ const Matricula = () => {
                         }));
 
                         // Llamada para obtener los datos del usuario con el idUsuario del padre
-                        const usuarioResponse = await fetch(`https://localhost:44369/Usuarios/BuscarUsuarios/${user.idUsuario}`);
+                        const usuarioResponse = await fetch(`https://localhost:44369/api/Usuarios/BuscarUsuarios/${user.idUsuario}`);
 
                         if (!usuarioResponse.ok) {
                             throw new Error('No se pudo obtener los datos del usuario');
@@ -107,7 +107,7 @@ const Matricula = () => {
                         // Si el usuario se encuentra, cargar los datos de los alumnos
                         if (usuarioEncontrado) {
                             if (usuarioEncontrado.idUsuario === user.idUsuario) {
-                                const alumnosResponse = await fetch(`https://localhost:44369/alumnos/${user.idUsuario}`);
+                                const alumnosResponse = await fetch(`https://localhost:44369/api/alumnos/${user.idUsuario}`);
                                 const alumnos = await alumnosResponse.json();
                                 setChildrenList(alumnos || []);
                             } else {
@@ -128,7 +128,7 @@ const Matricula = () => {
 
     const fetchUsers = async () => {
         try {
-            const { data } = await axios.get('https://localhost:44369/Usuarios/ObtenerUsuarios');
+            const { data } = await axios.get('https://localhost:44369/api/Usuarios/ObtenerUsuarios');
             const formattedUsers = data
                 .filter((usuario) => usuario.rolId === 3)
                 .map((usuario) => ({
@@ -200,8 +200,8 @@ const Matricula = () => {
     useEffect(() => {
         const obtenerProductos = async () => {
             try {
-                const responseFijos = await axios.get('https://localhost:44369/ObtenerProductosfijos');
-                const responseMensuales = await axios.get('https://localhost:44369/ObtenerProductosMensuales');
+                const responseFijos = await axios.get('https://localhost:44369/api/ObtenerProductosfijos');
+                const responseMensuales = await axios.get('https://localhost:44369/api/ObtenerProductosMensuales');
 
                 setProductosFijos(responseFijos.data);
                 setProductosMensuales(responseMensuales.data);
@@ -369,7 +369,7 @@ const Matricula = () => {
 
             // Intentamos crear la matrícula primero
             const matriculaResponse = await axios.post(
-                'https://localhost:44369/EncabezadoFactura/CrearMatricula',
+                'https://localhost:44369/api/EncabezadoFactura/CrearMatricula',
                 dataToSend,
                 {
                     headers: {
@@ -392,7 +392,7 @@ const Matricula = () => {
 
                     try {
                         const imageResponse = await axios.post(
-                            'https://localhost:44369/Imagenes/GuardarImagenPago',
+                            'https://localhost:44369/api/Imagenes/GuardarImagenPago',
                             imageFormData,
                             {
                                 headers: { 'Content-Type': 'multipart/form-data' },

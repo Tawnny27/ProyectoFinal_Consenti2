@@ -7,6 +7,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.jpg';
 import { useUserContext } from '../UserContext';
 
+import { accesoUsuarios } from '../apiClient'; // Importar las funciones desde apiClient.js
+
 const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,23 +17,23 @@ const LoginForm = () => {
     const navigate = useNavigate();
     const { setUser } = useUserContext();
 
-    const handleLogin = async () => {
-        try {
-            const response = await axios.post('https://localhost:44369/Usuarios/AccesoUsuario2', {
-                correo: email,
-                contrasenna: password
-            });
-
-            if (response.status === 200) {
-                const usuario = response.data;
-                setUser(usuario);
-                setErrorMessage('');
-                navigate('/main');
-            }
-        } catch (error) {
-            console.error('Error en el inicio de sesión:', error.response?.data || error.message);
-            setErrorMessage(error.response?.data || 'Error en el inicio de sesión. Revisa tus credenciales.');
+    async function loguear() {
+        const response = await accesoUsuarios(email, password);
+        if (response.status === 200) {
+            const usuario = response.data;
+            setUser(usuario);
+            setErrorMessage('');
+            navigate('/main');
+        } else {
+            setErrorMessage(response);
         }
+    }
+
+
+    const handleLogin = async () => {
+
+        loguear();
+
     };
 
     const handleSubmit = (e) => {

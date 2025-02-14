@@ -61,7 +61,7 @@ const MaterialesDidacticos = () => {
         if (user.rolId === 3) {
 
             try {
-                const response1 = await axios.get(`https://localhost:44369/MaterialDidacticoes/ObtenerMaterialesDidacticosPadre/${user.idUsuario}`);
+                const response1 = await axios.get(`https://localhost:44369/api/MaterialDidacticoes/ObtenerMaterialesDidacticosPadre/${user.idUsuario}`);
                 if (response1.status === 200) {
                     setMateriales(response1.data);
                     setIsLoading(false);
@@ -73,7 +73,7 @@ const MaterialesDidacticos = () => {
             }
         } else {
             try {
-                const response = await axios.get("https://localhost:44369/MaterialDidacticoes/ObtenerMaterialesDidacticosAct");
+                const response = await axios.get("https://localhost:44369/api/MaterialDidacticoes/ObtenerMaterialesDidacticosAct");
                 console.log("Materiales cargados:", response.data);
                 setMateriales(response.data);
                 setIsLoading(false);
@@ -87,7 +87,7 @@ const MaterialesDidacticos = () => {
 
     const cargarAulas = async () => {
         try {
-            const response = await axios.get("https://localhost:44369/Grupos/ObtenerGrupos");
+            const response = await axios.get("https://localhost:44369/api/Grupos/ObtenerGrupos");
             setAulas(response.data);
             console.log("Aulas cargadas:", response.data);
         } catch (error) {
@@ -160,7 +160,7 @@ const MaterialesDidacticos = () => {
     const handleDelete = async (materialId) => {
         try {
             // Llamar a la API para eliminar el material usando el idMaterialDidactico
-            const response = await axios.put(`https://localhost:44369/MaterialDidacticoes/InactivarMaterialDidactico/${materialId}`);
+            const response = await axios.put(`https://localhost:44369/api/MaterialDidacticoes/InactivarMaterialDidactico/${materialId}`);
 
             if (response.status === 200) {
                 cargarMateriales();
@@ -220,7 +220,7 @@ const MaterialesDidacticos = () => {
             //console.log("Datos enviados al primer endpoint:", envioDatos);
 
             const createResponse = await axios.post(
-                "https://localhost:44369/MaterialDidacticoes/CrearMaterialDidactico",
+                "https://localhost:44369/api/MaterialDidacticoes/CrearMaterialDidactico",
                 envioDatos,
                 {
                     headers: {
@@ -236,7 +236,7 @@ const MaterialesDidacticos = () => {
                 imageFormData.append('fileName', uniqueFileName);
 
                 const imageResponse = await axios.post(
-                    "https://localhost:44369/Imagenes/GuardarMaterialDidacticoPdf",
+                    "https://localhost:44369/api/Imagenes/GuardarMaterialDidacticoPdf",
                     imageFormData,
                     {
                         headers: {

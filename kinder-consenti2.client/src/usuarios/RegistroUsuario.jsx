@@ -34,7 +34,7 @@ const RegistroUsuario = () => {
 
     useEffect(() => {
         const fetchRoles = async () => {
-            const response = await fetch('https://localhost:44369/Roles/ObtenerRoles');
+            const response = await fetch('https://localhost:44369/api/Roles/ObtenerRoles');
             const data = await response.json();
             setRoles(data);
         };
@@ -47,7 +47,7 @@ const RegistroUsuario = () => {
             setError('');
             setMensajeExito('');
 
-            const response = await axios.post('https://localhost:44369/Usuarios/CrearUsuario/', usuario);
+            const response = await axios.post('https://localhost:44369/api/Usuarios/CrearUsuario/', usuario);
 
             if (response.data) {
                 setMensajeExito('Usuario registrado exitosamente.');

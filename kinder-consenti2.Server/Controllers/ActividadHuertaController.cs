@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace kinder_consenti2.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class ActividadHuertaController : ControllerBase
     {

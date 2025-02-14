@@ -9,7 +9,7 @@ using kinder_consenti2.Server.Models;
 
 namespace kinder_consenti2.Server.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/")]
     [ApiController]
     public class FotoAlumnoesController : ControllerBase
     {

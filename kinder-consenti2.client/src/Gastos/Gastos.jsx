@@ -35,7 +35,7 @@ const Gastos = () => {
     useEffect(() => {
         const cargarCategorias = async () => {
             try {
-                const categoriasResponse = await axios.get('https://localhost:44369/Categoria/ObtenerCategorias');
+                const categoriasResponse = await axios.get('https://localhost:44369/api/Categoria/ObtenerCategorias');
                 setCategorias(categoriasResponse.data);
             } catch (error) {
                 console.error('Error al cargar categorías:', error);
@@ -47,7 +47,7 @@ const Gastos = () => {
     const cargarGastosPorFecha = async () => {
         if (fechaFiltro) {
             try {
-                const gastosResponse = await axios.get(`https://localhost:44369/Gasto/BuscarGastoxFecha/${fechaFiltro}`);
+                const gastosResponse = await axios.get(`https://localhost:44369/api/Gasto/BuscarGastoxFecha/${fechaFiltro}`);
                 setGastos(gastosResponse.data);
             } catch (error) {
                 console.error('Error al cargar los gastos:', error);
@@ -71,7 +71,7 @@ const Gastos = () => {
         e.preventDefault();
 
         // Verifica si estamos editando un gasto y si el idGasto existe
-        const url = gastoSeleccionado ? `https://localhost:44369/Gasto/EditarGasto` : 'https://localhost:44369/Gasto/CrearGasto';
+        const url = gastoSeleccionado ? `https://localhost:44369/api/Gasto/EditarGasto` : 'https://localhost:44369/api/Gasto/CrearGasto';
         const metodo = gastoSeleccionado ? 'put' : 'post'; // PUT si estamos editando, POST si estamos creando un gasto
 
         try {
@@ -148,7 +148,7 @@ const Gastos = () => {
     const handleDelete = (idGasto) => {
         const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este gasto?");
         if (confirmDelete) {
-            axios.delete(`https://localhost:44369/Gasto/EliminarGasto/${idGasto}`)
+            axios.delete(`https://localhost:44369/api/Gasto/EliminarGasto/${idGasto}`)
                 .then(() => {
                     window.alert('Gasto eliminado exitosamente.');
                     setGastos(gastos.filter(g => g.idGasto !== idGasto)); // Elimina el gasto de la vista

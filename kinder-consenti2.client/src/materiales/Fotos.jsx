@@ -17,7 +17,7 @@ const AgregarFotosAlumno = () => {
         // Cargar alumnos desde el backend
         const cargarAlumnos = async () => {
             try {
-                const response = await fetch("https://localhost:44369/Alumnos/ObtenerAlumnos");
+                const response = await fetch("https://localhost:44369/api/Alumnos/ObtenerAlumnos");
                 if (response.ok) {
                     const data = await response.json();
                     setAlumnos(data);
@@ -141,7 +141,7 @@ const AgregarFotosAlumno = () => {
             // Enviar los datos al primer endpoint
           
             const response = await axios.post(
-                'https://localhost:44369/FotoAlumnoes/CrearFotosAlumno',
+                'https://localhost:44369/api/FotoAlumnoes/CrearFotosAlumno',
                 envioDatos,
                 {
                     headers: {
@@ -161,7 +161,7 @@ const AgregarFotosAlumno = () => {
 
                 // Enviar la foto al segundo endpoint
                 const imageResponse = await axios.post(
-                    'https://localhost:44369/Imagenes/GuardarFotosNino',
+                    'https://localhost:44369/api/Imagenes/GuardarFotosNino',
                     imageFormData,
                     {
                         headers: {

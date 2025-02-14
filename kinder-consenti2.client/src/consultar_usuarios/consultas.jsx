@@ -35,7 +35,7 @@ const UserMaintenance = () => {
     /*
     const fetchRoleName = async (rolId) => {
         try {
-            const response = await axios.get(`https://localhost:44369/Roles/BuscarRol/${rolId}`);
+            const response = await axios.get(`https://localhost:44369/api/Roles/BuscarRol/${rolId}`);
             if (response.status === 200) {
                 return response.data.nombreRol; // Devuelve el nombre del rol
             }
@@ -50,7 +50,7 @@ const UserMaintenance = () => {
     // Función para obtener los datos de los usuarios desde la API
     const fetchUsers = async () => {
         try {
-            const response = await axios.get('https://localhost:44369/Usuarios/ObtenerUsuarios', { params: filters });
+            const response = await axios.get('https://localhost:44369/api/Usuarios/ObtenerUsuarios', { params: filters });
             if (response.status === 200) {
                 const usuariosData = response.data;
 
@@ -146,7 +146,7 @@ const UserMaintenance = () => {
                 rejectClassName: 'custom-reject-button', // Clase para el botón de rechazar
                 accept: async () => {
                     try {
-                        await axios.delete(`https://localhost:44369/Usuarios/EliminarUsuario/${userId}`);
+                        await axios.delete(`https://localhost:44369/api/Usuarios/EliminarUsuario/${userId}`);
                         setUserList(userList.filter((user) => user.id !== userId));
                         setFilteredUsers(filteredUsers.filter((user) => user.id !== userId));
                     } catch (error) {

@@ -8,7 +8,7 @@ namespace kinder_consenti2.Server.Controllers
 {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/")]
     public class EncabezadoFacturaController : ControllerBase
     {
 

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace kinder_consenti2.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/")]
     public class RolesController : ControllerBase
     {
         private readonly Concenti2pruebasContext _context;

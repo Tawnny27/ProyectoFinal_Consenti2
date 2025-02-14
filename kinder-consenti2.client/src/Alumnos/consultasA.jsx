@@ -138,7 +138,7 @@ function AlumnoMaintenance() {
 
         try {
             console.log('Sending payload:', JSON.stringify(payload, null, 2));
-            const response = await axios.post('https://localhost:44369/Alumnos/CrearAlumno', payload, {
+            const response = await axios.post('https://localhost:44369/api/Alumnos/CrearAlumno', payload, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
@@ -152,7 +152,7 @@ function AlumnoMaintenance() {
                 imageFormData.append('fileName', uniqueFileName); // Enviamos el nombre generado
 
                 // Enviamos la imagen al servidor
-                const imageResponse = await axios.post('https://localhost:44369/Imagenes/GuardarImagenPerfilAluno', imageFormData, {
+                const imageResponse = await axios.post('https://localhost:44369/api/Imagenes/GuardarImagenPerfilAluno', imageFormData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -183,7 +183,7 @@ function AlumnoMaintenance() {
             header: 'Confirmar Eliminación',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                axios.delete(`https://localhost:44369/Alumnos/EliminarAlumno/${alumnoId}`)
+                axios.delete(`https://localhost:44369/api/Alumnos/EliminarAlumno/${alumnoId}`)
                     .then(() => {
                         setAlumnos(alumnos.filter(alumno => alumno.idAlumno !== alumnoId));
                     })

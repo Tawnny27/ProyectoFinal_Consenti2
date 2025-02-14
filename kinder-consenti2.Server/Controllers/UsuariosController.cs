@@ -11,7 +11,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace kinder_consenti2.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/")]
     public class UsuariosController : ControllerBase
     {
         private readonly Concenti2pruebasContext _context;

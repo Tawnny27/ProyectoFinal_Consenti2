@@ -60,8 +60,7 @@ const ListaActividades = () => {
     const agregarEvento = async () => {
         console.log(envioEvento);
 
-        const createEventoResponse = await axios.post(
-            "https://localhost:44369/Eventos/CrearEvento",
+        const createEventoResponse = await axios.post('https://localhost:44369/Eventos/CrearEvento',
             envioEvento,
             {
                 headers: {
@@ -78,7 +77,7 @@ const ListaActividades = () => {
             imageFormData.append('fileName', nombreUnico); // Enviamos el nombre generado
 
             // Enviamos la imagen al servidor
-            const imageResponse = await axios.post('https://localhost:44369/Imagenes/GuardarImagenEvento', imageFormData, {
+            const imageResponse = await axios.post('https://localhost:44369/api/Imagenes/GuardarImagenEvento', imageFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -152,7 +151,7 @@ const ListaActividades = () => {
 
     const cargarLista = async () => {
         try {
-            const response = await axios.get("https://localhost:44369/Eventos/ObtenerEventosActivos");
+            const response = await axios.get("https://localhost:44369/api/Eventos/ObtenerEventosActivos");
             setListaAct(response.data);
 
         } catch (error) {

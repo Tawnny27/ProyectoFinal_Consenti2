@@ -28,7 +28,7 @@ const EditarUsuario = () => {
         // Función para obtener el usuario a editar
         const obtenerUsuario = async () => {
             try {
-                const response = await axios.get(`https://localhost:44369/Usuarios/BuscarUsuarios/${id}`);
+                const response = await axios.get(`https://localhost:44369/api/Usuarios/BuscarUsuarios/${id}`);
                 setUsuario(response.data);
                 console.log(response.data);
             } catch (error) {
@@ -63,7 +63,7 @@ const EditarUsuario = () => {
     const manejarEnvio = async (e) => {
         e.preventDefault();
         try {
-            await axios.put('https://localhost:44369/Usuarios/EditarUsuario', usuario);
+            await axios.put('https://localhost:44369/api/Usuarios/EditarUsuario', usuario);
             setMensajeExito('Los cambios se guardaron correctamente.');
             setTimeout(() => {
                 navigate(`/editar-usuario/${usuario.idUsuario}`);

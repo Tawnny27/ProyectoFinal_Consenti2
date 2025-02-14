@@ -21,7 +21,7 @@ const Expedientes = () => {
     useEffect(() => {
         const fetchAlumnos = async () => {
             try {
-                const response = await axios.get('https://localhost:44369/Alumnos/ObtenerAlumnos');
+                const response = await axios.get('https://localhost:44369/api/Alumnos/ObtenerAlumnos');
                 setAlumnos(response.data);
                 setLoading(false);
             } catch (error) {

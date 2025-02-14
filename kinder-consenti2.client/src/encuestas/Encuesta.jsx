@@ -64,7 +64,7 @@ const Encuesta = () => {
         };
 
         try {
-            const response = await axios.post('https://localhost:44369/EvaluacionKinders/CrearEvaluacionKinder', dataToSend, {
+            const response = await axios.post('https://localhost:44369/api/EvaluacionKinders/CrearEvaluacionKinder', dataToSend, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

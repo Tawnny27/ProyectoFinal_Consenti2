@@ -20,7 +20,7 @@ function AttendancePanel() {
     useEffect(() => {
         const fetchGroups = async () => {
             try {
-                const response = await axios.get("https://localhost:44369/Grupos/ObtenerGrupos");
+                const response = await axios.get("https://localhost:44369/api/Grupos/ObtenerGrupos");
                 setGroups(response.data);
             } catch (error) {
                 setErrorMessage("Error al obtener los grupos.");
@@ -35,7 +35,7 @@ function AttendancePanel() {
         const fetchStudents = async () => {
             try {
                 const idGrupos = Number(selectedGroup);
-                const response = await axios.get(`https://localhost:44369/GruposAlumnos/ObtenerGrupoAlumnos/${idGrupos}`);
+                const response = await axios.get(`https://localhost:44369/api/GruposAlumnos/ObtenerGrupoAlumnos/${idGrupos}`);
                 const alumnos = response.data.map(item => ({
                     id: item.alumno.idAlumno,
                     name: `${item.alumno.nombreAlumno} ${item.alumno.apellidosAlumno}`,
@@ -93,7 +93,7 @@ function AttendancePanel() {
 
             console.log("Datos enviados:", JSON.stringify(payload, null, 2)); // Muestra los datos en consola
 
-            const response = await axios.post("https://localhost:44369/ListaAsistencias/CrearListaAsistencia", payload);
+            const response = await axios.post("https://localhost:44369/api/ListaAsistencias/CrearListaAsistencia", payload);
             
             toast.success("¡Asistencia guardada exitosamente!");
         } catch (error) {

@@ -19,7 +19,7 @@ const FacturaMaintenance = () => {
     const fetchFacturas = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('https://localhost:44369/EncabezadoFactura/ObtenerFacturasPendientes');
+            const response = await axios.get('https://localhost:44369/api/EncabezadoFactura/ObtenerFacturasPendientes');
             if (response.status === 200) {
                 setFacturas(response.data);
                 setFacturasFiltradas(response.data);
@@ -79,7 +79,7 @@ const FacturaMaintenance = () => {
 
     const actualizarEstado = async (idFactura, nuevoEstado) => {
         try {
-            const response = await axios.put(`https://localhost:44369/EncabezadoFactura/DarAltaFactura/${idFactura}&${nuevoEstado}`);
+            const response = await axios.put(`https://localhost:44369/api/EncabezadoFactura/DarAltaFactura/${idFactura}&${nuevoEstado}`);
             if (response.status === 200) {
                 setFacturas((prevFacturas) =>
                     prevFacturas.map((factura) =>

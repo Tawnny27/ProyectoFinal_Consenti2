@@ -18,7 +18,7 @@ const Reportes = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(
-                    "https://localhost:44369/EncabezadoFactura/ObtenerFacturas"
+                    "https://localhost:44369/api/EncabezadoFactura/ObtenerFacturas"
                 );
                 setData(response.data);
             } catch (error) {

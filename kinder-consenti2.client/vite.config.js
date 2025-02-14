@@ -31,13 +31,11 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 }
 
 const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
-    env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:7033';
+    env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:44369';
 
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [plugin()],
-
-
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -45,73 +43,11 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
+            '^/api': {
                 target,
+                changeOrigin: true,
                 secure: false
-            },           
-            //--------------Crud Usuarios------------------
-            '^/usuarios/ObtenerUsuarios': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/usuarios/BuscarUsuarios': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/usuarios/CrearUsuario': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/usuarios/EditarUsuario': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/usuarios/EliminarUsuario': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            //--------------Crud Roles------------------
-            '^/roles/ObtenerRoles': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/roles/BuscarRol': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/roles/CrearRol': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/roles/EditarRol': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/roles/EliminaRol': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            //--------------Crud Alumnos------------------
-            '^/alumnos/ObtenerAlumnos': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/alumnos/BuscarAlumno': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/alumnos/CrearAlumno': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/alumnos/EditarAlumno': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
-            '^/alumnos/EliminarAlumno': {
-                target: 'https://localhost:44369/',
-                secure: false
-            },
+            }
         },
         port: 5173,
         https: {

@@ -31,7 +31,7 @@ const MonitoreoAlumno = () => {
     useEffect(() => {
         const fetchAlumnos = async () => {
             try {
-                const response = await axios.get('https://localhost:44369/Alumnos/ObtenerAlumnos');
+                const response = await axios.get('https://localhost:44369/api/Alumnos/ObtenerAlumnos');
                 setAlumnos(response.data);
                 setLoading(false);
                 console.error('alumno:', response.data);
@@ -63,8 +63,8 @@ const MonitoreoAlumno = () => {
     const fetchActividades = async (idAlumno) => {
         try {
             const responseBanno = await axios.get(`https://localhost:44369/api/ActividadBanno/BuscarActividadBannos/${idAlumno}`);
-            const responseComidas = await axios.get(`https://localhost:44369/ActividadComidas/BuscarActividadComidas/${idAlumno}`);
-            const responseDormir = await axios.get(`https://localhost:44369/ActividadDormir/BuscarActividadDormirs/${idAlumno}`);
+            const responseComidas = await axios.get(`https://localhost:44369/api/ActividadComidas/BuscarActividadComidas/${idAlumno}`);
+            const responseDormir = await axios.get(`https://localhost:44369/api/ActividadDormir/BuscarActividadDormirs/${idAlumno}`);
             const responseHuerta = await axios.get(`https://localhost:44369/api/ActividadHuerta/BuscarActividadHuertas/${idAlumno}`);
 
             // Verificación de que los datos sean arreglos antes de asignarlos

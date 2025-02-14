@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "apis1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/kinder-consenti2Serverap/apis/kinder-consenti2Server",
+      "type": "apis.azure"
+    }
+  }
+}

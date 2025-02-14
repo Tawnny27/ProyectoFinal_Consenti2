@@ -34,7 +34,7 @@ const EditarAlumno = () => {
         // Función para obtener el alumno a editar
         const obtenerAlumno = async () => {
             try {
-                const response = await axios.get(`https://localhost:44369/Alumnos/BuscarAlumno/${id}`);
+                const response = await axios.get(`https://localhost:44369/api/Alumnos/BuscarAlumno/${id}`);
                 setAlumno(response.data);
             } catch (error) {
                 console.error("Error al obtener el alumno:", error);
@@ -55,7 +55,7 @@ const EditarAlumno = () => {
     const manejarEnvio = async (e) => {
         e.preventDefault();
         try {
-            await axios.put('https://localhost:44369/Alumnos/EditarAlumno', alumno);
+            await axios.put('https://localhost:44369/api/Alumnos/EditarAlumno', alumno);
             setMensajeExito('Los cambios se guardaron correctamente.');
             setTimeout(() => {
                 navigate(`/alumno-maintenance`);

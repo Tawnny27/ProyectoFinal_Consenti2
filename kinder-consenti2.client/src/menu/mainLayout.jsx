@@ -274,7 +274,7 @@ const MainLayout = () => {
             { /* Fin de Lateral*/}
 
             {/* Modal para el calendario */}
-            {showCalendarModal && (
+            {/*showCalendarModal && (
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <h2>Registrar Actividad</h2>
@@ -306,7 +306,7 @@ const MainLayout = () => {
                         </form>
                     </div>
                 </div>
-            )}
+            )*/}
             {/* Fin  Modal para el calendario */}
 
             <Footer />
