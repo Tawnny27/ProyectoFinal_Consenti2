@@ -16,38 +16,36 @@ namespace kinder_consenti2.Server.Controllers
         }
         [HttpGet]
         [Route("ObtenerGrupoAlumnos/{idGrupo}")]
-        public ActionResult<List<GruposAlumnos>> ObtenerGrupoAlumnos(int idGrupo)
+        public async Task <ActionResult<List<GruposAlumnos>>> ObtenerGrupoAlumnos(int idGrupo)
         {
-            return Ok(_context.GruposAlumnos.Include(x=> x.Alumno).Where(x=> x.GruposId==idGrupo).ToList());
+            return Ok(await _context.GruposAlumnos.Include(x=> x.Alumno).Where(x=> x.GruposId==idGrupo).ToListAsync());
         }
 
         [HttpGet]
         [Route("ObtenerGrupoAlumnosXmaesto/{idMaestro}")]
-        public ActionResult<List<GruposAlumnos>> ObtenerGrupoAlumnosXmaesto(int idMaestro)
+        public async Task<ActionResult<List<GruposAlumnos>>> ObtenerGrupoAlumnosXmaesto(int idMaestro)
         {
-            var grupo = _context.Grupos.Where(x => x.UsuarioId == idMaestro && x.Status == true).FirstOrDefault();
+            var grupo = await _context.Grupos.Where(x => x.UsuarioId == idMaestro && x.Status == true).FirstOrDefaultAsync();
             if(grupo!=null)
-                return Ok(_context.GruposAlumnos.Include(x => x.Alumno).Where(x => x.GruposId == grupo.IdGrupos).ToList());
+                return Ok(await _context.GruposAlumnos.Include(x => x.Alumno).Where(x => x.GruposId == grupo.IdGrupos).ToListAsync());
             return NotFound("No hay grupos asociados");
 
         }
 
-
-
         [HttpGet]
         [Route("BuscarGruposAlumno/{idAlumno}")]
-        public ActionResult<GruposAlumnos> BuscarGruposAlumno(int idAlumno)
+        public async Task<ActionResult<GruposAlumnos>> BuscarGruposAlumno(int idAlumno)
         {
-            return Ok(_context.GruposAlumnos.Where(x=> x.AlumnoId==idAlumno).FirstOrDefault());
+            return Ok(await _context.GruposAlumnos.Where(x=> x.AlumnoId==idAlumno).FirstOrDefaultAsync());
         }
 
         [HttpPost]
         [Route("CrearGruposAlumno")]
-        public ActionResult<GruposAlumnos> CrearGruposAlumno(GruposAlumnos gruposAlumnos)
+        public async Task<ActionResult<GruposAlumnos>> CrearGruposAlumno(GruposAlumnos gruposAlumnos)
         {
             //Validar el cupo de grupo
-            int registros = _context.GruposAlumnos.Where(x => x.GruposId == gruposAlumnos.GruposId).Count();
-            var grupo = _context.Grupos.Find(gruposAlumnos.GruposId);
+            int registros =await _context.GruposAlumnos.Where(x => x.GruposId == gruposAlumnos.GruposId).CountAsync();
+            var grupo = await _context.Grupos.FindAsync(gruposAlumnos.GruposId);
             if (grupo == null)
                 return NotFound("No se encontraron datos favor validar");
             int cupo = grupo.Cupo;
@@ -56,38 +54,43 @@ namespace kinder_consenti2.Server.Controllers
             //----------------------
 
             //Validar que no este ya registrado al mismo grupo
-            if(_context.GruposAlumnos.Where(x=> x.AlumnoId==gruposAlumnos
-            .AlumnoId && x.GruposId==gruposAlumnos.GruposId).Count()>0)
+            if(await _context.GruposAlumnos.Where(x=> x.AlumnoId==gruposAlumnos
+            .AlumnoId && x.GruposId==gruposAlumnos.GruposId).CountAsync()>0)
                 return BadRequest("No puede ingresar dos veces un alumno a un mismo grupo");
             //-----------------------------------------------
 
-            _context.GruposAlumnos.Add(gruposAlumnos);
-            _context.SaveChanges();
-            var insertado = _context.GruposAlumnos.Find(gruposAlumnos.IdGruposAlumnos);
+            await _context.GruposAlumnos.AddAsync(gruposAlumnos);
+            await _context.SaveChangesAsync();
+            var insertado = await _context.GruposAlumnos.FindAsync(gruposAlumnos.IdGruposAlumnos);
             return Ok(insertado);
         }
 
         [HttpPut]
         [Route("EditarGruposAlumno")]
-        public ActionResult<GruposAlumnos> EditarGruposAlumno(GruposAlumnos gruposAlumnos)
+        public async Task<ActionResult<GruposAlumnos>> EditarGruposAlumno(GruposAlumnos gruposAlumnos)
         {
-            
-            
-            if (_context.GruposAlumnos.Where(x => x.AlumnoId == gruposAlumnos
-            .AlumnoId && x.GruposId == gruposAlumnos.GruposId) != null)
-                return BadRequest("No puede ingresar dos veces un alumnoa un mismo grupo");
+            var existeGrupoAlumno = await _context.GruposAlumnos
+                .AnyAsync(x => x.AlumnoId == gruposAlumnos.AlumnoId && x.GruposId == gruposAlumnos.GruposId);
+
+            if (existeGrupoAlumno)
+            {
+                return BadRequest("No puede ingresar dos veces un alumno a un mismo grupo");
+            }
+
             _context.GruposAlumnos.Update(gruposAlumnos);
-            _context.SaveChanges();
-            return Ok(_context.GruposAlumnos.Find(gruposAlumnos.IdGruposAlumnos));
+            await _context.SaveChangesAsync();
+
+            var grupoActualizado = await _context.GruposAlumnos.FindAsync(gruposAlumnos.IdGruposAlumnos);
+            return Ok(grupoActualizado);
         }
 
         [HttpDelete]
         [Route("EliminarGruposAlumno/{id}")]
-        public ActionResult<string> EliminarGruposAlumno(int id)
+        public async Task<ActionResult<string>> EliminarGruposAlumno(int id)
         {
-            var algo = _context.GruposAlumnos.Find(id);
+            var algo = await _context.GruposAlumnos.FindAsync(id);
             _context.GruposAlumnos.Remove(algo);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok("Ago eliminado");
         }
 

@@ -76,7 +76,7 @@ namespace kinder_consenti2.Server.Controllers
             }  
             
         }
-
+        /*
         [HttpPost]
         [Route("CrearDetallesFactura")]
         public async Task<ActionResult<EncabezadoFactura>> CrearFactura(EncabezadoFactura factura)
@@ -86,6 +86,7 @@ namespace kinder_consenti2.Server.Controllers
             var insertada = await _context.EncabezadoFactura.FindAsync(factura.IdFactura);
             return Ok(insertada);
         }
+        */
 
     }
 }

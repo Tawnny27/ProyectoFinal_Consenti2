@@ -32,21 +32,21 @@ namespace kinder_consenti2.Server.Controllers
         // GET: api/FotosAlumno
         [HttpGet]
         [Route("ObtenerFotosAlumno/{AlumnoId}")]
-        public ActionResult<List<FotoAlumno>> ObtenerFotosAlumno(int AlumnoId)
+        public async Task <ActionResult<List<FotoAlumno>>> ObtenerFotosAlumno(int AlumnoId)
         {
-            return  _context.FotoAlumno.Where(x=> x.AlumnoId==AlumnoId).ToList();
+            return await _context.FotoAlumno.Where(x=> x.AlumnoId==AlumnoId).ToListAsync();
         }
 
         // PUT: api/EditarFotosAlumno/      
         [HttpPut]
         [Route("EditarFotosAlumno")]
-        public ActionResult<FotoAlumno> EditarFotosAlumno( FotoAlumno fotoAlumno)
+        public async Task <ActionResult<FotoAlumno>> EditarFotosAlumno( FotoAlumno fotoAlumno)
         {       
             _context.FotoAlumno.Update(fotoAlumno);
             try
             {
-                _context.SaveChanges();
-                return Ok(_context.FotoAlumno.Find(fotoAlumno.IdFotoAlumno));
+                await _context.SaveChangesAsync();
+                return Ok(await _context.FotoAlumno.FindAsync(fotoAlumno.IdFotoAlumno));
             }
             catch (Exception ex) {return BadRequest("Error: "+ex.Message);}        
         }
@@ -54,13 +54,13 @@ namespace kinder_consenti2.Server.Controllers
         // POST: api/CrearFotosAlumno
         [HttpPost]
         [Route("CrearFotosAlumno")]
-        public ActionResult<ActionResult<FotoAlumno>> CrearFotosAlumno(FotoAlumno fotoAlumno)
+        public async Task<ActionResult<ActionResult<FotoAlumno>>> CrearFotosAlumno(FotoAlumno fotoAlumno)
         {
             try
             {
-                _context.FotoAlumno.Add(fotoAlumno);
-                _context.SaveChanges();
-                var insertado = _context.FotoAlumno.Find(fotoAlumno.IdFotoAlumno);
+                await _context.FotoAlumno.AddAsync(fotoAlumno);
+                await _context.SaveChangesAsync();
+                var insertado = await _context.FotoAlumno.FindAsync(fotoAlumno.IdFotoAlumno);
                 return Ok(insertado);
             }
             catch (Exception ex) { return BadRequest("Error: " + ex.Message);}
@@ -69,15 +69,15 @@ namespace kinder_consenti2.Server.Controllers
         // DELETE: api/EliminarFotosAlumno/
         [HttpDelete]
         [Route("EliminarFotosAlumno/{id}")]
-        public ActionResult<string> EliminarFotosAlumno(int id)
+        public async Task<ActionResult<string>> EliminarFotosAlumno(int id)
         {
-            var fotoAlumno = _context.FotoAlumno.Find(id);
+            var fotoAlumno = await _context.FotoAlumno.FindAsync(id);
             if (fotoAlumno == null)
             {
                 return BadRequest("No encontrado");
             }
             _context.FotoAlumno.Remove(fotoAlumno);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok("Eliminado");
         }        
     }

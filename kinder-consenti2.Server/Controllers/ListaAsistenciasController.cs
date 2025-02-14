@@ -23,18 +23,18 @@ namespace kinder_consenti2.Server.Controllers
         // GET: api/ObtenerListaAsistencia
         [HttpGet]
         [Route("ObtenerListaAsistencia/{gruposId}&{fecha}")]
-        public ActionResult<List<ListaAsistencia>> ObtenerListaAsistencia(int gruposId, DateOnly fecha)
+        public async Task<ActionResult<List<ListaAsistencia>>> ObtenerListaAsistencia(int gruposId, DateOnly fecha)
         {
-            return Ok(_context.ListaAsistencia.Where(x => x.GruposId == gruposId && x.Fecha == fecha).ToList());
+            return Ok(await _context.ListaAsistencia.Where(x => x.GruposId == gruposId && x.Fecha == fecha).ToListAsync());
         }
 
         // GET: api/ObtenerListaAsistenciaAlumno/
         [HttpGet]
         [Route("ObtenerListaAsistenciaAlumno/{idAlumno}")]
-        public ActionResult<List<ListaAsistencia>> GetListaAsistencia(int idAlumno)
+        public async Task<ActionResult<List<ListaAsistencia>>> GetListaAsistencia(int idAlumno)
         {
-            var listaAsistencia = _context.ListaAsistencia.Where(x => x.AlumnoId == idAlumno).ToList();
-            if (!listaAsistencia.Any())
+            var listaAsistencia = await _context.ListaAsistencia.Where(x => x.AlumnoId == idAlumno).ToListAsync();
+            if (listaAsistencia.Count==0)
                 return BadRequest("No se encontraron datos");
             return Ok(listaAsistencia);
         }
@@ -42,13 +42,13 @@ namespace kinder_consenti2.Server.Controllers
         // PUT: api/ListaAsistencias/
         [HttpPut]
         [Route("ActualizarAsistencia")]
-        public ActionResult<ListaAsistencia> ActualizarAsistencia(ListaAsistencia listaAsistencia)
+        public async Task<ActionResult<ListaAsistencia>> ActualizarAsistencia(ListaAsistencia listaAsistencia)
         {
             _context.ListaAsistencia.Update(listaAsistencia);
             try
             {
-                _context.SaveChanges();
-                var actualizado = _context.ListaAsistencia.Find(listaAsistencia.IdListaAsistencia);
+                await _context.SaveChangesAsync();
+                var actualizado = await _context.ListaAsistencia.FindAsync(listaAsistencia.IdListaAsistencia);
                 return Ok(actualizado);
             }
             catch (Exception ex) { return BadRequest("Error: " + ex.Message); }
@@ -59,7 +59,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("CrearListaAsistencia")]
         public async Task<ActionResult<string>> PostListaAsistencia(List<ListaAsistencia> listaAsistencia)
         {
-            _context.ListaAsistencia.AddRange(listaAsistencia);
+            await _context.ListaAsistencia.AddRangeAsync(listaAsistencia);
             try
             {
                 await _context.SaveChangesAsync();

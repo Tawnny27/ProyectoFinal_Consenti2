@@ -16,48 +16,48 @@ namespace kinder_consenti2.Server.Controllers
         }
         [HttpGet]
         [Route("ObtenerGrupos")]
-        public ActionResult<List<Grupos>> ObtenerGrupos()
+        public async Task<ActionResult<List<Grupos>>> ObtenerGrupos()
         {
-            return Ok(_context.Grupos.Include(x=> x.Usuario).ToList());
+            return Ok(await _context.Grupos.Include(x=> x.Usuario).ToListAsync());
         }
 
         [HttpGet]
         [Route("BuscarGrupo/{id}")]
-        public ActionResult<Grupos> BuscarGrupo(int id)
+        public async Task<ActionResult<Grupos>> BuscarGrupo(int id)
         {
-            return Ok(_context.Grupos.Find(id));
+            return Ok(await _context.Grupos.FindAsync(id));
         }
 
         [HttpPost]
         [Route("CrearGrupo")]
-        public ActionResult<Grupos> CrearGrupo(Grupos grupo)
+        public async Task<ActionResult<Grupos>> CrearGrupo(Grupos grupo)
         {
-            var usuario = _context.Usuario.Find(grupo.UsuarioId);
+            var usuario = await _context.Usuario.FindAsync(grupo.UsuarioId);
             if (usuario == null) return NotFound("No se encontraron datos favor validar");
             if (usuario.RolId != 2) return BadRequest("Error: intenta asignar un Usuario que no es maestro.");
-            _context.Grupos.Add(grupo);
-            _context.SaveChanges();
-            var insertado = _context.Grupos.Find(grupo.IdGrupos);
+            await _context.Grupos.AddAsync(grupo);
+            await _context.SaveChangesAsync();
+            var insertado = await _context.Grupos.FindAsync(grupo.IdGrupos);
             return Ok(insertado);
         }
 
         [HttpPut]
         [Route("EditarGrupos")]
-        public ActionResult<Grupos> EditarGrupos(Grupos grupo)
+        public async Task<ActionResult<Grupos>> EditarGrupos(Grupos grupo)
         {
             _context.Grupos.Update(grupo);
-            _context.SaveChanges();
-            return Ok(_context.Grupos.Find(grupo.IdGrupos));
+            await _context.SaveChangesAsync();
+            return Ok(await _context.Grupos.FindAsync(grupo.IdGrupos));
         }
 
         [HttpDelete]
         [Route("EliminarGrupos/{id}")]
-        public ActionResult<string> EliminarGrupos(int id)
+        public async Task<ActionResult<string>> EliminarGrupos(int id)
         {
-            var grupo = _context.Grupos.Find(id);
+            var grupo = await _context.Grupos.FindAsync(id);
             if (grupo == null) return NotFound("No se encontraron datos favor validar");
             _context.Grupos.Remove(grupo);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok("Grupo eliminado");
         }
 

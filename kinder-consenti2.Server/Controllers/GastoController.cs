@@ -1,5 +1,6 @@
 ﻿using kinder_consenti2.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace kinder_consenti2.Server.Controllers
 {
@@ -17,7 +18,7 @@ namespace kinder_consenti2.Server.Controllers
 
         [HttpGet]
         [Route("ObtenerGastos/{año}&{mes}")]
-        public ActionResult<List<Gasto>> ObtenerGastos(int año, int mes)
+        public async Task <ActionResult<List<Gasto>>> ObtenerGastos(int año, int mes)
         {
             if (año == 0 || mes == 0|| mes>12)
             {
@@ -27,8 +28,8 @@ namespace kinder_consenti2.Server.Controllers
             if (mes == 12)
             { mes = 0; año += 1; }
             DateOnly fechaFinal = new (año,mes+1,1);
-            fechaFinal = fechaFinal.AddDays(-1);
-            var gastos = _context.Gasto.Where(x => x.Fecha >= fechaInicial && x.Fecha <= fechaFinal).ToList();
+            fechaFinal =  fechaFinal.AddDays(-1);
+            var gastos =await _context.Gasto.Where(x => x.Fecha >= fechaInicial && x.Fecha <= fechaFinal).ToListAsync();
             if (gastos.Count() != 0) 
             {
                 return Ok(gastos);
@@ -39,9 +40,9 @@ namespace kinder_consenti2.Server.Controllers
 
         [HttpGet]
         [Route("BuscarGastoxFecha/{fecha}")]
-        public ActionResult<List<Gasto>> BuscarGastoxFecha(DateOnly fecha)
+        public async Task <ActionResult<List<Gasto>>> BuscarGastoxFecha(DateOnly fecha)
         {
-            var gastos = _context.Gasto.Where(x => x.Fecha == fecha).OrderBy(x=>x.Fecha).ToList();
+            var gastos = await _context.Gasto.Where(x => x.Fecha == fecha).OrderBy(x=>x.Fecha).ToListAsync();
             if (gastos != null)
             {
                 return Ok(gastos);
@@ -51,32 +52,32 @@ namespace kinder_consenti2.Server.Controllers
 
         [HttpPost]
         [Route("CrearGasto")]
-        public ActionResult<Gasto> CrearGasto(Gasto gasto)
+        public async Task<ActionResult<Gasto>> CrearGasto(Gasto gasto)
         {
-            _context.Gasto.Add(gasto);
-            _context.SaveChanges();
-            var insertado = _context.Gasto.Find(gasto.IdGasto);
+            await _context.Gasto.AddAsync(gasto);
+            await _context.SaveChangesAsync();
+            var insertado = await _context.Gasto.FindAsync(gasto.IdGasto);
             return Ok(insertado);
         }
 
         [HttpPut]
         [Route("EditarGasto")]
-        public ActionResult<Gasto> EditarGasto(Gasto gasto)
+        public async Task <ActionResult<Gasto>> EditarGasto(Gasto gasto)
         {
             _context.Gasto.Update(gasto);
-            _context.SaveChanges();
-            return Ok(_context.Gasto.Find(gasto.IdGasto));
+            await _context.SaveChangesAsync();
+            return Ok(await _context.Gasto.FindAsync(gasto.IdGasto));
         }
 
         [HttpDelete]
         [Route("EliminarGasto/{id}")]
-        public ActionResult<string> EliminarGasto(int id)
+        public async Task <ActionResult<string>> EliminarGasto(int id)
         {
-            var gasto = _context.Gasto.Find(id);
+            var gasto = await _context.Gasto.FindAsync(id);
             if (gasto == null)
                 return NotFound("No se encontraron datos");
             _context.Gasto.Remove(gasto);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok("Gasto eliminado");
         }
 

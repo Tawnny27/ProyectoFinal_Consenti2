@@ -23,52 +23,50 @@ namespace kinder_consenti2.Server.Controllers
         // GET: api/ObtenerMaterialesDidacticos
         [HttpGet]
         [Route("ObtenerMaterialesDidacticos")]
-        public ActionResult<ActionResult<List<MaterialDidactico>>> ObtenerMaterialesDidacticos()
+        public async Task<ActionResult<List<MaterialDidactico>>> ObtenerMaterialesDidacticos()
         {
-            return Ok(_context.MaterialDidactico.ToList());
+            return Ok(await _context.MaterialDidactico.ToListAsync());
         }
 
         [HttpGet]
         [Route("ObtenerMaterialesDidacticosAct")]
-        public ActionResult<ActionResult<List<MaterialDidactico>>> ObtenerMaterialesDidacticosAct()
+        public async Task<ActionResult<List<MaterialDidactico>>> ObtenerMaterialesDidacticosAct()
         {
-            return Ok(_context.MaterialDidactico.Where(x=> x.StatusAct==true).ToList());
+            return Ok(await _context.MaterialDidactico.Where(x => x.StatusAct == true).ToListAsync());
         }
 
         [HttpGet]
         [Route("ObtenerMaterialesDidacticosInact")]
-        public ActionResult<ActionResult<List<MaterialDidactico>>> ObtenerMaterialesDidacticosInact()
+        public async Task<ActionResult<List<MaterialDidactico>>> ObtenerMaterialesDidacticosInact()
         {
-            return Ok(_context.MaterialDidactico.Where(x => x.StatusAct == false).ToList());
+            return Ok(await _context.MaterialDidactico.Where(x => x.StatusAct == false).ToListAsync());
         }
 
         [HttpGet]
         [Route("ObtenerMaterialesDidacticosPadre/{idPadre}")]
-        public ActionResult<ActionResult<List<MaterialDidactico>>> ObtenerMaterialesDidacticosPadre(int idPadre)
+        public async Task<ActionResult<List<MaterialDidactico>>> ObtenerMaterialesDidacticosPadre(int idPadre)
         {
             List<MaterialDidactico> materiales = new List<MaterialDidactico>();
-            var alumnos = _context.Alumno.Where(x => x.PadreId == idPadre).ToList();
-            if (alumnos.Count > 0)
+            var alumnos = await _context.Alumno.Where(x => x.PadreId == idPadre).ToListAsync();
+            if (alumnos.Count != 0)
             {
-                
                 List<int> idsGrupos = new List<int>();
                 foreach (var alumno in alumnos)
                 {
-                    var encontrado = _context.GruposAlumnos.Where(x => x.AlumnoId == alumno.IdAlumno && x.Status== true).FirstOrDefault();
-                    if(encontrado != null)
+                    var encontrado = _context.GruposAlumnos.Where(x => x.AlumnoId == alumno.IdAlumno && x.Status == true).FirstOrDefault();
+                    if (encontrado != null)
                         idsGrupos.Add(encontrado.AlumnoId);
                 }
-                if (idsGrupos.Count > 0) 
+                if (idsGrupos.Count > 0)
                 {
                     foreach (var item in idsGrupos)
                     {
-                        var encontrados = _context.MaterialDidactico.Where(x => x.GruposId == item && x.StatusAct == true).ToList();
+                        var encontrados = await _context.MaterialDidactico.Where(x => x.GruposId == item && x.StatusAct == true).ToListAsync();
                         materiales.AddRange(encontrados);
                     }
-                }                
+                }
             }
-
-            return Ok(materiales);
+            return NotFound("No se encontraron materiales");
         }
 
 
@@ -76,12 +74,12 @@ namespace kinder_consenti2.Server.Controllers
         // GET: api/ObtenerMaterialDidactico/
         [HttpGet]
         [Route("ObtenerMaterialDidactico/{id}")]
-        public ActionResult<MaterialDidactico> ObtenerMaterialDidactico(int id)
+        public async Task<ActionResult<MaterialDidactico>> ObtenerMaterialDidactico(int id)
         {
-            var materialDidactico = _context.MaterialDidactico.Find(id);
+            var materialDidactico = await _context.MaterialDidactico.FindAsync(id);
             if (materialDidactico == null)
             {
-                return BadRequest("No encontrado");
+                return NotFound("No encontrado");
             }
             return Ok(materialDidactico);
         }
@@ -90,10 +88,10 @@ namespace kinder_consenti2.Server.Controllers
         // GET: api/ObtenerMaterialDidacticoGrupo/
         [HttpGet]
         [Route("ObtenerMaterialDidacticoGrupo/{idGrupo}")]
-        public ActionResult<List<MaterialDidactico>> ObtenerMaterialDidacticoGrupo(int idGrupo)
+        public async Task<ActionResult<List<MaterialDidactico>>> ObtenerMaterialDidacticoGrupo(int idGrupo)
         {
-            var materialesDidactico = _context.MaterialDidactico.Where(x=> x.GruposId==idGrupo && x.StatusAct==true).ToList();
-            if (!materialesDidactico.Any())
+            var materialesDidactico = await _context.MaterialDidactico.Where(x => x.GruposId == idGrupo && x.StatusAct == true).ToListAsync();
+            if (materialesDidactico.Count() == 0)
             {
                 return BadRequest("No encontrado");
             }
@@ -103,32 +101,32 @@ namespace kinder_consenti2.Server.Controllers
         // PUT: api/EditarMaterialDidactico
         [HttpPut]
         [Route("EditarMaterialDidactico")]
-        public ActionResult<MaterialDidactico> EditarMaterialDidactico(MaterialDidactico materialDidactico)
-        {            
+        public async Task<ActionResult<MaterialDidactico>> EditarMaterialDidactico(MaterialDidactico materialDidactico)
+        {
             _context.MaterialDidactico.Update(materialDidactico);
             try
             {
-                _context.SaveChanges();
-                return Ok(_context.MaterialDidactico.Find(materialDidactico.IdMaterialDidactico));
+                await _context.SaveChangesAsync();
+                return Ok(await _context.MaterialDidactico.FindAsync(materialDidactico.IdMaterialDidactico));
             }
-            catch (Exception ex){ return BadRequest("Error: " + ex.Message); }
+            catch (Exception ex) { return BadRequest("Error: " + ex.Message); }
         }
 
 
-      
+
         [HttpPut]
         [Route("InactivarMaterialDidactico/{id}")]
-        public ActionResult<MaterialDidactico> InactivarMaterialDidactico(int id)
+        public async Task<ActionResult<MaterialDidactico>> InactivarMaterialDidactico(int id)
         {
-            var encontrado = _context.MaterialDidactico.Find(id);
+            var encontrado = await _context.MaterialDidactico.FindAsync(id);
             if (encontrado == null)
-                return BadRequest("No encontrado");
+                return NotFound("No encontrado");
             encontrado.StatusAct = false;
-            _context.MaterialDidactico.Update(encontrado);           
+            _context.MaterialDidactico.Update(encontrado);
             try
             {
-                _context.SaveChanges();
-                return Ok("Inactivado: "+encontrado.NombreArchivo);
+                await _context.SaveChangesAsync();
+                return Ok("Inactivado: " + encontrado.NombreArchivo);
             }
             catch (Exception ex) { return BadRequest("Error: " + ex.Message); }
         }
@@ -136,31 +134,31 @@ namespace kinder_consenti2.Server.Controllers
         // POST: api/CrearMaterialDidactico
         [HttpPost]
         [Route("CrearMaterialDidactico")]
-        public ActionResult<MaterialDidactico> CrearMaterialDidactico(MaterialDidactico materialDidactico)
+        public async Task<ActionResult<MaterialDidactico>> CrearMaterialDidactico(MaterialDidactico materialDidactico)
         {
             try
             {
                 materialDidactico.StatusAct = true;
-                _context.MaterialDidactico.Add(materialDidactico);
-                _context.SaveChanges();
-                var insertado = _context.MaterialDidactico.Find(materialDidactico.IdMaterialDidactico);
+                await _context.MaterialDidactico.AddAsync(materialDidactico);
+                await _context.SaveChangesAsync();
+                var insertado = await _context.MaterialDidactico.FindAsync(materialDidactico.IdMaterialDidactico);
                 return Ok(insertado);
             }
-            catch (Exception ex){ return BadRequest("Error: "+ex.Message); }
+            catch (Exception ex) { return BadRequest("Error: " + ex.Message); }
         }
 
         // DELETE: api/EliminarMaterialDidactico/5
         [HttpDelete]
         [Route("EliminarMaterialDidactico/{id}")]
-        public ActionResult<string> DeleteMaterialDidactico(int id)
+        public async Task<ActionResult<string>> DeleteMaterialDidactico(int id)
         {
-            var materialDidactico = _context.MaterialDidactico.Find(id);
+            var materialDidactico = await _context.MaterialDidactico.FindAsync(id);
             if (materialDidactico == null)
             {
-                return BadRequest("No encontrado");
+                return NotFound("No encontrado");
             }
             _context.MaterialDidactico.Remove(materialDidactico);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok("Eliminado");
         }
     }
