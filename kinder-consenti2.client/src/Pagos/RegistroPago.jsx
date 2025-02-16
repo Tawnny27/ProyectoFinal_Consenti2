@@ -8,17 +8,19 @@ import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from '../UserContext'; // Importar el hook del contexto
 import { faUser, faCalendar, faIdCard, faVenusMars, faHome, faInfoCircle, faCamera, faUserShield, faPhone } from '@fortawesome/free-solid-svg-icons';
-import { DetallesApagar, BuscarUsuarios, obtenerPadres } from '../apiClient'; // Importar las funciones desde apiClient.js
+
+
+
+
+import { DetallesApagar, BuscarUsuarios, obtenerPadres, GuardarImagenPago, CrearPago } from '../apiClient'; // Importar las funciones desde apiClient.js
 
 //import axios from '../../../node_modules/axios/index';
-import axios from '../axios';
+
 
 
 const RegistroPago = () => {
 
-    const { user } = useUserContext();   
-
-
+    const { user } = useUserContext();
     const [usuario, setUsuario] = useState([]);
     const [detallesTemp, setDetallesTemp] = useState([]);
     const [mensaje, setMensaje] = useState([]);
@@ -27,17 +29,17 @@ const RegistroPago = () => {
         rolId: 0,
         nombreUsuario: '',
         apellidosUsuario: '',
-        cedulaUsuario: ''
+        cedulaUsuario: '',
+        referencia: '',
     });
-
-   
 
     const [errorMessages, setErrorMessages] = useState({
         idUsuario: '',
         rolId: '',
         nombreUsuario: '',
         apellidosUsuario: '',
-        cedulaUsuario: ''
+        cedulaUsuario: '',
+        referencia: '',
     });
 
     const [pago, setPago] = useState({
@@ -66,8 +68,10 @@ const RegistroPago = () => {
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     const IMAGE_PATH = '/FotosPagos/';
 
-
     const limpiarDatos = () => {
+
+        setSelectedCheckbox(null);
+        setIsValid(true);
 
         setPago({
             clienteId: 0,
@@ -88,19 +92,17 @@ const RegistroPago = () => {
             rolId: 0,
             nombreUsuario: '',
             apellidosUsuario: '',
-            cedulaUsuario: ''
+            cedulaUsuario: '',
+            referencia: '',
         });
 
         setDetallesTemp([]);
         setSelectedFile(null);
         setPreviewUrl('');
-        fileInputRef.current.value = '';    
+        fileInputRef.current.value = '';
 
         setNombreUnico('default.jpg');
-        setSelectedCheckbox(null);
-        setIsValid(true);
     };
-  
 
     const validateImage = (file) => {
         if (!file) {
@@ -115,17 +117,18 @@ const RegistroPago = () => {
         }
         return true;
     };
-
-    async function cargarDatos () {
+    async function cargarDatos() {
         try {
             if (user.rolId == 3) {
                 const usuarioResponse = await BuscarUsuarios(user.idUsuario);
                 setUsuarioSelect(() => ({
+                    ...usuarioSelect,
                     idUsuario: usuarioResponse.data.idUsuario,
                     rolId: usuarioResponse.data.rolId,
                     nombreUsuario: usuarioResponse.data.nombreUsuario,
                     apellidosUsuario: usuarioResponse.data.apellidosUsuario,
                     cedulaUsuario: usuarioResponse.data.cedulaUsuario,
+                    referencia: 0,
                 }));
 
             }
@@ -148,8 +151,6 @@ const RegistroPago = () => {
         return array.reduce((acumulador, producto) => acumulador + producto.monto, 0);
     };
 
-
-
     const cargarDetalles = async () => {
         try {
             if (usuarioSelect.idUsuario != 0) {
@@ -157,7 +158,7 @@ const RegistroPago = () => {
                 const detallesResponse = await DetallesApagar(usuarioSelect.idUsuario);
                 //console.log(detallesResponse);
 
-                if (detallesResponse.status==200) {
+                if (detallesResponse.status == 200) {
                     setDetallesTemp(detallesResponse.data);
                     console.log(detallesTemp);
                     setMensaje('');
@@ -183,7 +184,6 @@ const RegistroPago = () => {
         }
     }
 
-
     useEffect(() => {
         let numControl = (detallesTemp.length);
         if (numControl == 0) {
@@ -207,8 +207,6 @@ const RegistroPago = () => {
 
     }, [usuarioSelect]);
 
-
-
     const handleUserSelect = (id) => {
         const usSelect = usuario.find((user) => user.idUsuario === parseInt(id));
         if (usSelect) {
@@ -218,6 +216,7 @@ const RegistroPago = () => {
                 nombreUsuario: usSelect.nombreUsuario,
                 apellidosUsuario: usSelect.apellidosUsuario,
                 cedulaUsuario: usSelect.cedulaUsuario,
+                referencia: '',
             }));
 
             setErrorMessages(() => ({
@@ -225,25 +224,34 @@ const RegistroPago = () => {
                 rolId: '',
                 nombreUsuario: '',
                 apellidosUsuario: '',
-                cedulaUsuario: ''
+                cedulaUsuario: '',
+                referencia: '',
             }));
         }
-
     }
-
 
     const validacionDatos = () => {
         let Valid = true;
         let errors = {};
         for (let key in usuarioSelect) {
             if (!usuarioSelect[key]) {
-                errors[key] = `Por favor, completa el campo ${key}.`;
-                Valid = false;
+                if (key == "referencia") {
+                    if (pago.metodoPago == "Efectivo") {
+                        errors[key] = '';
+                    } else {
+                        errors[key] = `Por favor, completa el campo ${key}.`;
+                        Valid = false;
+                    }
+                } else {
+                    errors[key] = `Por favor, completa el campo ${key}.`;
+                    Valid = false;
+                }
             }
         }
         setErrorMessages(errors);
         return Valid;
     }
+
 
     const columns = [
         {
@@ -263,7 +271,6 @@ const RegistroPago = () => {
         }
     ];
 
-    //const enviarDatos = () => { console.log(pago); }
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -272,20 +279,33 @@ const RegistroPago = () => {
         } else {
             setPago({ ...pago, [name]: '0' });
         }
+        if ([name] == "referencia") {
+            setUsuarioSelect({ ...usuarioSelect, referencia: value });
+        }
 
     };
 
 
     const handleCheckboxChange = (index, label) => {
-        setSelectedCheckbox(selectedCheckbox === index ? null : index);
-        //setSelectedCheckbox(index);
-        setPago({
-            ...pago,
-            metodoPago: label
-        });
+        if (selectedCheckbox == index) {
+            setSelectedCheckbox(null);
+            setPago({
+                ...pago,
+                metodoPago: '',
+            });
+        } else {
+            setSelectedCheckbox(index);
+            setPago({
+                ...pago,
+                metodoPago: label,
+            });
+        }
+
+        if (index == 0) {
+            setUsuarioSelect({...usuarioSelect,referencia:'',});
+        }
         setIsValid(true);
     }
-
 
 
     //------------------------------------combio en la imagen------------------------------------------------
@@ -317,8 +337,6 @@ const RegistroPago = () => {
         });
     }, [nombreUnico]);
 
-
-
     //1*********
 
     useEffect(() => {
@@ -343,7 +361,6 @@ const RegistroPago = () => {
                 console.log(pago);
                 //alert(`Aqui se envian los datosa la BD`);
                 envioDatos();
-               
             }
         }
     };
@@ -351,14 +368,18 @@ const RegistroPago = () => {
 
     const envioDatos = async () => {
         try {
-            //console.log('Sending payload:', JSON.stringify(pago, null, 2));
+
+            const response = await CrearPago(pago);
+            /*
             const response = await axios.post('api/CrearPago', pago, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 }
             });
+            */
 
+            console.log(response);
             if (response.data && selectedFile) {
                 // Creamos FormData para enviar la imagen
                 const imageFormData = new FormData();
@@ -366,17 +387,22 @@ const RegistroPago = () => {
                 imageFormData.append('fileName', nombreUnico); // Enviamos el nombre generado
 
                 // Enviamos la imagen al servidor
+                const imageResponse = await GuardarImagenPago(imageFormData);
+                /*
                 const imageResponse = await axios.post('api/GuardarImagenPago', imageFormData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
+                */
+                console.log(imageResponse);
                 limpiarDatos();
-                alert(imageResponse.message.status);
+
             }
 
+
         } catch (error) {
-            console.error("Error saving alumno:", error);
+            console.error("Error Insentardo los datos: ", error);
             if (error.response) {
                 console.error("Error details:", {
                     data: error.response.data,
@@ -402,9 +428,9 @@ const RegistroPago = () => {
 
                 <main className="main-content">
                     {/* Formulario */}
-                   
+
                     <div className="form-card">
-                     
+
 
                         <form onSubmit={handleSubmit} >
 
@@ -470,21 +496,21 @@ const RegistroPago = () => {
                                             required
                                             onChange={handleInputChange}
                                         />
-                                    </div>                                  
-                                </div>       
+                                        {errorMessages.referencia && <div style={{ color: 'red' }}>{errorMessages.referencia}</div>}
+                                    </div>
+                                </div>
 
                             </div>
 
                             <div className="inline2">
                                 <div className="inline2">
-                                { /*Partirlo*/}                              
-                                <div className="contenLabel">
-                                    <label className="labelCheck">Tipo de Pago</label>
+                                    { /*Partirlo*/}
+                                    <div className="contenLabel">
+                                        <label className="labelCheck">Tipo de Pago</label>
                                         {['Efectivo', 'SINPE MOVIL', 'Transferencia'].map((label, index) => (
                                             <div key={index} className="inputsOrder">
                                                 <label className="check" key={index}>
                                                     <input
-
                                                         type="checkbox"
                                                         checked={selectedCheckbox === index}
                                                         onChange={() => handleCheckboxChange(index, label)}
@@ -496,8 +522,8 @@ const RegistroPago = () => {
                                             </div>
                                         ))}
                                         {!isValid && <p style={{ color: 'red' }}>Debe seleccionar al menos una opción.</p>}
-                                    </div>  
-                                {/*-----------------------------------------------------------------------------*/}
+                                    </div>
+                                    {/*-----------------------------------------------------------------------------*/}
                                 </div>
                                 <div className="inline2">
                                     <div className="form-group">
@@ -509,14 +535,15 @@ const RegistroPago = () => {
 
 
                                 </div>
-
-                                <DataTable
-                                    columns={columns}
-                                    data={detallesTemp}
-                                    noDataComponent={mensaje}
-                                    highlightOnHover
-                                    responsive
-                                />
+                                <div>
+                                    <DataTable
+                                        columns={columns}
+                                        data={detallesTemp}
+                                        noDataComponent={mensaje}
+                                        highlightOnHover
+                                        responsive
+                                    />
+                                </div>
                             </div>
 
                             {/*-----------------------------------------------------------------------------*/}
@@ -565,8 +592,8 @@ const RegistroPago = () => {
                                         style={{ fontSize: '0.8rem', color: '#666', marginTop: '5px' }}>
                                         Formatos permitidos: JPG, PNG. Tamano maximo: 5MB
                                     </div>
-                                </div>                              
-                                
+                                </div>
+
                             </div>
                             <div className="button-group">
                                 <button type="submit" className="btn-submit" onClick={handleSubmit}>Enviar</button>

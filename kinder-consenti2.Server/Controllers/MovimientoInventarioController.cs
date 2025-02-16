@@ -33,12 +33,12 @@ namespace kinder_consenti2.Server.Controllers
         [Route("CrearMovimiento")]
         public async Task<ActionResult<MovimientosInventario>> CrearMovimiento(MovimientosInventario movimientosInventario)
         {
-            _context.MovimientosInventario.Add(movimientosInventario);
-            _context.SaveChanges();
-            var insertado = _context.MovimientosInventario
-                .Find(movimientosInventario.IdMovimientosInventario);
-            var producto = _context.Inventario
-                .Find(insertado.InventarioId);
+            await _context.MovimientosInventario.AddAsync(movimientosInventario);
+            await _context.SaveChangesAsync();
+            var insertado = await _context.MovimientosInventario
+                .FindAsync(movimientosInventario.IdMovimientosInventario);
+            var producto = await _context.Inventario
+                .FindAsync(insertado.InventarioId);
             if (insertado.Movimiento)
                 producto.Cantidad += insertado.Cantidad;
             else

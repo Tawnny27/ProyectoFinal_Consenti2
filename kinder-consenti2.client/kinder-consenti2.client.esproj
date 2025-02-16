@@ -9,6 +9,7 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="public\FotosPagos\" />
     <Folder Include="public\FotosPerfAlumno\" />
     <Folder Include="src\Matricula\" />
   </ItemGroup>

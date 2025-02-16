@@ -52,8 +52,8 @@ namespace kinder_consenti2.Server.Controllers
         //************** Acceso Usuarios ******************       
 
         [HttpPost]
-        [Route("AccesoUsuario2")]
-        public ActionResult<Usuario> AccesoUsuario2(Acceso datosAcesso)
+        [Route("AccesoUsuario")]
+        public ActionResult<Usuario> AccesoUsuario(Acceso datosAcesso)
         {            
             try
             {

@@ -1,5 +1,4 @@
-﻿import React, { useState } from 'react';
-import axios from 'axios';
+﻿import { useState } from 'react';
 import './LoginForm.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -7,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.jpg';
 import { useUserContext } from '../UserContext';
 
-import { accesoUsuarios } from '../apiClient'; // Importar las funciones desde apiClient.js
+import { AccesoUsuarios } from '../apiClient'; // Importar las funciones desde apiClient.js
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
@@ -18,7 +17,7 @@ const LoginForm = () => {
     const { setUser } = useUserContext();
 
     async function loguear() {
-        const response = await accesoUsuarios(email, password);
+        const response = await AccesoUsuarios(email, password);
         if (response.status === 200) {
             const usuario = response.data;
             setUser(usuario);

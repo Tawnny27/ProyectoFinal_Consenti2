@@ -23,8 +23,8 @@ namespace kinder_consenti2.Server.Controllers
 
         // GET: api/FotosAlumnos
         [HttpGet]
-        [Route("ObtenerFotosAlumno")]
-        public async Task<ActionResult<IEnumerable<FotoAlumno>>> ObtenerFotosAlumno()
+        [Route("ObtenerFotosAlumnos")]
+        public async Task<ActionResult<IEnumerable<FotoAlumno>>> ObtenerFotosAlumnos()
         {
             return await _context.FotoAlumno.OrderBy(x=> x.Fecha).ToListAsync();
         }
