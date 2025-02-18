@@ -1053,7 +1053,7 @@ export const GuardarImagenPago = async (FileImage) => {
 };
 export const GuardarFotosNinno = async (FileImage) => {
     try {
-        const response = await apiClient.post('api/GuardarFotosNiño', FileImage, {
+        const response = await apiClient.post('api/GuardarFotosNino', FileImage, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -1328,9 +1328,9 @@ export const ObtenerMaterialDidacticoGrupo = async (idGrupo) => {
         return ('Validar los datos:', error.response?.data);
     }
 };
-export const InactivarMaterialDidactico = async (InactivarMaterialDidactico) => {
+export const InactivarMaterialDidactico = async (Id) => {
     try {
-        const response = await apiClient.put(`api/BuscarMovimiento/${InactivarMaterialDidactico}`);
+        const response = await apiClient.put(`api/InactivarMaterialDidactico/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);

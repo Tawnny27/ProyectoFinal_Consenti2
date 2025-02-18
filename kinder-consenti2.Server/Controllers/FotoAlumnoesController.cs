@@ -54,7 +54,7 @@ namespace kinder_consenti2.Server.Controllers
         // POST: api/CrearFotosAlumno
         [HttpPost]
         [Route("CrearFotosAlumno")]
-        public async Task<ActionResult<ActionResult<FotoAlumno>>> CrearFotosAlumno(FotoAlumno fotoAlumno)
+        public async Task<ActionResult<FotoAlumno>> CrearFotosAlumno(FotoAlumno fotoAlumno)
         {
             try
             {

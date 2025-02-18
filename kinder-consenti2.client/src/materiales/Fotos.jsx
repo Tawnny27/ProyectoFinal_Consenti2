@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useState, useRef } from "react";
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
-import axios from 'axios';
+import { ObtenerAlumnos, CrearFotosAlumno, GuardarFotosNinno } from '../apiClient';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useUserContext } from '../UserContext';
@@ -16,15 +16,14 @@ const AgregarFotosAlumno = () => {
     useEffect(() => {
         // Cargar alumnos desde el backend
         const cargarAlumnos = async () => {
-            try {
-                const response = await fetch("https://localhost:44369/api/Alumnos/ObtenerAlumnos");
-                if (response.ok) {
-                    const data = await response.json();
-                    setAlumnos(data);
-                    console.log("Alumnos cargados:", data);
+            try {                
+                const response = await ObtenerAlumnos();
+                console.log(response);
+                if (response.status == 200) {                   
+                    setAlumnos(response.data);
+                    console.log("Alumnos cargados:", response.data);
                 } else {
-                    setMensaje("Error al cargar los alumnos.");
-                    console.error("Error al cargar los alumnos", response);
+                    setMensaje("Error al cargar los alumnos: ", response);                    
                 }
             } catch (error) {
                 setMensaje("Hubo un error al obtener los alumnos.");
@@ -45,7 +44,7 @@ const AgregarFotosAlumno = () => {
     const [imageError, setImageError] = useState('');
     const fileInputRef = useRef(null);
 
-    const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png'];
+    const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/JPEG', 'image/PNG', 'image/JPG'];
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     const IMAGE_PATH = '/FotosAlumnos/';
 
@@ -139,47 +138,26 @@ const AgregarFotosAlumno = () => {
             console.log("Envio de datos al primer endpoint:", envioDatos);
 
             // Enviar los datos al primer endpoint
-          
-            const response = await axios.post(
-                'https://localhost:44369/api/FotoAlumnoes/CrearFotosAlumno',
-                envioDatos,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    }
-                }
-            );
 
+            const response = await CrearFotosAlumno(envioDatos); 
             // Si la respuesta es exitosa y hay una foto para cargar
-            if (response.data) {
+            console.log(response);
+            if (response.status == 200) {
                 // Crear FormData para enviar la imagen
                 const imageFormData = new FormData();
                 imageFormData.append('file', selectedFile);
-                imageFormData.append('fileName', uniqueFileName); // Enviar el nombre único
-                console.log("Envio de imagen:", imageFormData);
+                imageFormData.append('fileName', uniqueFileName); // Enviar el nombre único               
 
                 // Enviar la foto al segundo endpoint
-                const imageResponse = await axios.post(
-                    'https://localhost:44369/api/Imagenes/GuardarFotosNino',
-                    imageFormData,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    }
-                );
-
+                const imageResponse = await GuardarFotosNinno(imageFormData);             
                 toast.success("Imagen enviada con exito");
                 console.log("Respuesta de la imagen:", imageResponse);
-
                 // Agregar la foto al estado para mostrarla
                 const nuevaFoto = {
                     rutaFoto: imagePath,
                     fecha: new Date().toISOString().split('T')[0],
                     alumno: alumnoSeleccionado.nombreAlumno
                 };
-
                 setFotos((prevFotos) => {
                     const fotosActualizadas = [...prevFotos, nuevaFoto];
                     // Guardar las fotos en localStorage

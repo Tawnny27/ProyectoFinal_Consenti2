@@ -185,8 +185,8 @@ const MaterialesDidacticos = () => {
     const handleDelete = async (materialId) => {
         try {
             // Llamar a la API para eliminar el material usando el idMaterialDidactico
-            const response = await axios.put(`https://localhost:44369/api/MaterialDidacticoes/InactivarMaterialDidactico/${materialId}`);
-
+            //const response = await axios.put(`https://localhost:44369/api/MaterialDidacticoes/InactivarMaterialDidactico/${materialId}`);
+            const response = await InactivarMaterialDidactico(materialId);
             if (response.status === 200) {
                 cargarMateriales();
                 cargarAulas();
