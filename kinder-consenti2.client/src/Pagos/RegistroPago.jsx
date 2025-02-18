@@ -12,7 +12,7 @@ import { faUser, faCalendar, faIdCard, faVenusMars, faHome, faInfoCircle, faCame
 
 
 
-import { DetallesApagar, BuscarUsuarios, obtenerPadres, GuardarImagenPago, CrearPago } from '../apiClient'; // Importar las funciones desde apiClient.js
+import { DetallesApagar, BuscarUsuarios, ObtenerPadres, GuardarImagenPago, CrearPago } from '../apiClient'; // Importar las funciones desde apiClient.js
 
 //import axios from '../../../node_modules/axios/index';
 
@@ -133,7 +133,7 @@ const RegistroPago = () => {
 
             }
             else if (user.rolId == 1) {
-                const usuarioResponse = await obtenerPadres();
+                const usuarioResponse = await ObtenerPadres();
                 setUsuario(usuarioResponse.data);
             }
 

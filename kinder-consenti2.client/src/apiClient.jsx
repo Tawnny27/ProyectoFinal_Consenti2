@@ -1,13 +1,13 @@
-import axios from 'axios';
+ï»¿import axios from 'axios';
 
 // Configurar Axios con la base URL de tu API
 const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL, // Aquí usamos la variable de entorno
+    baseURL: import.meta.env.VITE_API_BASE_URL, // AquÃ­ usamos la variable de entorno
 });
 
 //*************************************************Usuario**********************************************
 
-// Función para acceder al sistema (Correo y contraseña)
+// FunciÃ³n para acceder al sistema (Correo y contraseÃ±a)
 export const AccesoUsuarios = async (email, password) => {
     try {
         const response = await apiClient.post('api/AccesoUsuario', {
@@ -16,11 +16,11 @@ export const AccesoUsuarios = async (email, password) => {
         });
         return response;
     } catch (error) {
-        console.error('Error en el inicio de sesión:', error.response?.data || error.message);
-        return (error.response?.data || 'Error en el inicio de sesión. Revisa tus credenciales.');
+        console.error('Error en el inicio de sesiÃ³n:', error.response?.data || error.message);
+        return (error.response?.data || 'Error en el inicio de sesiÃ³n. Revisa tus credenciales.');
     }
 };
-// Función para buscar un usuario por Id
+// FunciÃ³n para buscar un usuario por Id
 export const BuscarUsuarios = async (id) => {
     try {
         const response = await apiClient.get(`api/BuscarUsuarios/${id}`);
@@ -30,7 +30,7 @@ export const BuscarUsuarios = async (id) => {
         return ('Validar los datos:', error.response?.data);
     }
 };
-// Función para optener lo usuarios padres registrados
+// FunciÃ³n para optener lo usuarios padres registrados
 export const ObtenerPadres = async () => {
     try {
         const response = await apiClient.get('api/ObtenerPadres');
@@ -63,8 +63,8 @@ export const CrearUsuario = async (usuario) => {
         const response = await apiClient.post('api/CrearUsuario', usuario);
         return response;
     } catch (error) {
-        console.error('Error en el inicio de sesión:', error.response?.data || error.message);
-        return (error.response?.data || 'Error en el inicio de sesión. Revisa tus credenciales.');
+        console.error('Error en el inicio de sesiÃ³n:', error.response?.data || error.message);
+        return (error.response?.data || 'Error en el inicio de sesiÃ³n. Revisa tus credenciales.');
     }
 };
 export const CambiarContrasena = async (email, newPassword, confirmPassword) => {
@@ -76,8 +76,8 @@ export const CambiarContrasena = async (email, newPassword, confirmPassword) => 
         });
         return response;
     } catch (error) {
-        console.error('Error en el inicio de sesión:', error.response?.data || error.message);
-        return (error.response?.data || 'Error en el inicio de sesión. Revisa tus credenciales.');
+        console.error('Error en el inicio de sesiÃ³n:', error.response?.data || error.message);
+        return (error.response?.data || 'Error en el inicio de sesiÃ³n. Revisa tus credenciales.');
     }
 };
 export const RecuperarContrasena = async (correo) => {
@@ -85,8 +85,8 @@ export const RecuperarContrasena = async (correo) => {
         const response = await apiClient.put('api/RecuperarContrasena', { correo });
         return response;
     } catch (error) {
-        console.error('Error en el inicio de sesión:', error.response?.data || error.message);
-        return (error.response?.data || 'Error en el inicio de sesión. Revisa tus credenciales.');
+        console.error('Error en el inicio de sesiÃ³n:', error.response?.data || error.message);
+        return (error.response?.data || 'Error en el inicio de sesiÃ³n. Revisa tus credenciales.');
     }
 };
 export const EditarUsuario = async (usuario) => {
@@ -94,8 +94,8 @@ export const EditarUsuario = async (usuario) => {
         const response = await apiClient.put('api/RecuperarContrasena', usuario);
         return response;
     } catch (error) {
-        console.error('Error en el inicio de sesión:', error.response?.data || error.message);
-        return (error.response?.data || 'Error en el inicio de sesión. Revisa tus credenciales.');
+        console.error('Error en el inicio de sesiÃ³n:', error.response?.data || error.message);
+        return (error.response?.data || 'Error en el inicio de sesiÃ³n. Revisa tus credenciales.');
     }
 };
 export const EliminarUsuario = async (id) => {
@@ -103,8 +103,8 @@ export const EliminarUsuario = async (id) => {
         const response = await apiClient.delete(`api/EliminarUsuario/${id}`);
         return response;
     } catch (error) {
-        console.error('Error en el inicio de sesión:', error.response?.data || error.message);
-        return (error.response?.data || 'Error en el inicio de sesión. Revisa tus credenciales.');
+        console.error('Error en el inicio de sesiÃ³n:', error.response?.data || error.message);
+        return (error.response?.data || 'Error en el inicio de sesiÃ³n. Revisa tus credenciales.');
     }
 };
 
@@ -216,7 +216,7 @@ export const BuscarDetallesFactura = async (idEncabezado) => {
 */
 //********************************************Actividades**************************************
 
-//Baño###############
+//BaÃ±o###############
 
 export const ObtenerActividadBannos = async (gruposId, fecha) => {
     try {
@@ -835,9 +835,9 @@ export const EliminarFotosAlumno = async (Id) => {
 */
 
 //********************************************Gastos****************************************************
-export const ObtenerGastos = async (año, mes) => {
+export const ObtenerGastos = async (anno, mes) => {
     try {
-        const response = await apiClient.get(`api/ObtenerGastos/${año}&${mes}`);
+        const response = await apiClient.get(`api/ObtenerGastos/${anno}&${mes}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -858,7 +858,7 @@ export const CrearGasto = async (gasto) => {
         const response = await apiClient.post('api/CrearGasto', gasto, {
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
             }
         });
         return (response);
@@ -892,7 +892,7 @@ export const EliminarGasto = async (Id) => {
 };
 
 /*
-    --ObtenerGastos/{año}&{mes}
+    --ObtenerGastos/{aÃ±o}&{mes}
     --BuscarGastoxFecha/{fecha}
     --CrearGasto(Gasto)
     --EditarGasto(Gasto)
@@ -1051,9 +1051,9 @@ export const GuardarImagenPago = async (FileImage) => {
         return ('Validar los datos:', error.response?.data);
     }
 };
-export const GuardarFotosNiño = async (FileImage) => {
+export const GuardarFotosNinno = async (FileImage) => {
     try {
-        const response = await apiClient.post('api/GuardarFotosNiño', FileImage, {
+        const response = await apiClient.post('api/GuardarFotosNiÃ±o', FileImage, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -1081,7 +1081,7 @@ export const GuardarImagenEvento = async (FileImage) => {
 /*
     GuardarMaterialDidacticoPdf(IFormFile)
     --GuardarImagenPago(IFormFile)
-    GuardarFotosNiño(IFormFile)   
+    GuardarFotosNiÃ±o(IFormFile)   
     GuardarImagenEvento(IFormFile)
 
 */
