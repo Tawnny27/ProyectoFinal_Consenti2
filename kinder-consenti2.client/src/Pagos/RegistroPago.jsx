@@ -8,10 +8,6 @@ import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from '../UserContext'; // Importar el hook del contexto
 import { faUser, faCalendar, faIdCard, faVenusMars, faHome, faInfoCircle, faCamera, faUserShield, faPhone } from '@fortawesome/free-solid-svg-icons';
-
-
-
-
 import { DetallesApagar, BuscarUsuarios, ObtenerPadres, GuardarImagenPago, CrearPago } from '../apiClient'; // Importar las funciones desde apiClient.js
 
 //import axios from '../../../node_modules/axios/index';
@@ -19,18 +15,19 @@ import { DetallesApagar, BuscarUsuarios, ObtenerPadres, GuardarImagenPago, Crear
 
 
 const RegistroPago = () => {
-
+    
     const { user } = useUserContext();
     const [usuario, setUsuario] = useState([]);
     const [detallesTemp, setDetallesTemp] = useState([]);
     const [mensaje, setMensaje] = useState([]);
+    const [disabledRef, setDisableRef] = useState(true);
     const [usuarioSelect, setUsuarioSelect] = useState({
         idUsuario: 0,
         rolId: 0,
         nombreUsuario: '',
         apellidosUsuario: '',
         cedulaUsuario: '',
-        referencia: '',
+        referencia: 0,
     });
 
     const [errorMessages, setErrorMessages] = useState({
@@ -40,6 +37,7 @@ const RegistroPago = () => {
         apellidosUsuario: '',
         cedulaUsuario: '',
         referencia: '',
+        imagenPago:'',
     });
 
     const [pago, setPago] = useState({
@@ -48,7 +46,7 @@ const RegistroPago = () => {
         fecha: new Date().toISOString(),
         metodoPago: '',
         imagenPago: '/FotosPagos/default.jpg',
-        referencia: '0',
+        referencia: 0,
         subtotal: 0,
         descuento: 0,
         iva: 0.13,
@@ -68,24 +66,9 @@ const RegistroPago = () => {
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     const IMAGE_PATH = '/FotosPagos/';
 
-    const limpiarDatos = () => {
 
-        setSelectedCheckbox(null);
-        setIsValid(true);
 
-        setPago({
-            clienteId: 0,
-            rollId: 0,
-            fecha: new Date().toISOString(),
-            metodoPago: '',
-            imagenPago: '/FotosPagos/default.jpg',
-            referencia: '0',
-            subtotal: 0,
-            descuento: 0,
-            iva: 0.13,
-            total: 0,
-            detalles: [],
-        });
+    const limpiarDatos = () => {   
 
         setUsuarioSelect({
             idUsuario: 0,
@@ -93,15 +76,32 @@ const RegistroPago = () => {
             nombreUsuario: '',
             apellidosUsuario: '',
             cedulaUsuario: '',
-            referencia: '',
-        });
+            referencia: 0,
+        }); 
 
+        setPago({
+            clienteId: 0,
+            rollId: 0,
+            fecha: new Date().toISOString(),
+            metodoPago: '',
+            imagenPago: '/FotosPagos/default.jpg',
+            referencia: 0,
+            subtotal: 0,
+            descuento: 0,
+            iva: 0.13,
+            total: 0,
+            detalles: [],
+        });   
+         
+
+        setSelectedCheckbox(null);
+        setIsValid(true);
+        setDisableRef(true);        
+        eliminaImagen();
+        setNombreUnico('default.jpg');  
+        validacionDatos(2);
         setDetallesTemp([]);
-        setSelectedFile(null);
-        setPreviewUrl('');
-        fileInputRef.current.value = '';
-
-        setNombreUnico('default.jpg');
+        
     };
 
     const validateImage = (file) => {
@@ -202,13 +202,13 @@ const RegistroPago = () => {
         }
     }, [detallesTemp]);
 
-    useEffect(() => {
-        cargarDetalles();
-
+    useEffect(() => {            
+            cargarDetalles();              
     }, [usuarioSelect]);
 
-    const handleUserSelect = (id) => {
-        const usSelect = usuario.find((user) => user.idUsuario === parseInt(id));
+
+    const handleUserSelect = async (id) => {
+        const usSelect = await  usuario.find((user) => user.idUsuario === parseInt(id));
         if (usSelect) {
             setUsuarioSelect(() => ({
                 idUsuario: usSelect.idUsuario,
@@ -216,10 +216,11 @@ const RegistroPago = () => {
                 nombreUsuario: usSelect.nombreUsuario,
                 apellidosUsuario: usSelect.apellidosUsuario,
                 cedulaUsuario: usSelect.cedulaUsuario,
-                referencia: '',
+                referencia: 0,
             }));
 
             setErrorMessages(() => ({
+                ...errorMessages,
                 idUsuario: '',
                 rolId: '',
                 nombreUsuario: '',
@@ -227,29 +228,48 @@ const RegistroPago = () => {
                 cedulaUsuario: '',
                 referencia: '',
             }));
-        }
+        }       
     }
 
-    const validacionDatos = () => {
+    const validacionDatos = (dato) => {
         let Valid = true;
         let errors = {};
-        for (let key in usuarioSelect) {
-            if (!usuarioSelect[key]) {
-                if (key == "referencia") {
-                    if (pago.metodoPago == "Efectivo") {
-                        errors[key] = '';
+        if (dato == 1) {
+            for (let key in usuarioSelect) {
+                if (!usuarioSelect[key] || usuarioSelect[key] == 0) {
+                    if (key == "referencia") {
+                        if (pago.metodoPago == "Efectivo") {
+                            errors[key] = '';
+                        } else {
+                            errors[key] = `Por favor, completa el campo ${key}.`;
+                            Valid = false;
+                        }
                     } else {
                         errors[key] = `Por favor, completa el campo ${key}.`;
                         Valid = false;
                     }
-                } else {
-                    errors[key] = `Por favor, completa el campo ${key}.`;
-                    Valid = false;
                 }
             }
+            if (!fileInputRef) {
+                errors['imagenPago'] = 'Por favor, completa la foto.';
+                Valid = false;
+            }
+            setErrorMessages(errors);
+            return Valid;
+        } else {
+
+            setErrorMessages({
+                idUsuario: '',
+                rolId: '',
+                nombreUsuario: '',
+                apellidosUsuario: '',
+                cedulaUsuario: '',
+                referencia: '',
+                imagenPago: '',
+            });
+            return Valid;
         }
-        setErrorMessages(errors);
-        return Valid;
+           
     }
 
 
@@ -277,9 +297,9 @@ const RegistroPago = () => {
         if (value != '') {
             setPago({ ...pago, [name]: value });
         } else {
-            setPago({ ...pago, [name]: '0' });
+            setPago({ ...pago, [name]: 0 });
         }
-        if ([name] == "referencia") {
+        if ([name] == "referencia") {           
             setUsuarioSelect({ ...usuarioSelect, referencia: value });
         }
 
@@ -289,21 +309,21 @@ const RegistroPago = () => {
     const handleCheckboxChange = (index, label) => {
         if (selectedCheckbox == index) {
             setSelectedCheckbox(null);
-            setPago({
-                ...pago,
-                metodoPago: '',
-            });
+            setPago({...pago, metodoPago: '',});
+            setUsuarioSelect({ ...usuarioSelect, referencia: 0,});
+            setDisableRef(true);
+            eliminaImagen();
         } else {
             setSelectedCheckbox(index);
-            setPago({
-                ...pago,
-                metodoPago: label,
-            });
+            setPago({...pago, metodoPago: label,});
+            setDisableRef(false);
         }
 
         if (index == 0) {
-            setUsuarioSelect({...usuarioSelect,referencia:'',});
-        }
+            setUsuarioSelect({ ...usuarioSelect, referencia: 0, });
+            setDisableRef(true);
+            eliminaImagen();
+        } 
         setIsValid(true);
     }
 
@@ -318,6 +338,7 @@ const RegistroPago = () => {
                 // Crear URL temporal para vista previa
                 //const previewURL = URL.createObjectURL(file);
                 setPreviewUrl(URL.createObjectURL(file));
+                setErrorMessages({ ...errorMessages, fotoTrasf:'activo',});
             }
 
         } catch (error) {
@@ -354,12 +375,15 @@ const RegistroPago = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (validacionDatos()) {
+        if (validacionDatos(1)) {
             if (selectedCheckbox === null) {
                 setIsValid(false);
             } else { // Lógica para enviar el formulario o realizar la acción deseada 
                 console.log(pago);
                 //alert(`Aqui se envian los datosa la BD`);
+                if (!pago.referencia || pago.referencia=="") {
+                    setPago({ ...pago, referencia : 0,});
+                }
                 envioDatos();
             }
         }
@@ -368,7 +392,7 @@ const RegistroPago = () => {
 
     const envioDatos = async () => {
         try {
-
+            
             const response = await CrearPago(pago);
             /*
             const response = await axios.post('api/CrearPago', pago, {
@@ -379,6 +403,7 @@ const RegistroPago = () => {
             });
             */
 
+            console.log(pago);
             console.log(response);
             if (response.data && selectedFile) {
                 // Creamos FormData para enviar la imagen
@@ -395,11 +420,14 @@ const RegistroPago = () => {
                     },
                 });
                 */
-                console.log(imageResponse);
+                alert(imageResponse);
                 limpiarDatos();
-
+            } else {
+                limpiarDatos();
+                //alert();
             }
 
+            
 
         } catch (error) {
             console.error("Error Insentardo los datos: ", error);
@@ -415,6 +443,27 @@ const RegistroPago = () => {
             }
         }
     }
+
+
+    const eliminaImagen = () => {
+        setSelectedFile(null);
+        setPreviewUrl('');
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+        setErrorMessages({ ...errorMessages, imagenPago:'',});
+    }
+
+
+
+    const handleKeyPress = (event) => {
+        const charCode = event.charCode;
+
+        // Permitir solo números (0-9)
+        if (charCode < 48 || charCode > 57) {
+            event.preventDefault();
+        }
+    };
 
     //--------------------------------------------------------------------------------------------------------------------------
 
@@ -494,7 +543,9 @@ const RegistroPago = () => {
                                             name="referencia"
                                             value={usuarioSelect.referencia}
                                             required
+                                            onKeyPress={handleKeyPress}
                                             onChange={handleInputChange}
+                                            disabled={disabledRef}
                                         />
                                         {errorMessages.referencia && <div style={{ color: 'red' }}>{errorMessages.referencia}</div>}
                                     </div>
@@ -532,8 +583,6 @@ const RegistroPago = () => {
                                         <label>Total:</label>
                                         <input type="text" name="subtotal" value={pago.total} disabled />
                                     </div>
-
-
                                 </div>
                                 <div>
                                     <DataTable
@@ -559,7 +608,10 @@ const RegistroPago = () => {
                                             onChange={handleImageChange}
                                             accept=".jpg,.jpeg,.png"
                                             className="alumno-input"
+                                            disabled={disabledRef}
+                                            required
                                         />
+                                        {errorMessages.imagenPago && <div style={{ color: 'red' }}>{errorMessages.imagenPago}</div>}
                                     </div>
                                     {previewUrl && (
                                         <div className="image-preview-container">
@@ -571,13 +623,7 @@ const RegistroPago = () => {
                                             />
                                             <button
                                                 type="button"
-                                                onClick={() => {
-                                                    setSelectedFile(null);
-                                                    setPreviewUrl('');
-                                                    if (fileInputRef.current) {
-                                                        fileInputRef.current.value = '';
-                                                    }
-                                                }}
+                                                onClick={eliminaImagen}
                                                 className="remove-image-btn"                                    >
                                                 Eliminar imagen
                                             </button>

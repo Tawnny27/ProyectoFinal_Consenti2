@@ -4,7 +4,7 @@ import Navbar from "../componentes/navbar";
 import Footer from "../componentes/footer";
 import Sidebar from "../componentes/Sidebar";
 import "./activityList.css";
-import axios from 'axios';
+import { CrearEvento, GuardarImagenEvento, ObtenerEventosActivos} from '../apiClient'; // Importar las funciones desde apiClient.js
 import 'react-toastify/dist/ReactToastify.css';
 import { useUserContext } from '../UserContext'; // Importar el hook del contexto
 
@@ -40,7 +40,7 @@ const ListaActividades = () => {
         nombreEvento: title,
         descripcionEvento: description,
         fotoEvento: IMAGE_PATH + nombreUnico,
-        fecha: new Date().toISOString().split('T')[0],
+        fecha: date,
     }
 
     useEffect(() => {
@@ -59,7 +59,7 @@ const ListaActividades = () => {
 
     const agregarEvento = async () => {
         console.log(envioEvento);
-
+        /*
         const createEventoResponse = await axios.post('https://localhost:44369/Eventos/CrearEvento',
             envioEvento,
             {
@@ -69,6 +69,9 @@ const ListaActividades = () => {
                 },
             }
         );
+        */
+
+        const createEventoResponse = await CrearEvento(envioEvento);
 
         if (createEventoResponse.data && selectedFile) {
             // Creamos FormData para enviar la imagen
@@ -77,12 +80,19 @@ const ListaActividades = () => {
             imageFormData.append('fileName', nombreUnico); // Enviamos el nombre generado
 
             // Enviamos la imagen al servidor
-            const imageResponse = await axios.post('https://localhost:44369/api/Imagenes/GuardarImagenEvento', imageFormData, {
+            /*const imageResponse = await axios.post('https://localhost:44369/api/Imagenes/GuardarImagenEvento', imageFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
-            });
+            });*/
+            const imageResponse = await GuardarImagenEvento(imageFormData);
+            console.log(imageResponse);
+            if (imageResponse.status==200) {
+                setearDatos();
+            }           
+            
         }
+       
         cargarLista();
 
     }
@@ -136,11 +146,7 @@ const ListaActividades = () => {
         setError("");
         setSuccess(true);
         // Aquí puedes enviar los datos a la API o manejarlos como prefieras
-        agregarEvento();
-
-        setearDatos();
-
-
+        agregarEvento();        
     }
 
 
@@ -148,10 +154,16 @@ const ListaActividades = () => {
     useEffect(() => {
         cargarLista();
     }, []);
+      
+     
 
     const cargarLista = async () => {
         try {
+            /*
             const response = await axios.get("https://localhost:44369/api/Eventos/ObtenerEventosActivos");
+            setListaAct(response.data);
+            */
+            const response = await ObtenerEventosActivos();
             setListaAct(response.data);
 
         } catch (error) {
@@ -242,7 +254,7 @@ const ListaActividades = () => {
                                             className="activity-form-input"
                                             required
                                             value={date}
-                                            onChange={(e) => setDate(e.target.value)}
+                                            onChange={(e) => setDate(e.target.value) }
                                         />
                                     </label>
 
