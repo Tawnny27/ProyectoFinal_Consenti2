@@ -35,24 +35,54 @@ const ListaActividades = () => {
     const IMAGE_PATH = '/FotosEventos/';
 
 
-
+    /*
     const envioEvento = {
         nombreEvento: title,
         descripcionEvento: description,
         fotoEvento: IMAGE_PATH + nombreUnico,
         fecha: date,
+    }*/
+
+    const envioEvento = {
+        nombreEvento: title,
+        descripcionEvento: description,
+        fotoEvento: image,
+        fecha: date,
     }
 
-    useEffect(() => {
+
+
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
+
+
+    const base64Image = async (file) => {
+        const base64 = await convertToBase64(file);
+        return base64;
+    }
+
+    useEffect(() => {      
+
         if (selectedFile) {
             // Generar nombre único para la imagen
+            /*
             const fileExtension = selectedFile.name.split('.').pop();
             setNombreUnico(`${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`);
             console.log("Ojo");
             console.log(nombreUnico);
+            */
+            base64Image(selectedFile);
+            setImage(base64Image);          
         }
-        else {
-            setNombreUnico('default.jpg');
+        else {            
+            setImage('');
         }
     }, [selectedFile]);
 
@@ -75,22 +105,22 @@ const ListaActividades = () => {
 
         if (createEventoResponse.data && selectedFile) {
             // Creamos FormData para enviar la imagen
-            const imageFormData = new FormData();
+           /* const imageFormData = new FormData();
             imageFormData.append('file', selectedFile);
             imageFormData.append('fileName', nombreUnico); // Enviamos el nombre generado
 
             // Enviamos la imagen al servidor
-            /*const imageResponse = await axios.post('https://localhost:44369/api/Imagenes/GuardarImagenEvento', imageFormData, {
+            const imageResponse = await axios.post('https://localhost:44369/api/Imagenes/GuardarImagenEvento', imageFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
-            });*/
+            });
             const imageResponse = await GuardarImagenEvento(imageFormData);
             console.log(imageResponse);
             if (imageResponse.status==200) {
                 setearDatos();
-            }           
-            
+            } */          
+            setearDatos();
         }
        
         cargarLista();
