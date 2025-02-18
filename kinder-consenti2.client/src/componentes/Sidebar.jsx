@@ -2,9 +2,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPlus, faCaretDown, faChildren, faClipboardList, faUserEdit, faChartBar } from '@fortawesome/free-solid-svg-icons';
+import { faUserPlus, faCaretDown, faChildren, faClipboardList, faUserEdit, faChartBar ,faUsers } from '@fortawesome/free-solid-svg-icons';
 import { useUserContext } from '../UserContext';
-import { faAddressBook, faReceipt, faBoxesStacked, faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
+import {
+    faAddressBook, faReceipt, faBoxesStacked, faFileInvoice, faFolderOpen,
+    faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet
+} from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
+<FontAwesomeIcon icon="fa-regular fa-users" />
 
 function Sidebar() {
 
@@ -61,6 +65,12 @@ function Sidebar() {
                                 <li>
                                     <Link to="/user-maintenance">
                                         <FontAwesomeIcon icon={faUserEdit} className="menu-icon" /> Consultar Usuarios
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/Grupos">
+                                        <FontAwesomeIcon icon={faUsers} className="menu-icon" />
+                                        Aulas
                                     </Link>
                                 </li>
                                 <li>
@@ -124,13 +134,10 @@ function Sidebar() {
                 {/*<li>                   */}
                 {/*    <Link to="/comportamiento">*/}
                 {/*        <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Comportamiento</Link>*/}
-                {/*</li>*/}
+                {/*</li>*/}                
 
-                <li>
-                    <Link to="/Grupos">Aulas</Link>
-                </li>
-
-                <li className="menu-link"><Link to="/matricula">
+                <li className="menu-link">
+                    <Link to="/matricula">
                     <FontAwesomeIcon icon={faSchoolCircleCheck} className="menu-icon" />  Matrícula</Link></li>
                 {user.rolId === 1 && (
                     <li className="menu-link"><Link to="/expedientes">

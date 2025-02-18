@@ -124,7 +124,7 @@ namespace kinder_consenti2.Server.Controllers
 
         [HttpPut]
         [Route("CambiarContrasena")]
-        public ActionResult<string> CambiarContrasena(Acceso DatosCambio) // recibe un objeto con el correo, contraseña y contraseña de verificación
+        public async Task<ActionResult<string>> CambiarContrasena(Acceso DatosCambio) // recibe un objeto con el correo, contraseña y contraseña de verificación
         {
             /*
              * Espressiones regulares
@@ -136,9 +136,10 @@ namespace kinder_consenti2.Server.Controllers
 
 
             if (DatosCambio.correo!=null&& DatosCambio.contrasenna != null &&
-                DatosCambio.contrasennaValidacion != null && DatosCambio.contrasenna== DatosCambio.contrasennaValidacion)// sevalidan los datos
+                DatosCambio.contrasennaValidacion != null && DatosCambio.contrasenna == DatosCambio.contrasennaValidacion)// sevalidan los datos
             {
-                string reglas = @"^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$";
+                string reglas = @"^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$";              
+            
                 if (!Regex.IsMatch(DatosCambio.contrasenna, reglas))
                 {
                     return BadRequest("La contraseña no cumple con los parametro minimos: " +
@@ -148,13 +149,15 @@ namespace kinder_consenti2.Server.Controllers
                         "un caracter especial, " +
                         "un número.");
                 }
-                var usuario = _context.Usuario.Where(x => x.CorreoUsuario == DatosCambio.correo).FirstOrDefault();// se busca el usuaior en la BD
+                var usuario = await _context.Usuario.FirstOrDefaultAsync(x => x.CorreoUsuario == DatosCambio.correo);// se busca el usuaior en la BD
                 if (usuario != null) 
                 {
+                    if (usuario.PassGenerico == false)
+                        return BadRequest("No existe un cambio de contraseña pendiente");
                     usuario.ContrasennaUsuario = Encryptar.encripSHA256(DatosCambio.contrasenna); // se encripta la nueva contraseña
                     usuario.PassGenerico = false;// cambia el status a false  para la vandera de alerta de clave real
                     _context.Usuario.Update(usuario);// se actulizan los datos
-                    _context.SaveChanges();// se actulizan en la BD
+                    await _context.SaveChangesAsync();// se actulizan en la BD
                     return Ok("Clave de acceso actualizada favor inicie sesion");
                 }
                 return BadRequest("Este correo no existe en nuetros registros");

@@ -3,7 +3,7 @@ import './LoginForm.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { CambiarContrasena, } from '../apiClient';
 
 const ChangePassword = () => {
     const [email, setEmail] = useState('');
@@ -30,18 +30,19 @@ const ChangePassword = () => {
             return;
         }
 
-        try {
-            const response = await axios.put('https://localhost:44369/api/Usuarios/CambiarContrasena', {
-                correo: email,
-                contrasenna: newPassword,
-                contrasennaValidacion: confirmPassword
-            });
-
+        try {            
+            const response = await CambiarContrasena(email, newPassword, confirmPassword);
             if (response.status === 200) {
                 setSuccessMessage(response.data);
                 setTimeout(() => {
                     navigate('/'); // Redirige después de 5
-                }, 500); 
+                }, 500);
+            } else {
+                setSuccessMessage(response);
+                setEmail('');
+                setNewPassword('');
+                setConfirmPassword('');
+
             }
         } catch (error) {
             setSuccessMessage(error.response?.data || "Error al cambiar la contraseña");

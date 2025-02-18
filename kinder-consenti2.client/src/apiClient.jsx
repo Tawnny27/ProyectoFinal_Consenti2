@@ -80,9 +80,9 @@ export const CambiarContrasena = async (email, newPassword, confirmPassword) => 
         return (error.response?.data || 'Error en el inicio de sesión. Revisa tus credenciales.');
     }
 };
-export const RecuperarContrasena = async (correo) => {
+export const RecuperarContrasena = async (email) => {
     try {
-        const response = await apiClient.put('api/RecuperarContrasena', { correo });
+        const response = await apiClient.put('api/RecuperarContrasena', { correo: email });
         return response;
     } catch (error) {
         console.error('Error en el inicio de sesión:', error.response?.data || error.message);

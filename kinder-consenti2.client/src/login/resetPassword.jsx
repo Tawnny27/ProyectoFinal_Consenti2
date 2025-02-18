@@ -3,7 +3,7 @@ import './LoginForm.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { RecuperarContrasena } from '../apiClient';
 
 const ResetPassword = () => {
     const [correo, setCorreo] = useState(''); 
@@ -14,12 +14,14 @@ const ResetPassword = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.put('https://localhost:44369/api/Usuarios/RecuperarContrasena', { correo });
+            const response = await RecuperarContrasena(correo);
             if (response.status === 200) {
                 setMessage('Correo de restablecimiento enviado. Revisa tu bandeja de entrada. Y la proxima vez que ingrese podrá cambiar su contraseña');
                 setTimeout(() => {
                     navigate('/'); // Redirige después de 10 segundos
-                }, 10000); 
+                }, 5000);
+            } else {
+                setMessage(response);
             }
         } catch (error) {
             console.error('Error al enviar el correo de restablecimiento:', error);
