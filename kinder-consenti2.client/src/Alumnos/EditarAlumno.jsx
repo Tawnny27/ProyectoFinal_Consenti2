@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import './EditarAlumno.css';
+import { EditarAlumnoo, ObtenerAlumnos } from '../apiClient';
 
 const EditarAlumno = () => {
     const { id } = useParams(); // Obtener el id del alumno desde la URL
@@ -31,17 +32,17 @@ const EditarAlumno = () => {
     const [mensajeExito, setMensajeExito] = useState(''); // Estado para el mensaje de éxito
 
     useEffect(() => {
-        // Función para obtener el alumno a editar
-        const obtenerAlumno = async () => {
+        const fetchAlumno = async () => {
             try {
-                const response = await axios.get(`https://localhost:44369/api/Alumnos/BuscarAlumno/${id}`);
-                setAlumno(response.data);
+                const data = await ObtenerAlumnos(); // Usamos la función para obtener todos los alumnos
+                const alumnoSeleccionado = data.find(a => a.id === id); // Buscamos el alumno por id
+                setAlumno(alumnoSeleccionado);
             } catch (error) {
-                console.error("Error al obtener el alumno:", error);
+                console.error("Error al obtener los alumnos:", error);
             }
         };
 
-        obtenerAlumno();
+        fetchAlumno();
     }, [id]);
 
     const manejarCambio = (e) => {
@@ -55,10 +56,10 @@ const EditarAlumno = () => {
     const manejarEnvio = async (e) => {
         e.preventDefault();
         try {
-            await axios.put('https://localhost:44369/api/Alumnos/EditarAlumno', alumno);
+            const response = await EditarAlumnoo(alumno); // Usamos la función de editar
             setMensajeExito('Los cambios se guardaron correctamente.');
             setTimeout(() => {
-                navigate(`/alumno-maintenance`);
+                navigate(`/alumno-maintenance`); // Navegar después de guardar
             }, 2000);
         } catch (error) {
             console.error("Error al editar el alumno:", error);

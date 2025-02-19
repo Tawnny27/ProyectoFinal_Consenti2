@@ -7,6 +7,7 @@ import './Gastos.css';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'; // Importa los iconos
+import { ObtenerCategorias, ObtenerGastosPorFecha, CrearrGasto, EditarGasto, EliminarGasto } from '../apiClient'; // Importamos las funciones desde apiClient
 
 const Gastos = () => {
     const [gastos, setGastos] = useState([]);
@@ -35,8 +36,8 @@ const Gastos = () => {
     useEffect(() => {
         const cargarCategorias = async () => {
             try {
-                const categoriasResponse = await axios.get('https://localhost:44369/api/Categoria/ObtenerCategorias');
-                setCategorias(categoriasResponse.data);
+                const categoriasData = await ObtenerCategorias();
+                setCategorias(categoriasData.data); // Asume que `data` contiene las categorías
             } catch (error) {
                 console.error('Error al cargar categorías:', error);
             }
@@ -47,8 +48,8 @@ const Gastos = () => {
     const cargarGastosPorFecha = async () => {
         if (fechaFiltro) {
             try {
-                const gastosResponse = await axios.get(`https://localhost:44369/api/Gasto/BuscarGastoxFecha/${fechaFiltro}`);
-                setGastos(gastosResponse.data);
+                const gastosData = await ObtenerGastosPorFecha(fechaFiltro);
+                setGastos(gastosData.data); // Asume que `data` contiene los gastos
             } catch (error) {
                 console.error('Error al cargar los gastos:', error);
             }
@@ -71,17 +72,12 @@ const Gastos = () => {
         e.preventDefault();
 
         // Verifica si estamos editando un gasto y si el idGasto existe
-        const url = gastoSeleccionado ? `https://localhost:44369/api/Gasto/EditarGasto` : 'https://localhost:44369/api/Gasto/CrearGasto';
-        const metodo = gastoSeleccionado ? 'put' : 'post'; // PUT si estamos editando, POST si estamos creando un gasto
+        const metodo = gastoSeleccionado ? EditarGasto : CrearrGasto; // Usa las funciones del apiClient
 
         try {
-            const response = await axios({
-                method: metodo,
-                url: url,
-                data: nuevoGasto
-            });
+            const response = await metodo(nuevoGasto); // Llama a la función correspondiente (editar o crear)
 
-            if (response.data) {
+            if (response) {
                 const mensaje = gastoSeleccionado ? '¡Gasto editado exitosamente!' : '¡Gasto creado exitosamente!';
                 window.alert(mensaje);
                 setModalIsOpen(false);
@@ -90,7 +86,7 @@ const Gastos = () => {
                     categoriaId: '',
                     monto: ''
                 });
-                cargarGastosPorFecha();  // Recargar los gastos
+                cargarGastosPorFecha();  // Recargar los gastos después de crear o editar
             }
         } catch (error) {
             console.error(gastoSeleccionado ? 'Error al editar gasto:' : 'Error al crear gasto:', error);
@@ -145,18 +141,17 @@ const Gastos = () => {
         }
     };
 
-    const handleDelete = (idGasto) => {
-        const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este gasto?");
+    const handleDelete = async (idGasto) => {
+        const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este gasto?');
         if (confirmDelete) {
-            axios.delete(`https://localhost:44369/api/Gasto/EliminarGasto/${idGasto}`)
-                .then(() => {
-                    window.alert('Gasto eliminado exitosamente.');
-                    setGastos(gastos.filter(g => g.idGasto !== idGasto)); // Elimina el gasto de la vista
-                })
-                .catch(error => {
-                    console.error("Error al eliminar el gasto:", error);
-                    window.alert('Hubo un error al eliminar el gasto.');
-                });
+            try {
+                await EliminarGasto(idGasto);
+                window.alert('Gasto eliminado exitosamente.');
+                setGastos(gastos.filter(g => g.idGasto !== idGasto)); // Elimina el gasto de la vista
+            } catch (error) {
+                console.error('Error al eliminar el gasto:', error);
+                window.alert('Hubo un error al eliminar el gasto.');
+            }
         }
     };
 

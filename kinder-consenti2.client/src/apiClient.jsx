@@ -467,7 +467,7 @@ export const CrearAlumno = async (alumno) => {
         return ('Validar los datos:', error.response?.data);
     }
 };
-export const EditarAlumno = async (alumno) => {
+export const EditarAlumnoo = async (alumno) => {
     try {
         const response = await apiClient.put('api/EditarAlumno', alumno, {
             headers: {
@@ -1388,6 +1388,16 @@ export const EliminarMaterialDidactico = async (Id) => {
 */
 
 //********************************************Roles************************************************************
+//se creo este por que el ObtenerRoles normal estaba dando problemas, y para no afectar su funcionamiento en otros lugares no se modifico
+export const ObtenerRolesRegistro = async () => {
+    try {
+        const response = await apiClient.get('api/ObtenerRoles');
+        return response.data;  // Regresamos solo los datos
+    } catch (error) {
+        console.error('Error al cargar los datos:', error);
+        return [];
+    }
+};
 
 export const ObtenerRoles = async () => {
     try {
@@ -1453,3 +1463,76 @@ export const EliminarRol = async (Id) => {
     EliminarRol/{id}
 */
 //
+
+//ALUMNOS
+export const GuardarImagenPerfilAlumno = async (file, fileName) => {
+    try {
+        const imageFormData = new FormData();
+        imageFormData.append('file', file);
+        imageFormData.append('fileName', fileName); // Nombre único generado para la imagen
+
+        const response = await apiClient.post('api/GuardarImagenPerfilAluno', imageFormData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        return response;
+    } catch (error) {
+        console.error("Error al guardar imagen del alumno:", error);
+        throw error;
+    }
+};
+
+export const ActualizarEstadoFactura = async (idFactura, nuevoEstado) => {
+    try {
+        const response = await apiClient.put(`api/DarAltaFactura/${idFactura}&${nuevoEstado}`);
+        return response;
+    } catch (error) {
+        console.error('Error al actualizar el estado de la factura:', error);
+        return ('Validar los datos:', error.response?.data);
+    }
+};
+
+export const ObtenerUsuarioPorId = async (usuarioId) => {
+    try {
+        const response = await apiClient.get(`api/BuscarUsuarios/${usuarioId}`);
+        return response;
+    } catch (error) {
+        console.error('Error al obtener el usuario por ID:', error);
+        return ('Validar los datos:', error.response?.data);
+    }
+};
+
+// Obtener gastos por fecha
+export const ObtenerGastosPorFecha = async (fechaFiltro) => {
+    try {
+        const response = await apiClient.get(`api/BuscarGastoxFecha/${fechaFiltro}`);
+        return response;
+    } catch (error) {
+        console.error('Error al cargar los gastos:', error);
+        return 'Validar los datos:', error.response?.data;
+    }
+};
+
+// Crear un gasto
+export const CrearrGasto = async (nuevoGasto) => {
+    try {
+        const response = await apiClient.post('api/CrearGasto', nuevoGasto);
+        return response;
+    } catch (error) {
+        console.error('Error al crear el gasto:', error);
+        return 'Validar los datos:', error.response?.data;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+

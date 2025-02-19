@@ -4,6 +4,7 @@ import DataTable from 'react-data-table-component';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import './Factura.css';
+import { ObtenerFacturasPendientes, ObtenerUsuarioPorId, ActualizarEstadoFactura } from '../apiClient'; 
 
 const FacturaMaintenance = () => {
     const [facturas, setFacturas] = useState([]);
@@ -19,11 +20,11 @@ const FacturaMaintenance = () => {
     const fetchFacturas = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('https://localhost:44369/api/EncabezadoFactura/ObtenerFacturasPendientes');
+            const response = await ObtenerFacturasPendientes();
             if (response.status === 200) {
                 setFacturas(response.data);
                 setFacturasFiltradas(response.data);
-                await fetchUsuarios(response.data); // Obtener usuarios de las facturas
+                await fetchUsuarios(response.data); // Obtener los usuarios de las facturas
             }
         } catch (error) {
             console.error('Error al obtener las facturas:', error);
@@ -31,31 +32,32 @@ const FacturaMaintenance = () => {
             setLoading(false);
         }
     };
-
     // Función para obtener los datos de un usuario
     const fetchUsuario = async (usuarioId) => {
         try {
-            const response = await axios.get(`https://localhost:44369/Usuarios/BuscarUsuarios/${usuarioId}`);
-            if (response.status === 200) {
-                return response.data.nombreUsuario; // Suponiendo que la respuesta tiene un campo `nombre`
-            }
+            const response = await ObtenerUsuarioPorId(usuarioId);
+            return response.data.nombreUsuario; // Suponiendo que la respuesta tiene el campo 'nombreUsuario'
         } catch (error) {
             console.error('Error al obtener el usuario:', error);
+            return 'Usuario no encontrado'; // Valor por defecto en caso de error
         }
-        return 'Usuario no encontrado'; // Valor por defecto en caso de error
     };
 
     // Función para obtener todos los usuarios y almacenarlos en el estado
     const fetchUsuarios = async (facturas) => {
         const usuariosData = {};
-        for (let factura of facturas) {
-            const usuarioId = factura.usuarioId;
-            if (!usuariosData[usuarioId]) {
-                const nombreUsuario = await fetchUsuario(usuarioId);
-                usuariosData[usuarioId] = nombreUsuario;
+        try {
+            for (let factura of facturas) {
+                const usuarioId = factura.usuarioId;
+                if (!usuariosData[usuarioId]) {
+                    const nombreUsuario = await fetchUsuario(usuarioId);
+                    usuariosData[usuarioId] = nombreUsuario;
+                }
             }
+            setUsuarios(usuariosData); // Actualiza el estado con los nombres de los usuarios
+        } catch (error) {
+            console.error('Error al obtener usuarios:', error);
         }
-        setUsuarios(usuariosData);
     };
 
     // Filtrar facturas por Usuario ID y Estado
@@ -79,7 +81,7 @@ const FacturaMaintenance = () => {
 
     const actualizarEstado = async (idFactura, nuevoEstado) => {
         try {
-            const response = await axios.put(`https://localhost:44369/api/EncabezadoFactura/DarAltaFactura/${idFactura}&${nuevoEstado}`);
+            const response = await ActualizarEstadoFactura(idFactura, nuevoEstado);
             if (response.status === 200) {
                 setFacturas((prevFacturas) =>
                     prevFacturas.map((factura) =>
@@ -93,6 +95,7 @@ const FacturaMaintenance = () => {
             alert('Hubo un error al actualizar el estado');
         }
     };
+
 
     const abrirModal = (imagen) => {
         const partesRuta = imagen.split('/');

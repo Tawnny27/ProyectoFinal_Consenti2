@@ -1,19 +1,19 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './mainLayout.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faUserPlus, faSignOutAlt, faCalendarAlt, faCaretDown, faChildren, faClipboardList, faMoneyBillWave, faGraduationCap, faFileAlt, faCommentDots, faBoxes,
-    faUserEdit, faChartBar
-} from '@fortawesome/free-solid-svg-icons';
+//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+//import {
+//    faUserPlus, faSignOutAlt, faCalendarAlt, faCaretDown, faChildren, faClipboardList, faMoneyBillWave, faGraduationCap, faFileAlt, faCommentDots, faBoxes,
+//    faUserEdit, faChartBar
+//} from '@fortawesome/free-solid-svg-icons';
 import logo from '../assets/logo.jpg';
 import Footer from '../componentes/footer';
 import Navbar from "../componentes/navbar";
 import Sidebar from "../componentes/Sidebar";
 import { useUserContext } from '../UserContext';
-import { faAddressBook, faReceipt, faBoxesStacked, faCheck, faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet, faChartSimple } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
-import { Nav } from '../../../node_modules/react-bootstrap/esm/index';
-import { use } from 'react';
+//import { faAddressBook, faReceipt, faBoxesStacked, faCheck, faFileInvoice, faFolderOpen, faHandHoldingDollar, faImages, faSchoolCircleCheck, faSquarePollHorizontal, faWallet, faChartSimple } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
+//import { Nav } from '../../../node_modules/react-bootstrap/esm/index';
+//import { use } from 'react';
 
 
 const MainLayout = () => {

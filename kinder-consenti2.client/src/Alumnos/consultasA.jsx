@@ -10,6 +10,9 @@ import Footer from '../componentes/footer';
 import 'primeicons/primeicons.css';
 /*import { faFileExcel, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'; // Importa los iconos*/
 import './AlumnoMaintenance.css'; // Importing main styles
+import { ObtenerAlumnos, ObtenerUsuarios, CrearAlumno, GuardarImagenPerfilAlumno, EliminarAlumno } from '../apiClient';
+
+
 
 
 
@@ -81,16 +84,20 @@ function AlumnoMaintenance() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get('https://localhost:44369/Alumnos/ObtenerAlumnos')
-            .then(response => setAlumnos(response.data))
-            .catch(error => console.error('Error fetching alumnos:', error));
+        const fetchData = async () => {
+            try {
+                const alumnosResponse = await ObtenerAlumnos();  // Llamada a ObtenerAlumnos
+                setAlumnos(alumnosResponse.data);  // Extraemos solo los datos
 
-        axios.get('https://localhost:44369/Usuarios/ObtenerUsuarios')
-            .then(response => {
-                const padresFiltrados = response.data.filter(user => user.rolId === 3);
+                const usuariosResponse = await ObtenerUsuarios();  // Llamada a ObtenerUsuarios
+                const padresFiltrados = usuariosResponse.data.filter(user => user.rolId === 3);  // Filtramos padres
                 setPadres(padresFiltrados);
-            })
-            .catch(error => console.error('Error fetching padres:', error));
+            } catch (error) {
+                console.error('Error al obtener los datos:', error);
+            }
+        };
+
+        fetchData();
     }, []);
 
     const openModal = () => setModalIsOpen(true);
@@ -107,7 +114,6 @@ function AlumnoMaintenance() {
         let uniqueFileName = '';
 
         if (selectedFile) {
-            // Generar nombre único para la imagen
             const fileExtension = selectedFile.name.split('.').pop();
             uniqueFileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`;
             imagePath = `${IMAGE_PATH}${uniqueFileName}`;
@@ -115,17 +121,17 @@ function AlumnoMaintenance() {
 
         const payload = {
             idAlumno: 0,
-            padreId: parseInt(formData.padreId) || 4, //aca definir un id padre por defecto para que no se caiga, asegurarse de no borrarlo
+            padreId: parseInt(formData.padreId) || 4,
             nombreAlumno: formData.nombreAlumno || 'Sin nombre',
             apellidosAlumno: formData.apellidosAlumno || 'Sin apellidos',
-            fechaNacimiento: formData.fechaNacimiento ?
-                new Date(formData.fechaNacimiento).toISOString() :
-                new Date().toISOString(),
+            fechaNacimiento: formData.fechaNacimiento
+                ? new Date(formData.fechaNacimiento).toISOString()
+                : new Date().toISOString(),
             cedulaAlumno: formData.cedulaAlumno || 'Sin cédula',
             generoAlumno: formData.generoAlumno || 'NA',
             direccionAlumno: formData.direccionAlumno || 'Sin dirección',
             informacionAdicional: formData.informacionAdicional || 'Sin información',
-            fotoAlumno: imagePath || 'default.jpg',
+            fotoAlumno: imagePath, // Guardamos la ruta generada para la imagen
             nombreCompAutorizado: formData.nombreCompAutorizado || 'Sin autorizado',
             cedulaAutorizado: formData.cedulaAutorizado || 'Sin cédula',
             telefonoAutorizado: parseInt(formData.telefonoAutorizado) || 0,
@@ -137,61 +143,40 @@ function AlumnoMaintenance() {
         };
 
         try {
-            console.log('Sending payload:', JSON.stringify(payload, null, 2));
-            const response = await axios.post('https://localhost:44369/api/Alumnos/CrearAlumno', payload, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            });
+            console.log('Enviando datos del alumno:', JSON.stringify(payload, null, 2));
+            const response = await CrearAlumno(payload);
 
             if (response.data && selectedFile) {
-                // Creamos FormData para enviar la imagen
-                const imageFormData = new FormData();
-                imageFormData.append('file', selectedFile);
-                imageFormData.append('fileName', uniqueFileName); // Enviamos el nombre generado
-
-                // Enviamos la imagen al servidor
-                const imageResponse = await axios.post('https://localhost:44369/api/Imagenes/GuardarImagenPerfilAluno', imageFormData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-
-                console.log('Alumno creado exitosamente:', response.data);
-                setAlumnos([...alumnos, response.data]);
-                closeModal();
+                // Ahora pasamos el archivo y el nombre a la función
+                await GuardarImagenPerfilAlumno(selectedFile, uniqueFileName);
             }
+
+            console.log('Alumno creado exitosamente:', response.data);
+            setAlumnos([...alumnos, response.data]);
+            closeModal();
         } catch (error) {
-            console.error("Error saving alumno:", error);
-            if (error.response) {
-                console.error("Error details:", {
-                    data: error.response.data,
-                    status: error.response.status,
-                    headers: error.response.headers
-                });
-                if (error.response.data && error.response.data.errors) {
-                    console.error("Validation errors:", error.response.data.errors);
-                }
-            }
+            console.error("Error al guardar alumno:", error);
         }
     };
+
 
     const handleDelete = (alumnoId) => {
         confirmDialog({
             message: '¿Estás seguro de que deseas eliminar este alumno?',
             header: 'Confirmar Eliminación',
             icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                axios.delete(`https://localhost:44369/api/Alumnos/EliminarAlumno/${alumnoId}`)
-                    .then(() => {
-                        setAlumnos(alumnos.filter(alumno => alumno.idAlumno !== alumnoId));
-                    })
-                    .catch(error => console.error('Error deleting alumno:', error));
+            accept: async () => {
+                try {
+                    await EliminarAlumno(alumnoId);
+                    setAlumnos(alumnos.filter(alumno => alumno.idAlumno !== alumnoId));
+                } catch (error) {
+                    console.error('Error al eliminar alumno:', error);
+                }
             },
             reject: () => { },
         });
     };
+
 
     const columns = [
         {
