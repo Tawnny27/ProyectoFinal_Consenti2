@@ -52,79 +52,13 @@ const ListaActividades = () => {
 
 
 
-
-    const convertToBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-        });
-    };
-
-
-    const base64Image = async (file) => {
-        const base64 = await convertToBase64(file);
-        return base64;
-    }
-
-    useEffect(() => {      
-
-        if (selectedFile) {
-            // Generar nombre único para la imagen
-            /*
-            const fileExtension = selectedFile.name.split('.').pop();
-            setNombreUnico(`${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`);
-            console.log("Ojo");
-            console.log(nombreUnico);
-            */
-            base64Image(selectedFile);
-            setImage(base64Image);          
-        }
-        else {            
-            setImage('');
-        }
-    }, [selectedFile]);
-
-
     const agregarEvento = async () => {
-        console.log(envioEvento);
-        /*
-        const createEventoResponse = await axios.post('https://localhost:44369/Eventos/CrearEvento',
-            envioEvento,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                },
-            }
-        );
-        */
-
+        console.log(envioEvento);   
         const createEventoResponse = await CrearEvento(envioEvento);
-
-        if (createEventoResponse.data && selectedFile) {
-            // Creamos FormData para enviar la imagen
-           /* const imageFormData = new FormData();
-            imageFormData.append('file', selectedFile);
-            imageFormData.append('fileName', nombreUnico); // Enviamos el nombre generado
-
-            // Enviamos la imagen al servidor
-            const imageResponse = await axios.post('https://localhost:44369/api/Imagenes/GuardarImagenEvento', imageFormData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            const imageResponse = await GuardarImagenEvento(imageFormData);
-            console.log(imageResponse);
-            if (imageResponse.status==200) {
-                setearDatos();
-            } */          
+        if (createEventoResponse.data && selectedFile) {                   
             setearDatos();
-        }
-       
+        }       
         cargarLista();
-
     }
 
     //-----------------------------------------------------------------------------------------
@@ -146,17 +80,35 @@ const ListaActividades = () => {
 
     //------------------------------------------------------------------------------------------
 
-    const handleImageChange = (e) => {
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
+
+    const base64Image = async (file) => {
+        const base64 = await convertToBase64(file);
+        return base64;
+    }
+
+    const handleImageChange = async (e) => {
         const file = e.target.files[0];
         setImageError('');
         try {
             if (validateImage(file)) {
                 setSelectedFile(file);
+                const base64 = await base64Image(file);
                 // Crear URL temporal para vista previa
                 const previewURL = URL.createObjectURL(file);
                 setPreviewUrl(previewURL);
+                setImage(base64);
+            } else {
+                setImage('');
             }
-
         } catch (error) {
             setImageError(error.message);
             if (fileInputRef.current) {
@@ -183,16 +135,10 @@ const ListaActividades = () => {
     //----------------------------------------------------------------------------
     useEffect(() => {
         cargarLista();
-    }, []);
-      
-     
+    }, []);    
 
     const cargarLista = async () => {
-        try {
-            /*
-            const response = await axios.get("https://localhost:44369/api/Eventos/ObtenerEventosActivos");
-            setListaAct(response.data);
-            */
+        try {          
             const response = await ObtenerEventosActivos();
             setListaAct(response.data);
 
