@@ -21,7 +21,7 @@ const ActivityForm = () => {
         }
         setError("");
         setSuccess(true);
-        // Aquí puedes enviar los datos a la API o manejarlos como prefieras
+        
         console.log({ title, date, image, description, additional });
         setTitle("");
         setDate("");

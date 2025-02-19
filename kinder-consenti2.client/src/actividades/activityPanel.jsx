@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from '../UserContext';
 import axios from 'axios';
 import Select from 'react-select';
+import { ObtenerGrupos, ObtenerGrupoAlumnos, CrearActividadComidas, CrearActividadBanno, CrearActividadDormir, CrearActividadHuerta } from '../apiClient'; // Importar las funciones desde apiClient.js
+
 
 function ActivityPanel() {
     const [selectedActivity, setSelectedActivity] = useState("");
@@ -22,7 +24,7 @@ function ActivityPanel() {
     // Función para obtener grupos
     const obtenerGrupos = async () => {
         try {
-            const response = await axios.get("https://localhost:44369/api/Grupos/ObtenerGrupos");
+            const response = await ObtenerGrupos();
             setGroups(response.data.map(group => ({ value: group.idGrupo || group.id || group.idGrupos || group.id_grupo, label: group.nombreGrupo || "Sin nombre" })));
         } catch (error) {
             setErrorMessage("Error al obtener los grupos.");
@@ -34,7 +36,7 @@ function ActivityPanel() {
         try {
             if (!groupId) return;
 
-            const response = await axios.get(`https://localhost:44369/api/GruposAlumnos/ObtenerGrupoAlumnos/${groupId}`);
+            const response = await ObtenerGrupoAlumnos(groupId);
             if (response.data) {
                 const formattedData = response.data.map(child => ({
                     alumnoId: child.alumno.idAlumno,
@@ -42,6 +44,8 @@ function ActivityPanel() {
                     fecha: currentDate,
                     descripcion: "", // Valor por defecto
                     statusParticipacion: 1, // Valor por defecto
+                    statusComida: 1,
+                    tipoComida: "Normal",
                     comentario: "", // Valor por defecto
                     catidad: 0,
                     name: child.alumno.nombreAlumno + ' ' + child.alumno.apellidosAlumno || "Sin nombre"
@@ -90,11 +94,8 @@ function ActivityPanel() {
         switch (activity) {
             case 'Comida':
                 try {
-                     console.log(childrenData)
-                    const response = await axios.post(
-                        `https://localhost:44369/api/ActividadComidas/CrearActividadComidas`,
-                        childrenData
-                    );
+                    console.log(childrenData)
+                    const response = await CrearActividadComidas(childrenData);
 
                     if (response.status === 200) {
                         console.log('Success:', response.data);
@@ -112,10 +113,8 @@ function ActivityPanel() {
                 try {
                     console.log(childrenData)
 
-                    const response = await axios.post(
-                        `https://localhost:44369/api/ActividadHuerta/CrearActividadHuerta`,
-                        childrenData
-                    );
+                    const response = await CrearActividadHuerta(childrenData);
+                    
                     if (response.status === 200) {
                         console.log('Success:', response.data);
                         alert('Actividad de Huerta guardada con éxito!');
@@ -130,10 +129,8 @@ function ActivityPanel() {
                 break;
             case 'Dormir':
                 try {
-                    const response = await axios.post(
-                        `https://localhost:44369/api/ActividadDormir/CrearActividadDormir`,
-                        childrenData
-                    );
+                    console.log(childrenData)
+                    const response = await CrearActividadDormir(childrenData);
                     if (response.status === 200) {
                         console.log('Success:', response.data);
                         alert('Actividad de Dormir guardada con éxito!');
@@ -148,7 +145,8 @@ function ActivityPanel() {
                 break;
             case 'Ir al Baño':
                 try {
-                    const response = await axios.post(`https://localhost:44369/api/ActividadBanno/CrearActividadBanno`, childrenData);
+                    console.log(childrenData)
+                    const response = await CrearActividadBanno(childrenData);
                     if (response.status === 200) {
                         console.log('Success:', response.data);
                         alert('Actividad de Baño guardada con éxito!');
@@ -343,8 +341,8 @@ function ActivityPanel() {
                                             <td>
                                                 <input
                                                     type="text"
-                                                    value={child.comments}
-                                                    onChange={(e) => handleInputChange(index, 'comments', e.target.value)}
+                                                    value={child.comentario}
+                                                    onChange={(e) => handleInputChange(index, 'comentario', e.target.value)}
                                                     className="activity-input"
                                                 />
                                             </td>
@@ -373,14 +371,16 @@ function ActivityPanel() {
                                                 <input
                                                     type="number"
                                                     className="activity-input"
+                                                    value={child.catidad}
+                                                    onChange={(e) => handleInputChange(index, 'catidad', e.target.value)}
                                                     min="0"
                                                 />
                                             </td>
                                             <td>
                                                 <input
                                                     type="text"
-                                                    value={child.comments}
-                                                    onChange={(e) => handleInputChange(index, 'comments', e.target.value)}
+                                                    value={child.comentario}
+                                                    onChange={(e) => handleInputChange(index, 'comentario', e.target.value)}
                                                     className="activity-input"
                                                 />
                                             </td>
