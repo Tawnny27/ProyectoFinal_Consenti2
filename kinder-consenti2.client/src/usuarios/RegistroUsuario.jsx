@@ -7,6 +7,7 @@ import Footer from '../componentes/footer';
 import './registro.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserShield, faIdCard, faPhone, faInfoCircle, faLock } from '@fortawesome/free-solid-svg-icons';
+import { ObtenerRolesRegistro, CrearUsuario } from '../apiClient';
 
 const RegistroUsuario = () => {
     const navigate = useNavigate();
@@ -32,65 +33,62 @@ const RegistroUsuario = () => {
         }));
     };
 
+    // RegistroUsuario.jsx
     useEffect(() => {
         const fetchRoles = async () => {
-            const response = await fetch('https://localhost:44369/api/Roles/ObtenerRoles');
-            const data = await response.json();
-            setRoles(data);
+            try {
+                const data = await ObtenerRolesRegistro();  // Ahora data es el array de roles
+                setRoles(data);  // Establecer el estado de roles con el array recibido
+            } catch (error) {
+                console.error("Error al cargar roles:", error);
+            }
         };
         fetchRoles();
     }, []);
 
+
     const manejarEnvio = async (e) => {
         e.preventDefault();
+        setError('');
+        setMensajeExito('');
+
         try {
-            setError('');
-            setMensajeExito('');
+            const response = await CrearUsuario(usuario);
 
-            const response = await axios.post('https://localhost:44369/api/Usuarios/CrearUsuario/', usuario);
-
-            if (response.data) {
+            if (response) {
                 setMensajeExito('Usuario registrado exitosamente.');
                 setTimeout(() => {
-                    if (usuario.rolId === "3") {
-                        navigate('/alumno-maintenance');
-                    } else {
-                        navigate('/user-maintenance');
-                    }
+                    navigate(usuario.rolId === "3" ? '/alumno-maintenance' : '/user-maintenance');
                 }, 2000);
             }
         } catch (error) {
             let mensajeError = 'Hubo un problema al registrar el usuario.';
 
             if (error.response) {
-                if (error.response.data && error.response.data.message) {
-                    mensajeError = error.response.data.message;
-                } else {
-                    switch (error.response.status) {
-                        case 400:
-                            mensajeError = error.response.data?.message || 'La Cedula o Correo Electronico ya se han registrado previamente. Por favor verifique los campos.';
-                            break;
-                        case 401:
-                            mensajeError = 'No autorizado. Por favor inicie sesión nuevamente.';
-                            break;
-                        case 409:
-                            mensajeError = 'El usuario ya existe en el sistema.';
-                            break;
-                        case 500:
-                            mensajeError = 'Error interno del servidor. Por favor intente más tarde.';
-                            break;
-                        default:
-                            mensajeError = `Error: ${error.response.status} - Por favor intente nuevamente.`;
-                    }
+                switch (error.response.status) {
+                    case 400:
+                        mensajeError = error.response.data?.message || 'La Cédula o Correo ya están registrados.';
+                        break;
+                    case 401:
+                        mensajeError = 'No autorizado. Inicie sesión nuevamente.';
+                        break;
+                    case 409:
+                        mensajeError = 'El usuario ya existe en el sistema.';
+                        break;
+                    case 500:
+                        mensajeError = 'Error interno del servidor.';
+                        break;
+                    default:
+                        mensajeError = `Error: ${error.response.status} - Intente nuevamente.`;
                 }
             } else if (error.request) {
-                mensajeError = 'No se pudo conectar con el servidor. Verifique su conexión a internet.';
+                mensajeError = 'No se pudo conectar con el servidor. Verifique su conexión.';
             }
 
-            console.error("Error al registrar usuario:", error);
             setError(mensajeError);
         }
     };
+
 
     return (
         <div className="usuario-maintenance-containerR">

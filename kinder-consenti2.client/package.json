@@ -12,16 +12,25 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "axios": "^1.7.9",
+    "bootstrap": "^5.3.3",
     "chat.js": "^1.0.2",
     "date-fns": "^4.1.0",
     "invariant": "^2.2.4",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "npm": "^11.1.0",
+    "primeicons": "^7.0.0",
+    "primereact": "^10.9.2",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
+    "react-data-table-component": "^7.6.2",
     "react-dom": "^18.3.1",
     "react-rating-stars-component": "^2.2.0",
     "react-router-dom": "^6.26.2",
-    "react-toastify": "^10.0.6"
+    "react-select": "^5.10.0",
+    "react-toastify": "^10.0.6",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

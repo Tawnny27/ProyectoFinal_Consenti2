@@ -6,6 +6,7 @@ import './Reportes.css';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import * as XLSX from 'xlsx'; // Importar la biblioteca xlsx
+import { ObtenerFacturas } from '../apiClient';
 
 // Registrar los componentes de Chart.js
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Tooltip, Legend);
@@ -14,17 +15,16 @@ const Reportes = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        // Obtener los datos del backend
+        // Función para obtener las facturas
         const fetchData = async () => {
             try {
-                const response = await axios.get(
-                    "https://localhost:44369/api/EncabezadoFactura/ObtenerFacturas"
-                );
-                setData(response.data);
+                const facturas = await ObtenerFacturas(); // Usamos la función de apiClient
+                setData(facturas.data); // Suponiendo que la respuesta contiene un campo `data` con las facturas
             } catch (error) {
-                console.error("Error al obtener los datos:", error);
+                console.error('Error al obtener las facturas:', error);
             }
         };
+
         fetchData();
     }, []);
 

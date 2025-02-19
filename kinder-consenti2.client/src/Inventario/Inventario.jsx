@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import { toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ObtenerInventario, ObtenerCategorias, CrearInventario, EditarInventario, EliminarInventario, CrearMovimiento, CrearCategoria } from '../apiClient';
 
 const Inventario = () => {
     const [searchText, setSearchText] = useState(''); // Estado para el texto de búsqueda
@@ -24,14 +25,14 @@ const Inventario = () => {
 
     const cargarDatos = async () => {
         try {
-            const inventarioResponse = await axios.get('https://localhost:44369/api/Inventario/ObtenerInventario');
-            setInventario(inventarioResponse.data);
-            setFilteredData(inventarioResponse.data);
+            const inventarioResponse = await ObtenerInventario();
+            setInventario(inventarioResponse.data); // Accedemos a los datos de la respuesta
+            setFilteredData(inventarioResponse.data); // Filtramos los datos si es necesario
 
-            const categoriasResponse = await axios.get('https://localhost:44369/api/Categoria/ObtenerCategorias');
-            setCategorias(categoriasResponse.data);
+            const categoriasResponse = await ObtenerCategorias();
+            setCategorias(categoriasResponse.data); // Actualizamos las categorías
         } catch (error) {
-            console.error('Error al cargar datos:', error);
+            console.error('Error al cargar los datos:', error);
         }
     };
 
@@ -71,12 +72,12 @@ const Inventario = () => {
     const manejarEnvioCrear = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('https://localhost:44369/api/Inventario/CrearInventario', nuevoInventario);
+            const response = await CrearInventario(nuevoInventario);
             if (response.data) {
                 toast.success('Inventario creado exitosamente!');
-                setInventario([...inventario, response.data]);
+                setInventario((prev) => [...prev, response.data]);
                 handleCloseModal();
-                cargarDatos();
+                cargarDatos(); // Recargamos los datos después de la creación
             }
         } catch (error) {
             toast.error(error.response?.data || 'Error al crear inventario.');
@@ -87,14 +88,12 @@ const Inventario = () => {
     const manejarEnvioEditar = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.put('https://localhost:44369/api/Inventario/EditarInventario', nuevoInventario);
+            const response = await EditarInventario(nuevoInventario);
             if (response.data) {
                 toast.success('Inventario editado correctamente!');
                 handleCloseModal();
-                cargarDatos();
-                
+                cargarDatos(); // Recargamos los datos después de la edición
             }
-
         } catch (error) {
             toast.error(error.response?.data || 'Error al editar inventario.');
             console.error('Error al editar inventario:', error);
@@ -131,7 +130,7 @@ const Inventario = () => {
 
     const confirmarEliminar = async (idInventario) => {
         try {
-            await axios.delete(`https://localhost:44369/api/Inventario/EliminarInventario/${idInventario}`);
+            await EliminarInventario(idInventario);
             setInventario((prev) => prev.filter((item) => item.idInventario !== idInventario));
             toast.success('Inventario eliminado correctamente!');
         } catch (error) {
@@ -239,7 +238,7 @@ const Inventario = () => {
     const manejarMovimiento = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('https://localhost:44369/api/MovimientoInventario/CrearMovimiento', {
+            const response = await CrearMovimiento({
                 fecha: new Date().toISOString().split('T')[0],
                 ...movimiento,
             });
@@ -273,19 +272,16 @@ const Inventario = () => {
     const manejarEnvioCategoria = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('https://localhost:44369/api/Categoria/CrearCategoria', {
-                nombreCategoria: nuevoCategoria.nombreCategoria,
-            });
+            const response = await CrearCategoria(nuevoCategoria);
             if (response.data) {
-                toast.success('Categoria creada exitosamente!');
+                toast.success('Categoría creada exitosamente!');
                 handleCloseModal();
-                // Recargar categorías
-                const categoriasResponse = await axios.get('https://localhost:44369/api/Categoria/ObtenerCategorias');
+                const categoriasResponse = await ObtenerCategorias();
                 setCategorias(categoriasResponse.data);
             }
         } catch (error) {
             console.error('Error al crear categoría:', error);
-            toast.error('Error al crear categoria.');
+            toast.error('Error al crear categoría.');
         }
     };
 
