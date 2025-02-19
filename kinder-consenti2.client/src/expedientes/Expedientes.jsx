@@ -10,6 +10,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ObtenerAlumnos } from '../apiClient';
 
 const Expedientes = () => {
     const [alumnos, setAlumnos] = useState([]);
@@ -21,7 +22,7 @@ const Expedientes = () => {
     useEffect(() => {
         const fetchAlumnos = async () => {
             try {
-                const response = await axios.get('https://localhost:44369/api/Alumnos/ObtenerAlumnos');
+                const response = await ObtenerAlumnos();
                 setAlumnos(response.data);
                 setLoading(false);
             } catch (error) {

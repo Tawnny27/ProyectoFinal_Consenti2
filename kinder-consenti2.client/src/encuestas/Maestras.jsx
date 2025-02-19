@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ReactStars from 'react-rating-stars-component'; // Importar la librería de estrellas*/
 import './encuestas.css';
+import { ObtenerUsuarios, CrearEvaluacionDocente } from '../apiClient';
 
 const MaestrasFeedback = () => {
     const [teachers, setTeachers] = useState([]);
@@ -19,7 +20,7 @@ const MaestrasFeedback = () => {
         const fetchTeachersAndAvatars = async () => {
             try {
                 // Obtener maestras de la API
-                const response = await axios.get('https://localhost:44369/api/Usuarios/ObtenerUsuarios');
+                const response = await ObtenerUsuarios();
                 const filteredTeachers = response.data.filter((user) => user.rolId === 2);
 
                 // Obtener avatares de la API
@@ -77,11 +78,7 @@ const MaestrasFeedback = () => {
             console.log('Datos enviados:', evaluacionDocente);
 
             // Enviar la evaluación docente al servidor
-            const response = await axios.post('https://localhost:44369/api/EvaluacionDocentes/CrearEvaluacionDocente', evaluacionDocente, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await CrearEvaluacionDocente(evaluacionDocente);
 
             // Verifica la respuesta del servidor
             console.log('Respuesta del servidor:', response.data);

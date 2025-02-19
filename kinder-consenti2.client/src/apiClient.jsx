@@ -40,12 +40,12 @@ export const ObtenerPadres = async () => {
         return ('Validar los datos:', error.response?.data);
     }
 };
-export const ObtenerUsuarios = async () => {
+export const ObtenerUsuarios = async (filters) => {
     try {
-        const response = await apiClient.get('api/ObtenerUsuarios');
-        return (response);
+        const response = await apiClient.get('api/ObtenerUsuarios', { params: filters });
+        return response;
     } catch (error) {
-        console.error('Error al cargar los datos :', error);
+        console.error('Error al cargar los datos:', error);
         return ('Validar los datos:', error.response?.data);
     }
 };
@@ -1453,3 +1453,35 @@ export const EliminarRol = async (Id) => {
     EliminarRol/{id}
 */
 //
+
+//********************************************Productos************************************************************
+export const ObtenerProductosfijos = async () => {
+    try {
+        const response = await apiClient.get('api/ObtenerProductosfijos');
+        return (response);
+    } catch (error) {
+        console.error('Error al cargar los datos :', error);
+        return ('Validar los datos:', error.response?.data);
+    }
+};
+
+export const ObtenerProductosMensuales = async () => {
+    try {
+        const response = await apiClient.get('api/ObtenerProductosMensuales');
+        return (response);
+    } catch (error) {
+        console.error('Error al cargar los datos :', error);
+        return ('Validar los datos:', error.response?.data);
+    }
+};
+
+
+export const ObtenerAlimentacion = async () => {
+    try {
+        const response = await apiClient.get('api/ObtenerAlimentacion');
+        return (response);
+    } catch (error) {
+        console.error('Error al cargar los datos :', error);
+        return ('Validar los datos:', error.response?.data);
+    }
+};

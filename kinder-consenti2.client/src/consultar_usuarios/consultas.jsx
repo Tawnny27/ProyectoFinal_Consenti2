@@ -10,7 +10,7 @@ import './UserMaintenance.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileExcel, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'; // Importa los iconos
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'; // Componente de ConfirmDialog
-
+import { ObtenerUsuarios, EliminarUsuario } from '../apiClient'; // Importar las funciones desde apiClient.js
 
 
 
@@ -48,34 +48,33 @@ const UserMaintenance = () => {
     */
 
     // Función para obtener los datos de los usuarios desde la API
+    
     const fetchUsers = async () => {
         try {
-            const response = await axios.get('https://localhost:44369/api/Usuarios/ObtenerUsuarios', { params: filters });
+            // Pasar los filtros a la función ObtenerUsuarios
+            const response = await ObtenerUsuarios(filters);
+
             if (response.status === 200) {
                 const usuariosData = response.data;
 
-                // Obtener el nombre del rol para cada usuario
-                const formattedUsers = await Promise.all(
-                    usuariosData.map(async (usuario) => {
-                        //const roleName = await fetchRoleName(usuario.rolId); // Llamar a la API para obtener el nombre del rol
-                        return {
-                            id: usuario.idUsuario,
-                            name: `${usuario.nombreUsuario} ${usuario.apellidosUsuario}`,
-                            idCard: usuario.cedulaUsuario,
-                            entryDate: usuario.fechaIngreso ? usuario.fechaIngreso.split('T')[0] : '2023-01-01', // Ajuste de formato de fecha
-                            role: usuario.rol.nombreRol || 'Desconocido', // Asignar el nombre del rol obtenido o "Desconocido"
-                            status: usuario.estado ? 'Activo' : 'Inactivo' // Mapeo del estado booleano
-                        };
-                    })
-                );
+                // Formatear la lista de usuarios
+                const formattedUsers = usuariosData.map((usuario) => ({
+                    id: usuario.idUsuario,
+                    name: `${usuario.nombreUsuario} ${usuario.apellidosUsuario}`,
+                    idCard: usuario.cedulaUsuario,
+                    entryDate: usuario.fechaIngreso ? usuario.fechaIngreso.split('T')[0] : '2023-01-01',
+                    role: usuario.rol?.nombreRol || 'Desconocido',
+                    status: usuario.estado ? 'Activo' : 'Inactivo',
+                }));
 
                 setUserList(formattedUsers);
-                setFilteredUsers(formattedUsers); // Inicializar lista filtrada
+                setFilteredUsers(formattedUsers);
             }
         } catch (error) {
             console.error('Error al obtener los usuarios:', error);
         }
     };
+
 
     useEffect(() => {
         fetchUsers();
@@ -146,7 +145,7 @@ const UserMaintenance = () => {
                 rejectClassName: 'custom-reject-button', // Clase para el botón de rechazar
                 accept: async () => {
                     try {
-                        await axios.delete(`https://localhost:44369/api/Usuarios/EliminarUsuario/${userId}`);
+                        await EliminarUsuario (userId);
                         setUserList(userList.filter((user) => user.id !== userId));
                         setFilteredUsers(filteredUsers.filter((user) => user.id !== userId));
                     } catch (error) {

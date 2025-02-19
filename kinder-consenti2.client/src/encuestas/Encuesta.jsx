@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
+import { CrearEvaluacionKinder } from '../apiClient';
 
 const Encuesta = () => {
     const [formData, setFormData] = useState({
@@ -64,11 +65,7 @@ const Encuesta = () => {
         };
 
         try {
-            const response = await axios.post('https://localhost:44369/api/EvaluacionKinders/CrearEvaluacionKinder', dataToSend, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await CrearEvaluacionKinder(dataToSend);
             if (response.status === 200) {
                 setMessage('Ya has enviado la encuesta este año. Podrás enviar una nueva después de un año.');
                 setIsFormDisabled(true);
@@ -81,7 +78,7 @@ const Encuesta = () => {
                     navigate('/main');
                 }, 2000); // Esperar 2 segundos antes de redirigir
             } else {
-                toast.error('Hubo un error al enviar la encuesta. Intenta nuevamente.');
+                toast.error('Hubo un error al enviar la encuesta. Intenta nuevamente. ', response );
             }
         } catch (error) {
             console.error('Error al enviar la encuesta:', error);

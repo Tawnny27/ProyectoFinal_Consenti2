@@ -8,6 +8,7 @@ import { useUserContext } from '../UserContext';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import Sidebar from "../componentes/Sidebar";
+import { BuscarUsuarios, ObtenerUsuarios, ObtenerProductosfijos, ObtenerProductosMensuales, CrearMatricula, } from '../apiClient'; // Importar las funciones desde apiClient.js
 
 const Matricula = () => {
     const navigate = useNavigate();
@@ -81,13 +82,13 @@ const Matricula = () => {
                         }));
 
                         // Llamada para obtener los datos del usuario con el idUsuario del padre
-                        const usuarioResponse = await fetch(`https://localhost:44369/api/Usuarios/BuscarUsuarios/${user.idUsuario}`);
+                        const usuarioResponse = await BuscarUsuarios(user.idUsuario);
 
-                        if (!usuarioResponse.ok) {
+                        if (usuarioResponse.status !=200) {
                             throw new Error('No se pudo obtener los datos del usuario');
                         }
 
-                        const usuarioData = await usuarioResponse.json();
+                        const usuarioData = usuarioResponse.data;
 
                         // Verificar si la respuesta de la API contiene los niños
                         if (usuarioData && usuarioData.alumnos && usuarioData.alumnos.length > 0) {
@@ -104,16 +105,16 @@ const Matricula = () => {
                             (usuario) => usuario.id === user.idUsuario
                         );
 
-                        // Si el usuario se encuentra, cargar los datos de los alumnos
-                        if (usuarioEncontrado) {
-                            if (usuarioEncontrado.idUsuario === user.idUsuario) {
-                                const alumnosResponse = await fetch(`https://localhost:44369/api/alumnos/${user.idUsuario}`);
-                                const alumnos = await alumnosResponse.json();
-                                setChildrenList(alumnos || []);
-                            } else {
-                                setChildrenList([]);
-                            }
-                        }
+                        //// Si el usuario se encuentra, cargar los datos de los alumnos
+                        //if (usuarioEncontrado) {
+                        //    if (usuarioEncontrado.idUsuario === user.idUsuario) {
+                        //        const alumnosResponse = await fetch(`https://localhost:44369/api/alumnos/${user.idUsuario}`);
+                        //        const alumnos = await alumnosResponse.json();
+                        //        setChildrenList(alumnos || []);
+                        //    } else {
+                        //        setChildrenList([]);
+                        //    }
+                        //}
                     }
                 } catch (error) {
                     console.error('Error al cargar los datos del usuario:', error);
@@ -128,7 +129,7 @@ const Matricula = () => {
 
     const fetchUsers = async () => {
         try {
-            const { data } = await axios.get('https://localhost:44369/api/Usuarios/ObtenerUsuarios');
+            const { data } = await ObtenerUsuarios ();
             const formattedUsers = data
                 .filter((usuario) => usuario.rolId === 3)
                 .map((usuario) => ({
@@ -200,8 +201,8 @@ const Matricula = () => {
     useEffect(() => {
         const obtenerProductos = async () => {
             try {
-                const responseFijos = await axios.get('https://localhost:44369/api/ObtenerProductosfijos');
-                const responseMensuales = await axios.get('https://localhost:44369/api/ObtenerProductosMensuales');
+                const responseFijos = await ObtenerProductosfijos();
+                const responseMensuales = await ObtenerProductosMensuales();
 
                 setProductosFijos(responseFijos.data);
                 setProductosMensuales(responseMensuales.data);
@@ -278,13 +279,28 @@ const Matricula = () => {
         return true;
     };
 
-    const handleImageChange = (e) => {
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
+
+    const base64Image = async (file) => {
+        const base64 = await convertToBase64(file);
+        return base64;
+    }
+
+    const handleImageChange = async (e) => {
         const file = e.target.files[0];
         setImageError('');
 
         try {
             if (validateImage(file)) {
                 setSelectedFile(file);
+                const base64 = await base64Image(file);
                 // Crear URL temporal para vista previa
                 const previewURL = URL.createObjectURL(file);
                 setPreviewUrl(previewURL);
@@ -368,16 +384,7 @@ const Matricula = () => {
             console.log('Enviando datos de matrícula:', JSON.stringify(dataToSend, null, 2));
 
             // Intentamos crear la matrícula primero
-            const matriculaResponse = await axios.post(
-                'https://localhost:44369/api/EncabezadoFactura/CrearMatricula',
-                dataToSend,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                }
-            );
+            const matriculaResponse = await CrearMatricula(dataToSend);
 
             if (matriculaResponse.data) {
                 console.log('Matrícula registrada exitosamente:', matriculaResponse.data);

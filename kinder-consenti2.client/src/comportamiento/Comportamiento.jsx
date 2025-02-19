@@ -9,6 +9,7 @@ import { useUserContext } from '../UserContext';
 import * as XLSX from 'xlsx';
 import '../monitoreo/monitoreo.css';
 import './comportamiento.css';
+import { ObtenerAlumnos, BuscarActividadBannos, BuscarActividadComidas, BuscarActividadHuertas, BuscarActividadDormirs } from '../apiClient';
 
 const ComportamientoAlumno = () => {
     const [alumnos, setAlumnos] = useState([]);
@@ -28,7 +29,7 @@ const ComportamientoAlumno = () => {
     useEffect(() => {
         const fetchAlumnos = async () => {
             try {
-                const response = await axios.get('https://localhost:44369/api/Alumnos/ObtenerAlumnos');
+                const response = await ObtenerAlumnos();
                 setAlumnos(response.data);
                 setLoading(false);
             } catch (error) {
@@ -60,10 +61,10 @@ const ComportamientoAlumno = () => {
 
     const fetchComentarios = async (idAlumno) => {
         try {
-            const responseBanno = await axios.get(`https://localhost:44369/api/ActividadBanno/BuscarActividadBannos/${idAlumno}`);
-            const responseComidas = await axios.get(`https://localhost:44369/api/ActividadComidas/BuscarActividadComidas/${idAlumno}`);
-            const responseDormir = await axios.get(`https://localhost:44369/api/ActividadDormir/BuscarActividadDormirs/${idAlumno}`);
-            const responseHuerta = await axios.get(`https://localhost:44369/api/ActividadHuerta/BuscarActividadHuertas/${idAlumno}`);
+            const responseBanno = await BuscarActividadBannos(idAlumno);
+            const responseComidas = await BuscarActividadComidas(idAlumno);
+            const responseDormir = await BuscarActividadDormirs(idAlumno);
+            const responseHuerta = await BuscarActividadHuertas(idAlumno);
 
             setComentariosBanno(responseBanno.data);
             setComentariosComidas(responseComidas.data);

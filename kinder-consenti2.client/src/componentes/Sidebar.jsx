@@ -130,11 +130,10 @@ function Sidebar() {
                     </li>
                 )}
 
-                { /*-----------------------------------------------------------------------------------*/}
-                {/*<li>                   */}
-                {/*    <Link to="/comportamiento">*/}
-                {/*        <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Comportamiento</Link>*/}
-                {/*</li>*/}                
+                <li>                   
+                    <Link to="/comportamiento">
+                        <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Comportamiento</Link>
+                </li>              
 
                 <li className="menu-link">
                     <Link to="/matricula">
