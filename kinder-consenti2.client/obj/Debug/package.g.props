@@ -11,16 +11,25 @@
     <PackageJsonScriptsPreview Condition="$(PackageJsonScriptsPreview) == ''">vite preview</PackageJsonScriptsPreview>
     <PackageJsonDependenciesFortawesomeFreeSolidSvgIcons Condition="$(PackageJsonDependenciesFortawesomeFreeSolidSvgIcons) == ''">^6.6.0</PackageJsonDependenciesFortawesomeFreeSolidSvgIcons>
     <PackageJsonDependenciesFortawesomeReactFontawesome Condition="$(PackageJsonDependenciesFortawesomeReactFontawesome) == ''">^0.2.2</PackageJsonDependenciesFortawesomeReactFontawesome>
+    <PackageJsonDependenciesAxios Condition="$(PackageJsonDependenciesAxios) == ''">^1.7.9</PackageJsonDependenciesAxios>
+    <PackageJsonDependenciesBootstrap Condition="$(PackageJsonDependenciesBootstrap) == ''">^5.3.3</PackageJsonDependenciesBootstrap>
     <PackageJsonDependenciesChatJs Condition="$(PackageJsonDependenciesChatJs) == ''">^1.0.2</PackageJsonDependenciesChatJs>
     <PackageJsonDependenciesDateFns Condition="$(PackageJsonDependenciesDateFns) == ''">^4.1.0</PackageJsonDependenciesDateFns>
     <PackageJsonDependenciesInvariant Condition="$(PackageJsonDependenciesInvariant) == ''">^2.2.4</PackageJsonDependenciesInvariant>
+    <PackageJsonDependenciesJspdf Condition="$(PackageJsonDependenciesJspdf) == ''">^2.5.2</PackageJsonDependenciesJspdf>
+    <PackageJsonDependenciesJspdfAutotable Condition="$(PackageJsonDependenciesJspdfAutotable) == ''">^3.8.4</PackageJsonDependenciesJspdfAutotable>
     <PackageJsonDependenciesNpm Condition="$(PackageJsonDependenciesNpm) == ''">^11.1.0</PackageJsonDependenciesNpm>
+    <PackageJsonDependenciesPrimeicons Condition="$(PackageJsonDependenciesPrimeicons) == ''">^7.0.0</PackageJsonDependenciesPrimeicons>
+    <PackageJsonDependenciesPrimereact Condition="$(PackageJsonDependenciesPrimereact) == ''">^10.9.2</PackageJsonDependenciesPrimereact>
     <PackageJsonDependenciesReact Condition="$(PackageJsonDependenciesReact) == ''">^18.3.1</PackageJsonDependenciesReact>
     <PackageJsonDependenciesReactChartjs2 Condition="$(PackageJsonDependenciesReactChartjs2) == ''">^5.2.0</PackageJsonDependenciesReactChartjs2>
+    <PackageJsonDependenciesReactDataTableComponent Condition="$(PackageJsonDependenciesReactDataTableComponent) == ''">^7.6.2</PackageJsonDependenciesReactDataTableComponent>
     <PackageJsonDependenciesReactDom Condition="$(PackageJsonDependenciesReactDom) == ''">^18.3.1</PackageJsonDependenciesReactDom>
     <PackageJsonDependenciesReactRatingStarsComponent Condition="$(PackageJsonDependenciesReactRatingStarsComponent) == ''">^2.2.0</PackageJsonDependenciesReactRatingStarsComponent>
     <PackageJsonDependenciesReactRouterDom Condition="$(PackageJsonDependenciesReactRouterDom) == ''">^6.26.2</PackageJsonDependenciesReactRouterDom>
+    <PackageJsonDependenciesReactSelect Condition="$(PackageJsonDependenciesReactSelect) == ''">^5.10.0</PackageJsonDependenciesReactSelect>
     <PackageJsonDependenciesReactToastify Condition="$(PackageJsonDependenciesReactToastify) == ''">^10.0.6</PackageJsonDependenciesReactToastify>
+    <PackageJsonDependenciesXlsx Condition="$(PackageJsonDependenciesXlsx) == ''">^0.18.5</PackageJsonDependenciesXlsx>
     <PackageJsonDevdependenciesEslintJs Condition="$(PackageJsonDevdependenciesEslintJs) == ''">^9.9.0</PackageJsonDevdependenciesEslintJs>
     <PackageJsonDevdependenciesTypesReact Condition="$(PackageJsonDevdependenciesTypesReact) == ''">^18.3.3</PackageJsonDevdependenciesTypesReact>
     <PackageJsonDevdependenciesTypesReactDom Condition="$(PackageJsonDevdependenciesTypesReactDom) == ''">^18.3.0</PackageJsonDevdependenciesTypesReactDom>

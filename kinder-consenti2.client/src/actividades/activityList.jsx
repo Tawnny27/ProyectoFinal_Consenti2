@@ -4,7 +4,7 @@ import Navbar from "../componentes/navbar";
 import Footer from "../componentes/footer";
 import Sidebar from "../componentes/Sidebar";
 import "./activityList.css";
-import { CrearEvento, GuardarImagenEvento, ObtenerEventosActivos} from '../apiClient'; // Importar las funciones desde apiClient.js
+import { CrearEvento, ObtenerEventosActivos} from '../apiClient'; // Importar las funciones desde apiClient.js
 import 'react-toastify/dist/ReactToastify.css';
 import { useUserContext } from '../UserContext'; // Importar el hook del contexto
 
@@ -29,19 +29,9 @@ const ListaActividades = () => {
     const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png'];
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
-    const [hover, setHover] = useState(false);
-    const [nombreUnico, setNombreUnico] = useState('default.jpg');
+    const [hover, setHover] = useState(false);   
     const [selectedFile, setSelectedFile] = useState(null);
-    const IMAGE_PATH = '/FotosEventos/';
 
-
-    /*
-    const envioEvento = {
-        nombreEvento: title,
-        descripcionEvento: description,
-        fotoEvento: IMAGE_PATH + nombreUnico,
-        fecha: date,
-    }*/
 
     const envioEvento = {
         nombreEvento: title,
@@ -49,8 +39,6 @@ const ListaActividades = () => {
         fotoEvento: image,
         fecha: date,
     }
-
-
 
     const agregarEvento = async () => {
         console.log(envioEvento);   

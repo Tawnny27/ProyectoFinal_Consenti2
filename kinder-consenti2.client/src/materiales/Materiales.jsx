@@ -62,13 +62,7 @@ const MaterialesDidacticos = () => {
 
     const cargarMateriales = async () => {
         if (user.rolId === 3) {
-
-            try {
-                /* const response1 = await axios.get(`https://localhost:44369/api/MaterialDidacticoes/ObtenerMaterialesDidacticosPadre/${user.idUsuario}`);
-                if (response1.status === 200) {
-                    setMateriales(response1.data);
-                    setIsLoading(false);
-                }*/
+            try {              
                 const response1 = await ObtenerMaterialesDidacticosPadre(user.idUsuario);
                 if (response1.status === 200) {
                     setMateriales(response1.data);
@@ -81,14 +75,8 @@ const MaterialesDidacticos = () => {
                 setMensaje("No se pudieron cargar los materiales.");
                 setIsLoading(false);
             }
-
         } else {
-            try {
-                /*const response = await axios.get("https://localhost:44369/api/MaterialDidacticoes/ObtenerMaterialesDidacticosAct");
-                console.log("Materiales cargados:", response.data);
-                setMateriales(response.data);
-                setIsLoading(false);*/
-
+            try {    
                 const response = await ObtenerMaterialesDidacticosAct();
                 if (response.status == 200) {
                     setMateriales(response.data);
@@ -106,9 +94,7 @@ const MaterialesDidacticos = () => {
     };
 
     const cargarAulas = async () => {
-        try {
-            /*const response = await axios.get("https://localhost:44369/api/Grupos/ObtenerGrupos");
-            setAulas(response.data);*/
+        try {           
             const response = await ObtenerGrupos();
             if (response.status == 200) {
                 setAulas(response.data);

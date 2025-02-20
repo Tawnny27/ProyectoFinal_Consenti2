@@ -772,7 +772,7 @@ export const EditarExpediente = async (expediente) => {
 //********************************************FotosAlumno************************************************
 export const ObtenerFotosAlumnos = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerFotosAlumno');
+        const response = await apiClient.get('api/ObtenerFotosAlumnos');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1496,6 +1496,9 @@ export const ObtenerAlimentacion = async () => {
     }
 };
 //
+
+
+
 
 //ALUMNOS
 export const GuardarImagenPerfilAlumno = async (file, fileName) => {

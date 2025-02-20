@@ -50,7 +50,7 @@ const Matricula = () => {
     const [imageError, setImageError] = useState('');
     const fileInputRef = useState(null);
 
-    const IMAGE_PATH = '/FotosPagos/';
+    //const IMAGE_PATH = '/FotosPagos/';
     const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -61,7 +61,7 @@ const Matricula = () => {
     const [productosFijos, setProductosFijos] = useState([]);
     const [productosMensuales, setProductosMensuales] = useState([]);
     const [selectedProductos, setSelectedProductos] = useState([]);
-
+    const [imagePath, setImagePath] = useState('');
 
     useEffect(() => {
         const cargarDatosUsuario = async () => {
@@ -78,7 +78,6 @@ const Matricula = () => {
                             parentID: user.cedulaUsuario,
                             phone: user.telefonoUsuario || '',
                             address: user.direccionUsuario || '',
-
                         }));
 
                         // Llamada para obtener los datos del usuario con el idUsuario del padre
@@ -87,7 +86,6 @@ const Matricula = () => {
                         if (usuarioResponse.status !=200) {
                             throw new Error('No se pudo obtener los datos del usuario');
                         }
-
                         const usuarioData = usuarioResponse.data;
 
                         // Verificar si la respuesta de la API contiene los niños
@@ -100,7 +98,6 @@ const Matricula = () => {
                     // Si el rol es 1 (Administrador), usar los usuarios de la API
                     else if (user.rolId === 1) {
                         await fetchUsers();
-
                         const usuarioEncontrado = userList.find(
                             (usuario) => usuario.id === user.idUsuario
                         );
@@ -185,10 +182,11 @@ const Matricula = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    /*
     const handleFileChange = (e) => {
         setFormData((prev) => ({ ...prev, proofOfPayment: e.target.files[0] }));
     };
-
+    */
     const handleChildSelection = (childId) => {
         setFormData((prev) => ({
             ...prev,
@@ -272,6 +270,8 @@ const Matricula = () => {
         }
     };
 
+    //--------------------------------------------------------------------------------------------------------------------
+
     const validateImage = (file) => {
         if (!file) throw new Error('Por favor seleccione un archivo válido.');
         if (!ALLOWED_FILE_TYPES.includes(file.type)) throw new Error('Formato no permitido. Use JPG, PNG o PDF.');
@@ -296,11 +296,11 @@ const Matricula = () => {
     const handleImageChange = async (e) => {
         const file = e.target.files[0];
         setImageError('');
-
         try {
             if (validateImage(file)) {
                 setSelectedFile(file);
                 const base64 = await base64Image(file);
+                setImagePath(base64);
                 // Crear URL temporal para vista previa
                 const previewURL = URL.createObjectURL(file);
                 setPreviewUrl(previewURL);
@@ -313,10 +313,12 @@ const Matricula = () => {
         }
     };
 
+    /*
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
+    */
 
     //Envia datos
     const handleSubmit = async (e) => {
@@ -352,18 +354,6 @@ const Matricula = () => {
             };
         });
 
-        // Generar nombre único para la imagen de comprobante
-        let imagePath = formData.paymentMethod === 'Efectivo' ? 'Pago en Efectivo' : '';
-        let uniqueFileName = '';
-
-        if (selectedFile) {
-            // Generar nombre único para la imagen
-            const fileExtension = selectedFile.name.split('.').pop();
-            const formattedDate = new Date().toISOString().split('T')[0]; // Formato "YYYY-MM-DD"
-            uniqueFileName = `${formattedDate}_${formData.parentFullName}.${fileExtension}`;
-            imagePath = `${IMAGE_PATH}${uniqueFileName}`;
-        }
-
         const dataToSend = {
             ...(user.rolId === 3 && { clienteId: user.idUsuario, rollId: user.rolId }),
             ...(user.rolId === 1 && { clienteId: userDetails.idPadre, rollId: userDetails.idRol }),
@@ -391,6 +381,8 @@ const Matricula = () => {
                 if (user.rolId === 3) { toast.info('Matrícula enviada para validación de pago') }
 
                 // Si el método de pago no es "Efectivo" y se ha seleccionado un archivo, proceder a enviarlo al servidor
+
+                /*
                 if (formData.paymentMethod !== 'Efectivo' && selectedFile) {
                     console.log('Subiendo imagen de pago...');
                     const imageFormData = new FormData();
@@ -419,6 +411,7 @@ const Matricula = () => {
                         setError('Error al subir la imagen de pago');
                     }
                 }
+                */
 
                 if (user.rolId === 1) {
                     toast.success('¡Matrícula registrada y pago procesado con éxito!', {
@@ -526,8 +519,7 @@ const Matricula = () => {
                                                 <div className="payment-section">
                                                     <PaymentSection
                                                         formData={formData}
-                                                        handleChange={handleChange}
-                                                        handleFileChange={handleFileChange}
+                                                        handleChange={handleChange}                                                        
                                                         handleImageChange={handleImageChange}
                                                         userRole={user.rolId}
                                                     />
@@ -666,11 +658,11 @@ const PaymentSection = ({ formData, handleChange, handleImageChange, userRole })
             <input
                 type="radio"
                 name="paymentMethod"
-                value="SINPE"
-                checked={formData.paymentMethod === 'SINPE'}
+                value="SINPE MOVIL"
+                checked={formData.paymentMethod === 'SINPE MOVIL'}
                 onChange={handleChange}
             />
-            SINPE
+            SINPE MOVIL
         </label>
         <label>
             <input
@@ -690,6 +682,8 @@ const PaymentSection = ({ formData, handleChange, handleImageChange, userRole })
                     accept=".jpg,.jpeg,.png,.pdf"
                     onChange={handleImageChange}
                     required />
+
+
 
             </div>
         )}
