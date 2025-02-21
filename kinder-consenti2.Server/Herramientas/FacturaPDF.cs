@@ -15,8 +15,8 @@ namespace kinder_consenti2.Server.Herramientas
     public class FacturaPDF
     {
         private readonly string _logo = Path.Combine(
-            Directory.GetCurrentDirectory(), "..", // Subir un nivel desde la carpeta actual - raiz del proyecto
-            "kinder-consenti2.client", "src", "assets","logo.png" 
+            Directory.GetCurrentDirectory(),
+            "Herramientas", "Imagenes","logo.png" 
         );
 
         public Document CrearFactura(EncabezadoFactura factura)

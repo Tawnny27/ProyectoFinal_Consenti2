@@ -72,12 +72,12 @@ namespace kinder_consenti2.Server.Controllers
 
                             // Envio de factura                         
                             var datosCorreo = await _context.SetingCorreo.FirstOrDefaultAsync();
-                            _correoEnvio.EnviarCorreoPDF(587,
+                            var envio = await _correoEnvio.EnviarCorreoPDF(587,
                                                    datosCorreo.CorreoOrigen,
                                                    datosCorreo.ContrasennaOrigen,
                                                    datosCorreo.smtpClient,
                                                    factura.IdFactura);
-                            return Ok("Factura finalizada y enviada");
+                            return Ok("Factura finalizada y enviada, "+envio);
 
                         }
                         else
@@ -236,12 +236,12 @@ namespace kinder_consenti2.Server.Controllers
                     {
 
                         var datosCorreo = await _context.SetingCorreo.FirstOrDefaultAsync();
-                        _correoEnvio.EnviarCorreoPDF(587,
+                        var envio = await _correoEnvio.EnviarCorreoPDF(587,
                                                datosCorreo.CorreoOrigen,
                                                datosCorreo.ContrasennaOrigen,
                                                datosCorreo.smtpClient,
                                                insertada.IdFactura);
-                        return Ok("Matricula Efectuada y factura enviada");
+                        return Ok("Matricula Efectuada y factura enviada. "+envio);
                     }
 
                     return Ok("Matricula enviada para validacio del pago");
@@ -329,12 +329,12 @@ namespace kinder_consenti2.Server.Controllers
                     {
                         // Envio de factura                 
                         var datosCorreo = await _context.SetingCorreo.FirstOrDefaultAsync();
-                        _correoEnvio.EnviarCorreoPDF(587,
+                        var envio = await _correoEnvio.EnviarCorreoPDF(587,
                                                datosCorreo.CorreoOrigen,
                                                datosCorreo.ContrasennaOrigen,
                                                datosCorreo.smtpClient,
                                                factura.IdFactura);
-                        return Ok("Factura finalizada y enviada");
+                        return Ok("Factura finalizada y enviada, "+envio);
                     }
                     return Ok("Pago enviado para validacio del pago");
                 }

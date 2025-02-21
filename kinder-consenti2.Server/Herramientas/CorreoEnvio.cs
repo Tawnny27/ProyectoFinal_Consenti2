@@ -1,4 +1,5 @@
 ﻿using kinder_consenti2.Server.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using System.IO;
@@ -17,7 +18,7 @@ namespace kinder_consenti2.Server.Herramientas
             _context = context;
         }
 
-        public void EnviarCorreo( int puerto, string Origen, string contraseña,string destino, string clientesmtp, string asunto, string mensaje, string contemp ) 
+        public async void EnviarCorreo( int puerto, string Origen, string contraseña,string destino, string clientesmtp, string asunto, string mensaje, string contemp ) 
         {
             MailMessage mailMessage = new MailMessage(Origen, destino, asunto, "<p>"+mensaje+"</p>"+ "<p> Contreseña temporal: " + contemp + "</p>");
             mailMessage.IsBodyHtml = true;
@@ -30,12 +31,12 @@ namespace kinder_consenti2.Server.Herramientas
             smtpClient.Dispose();
 
         }
-        public void EnviarCorreoPDF(int puerto, string Origen, string contraseña, string clientesmtp, int idFactura)
+        public async Task<string> EnviarCorreoPDF(int puerto, string Origen, string contraseña, string clientesmtp, int idFactura)
         {
 
-            var factura = _context.EncabezadoFactura.Include(x => x.DetalleFacturas).ThenInclude(df => df.Producto)
+            var factura = await _context.EncabezadoFactura.Include(x => x.DetalleFacturas).ThenInclude(df => df.Producto)
                         .Include(x => x.DetalleFacturas).ThenInclude(df => df.Alumno)
-                        .Include(x => x.Usuario).FirstOrDefault(x => x.IdFactura == idFactura);
+                        .Include(x => x.Usuario).FirstOrDefaultAsync(x => x.IdFactura == idFactura);
             //-------------------------------------------------------
             string numFactura = factura.IdFactura.ToString();
             string numFinal = "0";
@@ -75,6 +76,8 @@ namespace kinder_consenti2.Server.Herramientas
             smtpClient.Credentials = new System.Net.NetworkCredential(Origen, contraseña);
             smtpClient.Send(mailMessage);
             smtpClient.Dispose();
+            return ("Correo enviado");
         }
+        
     }
 }
