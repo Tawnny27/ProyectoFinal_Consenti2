@@ -15,6 +15,20 @@
     text-align:initial
 }
 
+.contenedor {
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    width: 70vw;
+    height: 80%;
+    overflow-y: scroll;
+}
+
+.add-container {
+    display: flex;  
+    margin-bottom:20px;
+    justify-content: center;
+}
 
 .act-card {
     position: relative;

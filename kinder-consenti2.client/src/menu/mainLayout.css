@@ -76,6 +76,7 @@ body {
 
 .sidebar {
     width: 275px;
+    height: 100vh;
     background-color: #A569BD;
     color: white;
     padding: 20px;
@@ -193,7 +194,7 @@ body {
 
 .main-content {
     flex-grow: 1;
-    padding: 40px;
+    padding: 20px;
     background: url('../assets/background.jpg') no-repeat center center fixed;
     background-size: cover;
     display: flex;

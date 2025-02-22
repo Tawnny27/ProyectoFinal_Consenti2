@@ -167,14 +167,19 @@ const ListaActividades = () => {
             <div className="content-container">
                 <Sidebar />
                 <main className="main-content">
+
                 <div className="act-container">
-                    <h1 className="act-header"> Lista de Actividades</h1>
-                    <div className="cards-container">
-                        {user.rolId != 3 && (
-                            <button onClick={() => setModalVisible(true)} className="button-agregar">
-                                Agregar Actividad
-                            </button>
-                        )}
+                        <h1 className="act-header"> Lista de Actividades</h1>
+                        <div className="add-container">
+                            {user.rolId != 3 && (
+                                <button onClick={() => setModalVisible(true)} className="button-agregar">
+                                    Agregar Actividad
+                                </button>
+                            )}
+                        </div>
+                        <div className="contenedor">
+                            
+                    <div className="cards-container">                        
                         {listaAct.map((act) => (
                             <div key={act.idEventos} className="act-card">
                                 <h4>{act.nombreEvento}</h4>
@@ -193,6 +198,7 @@ const ListaActividades = () => {
                             </div>
                         ))
                         }
+                            </div>
                     </div>
 
                     {modalVisible && (

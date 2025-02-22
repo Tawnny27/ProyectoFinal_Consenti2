@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useUserContext } from '../UserContext';
 import {
     ObtenerMaterialesDidacticosPadre, ObtenerMaterialesDidacticosAct, ObtenerGrupos,
-    InactivarMaterialDidactico, CrearMaterialDidactico, GuardarMaterialDidacticoPdf
+    InactivarMaterialDidactico, CrearMaterialDidactico,
 } from '../apiClient'; // Importar las funciones desde apiClient.js
 
 const MaterialesDidacticos = () => {
@@ -16,6 +16,7 @@ const MaterialesDidacticos = () => {
     const [materiales, setMateriales] = useState([]);
     const [idGrupoSeleccionado, setIdGrupoSeleccionado] = useState("");
     const [mensaje, setMensaje] = useState("");
+    const [imagePath, setImagePath] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [nuevoMaterial, setNuevoMaterial] = useState({
         nombreArchivo: "",  // Corresponde a 'NombreArchivo' en el modelo C#
@@ -40,8 +41,7 @@ const MaterialesDidacticos = () => {
         'image/jpeg',
         'image/png'
     ];
-    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-    const IMAGE_PATH = '/FotosMaterial/';
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB   
 
     const validateImage = (file) => {
         console.log("Validando archivo:", file);
@@ -62,7 +62,7 @@ const MaterialesDidacticos = () => {
 
     const cargarMateriales = async () => {
         if (user.rolId === 3) {
-            try {              
+            try {
                 const response1 = await ObtenerMaterialesDidacticosPadre(user.idUsuario);
                 if (response1.status === 200) {
                     setMateriales(response1.data);
@@ -76,7 +76,7 @@ const MaterialesDidacticos = () => {
                 setIsLoading(false);
             }
         } else {
-            try {    
+            try {
                 const response = await ObtenerMaterialesDidacticosAct();
                 if (response.status == 200) {
                     setMateriales(response.data);
@@ -94,13 +94,13 @@ const MaterialesDidacticos = () => {
     };
 
     const cargarAulas = async () => {
-        try {           
+        try {
             const response = await ObtenerGrupos();
             if (response.status == 200) {
                 setAulas(response.data);
             } else {
                 setMensaje(response);
-            }           
+            }
         } catch (error) {
             console.error("Error al cargar las aulas:", error);
             setMensaje("No se pudieron cargar las aulas.");
@@ -113,65 +113,43 @@ const MaterialesDidacticos = () => {
         cargarAulas();
     }, []);
 
-    // Guardar material en el localStorage
-    const guardarMaterialEnStorage = (material) => {
-        if (material && material.documento && material.nombreArchivo) {
-            // Usar URL.createObjectURL para generar una URL temporal del archivo
-            const archivoURL = URL.createObjectURL(material.documento);
-            // Guardar en localStorage como un objeto JSON
-            const materialConArchivo = {
-                ...material,
-                documentoURL: archivoURL // Agregar la URL del archivo
-            };
-            localStorage.setItem('material', JSON.stringify(materialConArchivo)); // Guardar en localStorage
-        } else {
-            console.error('El material es inválido');
-        }
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setNuevoMaterial((prevState) => ({
-            ...prevState,
-            [name === "nombre" ? "nombreArchivo" : name]: value, // Mapeo personalizado
-        }));
-    };
+    const base64Image = async (file) => {
+        const base64 = await convertToBase64(file);
+        return base64;
+    }
 
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         const file = e.target.files[0];
         setImageError('');
-        console.log("Archivo seleccionado:", file);
-
         try {
             if (validateImage(file)) {
                 setSelectedFile(file);
-                setNuevoMaterial((prevState) => ({
-                    ...prevState,
-                    documento: file, // Asignar el archivo a nuevoMaterial
-                }));
+                const base64 = await base64Image(file);
+                // Crear URL temporal para vista previa
                 const previewURL = URL.createObjectURL(file);
                 setPreviewUrl(previewURL);
-                console.log("Vista previa de la imagen:", previewURL);
-
-                // Guardar el material en localStorage
-                guardarMaterialEnStorage({
-                    ...nuevoMaterial,
-                    documento: file,
-                    nombreArchivo: nuevoMaterial.nombreArchivo, // Asegúrate de tener el nombre del archivo
-                });
+                setImagePath(base64);
             }
         } catch (error) {
             setImageError(error.message);
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
+            setImagePath('');
             console.error("Error de validación de imagen:", error);
         }
     };
     const handleDelete = async (materialId) => {
         try {
-            // Llamar a la API para eliminar el material usando el idMaterialDidactico
-            //const response = await axios.put(`https://localhost:44369/api/MaterialDidacticoes/InactivarMaterialDidactico/${materialId}`);
             const response = await InactivarMaterialDidactico(materialId);
             if (response.status === 200) {
                 cargarMateriales();
@@ -191,17 +169,7 @@ const MaterialesDidacticos = () => {
 
     const agregarMaterial = async (e) => {
         e.preventDefault();
-
-        console.log("grupo selecionado", idGrupoSeleccionado); // Esto te muestra el ID del grupo/aula seleccionado.
-
-        let imagePath = 'default.jpg';
-        let uniqueFileName = '';
-
-        if (selectedFile) {
-            const fileExtension = selectedFile.name.split('.').pop();
-            uniqueFileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`;
-            imagePath = `${IMAGE_PATH}${uniqueFileName}`;
-        }
+        console.log("grupo selecionado", idGrupoSeleccionado); // Esto te muestra el ID del grupo/aula seleccionado.  
 
         if (!idGrupoSeleccionado) {
             toast.error("Debe seleccionar un aula.");
@@ -219,8 +187,6 @@ const MaterialesDidacticos = () => {
 
             );
 
-            // console.log("Grupo seleccionado:", grupoSeleccionado);
-
             const envioDatos = {
                 NombreArchivo: nuevoMaterial.nombreArchivo,
                 fecha: new Date().toISOString().split('T')[0], // Fecha actual en formato ISO
@@ -228,23 +194,8 @@ const MaterialesDidacticos = () => {
                 GruposId: grupoSeleccionado.idGrupos,
             };
 
-            //console.log("Datos enviados al primer endpoint:", envioDatos);
-
-           
-
             const createResponse = await CrearMaterialDidactico(envioDatos);
-
             if (createResponse.status == 200) {
-                const imageFormData = new FormData();
-                imageFormData.append('file', selectedFile);
-                imageFormData.append('fileName', uniqueFileName);
-                const imageResponse = await GuardarMaterialDidacticoPdf(imageFormData);
-                if (imageResponse.status == 200) {
-                    toast.success("Archivo guardado con éxito");
-                } else {
-                    toast.success("Al parecer el archivo no se cargo");
-                }
-                
                 cargarMateriales();
                 cargarAulas();
                 // Cerrar el modal
@@ -257,13 +208,46 @@ const MaterialesDidacticos = () => {
                     grupoId: "",
                     statusAct: true,
                 }); // Limpiar el formulario
-
+                setImagePath('');
             }
         } catch (error) {
             console.error("Error al agregar material:", error);
             toast.error("Error al agregar material");
         }
     };
+
+    const cerrarModal = (visible) => {
+        setModalVisible(visible);
+        setNuevoMaterial({
+            nombreArchivo: "",
+            descripcion: "",
+            documento: null,
+            grupoId: "",
+            statusAct: true,
+        });
+        setImagePath('');
+        setIdGrupoSeleccionado('');
+    }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setNuevoMaterial((prevState) => ({
+            ...prevState,
+            [name === "nombre" ? "nombreArchivo" : name]: value, // Mapeo personalizado
+        }));
+    }
+
+
+    const descargarFoto = (rutaFoto) => {
+        const link = document.createElement('a');
+        link.href = rutaFoto; // Ruta de la foto
+        link.download = rutaFoto.split('/').pop(); // Descargar con el nombre del archivo original
+        link.download = 'Material.pdf'; // Nombre del archivo
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
 
     return (
         <div>
@@ -272,49 +256,55 @@ const MaterialesDidacticos = () => {
                 <Sidebar />
 
                 <main className="main-content">
+
                     <div className="materiales-container">
 
                         <h2 className="materiales-header">Material Didáctico</h2>
+                        <div className="add-container">
+                            {user.rolId != 3 && (
+                                <button onClick={() => setModalVisible(true)} className="button-agregar">
+                                    Agregar Nuevo Material
+                                </button>
+                            )}
+                        </div>
                         {isLoading ? (
                             <p className="materiales-loading">Cargando materiales...</p>
                         ) : (
-                            <div className="cards-container">
-                                {user.rolId != 3 && (
-                                    <button onClick={() => setModalVisible(true)} className="button-agregar">
-                                        Agregar Nuevo Material
-                                    </button>
-                                )}
-                                {materiales.map((material) => (
-                                    <div key={material.idMaterialDidactico} className="material-card">
-                                        <h6 className="titulo">{material.nombreArchivo}</h6>
+                            <div className="contenedor">
+                                
 
-                                        <p>Aula: {aulas.find(aula => aula.idGrupos === material.gruposId)?.nombreGrupo || 'Aula no encontrada'}</p>
+                                <div className="cards-container">
+                                    {materiales.map((material) => (
+                                        <div key={material.idMaterialDidactico} className="material-card">
+                                            <h6 className="titulo">{material.nombreArchivo}</h6>
+                                            <p>Aula: {aulas.find(aula => aula.idGrupos === material.gruposId)?.nombreGrupo || 'Aula no encontrada'}</p>
+                                            <div>
+                                                <img src="\Fotos\Pdf_icon.png" alt="PDF Icon" style={{ width: '30px', height: '40px' }} />
+                                                <p>{material.descripcion}</p>
+                                            </div>
+                                            <div className="botones-div">
 
-                                        <div>
-                                            <img src="\Fotos\Pdf_icon.png" alt="PDF Icon" style={{ width: '30px', height: '40px' }} />
-                                            <p>{material.descripcion}</p>
-                                        </div>
-
-                                        <div className="botones-div">
-                                            <a href={material.rutaFoto} download={material.rutaFoto}>
-                                                <button className="materiales-button">
+                                                <button className="materiales-button"
+                                                    onClick={() => descargarFoto(material.rutaFoto)}
+                                                >
                                                     Descargar
                                                 </button>
-                                            </a>
-                                            {/* Botón de eliminar */}
-                                            {user.rolId != 3 && (
-                                                <button
-                                                    onClick={() => handleDelete(material.idMaterialDidactico)}
-                                                    className="materiales-button eliminar"
-                                                >
-                                                    Eliminar
-                                                </button>
-                                            )}
+
+                                                {/* Botón de eliminar */}
+                                                {user.rolId != 3 && (
+                                                    <button
+                                                        onClick={() => handleDelete(material.idMaterialDidactico)}
+                                                        className="materiales-button eliminar"
+                                                    >
+                                                        Eliminar
+                                                    </button>
+                                                )}
+                                            </div>
+
                                         </div>
+                                    ))}
 
-                                    </div>
-                                ))}
-
+                                </div>
                             </div>
                         )}
 
@@ -322,7 +312,7 @@ const MaterialesDidacticos = () => {
                         {modalVisible && (
                             <div className="modal">
                                 <div className="modal-content">
-                                    <span className="close" onClick={() => setModalVisible(false)}>&times;</span>
+                                    <span className="close" onClick={() => cerrarModal(false)}>&times;</span>
                                     <h3>Agregar Nuevo Material</h3>
                                     <select
                                         name="grupoId"  // Cambié "aula" por "grupoId" para enlazar correctamente el estado
@@ -351,12 +341,7 @@ const MaterialesDidacticos = () => {
                                         value={nuevoMaterial.nombreArchivo}
                                         onChange={handleChange}
                                         name="nombre"
-                                    />
-                                    <textarea
-                                        placeholder="Descripción"
-                                        value={nuevoMaterial.descripcion}
-                                        onChange={handleChange}
-                                        name="descripcion"
+                                        maxLength={30}
                                     />
                                     <input
                                         type="file"
