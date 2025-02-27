@@ -61,6 +61,7 @@ const RegistroPago = () => {
     const [imageError, setImageError] = useState('');
     const [previewUrl, setPreviewUrl] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
+    const [loading, setLoading] = useState(false);
     //const [nombreUnico, setNombreUnico] = useState('default.jpg');
     const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png'];
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -393,11 +394,12 @@ const RegistroPago = () => {
     //-----------------------------------------------------------------------------------------------------------------
 
     const envioDatos = async () => {
+        setLoading(true);
         try {
-            const response = await CrearPago(pago);  
+            const response = await CrearPago(pago);
             console.log(pago);
-            console.log(response);    
-            limpiarDatos();         
+            console.log(response);
+            limpiarDatos();
         } catch (error) {
             console.error("Error Insentardo los datos: ", error);
             if (error.response) {
@@ -411,7 +413,10 @@ const RegistroPago = () => {
                 }
             }
         }
-    }
+        finally {
+            setLoading(false); // Ocultar overlay
+        }
+    };
 
 
     const eliminaImagen = () => {
@@ -449,7 +454,7 @@ const RegistroPago = () => {
 
     return (
         <div>
-
+            {loading && <div className="overlay">En Proceso...</div>}
             {< Navbar />}
             <div className="content-container">
                 {<Sidebar />}
