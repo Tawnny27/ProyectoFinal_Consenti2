@@ -1,12 +1,12 @@
 ﻿
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard, faUser, faEnvelope, faPhone, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 import './EditarUsuarios.css'; 
+import { EditarUsuarioAp, BuscarUsuarios } from '../apiClient'; // Importar las funciones desde apiClient.js
 
 const EditarUsuario = () => {
     const { id } = useParams(); // Obtener el id del usuario desde la URL
@@ -24,19 +24,30 @@ const EditarUsuario = () => {
     });
     const [mensajeExito, setMensajeExito] = useState(''); // Estado para el mensaje de éxito
 
-    useEffect(() => {
-        // Función para obtener el usuario a editar
-        const obtenerUsuario = async () => {
-            try {
-                const response = await axios.get(`https://localhost:44369/api/Usuarios/BuscarUsuarios/${id}`);
+
+    async function obtenerUsuario ()  {
+        try {
+            const response = await BuscarUsuarios(id);
+            //const response = await axios.get(`https://localhost:44369/api/BuscarUsuarios/${id}`);
+            if (response.status == 200) {
                 setUsuario(response.data);
                 console.log(response.data);
-            } catch (error) {
-                console.error("Error al obtener el usuario:", error);
+                console.log(response);
+                //console.log(id);
+            } else {
+                console.log(response.data);
             }
 
-        };
+        } catch (error) {
+            console.error("Error al obtener el usuario:", error);
+        }
 
+    };
+
+
+
+    useEffect(() => {
+        // Función para obtener el usuario a editar
         obtenerUsuario();
     }, [id]);
 
@@ -63,7 +74,8 @@ const EditarUsuario = () => {
     const manejarEnvio = async (e) => {
         e.preventDefault();
         try {
-            await axios.put('https://localhost:44369/api/Usuarios/EditarUsuario', usuario);
+            //await axios.put('https://localhost:44369/api/Usuarios/EditarUsuario', usuario);
+            await EditarUsuarioAp(usuario);            
             setMensajeExito('Los cambios se guardaron correctamente.');
             setTimeout(() => {
                 navigate(`/editar-usuario/${usuario.idUsuario}`);
@@ -101,7 +113,7 @@ const EditarUsuario = () => {
                             <input
                                 type="text"
                                 name="rolId"
-                                value={usuario.rol.idRol}
+                                value={usuario.rolId}
                                 onChange={manejarCambio}
                                 required
                                 placeholder="ID Rol"

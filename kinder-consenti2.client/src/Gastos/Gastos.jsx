@@ -1,6 +1,4 @@
 ﻿import React, { useState, useEffect } from 'react';
-import axios from '../axios';
-
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import './Gastos.css';

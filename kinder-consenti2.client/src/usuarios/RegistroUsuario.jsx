@@ -1,6 +1,6 @@
 ﻿// src/usuarios/RegistroUsuario.jsx
 import React, { useState, useEffect } from 'react';
-import axios from '../axios'; // Importar configuración de axios
+
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';

@@ -5,12 +5,14 @@ const apiClient = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL, // Aquí usamos la variable de entorno
 });
 
+
+
 //*************************************************Usuario**********************************************
 
 // Función para acceder al sistema (Correo y contraseña)
 export const AccesoUsuarios = async (email, password) => {
     try {
-        const response = await apiClient.post('api/AccesoUsuario', {
+        const response = await apiClient.post('/api/AccesoUsuario', {
             correo: email,
             contrasenna: password
         });
@@ -22,18 +24,26 @@ export const AccesoUsuarios = async (email, password) => {
 };
 // Función para buscar un usuario por Id
 export const BuscarUsuarios = async (id) => {
-    try {
-        const response = await apiClient.get(`api/BuscarUsuarios/${id}`);
-        return (response);
+    try {          
+        const response = await apiClient.get(`/api/BuscarUsuarios/${id}`, {
+            headers: {               
+                'Accept': 'text/plain'
+        }
+        });  
+        console.log(response);
+        return (response);        
     } catch (error) {
+        console.log(error.response?.data);
         console.error('Error al cargar los datos :', error);
         return ('Validar los datos:', error.response?.data);
     }
 };
+
+
 // Función para optener lo usuarios padres registrados
 export const ObtenerPadres = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerPadres');
+        const response = await apiClient.get('/api/ObtenerPadres');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -42,7 +52,7 @@ export const ObtenerPadres = async () => {
 };
 export const ObtenerUsuarios = async (filters) => {
     try {
-        const response = await apiClient.get('api/ObtenerUsuarios', { params: filters });
+        const response = await apiClient.get('/api/ObtenerUsuarios', { params: filters });
         return response;
     } catch (error) {
         console.error('Error al cargar los datos:', error);
@@ -51,7 +61,7 @@ export const ObtenerUsuarios = async (filters) => {
 };
 export const ObtenerMaestros = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerMaestros');
+        const response = await apiClient.get('/api/ObtenerMaestros');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -60,7 +70,7 @@ export const ObtenerMaestros = async () => {
 };
 export const CrearUsuario = async (usuario) => {
     try {
-        const response = await apiClient.post('api/CrearUsuario', usuario);
+        const response = await apiClient.post('/api/CrearUsuario', usuario);
         return response;
     } catch (error) {
         console.error('Error en el inicio de sesión:', error.response?.data || error.message);
@@ -69,7 +79,7 @@ export const CrearUsuario = async (usuario) => {
 };
 export const CambiarContrasena = async (email, newPassword, confirmPassword) => {
     try {
-        const response = await apiClient.put('api/CambiarContrasena', {
+        const response = await apiClient.put('/api/CambiarContrasena', {
             correo: email,
             contrasenna: newPassword,
             contrasennaValidacion: confirmPassword
@@ -82,16 +92,16 @@ export const CambiarContrasena = async (email, newPassword, confirmPassword) => 
 };
 export const RecuperarContrasena = async (email) => {
     try {
-        const response = await apiClient.put('api/RecuperarContrasena', { correo: email });
+        const response = await apiClient.put('/api/RecuperarContrasena', { correo: email });
         return response;
     } catch (error) {
         console.error('Error en el inicio de sesión:', error.response?.data || error.message);
         return (error.response?.data || 'Error en el inicio de sesión. Revisa tus credenciales.');
     }
 };
-export const EditarUsuario = async (usuario) => {
+export const EditarUsuarioAp = async (usuario) => {
     try {
-        const response = await apiClient.put('api/RecuperarContrasena', usuario);
+        const response = await apiClient.put('/api/RecuperarContrasena', usuario);
         return response;
     } catch (error) {
         console.error('Error en el inicio de sesión:', error.response?.data || error.message);
@@ -100,7 +110,7 @@ export const EditarUsuario = async (usuario) => {
 };
 export const EliminarUsuario = async (id) => {
     try {
-        const response = await apiClient.delete(`api/EliminarUsuario/${id}`);
+        const response = await apiClient.delete(`/api/EliminarUsuario/${id}`);
         return response;
     } catch (error) {
         console.error('Error en el inicio de sesión:', error.response?.data || error.message);
@@ -122,16 +132,17 @@ export const EliminarUsuario = async (id) => {
 
 export const DetallesApagar = async (id) => {
     try {
-        const response = await apiClient.get(`api/DetallesApagar/${id}`);
+        const response = await apiClient.get(`/api/DetallesApagar/${id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
         return ('Validar los datos:', error.response?.data);
     }
 };
+
 export const CrearPago = async (DatosPago) => {
     try {
-        const response = await apiClient.post('api/CrearPago', DatosPago, {
+        const response = await apiClient.post('/api/CrearPago', DatosPago, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -145,7 +156,7 @@ export const CrearPago = async (DatosPago) => {
 };
 export const ObtenerFacturas = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerFacturas');
+        const response = await apiClient.get('/api/ObtenerFacturas');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -154,7 +165,7 @@ export const ObtenerFacturas = async () => {
 };
 export const ObtenerFacturasPendientes = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerFacturasPendientes');
+        const response = await apiClient.get('/api/ObtenerFacturasPendientes');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -163,7 +174,7 @@ export const ObtenerFacturasPendientes = async () => {
 };
 export const DarAltaFactura = async (idfact, status) => {
     try {
-        const response = await apiClient.put(`api/DarAltaFactura/${idfact}&${status}`);
+        const response = await apiClient.put(`/api/DarAltaFactura/${idfact}&${status}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -172,7 +183,7 @@ export const DarAltaFactura = async (idfact, status) => {
 };
 export const BuscarFactura = async (id) => {
     try {
-        const response = await apiClient.get(`api/BuscarFactura/${id}`);
+        const response = await apiClient.get(`/api/BuscarFactura/${id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -181,7 +192,7 @@ export const BuscarFactura = async (id) => {
 };
 export const CrearMatricula = async (DatosMatricula) => {
     try {
-        const response = await apiClient.post('api/CrearMatricula', DatosMatricula, {
+        const response = await apiClient.post('/api/CrearMatricula', DatosMatricula, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -195,7 +206,7 @@ export const CrearMatricula = async (DatosMatricula) => {
 };
 export const BuscarDetallesFactura = async (idEncabezado) => {
     try {
-        const response = await apiClient.get(`api/BuscarDetallesFactura/${idEncabezado}`);
+        const response = await apiClient.get(`/api/BuscarDetallesFactura/${idEncabezado}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -220,7 +231,7 @@ export const BuscarDetallesFactura = async (idEncabezado) => {
 
 export const ObtenerActividadBannos = async (gruposId, fecha) => {
     try {
-        const response = await apiClient.get(`api/ObtenerActividadBannos/${gruposId}&${fecha}`);
+        const response = await apiClient.get(`/api/ObtenerActividadBannos/${gruposId}&${fecha}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -229,7 +240,7 @@ export const ObtenerActividadBannos = async (gruposId, fecha) => {
 };
 export const BuscarActividadBannos = async (idAlumno) => {
     try {
-        const response = await apiClient.get(`api/BuscarActividadBannos/${idAlumno}`);
+        const response = await apiClient.get(`/api/BuscarActividadBannos/${idAlumno}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -238,7 +249,7 @@ export const BuscarActividadBannos = async (idAlumno) => {
 };
 export const CrearActividadBanno = async (ListaActividadBanno) => {
     try {
-        const response = await apiClient.post('api/CrearActividadBanno', ListaActividadBanno, {
+        const response = await apiClient.post('/api/CrearActividadBanno', ListaActividadBanno, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -252,7 +263,7 @@ export const CrearActividadBanno = async (ListaActividadBanno) => {
 };
 export const EditarActividadBanno = async (ActividadBanno) => {
     try {
-        const response = await apiClient.put('api/EditarActividadBanno', ActividadBanno, {
+        const response = await apiClient.put('/api/EditarActividadBanno', ActividadBanno, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -269,7 +280,7 @@ export const EditarActividadBanno = async (ActividadBanno) => {
 
 export const ObtenerActividadComidas = async (gruposId, fecha) => {
     try {
-        const response = await apiClient.get(`api/ObtenerActividadComidas/${gruposId}&${fecha}`);
+        const response = await apiClient.get(`/api/ObtenerActividadComidas/${gruposId}&${fecha}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -278,7 +289,7 @@ export const ObtenerActividadComidas = async (gruposId, fecha) => {
 };
 export const BuscarActividadComidas = async (idAlumno) => {
     try {
-        const response = await apiClient.get(`api/BuscarActividadComidas/${idAlumno}`);
+        const response = await apiClient.get(`/api/BuscarActividadComidas/${idAlumno}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -287,7 +298,7 @@ export const BuscarActividadComidas = async (idAlumno) => {
 };
 export const CrearActividadComidas = async (ListaActividadComidas) => {
     try {
-        const response = await apiClient.post('api/CrearActividadComidas', ListaActividadComidas, {
+        const response = await apiClient.post('/api/CrearActividadComidas', ListaActividadComidas, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -301,7 +312,7 @@ export const CrearActividadComidas = async (ListaActividadComidas) => {
 };
 export const EditarActividadComida = async (ActividadComida) => {
     try {
-        const response = await apiClient.put('api/EditarActividadComida', ActividadComida, {
+        const response = await apiClient.put('/api/EditarActividadComida', ActividadComida, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -318,7 +329,7 @@ export const EditarActividadComida = async (ActividadComida) => {
 
 export const ObtenerActividadDormirs = async (gruposId, fecha) => {
     try {
-        const response = await apiClient.get(`api/ObtenerActividadDormirs/${gruposId}&${fecha}`);
+        const response = await apiClient.get(`/api/ObtenerActividadDormirs/${gruposId}&${fecha}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -327,7 +338,7 @@ export const ObtenerActividadDormirs = async (gruposId, fecha) => {
 };
 export const BuscarActividadDormirs = async (idAlumno) => {
     try {
-        const response = await apiClient.get(`api/BuscarActividadDormirs/${idAlumno}`);
+        const response = await apiClient.get(`/api/BuscarActividadDormirs/${idAlumno}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -336,7 +347,7 @@ export const BuscarActividadDormirs = async (idAlumno) => {
 };
 export const CrearActividadDormir = async (ListaActividadDormir) => {
     try {
-        const response = await apiClient.post('api/CrearActividadDormir', ListaActividadDormir, {
+        const response = await apiClient.post('/api/CrearActividadDormir', ListaActividadDormir, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -350,7 +361,7 @@ export const CrearActividadDormir = async (ListaActividadDormir) => {
 };
 export const EditarActividadDormir = async (ActividaDormir) => {
     try {
-        const response = await apiClient.put('api/EditarActividadDormir', ActividaDormir, {
+        const response = await apiClient.put('/api/EditarActividadDormir', ActividaDormir, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -367,7 +378,7 @@ export const EditarActividadDormir = async (ActividaDormir) => {
 
 export const ObtenerActividadHuertas = async (gruposId, fecha) => {
     try {
-        const response = await apiClient.get(`api/ObtenerActividadHuertas/${gruposId}&${fecha}`);
+        const response = await apiClient.get(`/api/ObtenerActividadHuertas/${gruposId}&${fecha}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -376,7 +387,7 @@ export const ObtenerActividadHuertas = async (gruposId, fecha) => {
 };
 export const BuscarActividadHuertas = async (idAlumno) => {
     try {
-        const response = await apiClient.get(`api/BuscarActividadHuertas/${idAlumno}`);
+        const response = await apiClient.get(`/api/BuscarActividadHuertas/${idAlumno}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -385,7 +396,7 @@ export const BuscarActividadHuertas = async (idAlumno) => {
 };
 export const CrearActividadHuerta = async (ListaActividadHuerta) => {
     try {
-        const response = await apiClient.post('api/CrearActividadHuerta', ListaActividadHuerta, {
+        const response = await apiClient.post('/api/CrearActividadHuerta', ListaActividadHuerta, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -399,7 +410,7 @@ export const CrearActividadHuerta = async (ListaActividadHuerta) => {
 };
 export const EditarActividadHuerta = async (ActividaHuerta) => {
     try {
-        const response = await apiClient.put('api/EditarActividadHuerta', ActividaHuerta, {
+        const response = await apiClient.put('/api/EditarActividadHuerta', ActividaHuerta, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -437,7 +448,7 @@ export const EditarActividadHuerta = async (ActividaHuerta) => {
 
 export const ObtenerAlumnos = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerAlumnos');
+        const response = await apiClient.get('/api/ObtenerAlumnos');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -446,7 +457,7 @@ export const ObtenerAlumnos = async () => {
 };
 export const BuscarAlumno = async (IdAlumno) => {
     try {
-        const response = await apiClient.get(`api/BuscarAlumno/${IdAlumno}`);
+        const response = await apiClient.get(`/api/BuscarAlumno/${IdAlumno}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -455,7 +466,7 @@ export const BuscarAlumno = async (IdAlumno) => {
 };
 export const CrearAlumno = async (alumno) => {
     try {
-        const response = await apiClient.post('api/CrearAlumno', alumno, {
+        const response = await apiClient.post('/api/CrearAlumno', alumno, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -469,7 +480,7 @@ export const CrearAlumno = async (alumno) => {
 };
 export const EditarAlumnoo = async (alumno) => {
     try {
-        const response = await apiClient.put('api/EditarAlumno', alumno, {
+        const response = await apiClient.put('/api/EditarAlumno', alumno, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -483,7 +494,7 @@ export const EditarAlumnoo = async (alumno) => {
 };
 export const EliminarAlumno = async (IdAlumno) => {
     try {
-        const response = await apiClient.delete(`api/EliminarAlumno/${IdAlumno}`);
+        const response = await apiClient.delete(`/api/EliminarAlumno/${IdAlumno}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -502,7 +513,7 @@ export const EliminarAlumno = async (IdAlumno) => {
 
 export const ObtenerCategorias = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerCategorias');
+        const response = await apiClient.get('/api/ObtenerCategorias');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -511,7 +522,7 @@ export const ObtenerCategorias = async () => {
 };
 export const BuscarCategorias = async (Id) => {
     try {
-        const response = await apiClient.get(`api/BuscarCategorias/${Id}`);
+        const response = await apiClient.get(`/api/BuscarCategorias/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -520,7 +531,7 @@ export const BuscarCategorias = async (Id) => {
 };
 export const CrearCategoria = async (categoria) => {
     try {
-        const response = await apiClient.post('api/CrearCategoria', categoria, {
+        const response = await apiClient.post('/api/CrearCategoria', categoria, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -534,7 +545,7 @@ export const CrearCategoria = async (categoria) => {
 };
 export const EditarCategoria = async (categoria) => {
     try {
-        const response = await apiClient.put('api/EditarCategoria', categoria, {
+        const response = await apiClient.put('/api/EditarCategoria', categoria, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -548,7 +559,7 @@ export const EditarCategoria = async (categoria) => {
 };
 export const EliminarCategoria = async (Id) => {
     try {
-        const response = await apiClient.delete(`api/EliminarCategoria/${Id}`);
+        const response = await apiClient.delete(`/api/EliminarCategoria/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -568,7 +579,7 @@ export const EliminarCategoria = async (Id) => {
 
 export const ObtenerEvaluacionesDocente = async (idDocente, fechaInicio, fechaFin) => {
     try {
-        const response = await apiClient.get(`api/ObtenerEvaluacionesDocente/${idDocente}&${fechaInicio}&${fechaFin}`);
+        const response = await apiClient.get(`/api/ObtenerEvaluacionesDocente/${idDocente}&${fechaInicio}&${fechaFin}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -577,7 +588,7 @@ export const ObtenerEvaluacionesDocente = async (idDocente, fechaInicio, fechaFi
 };
 export const ObtenerEvalaucionDocente = async (Id) => {
     try {
-        const response = await apiClient.get(`api/ObtenerEvalaucionDocente/${Id}`);
+        const response = await apiClient.get(`/api/ObtenerEvalaucionDocente/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -586,7 +597,7 @@ export const ObtenerEvalaucionDocente = async (Id) => {
 };
 export const CrearEvaluacionDocente = async (EvaluacionDocente) => {
     try {
-        const response = await apiClient.post('api/CrearEvaluacionDocente', EvaluacionDocente, {
+        const response = await apiClient.post('/api/CrearEvaluacionDocente', EvaluacionDocente, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -609,7 +620,7 @@ export const CrearEvaluacionDocente = async (EvaluacionDocente) => {
 
 export const ObtenerEvaluaciones = async (fechaInicio, fechaFin) => {
     try {
-        const response = await apiClient.get(`api/ObtenerEvaluaciones/${fechaInicio}&${fechaFin}`);
+        const response = await apiClient.get(`/api/ObtenerEvaluaciones/${fechaInicio}&${fechaFin}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -618,7 +629,7 @@ export const ObtenerEvaluaciones = async (fechaInicio, fechaFin) => {
 };
 export const ObtenerEvaluacion = async (Id) => {
     try {
-        const response = await apiClient.get(`api/ObtenerEvaluacion/${Id}`);
+        const response = await apiClient.get(`/api/ObtenerEvaluacion/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -627,7 +638,7 @@ export const ObtenerEvaluacion = async (Id) => {
 };
 export const CrearEvaluacionKinder = async (EvaluacionKinder) => {
     try {
-        const response = await apiClient.post('api/CrearEvaluacionDocente', EvaluacionKinder, {
+        const response = await apiClient.post('/api/CrearEvaluacionDocente', EvaluacionKinder, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -649,7 +660,7 @@ export const CrearEvaluacionKinder = async (EvaluacionKinder) => {
 //********************************************Eventos************************************************
 export const ObtenerEventos = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerEventos');
+        const response = await apiClient.get('/api/ObtenerEventos');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -658,7 +669,7 @@ export const ObtenerEventos = async () => {
 };
 export const ObtenerEventosActivos = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerEventosActivos');
+        const response = await apiClient.get('/api/ObtenerEventosActivos');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -667,7 +678,7 @@ export const ObtenerEventosActivos = async () => {
 };
 export const ObtenerEventosInactivos = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerEventosInactivos');
+        const response = await apiClient.get('/api/ObtenerEventosInactivos');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -676,7 +687,7 @@ export const ObtenerEventosInactivos = async () => {
 };
 export const CrearEvento = async (evento) => {
     try {
-        const response = await apiClient.post('api/CrearEvento', evento, {
+        const response = await apiClient.post('/api/CrearEvento', evento, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -690,7 +701,7 @@ export const CrearEvento = async (evento) => {
 };
 export const EditarEvento = async (evento) => {
     try {
-        const response = await apiClient.put('api/EditarEvento', evento, {
+        const response = await apiClient.put('/api/EditarEvento', evento, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -717,7 +728,7 @@ export const EditarEvento = async (evento) => {
 
 export const ObtenerExpediente = async (idAlumno) => {
     try {
-        const response = await apiClient.get(`api/ObtenerExpediente/${idAlumno}`);
+        const response = await apiClient.get(`/api/ObtenerExpediente/${idAlumno}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -726,7 +737,7 @@ export const ObtenerExpediente = async (idAlumno) => {
 };
 export const ObtenerExpedienteId = async (Id) => {
     try {
-        const response = await apiClient.get(`api/ObtenerExpedienteId/${Id}`);
+        const response = await apiClient.get(`/api/ObtenerExpedienteId/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -735,7 +746,7 @@ export const ObtenerExpedienteId = async (Id) => {
 };
 export const CrearExpediente = async (expediente) => {
     try {
-        const response = await apiClient.post('api/CrearExpediente', expediente, {
+        const response = await apiClient.post('/api/CrearExpediente', expediente, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -749,7 +760,7 @@ export const CrearExpediente = async (expediente) => {
 };
 export const EditarExpediente = async (expediente) => {
     try {
-        const response = await apiClient.put('api/EditarExpediente', expediente, {
+        const response = await apiClient.put('/api/EditarExpediente', expediente, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -772,7 +783,7 @@ export const EditarExpediente = async (expediente) => {
 //********************************************FotosAlumno************************************************
 export const ObtenerFotosAlumnos = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerFotosAlumnos');
+        const response = await apiClient.get('/api/ObtenerFotosAlumnos');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -781,7 +792,7 @@ export const ObtenerFotosAlumnos = async () => {
 };
 export const ObtenerFotosAlumno = async (idAlumno) => {
     try {
-        const response = await apiClient.get(`api/ObtenerFotosAlumno/${idAlumno}`);
+        const response = await apiClient.get(`/api/ObtenerFotosAlumno/${idAlumno}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -790,7 +801,7 @@ export const ObtenerFotosAlumno = async (idAlumno) => {
 };
 export const CrearFotosAlumno = async (FotoAlumno) => {
     try {
-        const response = await apiClient.post('api/CrearFotosAlumno', FotoAlumno, {
+        const response = await apiClient.post('/api/CrearFotosAlumno', FotoAlumno, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -804,7 +815,7 @@ export const CrearFotosAlumno = async (FotoAlumno) => {
 };
 export const EditarFotosAlumno = async (FotoAlumno) => {
     try {
-        const response = await apiClient.put('api/EditarFotosAlumno', FotoAlumno, {
+        const response = await apiClient.put('/api/EditarFotosAlumno', FotoAlumno, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -818,7 +829,7 @@ export const EditarFotosAlumno = async (FotoAlumno) => {
 };
 export const EliminarFotosAlumno = async (Id) => {
     try {
-        const response = await apiClient.delete(`api/EliminarFotosAlumno/${Id}`);
+        const response = await apiClient.delete(`/api/EliminarFotosAlumno/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -837,7 +848,7 @@ export const EliminarFotosAlumno = async (Id) => {
 //********************************************Gastos****************************************************
 export const ObtenerGastos = async (anno, mes) => {
     try {
-        const response = await apiClient.get(`api/ObtenerGastos/${anno}&${mes}`);
+        const response = await apiClient.get(`/api/ObtenerGastos/${anno}&${mes}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -846,7 +857,7 @@ export const ObtenerGastos = async (anno, mes) => {
 };
 export const BuscarGastoxFecha = async (fecha) => {
     try {
-        const response = await apiClient.get(`api/BuscarGastoxFecha/${fecha}`);
+        const response = await apiClient.get(`/api/BuscarGastoxFecha/${fecha}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -855,7 +866,7 @@ export const BuscarGastoxFecha = async (fecha) => {
 };
 export const CrearGasto = async (gasto) => {
     try {
-        const response = await apiClient.post('api/CrearGasto', gasto, {
+        const response = await apiClient.post('/api/CrearGasto', gasto, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -869,7 +880,7 @@ export const CrearGasto = async (gasto) => {
 };
 export const EditarGasto = async (gasto) => {
     try {
-        const response = await apiClient.put('api/EditarGasto', gasto, {
+        const response = await apiClient.put('/api/EditarGasto', gasto, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -883,7 +894,7 @@ export const EditarGasto = async (gasto) => {
 };
 export const EliminarGasto = async (Id) => {
     try {
-        const response = await apiClient.delete(`api/EliminarGasto/${Id}`);
+        const response = await apiClient.delete(`/api/EliminarGasto/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -902,7 +913,7 @@ export const EliminarGasto = async (Id) => {
 //********************************************GruposAlumnos**********************************************
 export const ObtenerGrupoAlumnos = async (idGrupo) => {
     try {
-        const response = await apiClient.get(`api/ObtenerGrupoAlumnos/${idGrupo}`);
+        const response = await apiClient.get(`/api/ObtenerGrupoAlumnos/${idGrupo}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -911,7 +922,7 @@ export const ObtenerGrupoAlumnos = async (idGrupo) => {
 };
 export const ObtenerGrupoAlumnosXmaesto = async (idMaestro) => {
     try {
-        const response = await apiClient.get(`api/ObtenerGrupoAlumnosXmaesto/${idMaestro}`);
+        const response = await apiClient.get(`/api/ObtenerGrupoAlumnosXmaesto/${idMaestro}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -920,7 +931,7 @@ export const ObtenerGrupoAlumnosXmaesto = async (idMaestro) => {
 };
 export const BuscarGruposAlumno = async (idAlumno) => {
     try {
-        const response = await apiClient.get(`api/BuscarGruposAlumno/${idAlumno}`);
+        const response = await apiClient.get(`/api/BuscarGruposAlumno/${idAlumno}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -929,7 +940,7 @@ export const BuscarGruposAlumno = async (idAlumno) => {
 };
 export const CrearGruposAlumno = async (GruposAlumnos) => {
     try {
-        const response = await apiClient.post('api/CrearGruposAlumno', GruposAlumnos, {
+        const response = await apiClient.post('/api/CrearGruposAlumno', GruposAlumnos, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -943,7 +954,7 @@ export const CrearGruposAlumno = async (GruposAlumnos) => {
 };
 export const EliminarGruposAlumno = async (Id) => {
     try {
-        const response = await apiClient.delete(`api/EliminarGruposAlumno/${Id}`);
+        const response = await apiClient.delete(`/api/EliminarGruposAlumno/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -962,7 +973,7 @@ export const EliminarGruposAlumno = async (Id) => {
 
 export const ObtenerGrupos = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerGrupos');
+        const response = await apiClient.get('/api/ObtenerGrupos');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -971,7 +982,7 @@ export const ObtenerGrupos = async () => {
 };
 export const BuscarGrupo = async (Id) => {
     try {
-        const response = await apiClient.get(`api/BuscarGrupo/${Id}`);
+        const response = await apiClient.get(`/api/BuscarGrupo/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -980,7 +991,7 @@ export const BuscarGrupo = async (Id) => {
 };
 export const CrearGrupo = async (Grupo) => {
     try {
-        const response = await apiClient.post('api/CrearGrupo', Grupo, {
+        const response = await apiClient.post('/api/CrearGrupo', Grupo, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -994,7 +1005,7 @@ export const CrearGrupo = async (Grupo) => {
 };
 export const EditarGrupos = async (Grupo) => {
     try {
-        const response = await apiClient.put('api/EditarGrupos', Grupo, {
+        const response = await apiClient.put('/api/EditarGrupos', Grupo, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -1008,7 +1019,7 @@ export const EditarGrupos = async (Grupo) => {
 };
 export const EliminarGrupos = async (Id) => {
     try {
-        const response = await apiClient.delete(`api/EliminarGrupos/${Id}`);
+        const response = await apiClient.delete(`/api/EliminarGrupos/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1027,7 +1038,7 @@ export const EliminarGrupos = async (Id) => {
 
 export const GuardarMaterialDidacticoPdf = async (FileImage) => {
     try {
-        const response = await apiClient.post('api/GuardarMaterialDidacticoPdf', FileImage, {
+        const response = await apiClient.post('/api/GuardarMaterialDidacticoPdf', FileImage, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -1040,7 +1051,7 @@ export const GuardarMaterialDidacticoPdf = async (FileImage) => {
 };
 export const GuardarImagenPago = async (FileImage) => {
     try {
-        const response = await apiClient.post('api/GuardarImagenPago', FileImage, {
+        const response = await apiClient.post('/api/GuardarImagenPago', FileImage, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -1053,7 +1064,7 @@ export const GuardarImagenPago = async (FileImage) => {
 };
 export const GuardarFotosNinno = async (FileImage) => {
     try {
-        const response = await apiClient.post('api/GuardarFotosNino', FileImage, {
+        const response = await apiClient.post('/api/GuardarFotosNino', FileImage, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -1066,7 +1077,7 @@ export const GuardarFotosNinno = async (FileImage) => {
 };
 export const GuardarImagenEvento = async (FileImage) => {
     try {
-        const response = await apiClient.post('api/GuardarImagenEvento', FileImage, {
+        const response = await apiClient.post('/api/GuardarImagenEvento', FileImage, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -1089,7 +1100,7 @@ export const GuardarImagenEvento = async (FileImage) => {
 //********************************************Inventario************************************************
 export const ObtenerInventario = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerInventario');
+        const response = await apiClient.get('/api/ObtenerInventario');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1098,7 +1109,7 @@ export const ObtenerInventario = async () => {
 };
 export const BuscarInventario = async (Id) => {
     try {
-        const response = await apiClient.get(`api/BuscarInventario/${Id}`);
+        const response = await apiClient.get(`/api/BuscarInventario/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1107,7 +1118,7 @@ export const BuscarInventario = async (Id) => {
 };
 export const CrearInventario = async (inventario) => {
     try {
-        const response = await apiClient.post('api/CrearInventario', inventario, {
+        const response = await apiClient.post('/api/CrearInventario', inventario, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -1121,7 +1132,7 @@ export const CrearInventario = async (inventario) => {
 };
 export const EditarInventario = async (inventario) => {
     try {
-        const response = await apiClient.put('api/EditarInventario', inventario, {
+        const response = await apiClient.put('/api/EditarInventario', inventario, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -1135,7 +1146,7 @@ export const EditarInventario = async (inventario) => {
 };
 export const EliminarInventario = async (Id) => {
     try {
-        const response = await apiClient.delete(`api/EliminarInventario/${Id}`);
+        const response = await apiClient.delete(`/api/EliminarInventario/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1155,7 +1166,7 @@ export const EliminarInventario = async (Id) => {
 
 export const ObtenerListaAsistencia = async (gruposId, fecha) => {
     try {
-        const response = await apiClient.get(`api/ObtenerListaAsistencia/${gruposId}&${fecha}`);
+        const response = await apiClient.get(`/api/ObtenerListaAsistencia/${gruposId}&${fecha}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1164,7 +1175,7 @@ export const ObtenerListaAsistencia = async (gruposId, fecha) => {
 };
 export const ObtenerListaAsistenciaAlumno = async (idAlumno) => {
     try {
-        const response = await apiClient.get(`api/ObtenerListaAsistenciaAlumno/${idAlumno}`);
+        const response = await apiClient.get(`/api/ObtenerListaAsistenciaAlumno/${idAlumno}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1173,7 +1184,7 @@ export const ObtenerListaAsistenciaAlumno = async (idAlumno) => {
 };
 export const CrearListaAsistencia = async (ListaAsistencia) => {
     try {
-        const response = await apiClient.post('api/CrearListaAsistencia', ListaAsistencia, {
+        const response = await apiClient.post('/api/CrearListaAsistencia', ListaAsistencia, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -1187,7 +1198,7 @@ export const CrearListaAsistencia = async (ListaAsistencia) => {
 };
 export const ActualizarAsistencia = async (ListaAsistencia) => {
     try {
-        const response = await apiClient.put('api/ActualizarAsistencia', ListaAsistencia, {
+        const response = await apiClient.put('/api/ActualizarAsistencia', ListaAsistencia, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -1211,7 +1222,7 @@ export const ActualizarAsistencia = async (ListaAsistencia) => {
 
 export const ObtenerMovimientos = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerMovimientos');
+        const response = await apiClient.get('/api/ObtenerMovimientos');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1220,7 +1231,7 @@ export const ObtenerMovimientos = async () => {
 };
 export const BuscarMovimiento = async (Id) => {
     try {
-        const response = await apiClient.get(`api/BuscarMovimiento/${Id}`);
+        const response = await apiClient.get(`/api/BuscarMovimiento/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1229,7 +1240,7 @@ export const BuscarMovimiento = async (Id) => {
 };
 export const CrearMovimiento = async (MovimientosInventario) => {
     try {
-        const response = await apiClient.post('api/CrearMovimiento', MovimientosInventario, {
+        const response = await apiClient.post('/api/CrearMovimiento', MovimientosInventario, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -1243,7 +1254,7 @@ export const CrearMovimiento = async (MovimientosInventario) => {
 };
 export const EditarMovimiento = async (MovimientosInventario) => {
     try {
-        const response = await apiClient.put('api/EditarMovimiento', MovimientosInventario, {
+        const response = await apiClient.put('/api/EditarMovimiento', MovimientosInventario, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -1257,7 +1268,7 @@ export const EditarMovimiento = async (MovimientosInventario) => {
 };
 export const EliminarMovimiento = async (Id) => {
     try {
-        const response = await apiClient.delete(`api/EliminarMovimiento/${Id}`);
+        const response = await apiClient.delete(`/api/EliminarMovimiento/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1276,7 +1287,7 @@ export const EliminarMovimiento = async (Id) => {
 //********************************************Materia Didactico************************************************
 export const ObtenerMaterialesDidacticos = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerMaterialesDidacticos');
+        const response = await apiClient.get('/api/ObtenerMaterialesDidacticos');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1285,7 +1296,7 @@ export const ObtenerMaterialesDidacticos = async () => {
 };
 export const ObtenerMaterialesDidacticosAct = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerMaterialesDidacticosAct');
+        const response = await apiClient.get('/api/ObtenerMaterialesDidacticosAct');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1294,7 +1305,7 @@ export const ObtenerMaterialesDidacticosAct = async () => {
 };
 export const ObtenerMaterialesDidacticosInact = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerMaterialesDidacticosInact');
+        const response = await apiClient.get('/api/ObtenerMaterialesDidacticosInact');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1303,7 +1314,7 @@ export const ObtenerMaterialesDidacticosInact = async () => {
 };
 export const ObtenerMaterialesDidacticosPadre = async (idPadre) => {
     try {
-        const response = await apiClient.get(`api/ObtenerMaterialesDidacticosPadre/${idPadre}`);
+        const response = await apiClient.get(`/api/ObtenerMaterialesDidacticosPadre/${idPadre}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1312,7 +1323,7 @@ export const ObtenerMaterialesDidacticosPadre = async (idPadre) => {
 };
 export const ObtenerMaterialDidactico = async (Id) => {
     try {
-        const response = await apiClient.get(`api/ObtenerMaterialDidactico/${Id}`);
+        const response = await apiClient.get(`/api/ObtenerMaterialDidactico/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1321,7 +1332,7 @@ export const ObtenerMaterialDidactico = async (Id) => {
 };
 export const ObtenerMaterialDidacticoGrupo = async (idGrupo) => {
     try {
-        const response = await apiClient.get(`api/ObtenerMaterialDidacticoGrupo/${idGrupo}`);
+        const response = await apiClient.get(`/api/ObtenerMaterialDidacticoGrupo/${idGrupo}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1330,7 +1341,7 @@ export const ObtenerMaterialDidacticoGrupo = async (idGrupo) => {
 };
 export const InactivarMaterialDidactico = async (Id) => {
     try {
-        const response = await apiClient.put(`api/InactivarMaterialDidactico/${Id}`);
+        const response = await apiClient.put(`/api/InactivarMaterialDidactico/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1339,7 +1350,7 @@ export const InactivarMaterialDidactico = async (Id) => {
 };
 export const CrearMaterialDidactico = async (MaterialDidactico) => {
     try {
-        const response = await apiClient.post('api/CrearMaterialDidactico', MaterialDidactico, {
+        const response = await apiClient.post('/api/CrearMaterialDidactico', MaterialDidactico, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -1353,7 +1364,7 @@ export const CrearMaterialDidactico = async (MaterialDidactico) => {
 };
 export const EditarMaterialDidactico = async (MaterialDidactico) => {
     try {
-        const response = await apiClient.put('api/EditarMaterialDidactico', MaterialDidactico, {
+        const response = await apiClient.put('/api/EditarMaterialDidactico', MaterialDidactico, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -1367,7 +1378,7 @@ export const EditarMaterialDidactico = async (MaterialDidactico) => {
 };
 export const EliminarMaterialDidactico = async (Id) => {
     try {
-        const response = await apiClient.delete(`api/EliminarMaterialDidactico/${Id}`);
+        const response = await apiClient.delete(`/api/EliminarMaterialDidactico/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1391,7 +1402,7 @@ export const EliminarMaterialDidactico = async (Id) => {
 //se creo este por que el ObtenerRoles normal estaba dando problemas, y para no afectar su funcionamiento en otros lugares no se modifico
 export const ObtenerRolesRegistro = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerRoles');
+        const response = await apiClient.get('/api/ObtenerRoles');
         return response.data;  // Regresamos solo los datos
     } catch (error) {
         console.error('Error al cargar los datos:', error);
@@ -1401,7 +1412,7 @@ export const ObtenerRolesRegistro = async () => {
 
 export const ObtenerRoles = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerRoles');
+        const response = await apiClient.get('/api/ObtenerRoles');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1410,7 +1421,7 @@ export const ObtenerRoles = async () => {
 };
 export const BuscarRol = async (Id) => {
     try {
-        const response = await apiClient.get(`api/BuscarRol/${Id}`);
+        const response = await apiClient.get(`/api/BuscarRol/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1419,7 +1430,7 @@ export const BuscarRol = async (Id) => {
 };
 export const CrearRol = async (Rol) => {
     try {
-        const response = await apiClient.post('api/CrearRol', Rol, {
+        const response = await apiClient.post('/api/CrearRol', Rol, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -1433,7 +1444,7 @@ export const CrearRol = async (Rol) => {
 };
 export const EditarRol = async (Rol) => {
     try {
-        const response = await apiClient.put('api/EditarRol', Rol, {
+        const response = await apiClient.put('/api/EditarRol', Rol, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -1447,7 +1458,7 @@ export const EditarRol = async (Rol) => {
 };
 export const EliminarRol = async (Id) => {
     try {
-        const response = await apiClient.delete(`api/EliminarRol/${Id}`);
+        const response = await apiClient.delete(`/api/EliminarRol/${Id}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1467,7 +1478,7 @@ export const EliminarRol = async (Id) => {
 //********************************************Productos************************************************************
 export const ObtenerProductosfijos = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerProductosfijos');
+        const response = await apiClient.get('/api/ObtenerProductosfijos');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1477,7 +1488,7 @@ export const ObtenerProductosfijos = async () => {
 
 export const ObtenerProductosMensuales = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerProductosMensuales');
+        const response = await apiClient.get('/api/ObtenerProductosMensuales');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1488,7 +1499,7 @@ export const ObtenerProductosMensuales = async () => {
 
 export const ObtenerAlimentacion = async () => {
     try {
-        const response = await apiClient.get('api/ObtenerAlimentacion');
+        const response = await apiClient.get('/api/ObtenerAlimentacion');
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1507,7 +1518,7 @@ export const GuardarImagenPerfilAlumno = async (file, fileName) => {
         imageFormData.append('file', file);
         imageFormData.append('fileName', fileName); // Nombre único generado para la imagen
 
-        const response = await apiClient.post('api/GuardarImagenPerfilAluno', imageFormData, {
+        const response = await apiClient.post('/api/GuardarImagenPerfilAluno', imageFormData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -1522,7 +1533,7 @@ export const GuardarImagenPerfilAlumno = async (file, fileName) => {
 
 export const ActualizarEstadoFactura = async (idFactura, nuevoEstado) => {
     try {
-        const response = await apiClient.put(`api/DarAltaFactura/${idFactura}&${nuevoEstado}`);
+        const response = await apiClient.put(`/api/DarAltaFactura/${idFactura}&${nuevoEstado}`);
         return response;
     } catch (error) {
         console.error('Error al actualizar el estado de la factura:', error);
@@ -1532,7 +1543,7 @@ export const ActualizarEstadoFactura = async (idFactura, nuevoEstado) => {
 
 export const ObtenerUsuarioPorId = async (usuarioId) => {
     try {
-        const response = await apiClient.get(`api/BuscarUsuarios/${usuarioId}`);
+        const response = await apiClient.get(`/api/BuscarUsuarios/${usuarioId}`);
         return response;
     } catch (error) {
         console.error('Error al obtener el usuario por ID:', error);
@@ -1543,7 +1554,7 @@ export const ObtenerUsuarioPorId = async (usuarioId) => {
 // Obtener gastos por fecha
 export const ObtenerGastosPorFecha = async (fechaFiltro) => {
     try {
-        const response = await apiClient.get(`api/BuscarGastoxFecha/${fechaFiltro}`);
+        const response = await apiClient.get(`/api/BuscarGastoxFecha/${fechaFiltro}`);
         return response;
     } catch (error) {
         console.error('Error al cargar los gastos:', error);
@@ -1554,7 +1565,7 @@ export const ObtenerGastosPorFecha = async (fechaFiltro) => {
 // Crear un gasto
 export const CrearrGasto = async (nuevoGasto) => {
     try {
-        const response = await apiClient.post('api/CrearGasto', nuevoGasto);
+        const response = await apiClient.post('/api/CrearGasto', nuevoGasto);
         return response;
     } catch (error) {
         console.error('Error al crear el gasto:', error);

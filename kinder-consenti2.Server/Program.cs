@@ -43,6 +43,7 @@ if(app.Environment.IsDevelopment())
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
+app.UseRouting();
 // Usar CORS
 app.UseCors("AllowSpecificOrigin");
 

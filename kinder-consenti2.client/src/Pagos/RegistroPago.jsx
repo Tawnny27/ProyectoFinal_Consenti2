@@ -8,7 +8,7 @@ import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from '../UserContext'; // Importar el hook del contexto
 import { faUser, faCalendar, faIdCard, faVenusMars, faHome, faInfoCircle, faCamera, faUserShield, faPhone } from '@fortawesome/free-solid-svg-icons';
-import { DetallesApagar, BuscarUsuarios, ObtenerPadres, GuardarImagenPago, CrearPago } from '../apiClient'; // Importar las funciones desde apiClient.js
+import { DetallesApagar, BuscarUsuarios, ObtenerPadres, CrearPago } from '../apiClient'; // Importar las funciones desde apiClient.js
 
 //import axios from '../../../node_modules/axios/index';
 
@@ -20,8 +20,7 @@ const RegistroPago = () => {
     const [usuario, setUsuario] = useState([]);
     const [detallesTemp, setDetallesTemp] = useState([]);
     const [mensaje, setMensaje] = useState([]);
-    const [disabledRef, setDisableRef] = useState(true);
-    const [base64Data, setBase64Data] = useState('');
+    const [disabledRef, setDisableRef] = useState(true);    
     const [usuarioSelect, setUsuarioSelect] = useState({
         idUsuario: 0,
         rolId: 0,
@@ -118,10 +117,12 @@ const RegistroPago = () => {
         }
         return true;
     };
+
     async function cargarDatos() {
         try {
             if (user.rolId == 3) {
                 const usuarioResponse = await BuscarUsuarios(user.idUsuario);
+                console.log(usuarioResponse);
                 setUsuarioSelect(() => ({
                     ...usuarioSelect,
                     idUsuario: usuarioResponse.data.idUsuario,

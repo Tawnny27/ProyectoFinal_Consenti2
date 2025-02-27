@@ -41,6 +41,15 @@ const MainLayout = () => {
         }
     }, [usuario, navigate]);
     */
+
+    useEffect(() => {
+        console.log('MainLayout montado');
+        return () => {
+            console.log('MainLayout desmontado');
+        };
+    }, []);
+
+
     useEffect(() => {
         console.log(user)
         // Valida si el usuario necesita cambiar su contrase�a

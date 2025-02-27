@@ -5,7 +5,6 @@ import { faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-s
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.jpg';
 import { useUserContext } from '../UserContext';
-
 import { AccesoUsuarios } from '../apiClient'; // Importar las funciones desde apiClient.js
 
 const LoginForm = () => {
@@ -17,14 +16,20 @@ const LoginForm = () => {
     const { setUser } = useUserContext();
 
     async function loguear() {
-        const response = await AccesoUsuarios(email, password);
-        if (response.status === 200) {
-            const usuario = response.data;
-            setUser(usuario);
-            setErrorMessage('');
-            navigate('/main');
-        } else {
-            setErrorMessage(response);
+        try {
+            const response = await AccesoUsuarios(email, password);
+            if (response.status === 200) {
+                const usuario = response.data;
+                setUser(usuario);
+                setErrorMessage('');
+                console.log('Redirigiendo a / main');
+                navigate('/main');
+            } else {
+                setErrorMessage(response);
+            }
+        } catch (error) {
+            console.error('Error en la autenticación:', error);
+            setErrorMessage('Error en la autenticación. Por favor, inténtalo de nuevo.');
         }
     }
 

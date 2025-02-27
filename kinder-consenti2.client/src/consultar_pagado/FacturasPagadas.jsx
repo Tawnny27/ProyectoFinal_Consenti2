@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from '../axios';
+
 import DataTable from 'react-data-table-component';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';

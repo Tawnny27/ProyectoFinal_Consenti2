@@ -1,6 +1,4 @@
-﻿
-import React from 'react';
-import { ToastContainer } from 'react-toastify';
+﻿import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AlumnoMaintenance from './Alumnos/consultasA';
@@ -11,7 +9,7 @@ import MainLayout from './menu/mainLayout';
 import UserMaintenance from './consultar_usuarios/consultas';
 import ResetPassword from './login/resetPassword';
 import ChangePassword from './login/changePassword';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RegistroUsuario from './usuarios/RegistroUsuario';
 import RegistroPago from './Pagos/Registropago';
 import GeneradorRecibos from './Pagos/GenerarRecibo';
@@ -36,68 +34,56 @@ import ComunicacionMensajes from './comunicaciones/comunicacionesMensajes';
 import Grupos from './Grupos/Grupos';
 import FacturasPagadas from './consultar_pagado/FacturasPagadas.jsx';
 
+const router = createBrowserRouter(
+    [
+        { path: '/', element: <LoginForm /> },
+        { path: '/main', element: < MainLayout /> },
+        { path: '/editar-usuario/:id', element: <EditarUsuario /> },
+        { path: '/editar-alumno/:id', element: <EditarAlumno /> },
+        { path: '/user-maintenance', element: <UserMaintenance /> },
+        { path: '/alumno-maintenance', element: <AlumnoMaintenance /> },
+        { path: '/registrar-usuario', element: <RegistroUsuario /> },
+        { path: '/registrar-pago', element: <RegistroPago /> },
+        { path: '/GenerarRecibo', element: <GeneradorRecibos /> },
+        { path: '/reset-password', element: <ResetPassword /> },
+        { path: '/change-password', element: <ChangePassword /> },
+        { path: '/matricula', element: <Matricula /> },
+        { path: '/expedientes', element: <Expedientes /> },
+        { path: '/reportes', element: <Reportes /> },
+        { path: '/activity-panel', element: <ActivityPanel /> },
+        { path: '/activity-form', element: <ActivityForm /> },
+        { path: '/attendance-panel', element: <AttendancePanel /> },
+        { path: '/Factura-maintenance', element: <FacturaMaintenance /> },
+        { path: '/registrar-encuesta', element: <Encuesta /> },
+        { path: '/evalua-maestra', element: <MaestrasFeedback /> },
+        { path: '/comunicacion', element: <Comunicacion /> },
+        { path: '/comportamiento', element: <ComportamientoAlumno /> },
+        { path: '/materiales', element: <MaterialesDidacticos /> },
+        { path: '/fotos', element: <FotosPorCarpeta /> },
+        { path: '/inventario', element: <Inventario /> },
+        { path: '/Gastos', element: <Gastos /> },
+        { path: '/monitoreo', element: <MonitoreoAlumno /> },
+        { path: '/Lista-actividades', element: <ListaActividades /> },
+        { path: '/comunicacion-mensajes', element: <ComunicacionMensajes /> },
+        { path: '/Grupos', element: <Grupos /> },
+        { path: '/facturas-pagadas', element: <FacturasPagadas /> },
+    ],
+    {
+        future: {
+            v7_relativeSplatPath: true,
+        },
+    }
+);
 
 function App() {
     return (
-        <Router>
+        <RouterProvider router={router}>
             <div>
                 {/* Componente ToastContainer para notificaciones */}
                 <ToastContainer />
-                <Routes>
-                    <Route path="/" element={<LoginForm />} />
-                    <Route path="/editar-usuario/:id" element={<EditarUsuario />} />
-                    <Route path="/editar-alumno/:id" element={<EditarAlumno />} />
-                    <Route path="/main" element={<MainLayout />} />
-                    <Route path="/user-maintenance" element={<UserMaintenance />} />
-                    <Route path="/alumno-maintenance" element={<AlumnoMaintenance />} />
-                    <Route path="/registrar-usuario" element={<RegistroUsuario />} /> {/* Nueva ruta */}                  
-                    <Route path="/registrar-pago" element={<RegistroPago />} /> { /* eddy*/}
-                    <Route path="/GenerarRecibo" element={<GeneradorRecibos />} />
-                    <Route path="/reset-password" element={<ResetPassword />} />
-                    <Route path="/change-password" element={<ChangePassword />} />
-                    <Route path="/matricula" element={<Matricula />} />
-                    <Route path="/expedientes" element={<Expedientes />} />
-                    <Route path="/reportes" element={<Reportes />} />
-                    <Route path="/activity-panel" element={<ActivityPanel />} />
-                    <Route path="/activity-form" element={<ActivityForm />} />
-                    <Route path="/attendance-panel" element={<AttendancePanel />} />
-                    <Route path="/Factura-maintenance" element={<FacturaMaintenance />} />
-                    <Route path="/registrar-encuesta" element={<Encuesta />} />
-                    <Route path="/evalua-maestra" element={<MaestrasFeedback />} />
-                    <Route path="/comunicacion" element={<Comunicacion />} />
-                    <Route path="/comportamiento" element={<ComportamientoAlumno />} />
-                    <Route path="/materiales" element={<MaterialesDidacticos />} />
-                    <Route path="/fotos" element={<FotosPorCarpeta />} />
-                    <Route path="/inventario" element={<Inventario />} />
-                    <Route path="/Gastos" element={<Gastos />} />
-                    <Route path="/monitoreo" element={<MonitoreoAlumno />} />
-                    <Route path="/Lista-actividades" element={<ListaActividades />} />                   
-                    <Route path="/GenerarRecibo" element={<GeneradorRecibos />} />
-                    <Route path="/reset-password" element={<ResetPassword />} />
-                    <Route path="/change-password" element={<ChangePassword />} />
-                    <Route path="/matricula" element={<Matricula />} />
-                    <Route path="/expedientes" element={<Expedientes />} />
-                    <Route path="/reportes" element={<Reportes />} />
-                    <Route path="/activity-panel" element={<ActivityPanel />} />
-                    <Route path="/activity-form" element={<ActivityForm />} />
-                    <Route path="/attendance-panel" element={<AttendancePanel />} />
-                    <Route path="/Factura-maintenance" element={<FacturaMaintenance />} />
-                    <Route path="/registrar-encuesta" element={<Encuesta />} />
-                    <Route path="/evalua-maestra" element={<MaestrasFeedback />} />
-                    <Route path="/comunicacion" element={<Comunicacion />} />
-                    <Route path="/comunicacion-mensajes" element={<ComunicacionMensajes />} />
-                    <Route path="/materiales" element={<MaterialesDidacticos />} />
-                    <Route path="/fotos" element={<FotosPorCarpeta />} />
-                    <Route path="/inventario" element={<Inventario />} />                    
-                    <Route path="/Grupos" element={<Grupos />} />
-                    <Route path="/facturas-pagadas" element={<FacturasPagadas />} />
-
-
-                </Routes>
             </div>
-        </Router>
+        </RouterProvider>
     );
-
 }
 
 export default App;
