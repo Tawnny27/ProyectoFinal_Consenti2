@@ -22,6 +22,7 @@ const Grupos = () => {
     const cargarGrupos = async () => {
         const groups = await ObtenerGrupos();
         setGroup(groups.data);
+        setFilteredData(groups.data);
         console.log(group);
     }
 
@@ -33,34 +34,50 @@ const Grupos = () => {
     const handleFilterChange = (e) => {
         if (e.target.name === 'status') setStatusFilter(e.target.value);
         if (e.target.name === 'user') setUserFilter(e.target.value);
+    };
 
-        let filtered = data.filter(item =>
-            (statusFilter === 'todos' || item.status === statusFilter) &&
-            item.usuario.includes(userFilter)
+    useEffect(() => {
+        let filtered = group.filter(item =>
+            (statusFilter === 'todos' || (item.status? 'activo' : 'inactivo' ) === statusFilter) &&
+            item.usuario.nombreUsuario.toLowerCase().includes(userFilter.toLowerCase())
         );
 
         setFilteredData(filtered);
-    };
+    }, [statusFilter, userFilter, group]);
 
     const handleNewRecordChange = (e) => {
         setNewRecord({ ...newRecord, [e.target.name]: e.target.value });
     };
 
+
+    // agregar nuevo grupo
     const handleAddRecord = () => {
         setData([...data, newRecord]);
         setFilteredData([...data, newRecord]);
         setNewRecord({ usuario: '', grupo: '' });
         setShowModal(false);
     };
+    //--------------------------------------------------
 
+    // logica para inactivar
     const handleStatusChange = (index) => {
-        let updatedData = data.map((item, i) => {
-            if (i === index) item.status = item.status === 'activo' ? 'inactivo' : 'activo';
+        /*
+        let updatedGroup = group.map((item, i) => {
+            if (i === index) item.status = !item.status;
             return item;
         });
-        setData(updatedData);
-        setFilteredData(updatedData);
+        setGroup(updatedGroup);
+
+        const filtered = updatedGroup.filter((item) =>
+            (statusFilter === 'todos' || (item.status ? 'activo' : 'inactivo') === statusFilter) &&
+            item.usuario.nombreUsuario.toLowerCase().includes(userFilter.toLowerCase())
+        );
+
+        setFilteredData(filtered);
+        */
     };
+    //----------------------------------------------------
+
 
     const cargaStatus = (status) => {
         if (status == true)
@@ -156,7 +173,7 @@ const Grupos = () => {
                         <div className="table-container">   
                             <DataTable
                                 columns={columns}
-                                data={group}
+                                data={filteredData}
                                 customStyles={customStyles}
                                 pagination
                                 paginationComponentOptions={{
