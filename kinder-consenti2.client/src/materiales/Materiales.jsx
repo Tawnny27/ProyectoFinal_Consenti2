@@ -256,107 +256,106 @@ const MaterialesDidacticos = () => {
                 <Sidebar />
 
                 <main className="main-content">
+                    {!modalVisible && (
 
-                    <div className="materiales-container">
+                    <div className="materiales-container">                      
+                           
+                                <h2 className="materiales-header">Material Didáctico</h2>
+                                <div className="add-container">
+                                    {user.rolId != 3 && (
+                                        <button onClick={() => setModalVisible(true)} className="button-agregar">
+                                            Agregar Nuevo Material
+                                        </button>
+                                    )}
+                                </div>
+                                {isLoading ? (
+                                    <p className="materiales-loading">Cargando materiales...</p>
+                                ) : (
+                                    <div className="contenedor">
 
-                        <h2 className="materiales-header">Material Didáctico</h2>
-                        <div className="add-container">
-                            {user.rolId != 3 && (
-                                <button onClick={() => setModalVisible(true)} className="button-agregar">
-                                    Agregar Nuevo Material
-                                </button>
-                            )}
-                        </div>
-                        {isLoading ? (
-                            <p className="materiales-loading">Cargando materiales...</p>
-                        ) : (
-                            <div className="contenedor">
-                                
+                                        <div className="cards-container">
+                                            {materiales.map((material) => (
+                                                <div key={material.idMaterialDidactico} className="material-card">
+                                                    <h6 className="titulo">{material.nombreArchivo}</h6>
+                                                    <p>Aula: {aulas.find(aula => aula.idGrupos === material.gruposId)?.nombreGrupo || 'Aula no encontrada'}</p>
+                                                    <div>
+                                                        <img src="\Fotos\Pdf_icon.png" alt="PDF Icon" style={{ width: '30px', height: '40px' }} />
+                                                        <p>{material.descripcion}</p>
+                                                    </div>
+                                                    <div className="botones-div">
 
-                                <div className="cards-container">
-                                    {materiales.map((material) => (
-                                        <div key={material.idMaterialDidactico} className="material-card">
-                                            <h6 className="titulo">{material.nombreArchivo}</h6>
-                                            <p>Aula: {aulas.find(aula => aula.idGrupos === material.gruposId)?.nombreGrupo || 'Aula no encontrada'}</p>
-                                            <div>
-                                                <img src="\Fotos\Pdf_icon.png" alt="PDF Icon" style={{ width: '30px', height: '40px' }} />
-                                                <p>{material.descripcion}</p>
-                                            </div>
-                                            <div className="botones-div">
+                                                        <button className="materiales-button"
+                                                            onClick={() => descargarFoto(material.rutaFoto)}
+                                                        >
+                                                            Descargar
+                                                        </button>
 
-                                                <button className="materiales-button"
-                                                    onClick={() => descargarFoto(material.rutaFoto)}
-                                                >
-                                                    Descargar
-                                                </button>
+                                                        {/* Botón de eliminar */}
+                                                        {user.rolId != 3 && (
+                                                            <button
+                                                                onClick={() => handleDelete(material.idMaterialDidactico)}
+                                                                className="materiales-button eliminar"
+                                                            >
+                                                                Eliminar
+                                                            </button>
+                                                        )}
+                                                    </div>
 
-                                                {/* Botón de eliminar */}
-                                                {user.rolId != 3 && (
-                                                    <button
-                                                        onClick={() => handleDelete(material.idMaterialDidactico)}
-                                                        className="materiales-button eliminar"
-                                                    >
-                                                        Eliminar
-                                                    </button>
-                                                )}
-                                            </div>
+                                                </div>
+                                            ))}
 
                                         </div>
-                                    ))}
-
-                                </div>
-                            </div>
+                                    </div>
+                                )}
+                        </div>
                         )}
 
                         {/* Modal para agregar nuevo material */}
                         {modalVisible && (
                             <div className="modal">
-                                <div className="modal-content">
-                                    <span className="close" onClick={() => cerrarModal(false)}>&times;</span>
-                                    <h3>Agregar Nuevo Material</h3>
-                                    <select
-                                        name="grupoId"  // Cambié "aula" por "grupoId" para enlazar correctamente el estado
-                                        value={idGrupoSeleccionado}
-                                        onChange={(e) => setIdGrupoSeleccionado(e.target.value)}
-                                        style={{
-                                            color: "#000",
-                                            backgroundColor: "#fff",
-                                            border: '1px solid #ccc', /* Borde gris claro */
-                                            padding: '8px',
-                                            fontSize: '14px',
-                                            width: '100%', /* Ajusta el tamaño según lo necesites */
-                                        }}
-                                    >
-                                        <option value="">Seleccionar Aula</option>
-                                        {aulas.map((aula) => (
-                                            <option key={aula.idGrupos} value={aula.idGrupos}> {/* Cambié el valor al id del aula */}
-                                                {aula.nombreGrupo}
-                                            </option>
-                                        ))}
-                                    </select>
+                                <span className="close" onClick={() => cerrarModal(false)}>&times;</span>
+                                <h3>Agregar Nuevo Material</h3>
+                                <select
+                                    name="grupoId"  // Cambié "aula" por "grupoId" para enlazar correctamente el estado
+                                    value={idGrupoSeleccionado}
+                                    onChange={(e) => setIdGrupoSeleccionado(e.target.value)}
+                                    style={{
+                                        color: "#000",
+                                        backgroundColor: "#fff",
+                                        border: '1px solid #ccc', /* Borde gris claro */
+                                       
+                                        fontSize: '14px',                                       
+                                    }}
+                                >
+                                    <option value="">Seleccionar Aula</option>
+                                    {aulas.map((aula) => (
+                                        <option key={aula.idGrupos} value={aula.idGrupos}> {/* Cambié el valor al id del aula */}
+                                            {aula.nombreGrupo}
+                                        </option>
+                                    ))}
+                                </select>
 
-                                    <input
-                                        type="text"
-                                        placeholder="Título"
-                                        value={nuevoMaterial.nombreArchivo}
-                                        onChange={handleChange}
-                                        name="nombre"
-                                        maxLength={30}
-                                    />
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        onChange={handleFileChange}
-                                        accept=".pdf,.doc,.docx,.ppt,.pptx,.jpeg,.jpg,.png"
-                                    />
-                                    <button onClick={agregarMaterial} className="button-adjuntar">
-                                        Agregar Material
-                                    </button>
-                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Título"
+                                    value={nuevoMaterial.nombreArchivo}
+                                    onChange={handleChange}
+                                    name="nombre"
+                                    maxLength={30}
+                                />
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleFileChange}
+                                    accept=".pdf,.doc,.docx,.ppt,.pptx,.jpeg,.jpg,.png"
+                                />
+                                <button onClick={agregarMaterial} className="button-adjuntar">
+                                    Agregar Material
+                                </button>
                             </div>
                         )}
 
-                    </div>
+                   
                 </main>
             </div>
             <Footer />

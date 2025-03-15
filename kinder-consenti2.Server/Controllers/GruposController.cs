@@ -35,6 +35,7 @@ namespace kinder_consenti2.Server.Controllers
             var usuario = await _context.Usuario.FindAsync(grupo.UsuarioId);
             if (usuario == null) return NotFound("No se encontraron datos favor validar");
             if (usuario.RolId != 2) return BadRequest("Error: intenta asignar un Usuario que no es maestro.");
+            grupo.Status = true;
             await _context.Grupos.AddAsync(grupo);
             await _context.SaveChangesAsync();
             var insertado = await _context.Grupos.FindAsync(grupo.IdGrupos);

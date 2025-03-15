@@ -263,11 +263,9 @@ namespace kinder_consenti2.Server.Models
                 G.HasKey(x => x.IdGrupos);
                 G.Property(x => x.NombreGrupo).IsRequired();
                 G.Property(x => x.EdadInicial).IsRequired();
-                G.Property(x => x.EdadFinal).IsRequired();
-                G.Property(x => x.Anno).IsRequired();
                 G.Property(x => x.Cupo).IsRequired();
                 G.Property(x => x.UsuarioId).IsRequired();
-                G.Property(x => x.Status).IsRequired();
+                G.Property(x => x.Status).HasDefaultValue(true).IsRequired();
             });            
             //ForeingKey
             modelBuilder.Entity<Grupos>()

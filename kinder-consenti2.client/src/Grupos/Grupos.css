@@ -1,5 +1,10 @@
-/* App.css */
 
+
+
+.btn-group {
+    display:flex;
+    gap:10%;
+}
 
 
 h1 {
@@ -8,8 +13,7 @@ h1 {
 
 .content {
     width: 60%;
-    height: 90vh;
-    
+    height: 90vh;    
     font-family: "Roboto", sans-serif;
     /* Para cubrir toda la pantalla */
     flex-direction: column;
@@ -20,8 +24,7 @@ h1 {
     display: flex;
 }
 
-    .group div {
-        
+    .group div {        
         margin-right: 10px;
     }
 
@@ -112,6 +115,7 @@ th {
 */
 
 .modal {
+    display: inline-block;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -121,7 +125,13 @@ th {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
+    margin: auto;
+    width: auto;
+    max-height: 75%;
+    text-align: initial;
+    overflow-y: auto;
 }
+
 
     .modal h2 {
         margin-top: 0;

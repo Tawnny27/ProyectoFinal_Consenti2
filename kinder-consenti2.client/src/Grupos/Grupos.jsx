@@ -4,7 +4,7 @@ import './Grupos.css';
 import Navbar from "../componentes/navbar";
 import Footer from "../componentes/footer";
 import Sidebar from "../componentes/Sidebar";
-import { ObtenerGrupos,  } from '../apiClient';
+import { ObtenerGrupos, ObtenerMaestros, CrearGrupo } from '../apiClient';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileExcel, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -15,8 +15,9 @@ const Grupos = () => {
     const [statusFilter, setStatusFilter] = useState('todos');
     const [userFilter, setUserFilter] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [newRecord, setNewRecord] = useState({ usuario: '', grupo: '' });
+    const [grupoEnvio, setGrupoEnvio] = useState({});
     const [group, setGroup] = useState([]);
+    const [maestros, setMaestros] = useState([]);
 
 
     const cargarGrupos = async () => {
@@ -33,7 +34,7 @@ const Grupos = () => {
 
 
     const handleNewRecordChange = (e) => {
-        setNewRecord({ ...newRecord, [e.target.name]: e.target.value });
+        setGrupoEnvio({ ...grupoEnvio, [e.target.name]: e.target.value });
     };
 
     const cargaStatus = (status) => {
@@ -44,41 +45,61 @@ const Grupos = () => {
     }
 
     // agregar nuevo grupo
-    const handleAddRecord = () => {
-        setData([...data, newRecord]);
-        setFilteredData([...data, newRecord]);
-        setNewRecord({ usuario: '', grupo: '' });
-        setShowModal(false);
-    };
+
     //--------------------------------------------------
     // logica para inactivar
     const handleStatusChange = (index) => {
-        /*
-        let updatedGroup = group.map((item, i) => {
-            if (i === index) item.status = !item.status;
-            return item;
-        });
-        setGroup(updatedGroup);
 
-        const filtered = updatedGroup.filter((item) =>
-            (statusFilter === 'todos' || (item.status ? 'activo' : 'inactivo') === statusFilter) &&
-            item.usuario.nombreUsuario.toLowerCase().includes(userFilter.toLowerCase())
-        );
-
-        setFilteredData(filtered);
-        */
     };
     //----------------------------------------------------
+
+    const cargarMaestros = async () => {
+        const usuarioResponse = await ObtenerMaestros();
+        setMaestros(usuarioResponse.data);
+    };
+
+    const agregarGrupo = async () => {
+        const response = await CrearGrupo(grupoEnvio);
+        if (response.status == 200) {
+            setGrupoEnvio({});
+            cargarGrupos();
+            setShowModal(false);
+        } else {
+            console.log(response);
+            alert(response.data);
+            setGrupoEnvio({});
+        }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        agregarGrupo();
+    }
+
+    const handleCancel = () => {
+        setShowModal(false);
+        setGrupoEnvio({});
+    }
+
+    const handleKeyPress = (event) => {
+        const charCode = event.charCode;
+
+        // Permitir solo números (0-9)
+        if (charCode < 48 || charCode > 57) {
+            event.preventDefault();
+        }
+    };
 
 
     useEffect(() => {
         cargarGrupos();
+        cargarMaestros();
         console.log(group);
-    },[]);  
+    }, []);
 
     useEffect(() => {
         let filtered = group.filter(item =>
-            (statusFilter === 'todos' || (item.status? 'activo' : 'inactivo' ) === statusFilter) &&
+            (statusFilter === 'todos' || (item.status ? 'activo' : 'inactivo') === statusFilter) &&
             item.usuario.nombreUsuario.toLowerCase().includes(userFilter.toLowerCase())
         );
         setFilteredData(filtered);
@@ -109,9 +130,9 @@ const Grupos = () => {
         },
         {
             name: "Usuario",
-            selector: row => row.usuario.nombreUsuario,
+            selector: row => row.usuario.nombreUsuario + " " + row.usuario.apellidosUsuario,
             with: '30px',
-            sortable: true            
+            sortable: true
         },
         {
             name: "Status",
@@ -121,14 +142,14 @@ const Grupos = () => {
         },
         {
             name: "Acciones",
-            with:'5px',            
+            with: '5px',
             cell: (row) => (
                 <div className="acciones">
                     <button className="acciones-button" onClick={() => alert('Ver y Editar')}>
                         <FontAwesomeIcon icon={faEdit} />
                     </button>
                     <button className="acciones-button" onClick={() => handleStatusChange(row.status)}>X</button>
-                </div>                 
+                </div>
             ),
         }
     ];
@@ -140,70 +161,111 @@ const Grupos = () => {
                 <Sidebar />
 
                 <main className="main-content">
+                    {!showModal && (
 
-                    <div className="content">
+                        <div className="content">
 
-                        <h1>Gestión de Grupos</h1>
+                            <h1>Gestión de Grupos</h1>
 
-                        <button className="new" onClick={() => setShowModal(true)}>Agregar nuevo registro</button>
+                            <button className="new" onClick={() => setShowModal(true)}>Agregar nuevo registro</button>
 
-                        <div className="group">
-                            <div className="seccion">
-                                <label>
-                                    Filtro por estado:
-                                </label>
-                                <select name="status" onChange={handleFilterChange} value={statusFilter}>
-                                    <option value="todos">Todos</option>
-                                    <option value="activo">Activo</option>
-                                    <option value="inactivo">Inactivo</option>
-                                </select> 
+                            <div className="group">
+                                <div className="seccion">
+                                    <label>
+                                        Filtro por estado:
+                                    </label>
+                                    <select name="status" onChange={handleFilterChange} value={statusFilter}>
+                                        <option value="todos">Todos</option>
+                                        <option value="activo">Activo</option>
+                                        <option value="inactivo">Inactivo</option>
+                                    </select>
+
+                                </div>
+                                <div className="seccion">
+                                    <label>
+                                        Filtro por usuario:
+                                    </label>
+                                    <input className="filter" name="user" onChange={handleFilterChange} value={userFilter} />
+                                </div>
+                            </div>
+
+                            <div className="table-container">
+                                <DataTable
+                                    columns={columns}
+                                    data={filteredData}
+                                    customStyles={customStyles}
+                                    pagination
+                                    paginationComponentOptions={{
+                                        rowsPerPageText: 'Filas por página:',
+                                        rangeSeparatorText: 'de',
+                                        noRowsPerPage: false, // Muestra el selector de filas por página
+                                        selectAllRowsItem: true,
+                                        selectAllRowsItemText: 'Todos'
+                                    }}
+                                    highlightOnHover
+                                    fixedHeader
+                                    fixedHeaderScrollHeight="300px"
+                                    responsive
+                                />
 
                             </div>
-                            <div className="seccion">
-                                <label>
-                                    Filtro por usuario:
-                                </label>
-                                <input className="filter" name="user" onChange={handleFilterChange} value={userFilter} />   
-                            </div>
-                                                    
-                        </div>                     
-                        <div className="table-container">   
-                            <DataTable
-                                columns={columns}
-                                data={filteredData}
-                                customStyles={customStyles}
-                                pagination
-                                paginationComponentOptions={{
-                                    rowsPerPageText: 'Filas por página:',
-                                    rangeSeparatorText: 'de',
-                                    noRowsPerPage: false, // Muestra el selector de filas por página
-                                    selectAllRowsItem: true,
-                                    selectAllRowsItemText: 'Todos'
-                                }}
-                                highlightOnHover
-                                fixedHeader
-                                fixedHeaderScrollHeight="300px"
-                                responsive 
-                            />                       
-                        
                         </div>
-                        {showModal && (
-                            <div className="modal">
+                    )}
+                    {showModal && (
+                        <div className="modal">
+                            <form onSubmit={handleSubmit}>
                                 <h2>Nuevo Registro</h2>
-                                <label>
-                                    Usuario:
-                                    <input name="usuario" onChange={handleNewRecordChange} value={newRecord.usuario} />
-                                </label>
-                                <label>
-                                    Nombre del grupo:
-                                    <input name="grupo" onChange={handleNewRecordChange} value={newRecord.grupo} />
-                                </label>
-                                <button onClick={handleAddRecord}>Agregar</button>
-                                <button onClick={() => setShowModal(false)}>Cancelar</button>
-                            </div>
-                        )}
+                                <div>
+                                    <label>Maestro:</label>
+                                    <select
+                                        name="usuarioId"
+                                        value={grupoEnvio.UsuarioId}
+                                        onChange={handleNewRecordChange}
+                                        required
+                                    >
+                                        <option>Selecione un maestro</option>
+                                        {
+                                            maestros.map((ma) => (
+                                                <option key={ma.idUsuario} value={ma.idUsuario}>
+                                                    {ma.nombreUsuario} {ma.apellidosUsuario}
+                                                </option>
+                                            ))
+                                        }
+                                    </select>
 
-                    </div>
+                                    <label>Nombre del grupo:</label>
+                                    <input name="nombreGrupo"
+                                        onChange={handleNewRecordChange}
+                                        value={grupoEnvio.nombreGrupo}
+                                        required
+                                    />
+
+                                    <label>Edad Inicial:</label>
+                                    <input name="edadInicial"
+                                        onChange={handleNewRecordChange}
+                                        value={grupoEnvio.edadInicial}
+                                        onKeyPress={handleKeyPress}
+                                        required
+                                    />
+
+                                    <label>Cupo:</label>
+                                    <input name="cupo"
+                                        onChange={handleNewRecordChange}
+                                        value={grupoEnvio.cupo}
+                                        onKeyPress={handleKeyPress}
+                                        required
+                                    />
+
+                                </div>
+                                <div className="btn-group">
+                                    <button type="submit">Agregar</button>
+                                    <button type="reset" onClick={handleCancel}>Cancelar</button>
+                                </div>
+                            </form>
+                        </div>
+                    )}
+
+
                 </main>
 
             </div>
