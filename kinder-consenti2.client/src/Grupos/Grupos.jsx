@@ -26,29 +26,22 @@ const Grupos = () => {
         console.log(group);
     }
 
-    useEffect(() => {
-        cargarGrupos();
-        console.log(group);
-    },[]);
-
     const handleFilterChange = (e) => {
         if (e.target.name === 'status') setStatusFilter(e.target.value);
         if (e.target.name === 'user') setUserFilter(e.target.value);
     };
 
-    useEffect(() => {
-        let filtered = group.filter(item =>
-            (statusFilter === 'todos' || (item.status? 'activo' : 'inactivo' ) === statusFilter) &&
-            item.usuario.nombreUsuario.toLowerCase().includes(userFilter.toLowerCase())
-        );
-
-        setFilteredData(filtered);
-    }, [statusFilter, userFilter, group]);
 
     const handleNewRecordChange = (e) => {
         setNewRecord({ ...newRecord, [e.target.name]: e.target.value });
     };
 
+    const cargaStatus = (status) => {
+        if (status == true)
+            return "Activo";
+        else
+            return "inactivo";
+    }
 
     // agregar nuevo grupo
     const handleAddRecord = () => {
@@ -58,7 +51,6 @@ const Grupos = () => {
         setShowModal(false);
     };
     //--------------------------------------------------
-
     // logica para inactivar
     const handleStatusChange = (index) => {
         /*
@@ -79,13 +71,18 @@ const Grupos = () => {
     //----------------------------------------------------
 
 
-    const cargaStatus = (status) => {
-        if (status == true)
-            return "Activo";
-        else
-            return "inactivo";
-    }
+    useEffect(() => {
+        cargarGrupos();
+        console.log(group);
+    },[]);  
 
+    useEffect(() => {
+        let filtered = group.filter(item =>
+            (statusFilter === 'todos' || (item.status? 'activo' : 'inactivo' ) === statusFilter) &&
+            item.usuario.nombreUsuario.toLowerCase().includes(userFilter.toLowerCase())
+        );
+        setFilteredData(filtered);
+    }, [statusFilter, userFilter, group]);
 
 
     const customStyles = {
