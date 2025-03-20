@@ -1,7 +1,5 @@
-﻿import React, { useState } from 'react';
+﻿import { useState } from 'react';
 import './comunicacionesMensajes.css';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
 
 function ComunicacionMensajes() {
     const [mensaje, setMensaje] = useState('');
@@ -29,7 +27,7 @@ function ComunicacionMensajes() {
 
     return (
         <div className="user-maintenance-container">
-            <Navbar />
+        
             <div className="comunicacion_container mt-5">
                 <h2 className="comunicacion_titulo">Sistema de Mensajería</h2>
                 <div className="comunicacion_formulario">
@@ -66,7 +64,7 @@ function ComunicacionMensajes() {
                     </div>
                 )}
             </div>
-            <Footer />
+          
         </div>
         
     );

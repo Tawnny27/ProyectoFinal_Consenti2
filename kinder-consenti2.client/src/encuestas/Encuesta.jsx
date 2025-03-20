@@ -1,10 +1,7 @@
-﻿import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+﻿import { useState, useEffect } from 'react';
 import './encuestas.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import { CrearEvaluacionKinder } from '../apiClient';
 
@@ -87,7 +84,7 @@ const Encuesta = () => {
 
     return (
         <div className="teachers-feedback-container">
-            <Navbar />
+         
             <form onSubmit={handleSubmit} className="survey-form" style={{ display: isFormDisabled ? 'none' : 'block' }}>
                 <h2>Encuesta del Centro Educativo</h2>
                 <label>
@@ -131,7 +128,6 @@ const Encuesta = () => {
                 </div>
             )}
 
-            <Footer />
         </div>
     );
 };

@@ -1,16 +1,12 @@
 ﻿
 import { useState, useEffect } from 'react';
 import './Grupos.css';
-import Navbar from "../componentes/navbar";
-import Footer from "../componentes/footer";
-import Sidebar from "../componentes/Sidebar";
 import { ObtenerGrupos, ObtenerMaestros, CrearGrupo } from '../apiClient';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileExcel, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
-const Grupos = () => {
-    const [data, setData] = useState([]);
+const Grupos = () => { 
     const [filteredData, setFilteredData] = useState([]);
     const [statusFilter, setStatusFilter] = useState('todos');
     const [userFilter, setUserFilter] = useState('');
@@ -156,9 +152,9 @@ const Grupos = () => {
 
     return (
         <div >
-            <Navbar />
+        
             <div className="content-container">
-                <Sidebar />
+           
 
                 <main className="main-content">
                     {!showModal && (
@@ -269,7 +265,7 @@ const Grupos = () => {
                 </main>
 
             </div>
-            <Footer />
+      
 
         </div>
     );

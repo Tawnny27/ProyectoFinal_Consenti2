@@ -194,8 +194,7 @@ body {
 
 .main-content {
     flex-grow: 1;
-    padding: 20px;
-    background: url('../assets/background.jpg') no-repeat center center fixed;
+    padding: 20px; 
     background-size: cover;
     display: flex;
     flex-direction: column;

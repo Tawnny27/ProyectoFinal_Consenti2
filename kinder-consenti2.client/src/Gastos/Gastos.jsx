@@ -1,6 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
+﻿import { useState, useEffect } from 'react';
 import './Gastos.css';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -156,13 +154,10 @@ const Gastos = () => {
 
 
     return (
-        <div className="gastos-container">
-            <Navbar />
+        <div className="gastos-container">       
             <div className="content-wrapper">
                 <div className="gastos-content">
-                    <h1 className="gastos-title">Gestion de Gastos</h1>
-
-                 
+                    <h1 className="gastos-title">Gestion de Gastos</h1>                                 
 
                     <div className="gastos-main-buttons">
                         <button
@@ -256,7 +251,7 @@ const Gastos = () => {
                         </div>
                     )}
                 </div>
-                <Footer />
+ 
             </div>
         </div>
     );

@@ -1,10 +1,7 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import 'primeicons/primeicons.css';
 import { useNavigate } from 'react-router-dom';
-
 import DataTable from 'react-data-table-component';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
 import * as XLSX from 'xlsx'; // Importar la biblioteca xlsx
 import './UserMaintenance.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -31,21 +28,7 @@ const UserMaintenance = () => {
     const [modalType, setModalType] = useState('');
     const navigate = useNavigate();
 
-    // Función para obtener el nombre del rol desde la API utilizando el rolId
-    /*
-    const fetchRoleName = async (rolId) => {
-        try {
-            const response = await axios.get(`https://localhost:44369/api/Roles/BuscarRol/${rolId}`);
-            if (response.status === 200) {
-                return response.data.nombreRol; // Devuelve el nombre del rol
-            }
-            return 'Desconocido'; // En caso de que el rol no exista o no se pueda obtener
-        } catch (error) {
-            console.error('Error al obtener el rol:', error);
-            return 'Desconocido'; // En caso de error
-        }
-    };
-    */
+   
 
     // Función para obtener los datos de los usuarios desde la API
     
@@ -109,7 +92,7 @@ const UserMaintenance = () => {
     };
 
     const handleEdit = (user) => {
-        navigate(`/editar-usuario/${user.id}`); // Corregido para usar comillas inversas
+        navigate(`/pages/editar-usuario/${user.id}`); // Corregido para usar comillas inversas
     };
 
    
@@ -243,11 +226,7 @@ const UserMaintenance = () => {
     ];
 
     return (
-        <div className="user-maintenance-container">
-            <Navbar
-                handleCalendarClick={handleCalendarClick}
-                handleLogout={handleLogout}
-            />
+        <div className="user-maintenance-container">   
           
             <h2>Mantenimiento de Usuarios</h2>
             <ConfirmDialog />
@@ -343,7 +322,7 @@ const UserMaintenance = () => {
                 />
             )}
 
-            <Footer />
+           
         </div>
     );
 };

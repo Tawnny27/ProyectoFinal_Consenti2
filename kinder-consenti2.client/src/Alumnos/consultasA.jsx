@@ -1,12 +1,9 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import DataTable from 'react-data-table-component';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faCalendar, faIdCard, faVenusMars, faHome, faInfoCircle, faCamera, faUserShield, faPhone } from '@fortawesome/free-solid-svg-icons';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
 import 'primeicons/primeicons.css';
 /*import { faFileExcel, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'; // Importa los iconos*/
 import './AlumnoMaintenance.css'; // Importing main styles
@@ -261,7 +258,7 @@ function AlumnoMaintenance() {
     return (
         
         <div className="alumno-registry-container">
-           <Navbar />
+          {/* <Navbar /> */}
             <div className="content-wrapper">
               
 
@@ -650,7 +647,7 @@ function AlumnoMaintenance() {
                     </div>
                 )}
             </div>
-            <Footer />
+           {/* <Footer /> */}
             <ConfirmDialog />
         </div>
 

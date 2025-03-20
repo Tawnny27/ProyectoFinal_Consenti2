@@ -1,8 +1,5 @@
-﻿import React, { useState, useEffect } from 'react';
-
+﻿import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
 import './Factura.css';
 import { ObtenerFacturasPendientes, ObtenerUsuarioPorId, ActualizarEstadoFactura } from '../apiClient'; 
 
@@ -171,7 +168,7 @@ const FacturaMaintenance = () => {
 
     return (
         <div className="Fact-maintenance-container">
-            <Navbar />
+         
             <h2>Mantenimiento de Facturas</h2>
 
             {/* Filtros */}
@@ -235,7 +232,6 @@ const FacturaMaintenance = () => {
                 </div>
             )}
 
-            <Footer />
         </div>
     );
 };

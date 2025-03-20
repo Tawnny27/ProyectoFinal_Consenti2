@@ -32,41 +32,49 @@ import ComportamientoAlumno from './comportamiento/Comportamiento';
 import ListaActividades from './actividades/activityList';
 import ComunicacionMensajes from './comunicaciones/comunicacionesMensajes';
 import Grupos from './Grupos/Grupos';
-import FacturasPagadas from './consultar_pagado/FacturasPagadas.jsx';
+import { VistaPrincipal } from './VistaPrincipal';
 
 const router = createBrowserRouter(
     [
         { path: '/', element: <LoginForm /> },
-        { path: '/main', element: < MainLayout /> },
-        { path: '/editar-usuario/:id', element: <EditarUsuario /> },
-        { path: '/editar-alumno/:id', element: <EditarAlumno /> },
-        { path: '/user-maintenance', element: <UserMaintenance /> },
-        { path: '/alumno-maintenance', element: <AlumnoMaintenance /> },
-        { path: '/registrar-usuario', element: <RegistroUsuario /> },
-        { path: '/registrar-pago', element: <RegistroPago /> },
-        { path: '/GenerarRecibo', element: <GeneradorRecibos /> },
-        { path: '/reset-password', element: <ResetPassword /> },
-        { path: '/change-password', element: <ChangePassword /> },
-        { path: '/matricula', element: <Matricula /> },
-        { path: '/expedientes', element: <Expedientes /> },
-        { path: '/reportes', element: <Reportes /> },
-        { path: '/activity-panel', element: <ActivityPanel /> },
-        { path: '/activity-form', element: <ActivityForm /> },
-        { path: '/attendance-panel', element: <AttendancePanel /> },
-        { path: '/Factura-maintenance', element: <FacturaMaintenance /> },
-        { path: '/registrar-encuesta', element: <Encuesta /> },
-        { path: '/evalua-maestra', element: <MaestrasFeedback /> },
-        { path: '/comunicacion', element: <Comunicacion /> },
-        { path: '/comportamiento', element: <ComportamientoAlumno /> },
-        { path: '/materiales', element: <MaterialesDidacticos /> },
-        { path: '/fotos', element: <FotosPorCarpeta /> },
-        { path: '/inventario', element: <Inventario /> },
-        { path: '/Gastos', element: <Gastos /> },
-        { path: '/monitoreo', element: <MonitoreoAlumno /> },
-        { path: '/Lista-actividades', element: <ListaActividades /> },
-        { path: '/comunicacion-mensajes', element: <ComunicacionMensajes /> },
-        { path: '/Grupos', element: <Grupos /> },
-        { path: '/facturas-pagadas', element: <FacturasPagadas /> },
+        {
+            path: '/pages',
+            element: <VistaPrincipal />,
+            children: [
+                { index: true, element: <MainLayout /> },
+                { path: 'main', element: < MainLayout /> },
+                { path: 'editar-usuario/:id', element: <EditarUsuario /> },
+                { path: 'editar-alumno/:id', element: <EditarAlumno /> },
+                { path: 'user-maintenance', element: <UserMaintenance /> },
+                { path: 'alumno-maintenance', element: <AlumnoMaintenance /> },
+                { path: 'registrar-usuario', element: <RegistroUsuario /> },
+                { path: 'registrar-pago', element: <RegistroPago /> },
+                { path: 'GenerarRecibo', element: <GeneradorRecibos /> },                            
+                { path: 'matricula', element: <Matricula /> },
+                { path: 'expedientes', element: <Expedientes /> },
+                { path: 'reportes', element: <Reportes /> },
+                { path: 'activity-panel', element: <ActivityPanel /> },
+                { path: 'activity-form', element: <ActivityForm /> },
+                { path: 'attendance-panel', element: <AttendancePanel /> },
+                { path: 'Factura-maintenance', element: <FacturaMaintenance /> },
+                { path: 'registrar-encuesta', element: <Encuesta /> },
+                { path: 'evalua-maestra', element: <MaestrasFeedback /> },
+                { path: 'comunicacion', element: <Comunicacion /> },
+                { path: 'comportamiento', element: <ComportamientoAlumno /> },
+                { path: 'materiales', element: <MaterialesDidacticos /> },
+                { path: 'fotos', element: <FotosPorCarpeta /> },
+                { path: 'inventario', element: <Inventario /> },
+                { path: 'Gastos', element: <Gastos /> },
+                { path: 'monitoreo', element: <MonitoreoAlumno /> },
+                { path: 'Lista-actividades', element: <ListaActividades /> },
+                { path: 'comunicacion-mensajes', element: <ComunicacionMensajes /> },
+                { path: 'Grupos', element: <Grupos /> },
+           
+            ]
+        },
+        { path: 'change-password', element: <ChangePassword /> },
+        { path: 'reset-password', element: <ResetPassword /> },  
+       
     ],
     {
         future: {

@@ -43,10 +43,7 @@ function Navbar() {
                     <span>Cargando...</span>
                 )}
             </div>
-            <div className="header-actions">
-                <button onClick={handleMenuClick} className="home-button">
-                    <FontAwesomeIcon icon={faHome} /> Menú
-                </button>
+            <div className="header-actions">              
                 <button onClick={handleLogout} className="logout-button">
                     <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar
                 </button>

@@ -37,19 +37,11 @@
     }
 
 /* Estilos para la pantalla de inventario */
-.inventario-container {
-    flex-direction: column;
-    position: relative;
-    font-family: 'Roboto', sans-serif;
-    background: url('../assets/background.jpg') no-repeat center center;
-    background-size: cover;
-    box-sizing: border-box;
-    min-height: 100vh;
-    z-index: 1;
-    width: 100%;
-    /*margin-top: 95px;*/
-}
 
+.inventario-container {
+    background-color: transparent;
+}
+    
 .inventario-decorative-header {
     position: relative;
     height: 200px;

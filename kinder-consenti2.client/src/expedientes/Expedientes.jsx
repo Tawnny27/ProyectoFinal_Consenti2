@@ -1,10 +1,6 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import  { useState, useEffect } from 'react';
 import 'primeicons/primeicons.css';
-import { useNavigate } from 'react-router-dom';
-
 import DataTable from 'react-data-table-component';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
 import './expedientes.css';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -138,7 +134,7 @@ const Expedientes = () => {
 
     return (
         <div className="user-maintenance-container">
-            <Navbar />
+           
             <h2>Expedientes de Alumnos</h2>
             <div className="form-group" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <input
@@ -233,7 +229,7 @@ const Expedientes = () => {
                 </div>
 
             )}
-            <Footer />
+     
         </div>
     );
 };

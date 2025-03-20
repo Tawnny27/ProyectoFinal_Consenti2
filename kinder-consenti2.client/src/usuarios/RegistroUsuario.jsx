@@ -1,9 +1,6 @@
 ﻿// src/usuarios/RegistroUsuario.jsx
-import React, { useState, useEffect } from 'react';
-
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
 import './registro.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserShield, faIdCard, faPhone, faInfoCircle, faLock } from '@fortawesome/free-solid-svg-icons';
@@ -91,8 +88,7 @@ const RegistroUsuario = () => {
 
 
     return (
-        <div className="usuario-maintenance-containerR">
-            <Navbar />
+        <div className="usuario-maintenance-containerR">      
             <div className="usuario-form-containerR">
                 <h1 className="usuario-titleR">Registrar Usuario</h1>
                 {mensajeExito && <div className="usuario-success-messageR">{mensajeExito}</div>}
@@ -215,7 +211,7 @@ const RegistroUsuario = () => {
                     {error && <div className="usuario-error-messageR">{error}</div>}
                 </form>
             </div>
-            <Footer />
+        
         </div>
     );
 };

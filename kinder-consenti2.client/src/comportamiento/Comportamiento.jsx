@@ -1,9 +1,5 @@
-﻿import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
-import Sidebar from "../componentes/Sidebar";
+﻿import  { useState, useEffect } from 'react';
+
 import DataTable from 'react-data-table-component';
 import { useUserContext } from '../UserContext';
 import * as XLSX from 'xlsx';
@@ -162,15 +158,10 @@ const ComportamientoAlumno = () => {
 
     return (
         <div>
-            <Navbar />
-            <div className="content-container">
-
-                <Sidebar />
-
+            <div className="content-container">       
                 <main className="main-content">
                 <div className="content">
 
-                    {/* <div className="user-maintenance-container">*/}
                     <h2>Comportamiento de los Niños</h2>
                     <div className="group">
 
@@ -195,35 +186,7 @@ const ComportamientoAlumno = () => {
                             />
                         </div>
                     </div>
-
-                    {/*
-                            <table className="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Apellidos</th>
-                                        <th>Cédula</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {alumnosFiltrados.map((alumno) => (
-                                        <tr key={alumno.idAlumno}>
-                                            <td>{alumno.nombreAlumno}</td>
-                                            <td>{alumno.apellidosAlumno}</td>
-                                            <td>{alumno.cedulaAlumno}</td>
-                                            <td>
-                                                <button className="submit-m-button" onClick={() => handleAlumnoSeleccionado(alumno)}>
-                                                    Comportamiento
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table> */}
-
-
-
+                            
 
                     {loading ? (
                         <p>Cargando...</p>
@@ -321,7 +284,7 @@ const ComportamientoAlumno = () => {
 
                 </main>
             </div >
-            <Footer />
+     
         </div >
     );
 };

@@ -1,7 +1,5 @@
-﻿import React, { useState } from "react";
+﻿import  { useState } from "react";
 import "./ActivityForm.css";
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
 
 const ActivityForm = () => {
     const [title, setTitle] = useState("");
@@ -32,7 +30,7 @@ const ActivityForm = () => {
 
     return (
         <div className="user-maintenance-container">
-            <Navbar />
+           {/* <Navbar /> */}
             <div className="activity-form-container">
                 <h2 className="activity-form-title">Agregar Nueva Actividad</h2>
                 <form className="activity-form" onSubmit={handleSubmit}>
@@ -85,7 +83,7 @@ const ActivityForm = () => {
                     <button type="submit" className="activity-form-submit">Registrar Actividad</button>
                 </form>
             </div>
-            < Footer/>
+          { /* < Footer/> */}
         </div>
     );
 };

@@ -1,7 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
+﻿import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ReactStars from 'react-rating-stars-component'; // Importar la librería de estrellas*/
@@ -96,7 +93,7 @@ const MaestrasFeedback = () => {
 
     return (
         <div className="teachers-feedback-container">
-            <Navbar />
+       
             <div className="feedback-form-container" style={{ marginTop: '100px' }}>
                 <h2 className="feedback-title">Retroalimentación y Calificación de Maestras</h2>
 
@@ -140,7 +137,7 @@ const MaestrasFeedback = () => {
                     </div>
                 )}
             </div>
-            <Footer />
+   
         </div>
 
     );

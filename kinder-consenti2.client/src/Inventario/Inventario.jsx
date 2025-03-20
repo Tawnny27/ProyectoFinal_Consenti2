@@ -1,7 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
-
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
+﻿import  { useState, useEffect } from 'react';
 import './Inventario.css';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -137,17 +134,6 @@ const Inventario = () => {
             console.error('Error al eliminar inventario:', error);
         }
     };
-
-
-    //const handleCloseModal = () => {
-    //    setModalIsOpen(false);
-    //    setInventarioSeleccionado(null);
-    //    setNuevoInventario({
-            
-    //        descripcion: '',
-    //        categoriaId: '',
-    //    });
-    //};
 
     const columns = [
         {
@@ -309,8 +295,7 @@ const Inventario = () => {
 
     return (
         <div className="inventario-container">
-            <Navbar />
-
+  
             <div className="content-wrapper">
                 <div className="inventario-content">
                     <h1 className="inventario-title">Gestion de Inventario</h1>
@@ -440,10 +425,7 @@ const Inventario = () => {
                             </div>
                         </div>
                     )}
-
-
-                </div>
-                <Footer />
+                </div>         
             </div>
         </div>
     );

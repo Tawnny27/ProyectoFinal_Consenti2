@@ -1,8 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
+﻿import { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import '../expedientes/expedientes';
@@ -160,8 +156,7 @@ const MonitoreoAlumno = () => {
     };
 
     return (
-        <div className="user-maintenance-container">
-            {<Navbar />}
+        <div className="user-maintenance-container">   
             <h2>Monitoreo de los Niños</h2>
             <div className="form-group">
                 <input
@@ -233,7 +228,6 @@ const MonitoreoAlumno = () => {
                 </div>
             )}
 
-            <Footer />
         </div>
     );
 };

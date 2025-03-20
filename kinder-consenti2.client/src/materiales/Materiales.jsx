@@ -1,7 +1,4 @@
 ﻿import { useEffect, useState, useRef } from "react";
-import Navbar from "../componentes/navbar";
-import Footer from "../componentes/footer";
-import Sidebar from "../componentes/Sidebar";
 import "./materiales.css";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -251,9 +248,9 @@ const MaterialesDidacticos = () => {
 
     return (
         <div>
-            <Navbar />
+            {/* <Navbar /> */}
             <div className="content-container">
-                <Sidebar />
+             { /* <Sidebar /> */}
 
                 <main className="main-content">
                     {!modalVisible && (
@@ -358,7 +355,7 @@ const MaterialesDidacticos = () => {
                    
                 </main>
             </div>
-            <Footer />
+           {/* <Footer /> */}
         </div>
     );
 };

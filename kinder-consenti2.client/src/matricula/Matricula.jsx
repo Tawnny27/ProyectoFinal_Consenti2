@@ -1,13 +1,9 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import './matricula.css';
 import { useUserContext } from '../UserContext';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
-import Sidebar from "../componentes/Sidebar";
 import { BuscarUsuarios, ObtenerUsuarios, ObtenerProductosfijos, ObtenerProductosMensuales, CrearMatricula, } from '../apiClient'; // Importar las funciones desde apiClient.js
 
 const Matricula = () => {
@@ -100,18 +96,7 @@ const Matricula = () => {
                         await fetchUsers();
                         const usuarioEncontrado = userList.find(
                             (usuario) => usuario.id === user.idUsuario
-                        );
-
-                        //// Si el usuario se encuentra, cargar los datos de los alumnos
-                        //if (usuarioEncontrado) {
-                        //    if (usuarioEncontrado.idUsuario === user.idUsuario) {
-                        //        const alumnosResponse = await fetch(`https://localhost:44369/api/alumnos/${user.idUsuario}`);
-                        //        const alumnos = await alumnosResponse.json();
-                        //        setChildrenList(alumnos || []);
-                        //    } else {
-                        //        setChildrenList([]);
-                        //    }
-                        //}
+                        );               
                     }
                 } catch (error) {
                     console.error('Error al cargar los datos del usuario:', error);
@@ -467,12 +452,10 @@ const Matricula = () => {
 
     return (
         <div >
-            <Navbar />
+
             <div className="content-container">
-                <Sidebar />
                 <main className="main-content">
-                    <div className="content-matricula">
-                        
+                    <div className="content-matricula">                        
                             <div className="enrollment-form">
                                 <h2>Formulario de Matrícula</h2>
                                 {error && <p className="error">{error}</p>}
@@ -632,7 +615,6 @@ const Matricula = () => {
                     </div>
                 </main>
             </div>
-            <Footer />
         </div>
     );
 }

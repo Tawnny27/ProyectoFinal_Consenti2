@@ -1,12 +1,10 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ActivityPanel.css';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
 import { faCarrot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from '../UserContext';
-import axios from 'axios';
+
 import Select from 'react-select';
 import { ObtenerGrupos, ObtenerGrupoAlumnos, CrearActividadComidas, CrearActividadBanno, CrearActividadDormir, CrearActividadHuerta } from '../apiClient'; // Importar las funciones desde apiClient.js
 
@@ -170,7 +168,7 @@ function ActivityPanel() {
 
     return (
         <div className="user-maintenance-container">
-            <Navbar />
+           {/* <Navbar /> */}
             <div className="activity-container" style={{ marginTop: '200px' }}>
                 <div className="activity-panel">
                     <h1 className="activity-title">Panel de Actividades</h1>
@@ -415,7 +413,7 @@ function ActivityPanel() {
                     </div>
                 </div>
             </div>
-            <Footer />
+           {/* <Footer /> */}
         </div>
     );
 }

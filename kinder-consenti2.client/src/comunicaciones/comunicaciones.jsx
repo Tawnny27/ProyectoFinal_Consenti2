@@ -1,7 +1,5 @@
-﻿import React, { useState } from "react";
+﻿import { useState } from "react";
 import "./comunicaciones.css";
-import Footer from "../componentes/footer";
-import Navbar from "../componentes/navbar";
 
 const Comunicaciones = () => {
     const [formData, setFormData] = useState({
@@ -70,7 +68,7 @@ const Comunicaciones = () => {
 
     return (
         <div className="user-maintenance-container">
-            <Navbar/>
+            
             <div className="comunicacion_container">
                 <h1 className="comunicacion_title">Sección de Mensajería</h1>
                 <form className="comunicacion_form" onSubmit={handleSubmit}>
@@ -134,7 +132,7 @@ const Comunicaciones = () => {
                     </div>
                 ) : null}
             </div>
-            <Footer/>
+          
         </div>
         
     );

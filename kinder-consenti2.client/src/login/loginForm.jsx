@@ -23,7 +23,7 @@ const LoginForm = () => {
                 setUser(usuario);
                 setErrorMessage('');
                 console.log('Redirigiendo a / main');
-                navigate('/main');
+                navigate('/pages');
             } else {
                 setErrorMessage(response);
             }

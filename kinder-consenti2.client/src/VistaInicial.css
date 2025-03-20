@@ -1,0 +1,26 @@
+.orderViewOpen {
+    display: grid;
+    grid-template-columns: 275px auto;
+    min-height: 100%;
+    background: url('../assets/background.jpg') no-repeat center center fixed;
+}
+
+.orderViewClose {
+    display: grid;
+    grid-template-columns: 275px auto;
+    min-height: 100%;
+    background: url('../assets/background.jpg') no-repeat center center fixed;
+}
+.contPrincipal {
+    display: grid;
+    grid-template-rows: 20px auto 20px;
+    min-height: 100%;
+    background: url('../assets/background.jpg') no-repeat center center fixed;
+}
+.pageContainer {
+    display: grid;
+    height: 98vh;
+    margin-left: 5px;
+    overflow: auto;
+    background-color: transparent;
+}

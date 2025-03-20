@@ -1,8 +1,5 @@
 ﻿import React from 'react';
 import { useEffect, useState } from "react";
-import Navbar from "../componentes/navbar";
-import Footer from "../componentes/footer";
-import Sidebar from "../componentes/Sidebar";
 import "./activityList.css";
 import { CrearEvento, ObtenerEventosActivos } from '../apiClient'; // Importar las funciones desde apiClient.js
 import 'react-toastify/dist/ReactToastify.css';
@@ -163,9 +160,9 @@ const ListaActividades = () => {
 
     return (
         <div>
-            <Navbar />
+            {/* <Navbar /> */}
             <div className="content-container">
-                <Sidebar />
+              {/*  <Sidebar /> */}
                 <main className="main-content">
                     {!modalVisible && (
                         <div className="act-container">
@@ -299,7 +296,7 @@ const ListaActividades = () => {
 
                 </main>
             </div>
-            <Footer />
+           {/* <Footer /> */}
         </div>
 
     );

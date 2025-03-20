@@ -1,8 +1,6 @@
-﻿import React, { useState, useEffect } from "react";
-import axios from "axios";
+﻿import  { useState, useEffect } from "react";
+
 import "./AttendancePanel.css";
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
 import { useUserContext } from '../UserContext';
 import { toast } from 'react-toastify';
 import DataTable from 'react-data-table-component';
@@ -165,7 +163,7 @@ function AttendancePanel() {
 
     return (
         <div className="user-maintenance-container">
-            <Navbar />
+          
             <div className="attendance-container">
                 <h1 className="attendance-title">Lista de Asistencia</h1>
                 {/*<div className="user-info">*/}
@@ -232,7 +230,7 @@ function AttendancePanel() {
                     
                 </div>
             </div>
-            <Footer />
+          
         </div>
     );
 }

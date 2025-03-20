@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPlus, faCaretDown, faChildren, faClipboardList, faUserEdit, faChartBar ,faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faUserPlus, faCaretDown, faChildren, faClipboardList, faUserEdit, faChartBar, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { useUserContext } from '../UserContext';
 import {
     faAddressBook, faReceipt, faBoxesStacked, faFileInvoice, faFolderOpen,
@@ -43,7 +43,6 @@ function Sidebar() {
     };
 
 
-
     return (
 
         <aside className="sidebar">
@@ -58,23 +57,23 @@ function Sidebar() {
                         {showAdminSubmenu && (
                             <ul className="submenu">
                                 <li>
-                                    <Link to="/registrar-usuario">
+                                    <Link to="/pages/registrar-usuario">
                                         <FontAwesomeIcon icon={faUserPlus} className="menu-icon" /> Registrar Usuario
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/user-maintenance">
+                                    <Link to="/pages/user-maintenance">
                                         <FontAwesomeIcon icon={faUserEdit} className="menu-icon" /> Consultar Usuarios
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/Grupos">
+                                    <Link to="/pages/Grupos">
                                         <FontAwesomeIcon icon={faUsers} className="menu-icon" />
                                         Aulas
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/reportes">
+                                    <Link to="/pages/reportes">
                                         <FontAwesomeIcon icon={faChartBar} className="menu-icon" /> Reportes
                                     </Link>
                                 </li>
@@ -91,11 +90,11 @@ function Sidebar() {
                         {showPlatformSubmenu && (
                             <ul className="submenu">
                                 <li>
-                                    <Link to="/activity-panel">
+                                    <Link to="/pages/activity-panel">
                                         <FontAwesomeIcon icon={faChildren} className="menu-icon" /> Actividades (Maestro)
                                     </Link>
                                 </li>
-                                <li><Link to="/attendance-panel">Asistencia</Link></li>
+                                <li><Link to="/pages/attendance-panel">Asistencia</Link></li>
                             </ul>
                         )}
                     </li>
@@ -108,14 +107,22 @@ function Sidebar() {
                         </div>
                         {showGestFSubMenu && (
                             <ul className="submenu">
-                                <li><Link to="/registrar-pago">
-                                    <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Registrar Pago</Link></li>
-                                <li><Link to="/FacturasPagadas">
-                                    <FontAwesomeIcon icon={faFileInvoice} className="menu-icon" /> Recibo de Pagos</Link></li>
-                                <li><Link to="/Factura-maintenance">
-                                    <FontAwesomeIcon icon={faHandHoldingDollar} className="menu-icon" /> Control de pagos</Link></li>
-                                <li><Link to="/Gastos">
-                                    <FontAwesomeIcon icon={faReceipt} className="menu-icon" /> Control de gastos</Link></li>
+                                <li><Link to="/pages/registrar-pago">
+                                    <FontAwesomeIcon icon={faWallet} className="menu-icon" />
+                                    Registrar Pago
+                                </Link>
+                                </li>
+                                <li>
+                                    <Link to="/pages/Factura-maintenance">
+                                        <FontAwesomeIcon icon={faHandHoldingDollar} className="menu-icon" />
+                                        Control de pagos
+                                    </Link>
+                                </li>
+                                <li><Link to="/pages/Gastos">
+                                    <FontAwesomeIcon icon={faReceipt} className="menu-icon" />
+                                    Control de gastos
+                                </Link>
+                                </li>
                             </ul>
                         )}
                     </li>
@@ -125,22 +132,33 @@ function Sidebar() {
 
                 {user.rolId === 3 && (
                     <li>
-                        <Link to="/registrar-pago">
-                            <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Registrar Pago</Link>
+                        <Link to="/pages/registrar-pago">
+                            <FontAwesomeIcon icon={faWallet} className="menu-icon" />
+                            Registrar Pago
+                        </Link>
                     </li>
                 )}
 
-                <li>                   
-                    <Link to="/comportamiento">
-                        <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Comportamiento</Link>
-                </li>              
+                <li>
+                    <Link to="/pages/comportamiento">
+                        <FontAwesomeIcon icon={faWallet} className="menu-icon" />
+                        Comportamiento
+                    </Link>
+                </li>
 
                 <li className="menu-link">
-                    <Link to="/matricula">
-                    <FontAwesomeIcon icon={faSchoolCircleCheck} className="menu-icon" />  Matrícula</Link></li>
+                    <Link to="/pages/matricula">
+                        <FontAwesomeIcon icon={faSchoolCircleCheck} className="menu-icon" />
+                        Matrícula
+                    </Link>
+                </li>
                 {user.rolId === 1 && (
-                    <li className="menu-link"><Link to="/expedientes">
-                        <FontAwesomeIcon icon={faAddressBook} className="menu-icon" />Expedientes</Link></li>
+                    <li className="menu-link">
+                        <Link to="/pages/expedientes">
+                            <FontAwesomeIcon icon={faAddressBook} className="menu-icon" />
+                            Expedientes
+                        </Link>
+                    </li>
                 )}
                 <li>
                     <div onClick={toggleComunicacionSubmenu} className="menu-item">
@@ -149,9 +167,9 @@ function Sidebar() {
                     </div>
                     {showComunicacionSubmenu && (
                         <ul className="submenu">
-                            <li><Link to="/comunicacion">
+                            <li><Link to="/pages/comunicacion">
                                 <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Comunicación correo</Link></li>
-                            <li><Link to="/comunicacion-mensajes">
+                            <li><Link to="/pages/comunicacion-mensajes">
                                 <FontAwesomeIcon icon={faFileInvoice} className="menu-icon" /> Comunicación mensajería</Link></li>
 
                         </ul>
@@ -159,7 +177,7 @@ function Sidebar() {
                 </li>
 
                 {user.rolId === 1 && (
-                    <li className="menu-link"><Link to="/inventario">
+                    <li className="menu-link"><Link to="/pages/inventario">
                         <FontAwesomeIcon icon={faBoxesStacked} className="menu-icon" />Inventario</Link>
                     </li>
                 )}
@@ -173,9 +191,9 @@ function Sidebar() {
                         </div>
                         {showEvaluaSubmenu && (
                             <ul className="submenu">
-                                <li><Link to="/registrar-encuesta">
+                                <li><Link to="/pages/registrar-encuesta">
                                     <FontAwesomeIcon icon={faSquarePollHorizontal} className="menu-icon" />Encuesta</Link></li>
-                                <li><Link to="/evalua-maestra">
+                                <li><Link to="/pages/evalua-maestra">
                                     <FontAwesomeIcon icon={faClipboardList} className="menu-icon" />Evaluación Docente</Link></li>
                             </ul>
                         )}
@@ -188,16 +206,33 @@ function Sidebar() {
                     </div>
                     {showContenidoSubmenu && (
                         <ul className="submenu">
-                            <li><Link to="/materiales">
-                                <FontAwesomeIcon icon={faFolderOpen} className="menu-icon" />Materiales</Link></li>
-                            <li><Link to="/fotos">
-                                <FontAwesomeIcon icon={faImages} className="menu-icon" />Fotos</Link></li>
-                            <li><Link to="/Lista-actividades">
-                                <FontAwesomeIcon icon={faImages} className="menu-icon" />Lista de actividades</Link></li>
+                            <li>
+                                {/* <div onClick={navegar('/pages/materiales')} > */}
+                                <Link to="/pages/materiales" >
+                                    <FontAwesomeIcon icon={faFolderOpen} className="menu-icon" />Materiales
+                                </Link>
+                                {/* </div> */}
+                            </li>
+                            <li>
+                                {/* <div onClick={navegar('/pages/fotos')}> */}
+                                <Link to="/pages/fotos" >
+                                    <FontAwesomeIcon icon={faImages} className="menu-icon" />Fotos
+                                </Link>
+                                {/* </div> */}
+                            </li>
+                            <li>
+                                {/* <div onClick={navegar('/pages/Lista-actividades')}> */}
+                                <Link to="/pages/Lista-actividades" >
+                                    <FontAwesomeIcon icon={faImages} className="menu-icon" />Lista de actividades
+                                </Link>
+                                {/* </div> */}
+                            </li>
                         </ul>
                     )}
                 </li>
             </ul>
+
+
         </aside>
 
     );

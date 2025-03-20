@@ -1,18 +1,11 @@
 // PaymentRegistrationForm.jsx
 import { useState, useEffect } from 'react';
 import './RegistroPago.css';
-import Navbar from '../componentes/navbar';
-import Sidebar from '../componentes/Sidebar';
-import Footer from '../componentes/footer';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from '../UserContext'; // Importar el hook del contexto
-import { faUser, faCalendar, faIdCard, faVenusMars, faHome, faInfoCircle, faCamera, faUserShield, faPhone } from '@fortawesome/free-solid-svg-icons';
+import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import { DetallesApagar, BuscarUsuarios, ObtenerPadres, CrearPago } from '../apiClient'; // Importar las funciones desde apiClient.js
-
-//import axios from '../../../node_modules/axios/index';
-
-
 
 const RegistroPago = () => {
 
@@ -455,9 +448,8 @@ const RegistroPago = () => {
     return (
         <div>
             {loading && <div className="overlay">En Proceso...</div>}
-            {< Navbar />}
-            <div className="content-container">
-                {<Sidebar />}
+     
+            <div className="content-container">       
 
                 <main className="main-content">
                     {/* Formulario */}
@@ -634,8 +626,6 @@ const RegistroPago = () => {
 
                 </main>
             </div>
-
-            {<Footer />}
         </div>
 
     );

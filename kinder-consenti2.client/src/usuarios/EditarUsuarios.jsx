@@ -1,8 +1,6 @@
 ﻿
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faIdCard, faUser, faEnvelope, faPhone, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 import './EditarUsuarios.css'; 
@@ -28,7 +26,6 @@ const EditarUsuario = () => {
     async function obtenerUsuario ()  {
         try {
             const response = await BuscarUsuarios(id);
-            //const response = await axios.get(`https://localhost:44369/api/BuscarUsuarios/${id}`);
             if (response.status == 200) {
                 setUsuario(response.data);
                 console.log(response.data);
@@ -43,8 +40,6 @@ const EditarUsuario = () => {
         }
 
     };
-
-
 
     useEffect(() => {
         // Función para obtener el usuario a editar
@@ -74,7 +69,6 @@ const EditarUsuario = () => {
     const manejarEnvio = async (e) => {
         e.preventDefault();
         try {
-            //await axios.put('https://localhost:44369/api/Usuarios/EditarUsuario', usuario);
             await EditarUsuarioAp(usuario);            
             setMensajeExito('Los cambios se guardaron correctamente.');
             setTimeout(() => {
@@ -87,7 +81,7 @@ const EditarUsuario = () => {
 
     return (
         <div className="user-maintenance-container">
-            <Navbar />
+         
             <div className="register-user-form-container" style={{ marginTop: '100px' }}>
                 <form onSubmit={manejarEnvio} className="edit-user-form">
                     <h2>Editar Usuario</h2>
@@ -212,7 +206,7 @@ const EditarUsuario = () => {
                     </div>
                 </form>
             </div>
-            <Footer />
+     
         </div>
     );
 };

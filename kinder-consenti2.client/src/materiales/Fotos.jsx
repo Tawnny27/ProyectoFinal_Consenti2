@@ -1,6 +1,4 @@
 ﻿import { useEffect, useState, useRef } from "react";
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
 import { ObtenerAlumnos, CrearFotosAlumno,  ObtenerFotosAlumnos, BuscarUsuarios, ObtenerFotosAlumno } from '../apiClient';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -193,8 +191,7 @@ const AgregarFotosAlumno = () => {
 
     return (
         <div style={{ padding: "20px", fontFamily: "Roboto, sans-serif" }}>
-            <Navbar />
-
+            {/* <Navbar /> */}
             <h2 style={{ color: "#A569BD", marginTop: "90px" }}>Fotos de Alumnos</h2>
             {user.rolId === 1 && (
                 <div style={{ marginBottom: "20px" }}>
@@ -279,7 +276,7 @@ const AgregarFotosAlumno = () => {
                 </div>
             </div>
 
-            <Footer />
+           {/* <Footer /> */}
         </div>
     );
 };
