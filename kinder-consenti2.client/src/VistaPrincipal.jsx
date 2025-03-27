@@ -5,17 +5,17 @@ import Footer from './componentes/footer';
 import './VistaInicial.css';
 import { useState } from 'react';
 export const VistaPrincipal = () => {
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const setearSidebar = () => {
         setSidebarOpen(!sidebarOpen);
-    }
+    };
 
     return (
         <div className="contPrincipal">
-            <Navbar />
+            <Navbar setearSide={setearSidebar} />
             <div className={sidebarOpen ? "orderViewOpen" : "orderViewClose"}>
-                <Sidebar/>
+                <Sidebar ViewSidebard={sidebarOpen} />
                 <div className='pageContainer'>
                     <Outlet />
                 </div>

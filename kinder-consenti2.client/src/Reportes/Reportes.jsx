@@ -1,10 +1,8 @@
-﻿import React, { useEffect, useState } from "react";
-import axios from "axios";
+﻿import { useEffect, useState } from "react";
+
 import { Line, Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Tooltip, Legend } from "chart.js";
 import './Reportes.css';
-import Navbar from '../componentes/navbar';
-import Footer from '../componentes/footer';
 import * as XLSX from 'xlsx'; // Importar la biblioteca xlsx
 import { ObtenerFacturas } from '../apiClient';
 
@@ -99,8 +97,7 @@ const Reportes = () => {
     };
 
     return (
-        <div className="reportes-container">
-            <Navbar />
+        <div className="reportes-container">           
             <h2>Reportes</h2>
             <div className="charts-grid">
                 {/* Gr?fica de L?neas */}
@@ -135,7 +132,7 @@ const Reportes = () => {
                     Exportar a Excel
                 </button>
             </div>
-            <Footer/>
+       
         </div>
     );
 };

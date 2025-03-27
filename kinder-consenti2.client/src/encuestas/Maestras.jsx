@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ReactStars from 'react-rating-stars-component'; // Importar la librería de estrellas*/
 import './encuestas.css';
 import { ObtenerUsuarios, CrearEvaluacionDocente } from '../apiClient';
+import axios from 'axios';
 
 const MaestrasFeedback = () => {
     const [teachers, setTeachers] = useState([]);

@@ -7,13 +7,14 @@
 
 .orderViewClose {
     display: grid;
-    grid-template-columns: 275px auto;
+    grid-template-columns: 100%;
     min-height: 100%;
     background: url('../assets/background.jpg') no-repeat center center fixed;
 }
+
 .contPrincipal {
     display: grid;
-    grid-template-rows: 20px auto 20px;
+    grid-template-rows: 20px  20px;
     min-height: 100%;
     background: url('../assets/background.jpg') no-repeat center center fixed;
 }
@@ -24,3 +25,4 @@
     overflow: auto;
     background-color: transparent;
 }
+

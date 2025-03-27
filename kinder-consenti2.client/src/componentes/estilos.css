@@ -96,53 +96,71 @@ body {
     opacity: 80%;
 }
 
-.sidebar {
-    width: 500px;
+.sidebarOpen {
     background-color: #A569BD;
     color: white;
     padding: 10px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    margin-top: 50px;
+    margin-top: 20px;
     /* margin-bottom: 10px;*/
-    opacity: 90%;
-    scroll-behavior: smooth;    
-    max-height: calc(80vh - 50px); /* Ajusta según el margen superior */
-   
-    overflow-y: auto;
+    transition: opacity 0.5s ease-in-out;  
+    scroll-behavior: smooth;
+    overflow: auto;
     font-family: 'Roboto', sans-serif;
+    opacity: 1; /* Elemento visible */
 }
 
-    .sidebar h2 {
-        margin-top: 0;
-        text-align: center;
+
+.sidebardClose {
+    background-color: #A569BD;
+    opacity: 0; /* Elemento oculto */
+    transition: opacity 0.5s ease-in-out;
+    width: 0px;
+    height: 0px;
+    background-color: transparent;
+    color: transparent;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+    .sidebardClose ul li{
+        display: none;       
+    }
+    .sidebardClose h2 {
+        display:none;
     }
 
-    .sidebar ul {
-        list-style: none;
-        padding: 0;
+.sidebarOpen h2 {
+    margin-top: 0;
+    text-align: center;
+}
+
+.sidebarOpen ul {
+    list-style: none;
+    padding: 0;
+}
+
+    .sidebarOpen ul li {
+        margin: 15px 0;
     }
 
-        .sidebar ul li {
-            margin: 15px 0;
+        .sidebarOpen ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
 
-            .sidebar ul li a {
-                color: white;
-                text-decoration: none;
-                font-weight: 700;
-                display: block;
-                padding: 10px;
-                border-radius: 5px;
-                transition: background-color 0.3s;
+            .sidebarOpen ul li a:hover {
+                background-color: #48C9B0;
             }
 
-                .sidebar ul li a:hover {
-                    background-color: #48C9B0;
-                }
-
-                .sidebar ul li a.active {
-                    background-color: #5ad8bf;
-                }
+            .sidebarOpen ul li a.active {
+                background-color: #5ad8bf;
+            }
 
 .menu-item {
     display: flex;

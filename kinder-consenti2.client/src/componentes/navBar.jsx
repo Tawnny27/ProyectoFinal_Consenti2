@@ -1,19 +1,18 @@
-﻿import { useEffect} from 'react';
+﻿/* eslint-disable react/prop-types */
+import { useEffect} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt, faHome } from '@fortawesome/free-solid-svg-icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { faSignOutAlt} from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.jpg';
 import { useUserContext } from '../UserContext'; // Importar el hook del contexto
 
 
-function Navbar() {
+
+function Navbar({ setearSide }) {
     const { user, setUser } = useUserContext(); // Obtener el usuario del contexto
     const navigate = useNavigate(); // Inicializa el hook useNavigate
 
-    const handleMenuClick = () => {
-        navigate('/main'); // Redirige al usuario a la ruta '/main'
-    };
-
+ 
     const handleLogout = () => {
         setUser({});
         navigate('/'); // Redirigir a la página de inicio de sesión
@@ -27,11 +26,11 @@ function Navbar() {
     
     return (
         <header className="header">
-            <div className="logo-container">
-                <Link to="/main">
+            <div className="logo-container" onClick={setearSide}>
+               {/* <Link to="/main"> */}
                 <img src={logo} alt="Logo" className="logo-main" />
                     <h1>Consenti2</h1>
-                </Link>
+               {/* </Link> */} 
             </div>
             <div className="spacer"></div>
             <div className="user-info">

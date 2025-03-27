@@ -1,4 +1,5 @@
-﻿import './estilos.css';
+﻿/* eslint-disable react/prop-types */
+import './estilos.css';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,7 +11,7 @@ import {
 } from '../../../node_modules/@fortawesome/free-solid-svg-icons/index';
 <FontAwesomeIcon icon="fa-regular fa-users" />
 
-function Sidebar() {
+function Sidebar( {ViewSidebard}) {
 
     const { user } = useUserContext();
     const [showAdminSubmenu, setShowAdminSubmenu] = useState(false);
@@ -45,7 +46,7 @@ function Sidebar() {
 
     return (
 
-        <aside className="sidebar">
+        <aside className={ViewSidebard ?"sidebarOpen": "sidebardClose"}>
             <h2>Menú</h2>
             <ul>
                 {user.rolId === 1 && (
