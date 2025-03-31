@@ -95,9 +95,12 @@
 /* Contenido principal */
 .inventario-content {
     padding: 20px;
-    position: relative;
+    min-height: 100vh;
+    overflow:auto;
+
+    /* position: relative;
     z-index: 1;
-    margin-top: 80px;
+    margin-top: 80px;*/
 }
 
 .inventario-title {

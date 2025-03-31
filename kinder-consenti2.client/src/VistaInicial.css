@@ -7,22 +7,22 @@
 
 .orderViewClose {
     display: grid;
-    grid-template-columns: 100%;
+    grid-template-columns: auto;
     min-height: 100%;
     background: url('../assets/background.jpg') no-repeat center center fixed;
 }
 
 .contPrincipal {
     display: grid;
-    grid-template-rows: 20px  20px;
+    /*grid-template-rows: 20px  20px;*/
     min-height: 100%;
     background: url('../assets/background.jpg') no-repeat center center fixed;
 }
 .pageContainer {
     display: grid;
-    height: 98vh;
+   /* height: 98vh;*/
     margin-left: 5px;
-    overflow: auto;
+    /*overflow: auto;*/
     background-color: transparent;
 }
 

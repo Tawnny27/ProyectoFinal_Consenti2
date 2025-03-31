@@ -952,6 +952,16 @@ export const CrearGruposAlumno = async (GruposAlumnos) => {
         return ('Validar los datos:', error.response?.data);
     }
 };
+export const InactivarAlumno = async (IdAlumno) => {
+    try {
+        const response = await apiClient.post(`api/InactivarAlumno/${IdAlumno}`);
+        return response;
+    } catch (error) {
+        console.error('Error al cargar los datos :', error);
+        return ('Validar los datos:', error.response?.data);
+    }
+}
+
 export const EliminarGruposAlumno = async (Id) => {
     try {
         const response = await apiClient.delete(`/api/EliminarGruposAlumno/${Id}`);

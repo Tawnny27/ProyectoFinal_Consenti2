@@ -1,16 +1,18 @@
 ﻿
 import { useState, useEffect } from 'react';
 import './Grupos.css';
-import { ObtenerGrupos, ObtenerMaestros, CrearGrupo } from '../apiClient';
+import { ObtenerGrupos, ObtenerMaestros, CrearGrupo, ObtenerGrupoAlumnos } from '../apiClient';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileExcel, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faFileExcel, faEdit, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
 
 const Grupos = () => { 
     const [filteredData, setFilteredData] = useState([]);
     const [statusFilter, setStatusFilter] = useState('todos');
     const [userFilter, setUserFilter] = useState('');
-    const [showModal, setShowModal] = useState(false);
+    const [showModalAdd, setShowModalAdd] = useState(false);
+    const [showModalAlumnos, setShowModalAlumnos] = useState(false);
+    const [alumnosGroup, setAlumnosGroup] = useState([]);
     const [grupoEnvio, setGrupoEnvio] = useState({});
     const [group, setGroup] = useState([]);
     const [maestros, setMaestros] = useState([]);
@@ -19,6 +21,7 @@ const Grupos = () => {
     const cargarGrupos = async () => {
         const groups = await ObtenerGrupos();
         setGroup(groups.data);
+        console.log(groups.data);
         setFilteredData(groups.data);
         console.log(group);
     }
@@ -44,8 +47,8 @@ const Grupos = () => {
 
     //--------------------------------------------------
     // logica para inactivar
-    const handleStatusChange = (index) => {
-
+    const handleStatusChange = (status) => {
+        alert(status);
     };
     //----------------------------------------------------
 
@@ -59,7 +62,7 @@ const Grupos = () => {
         if (response.status == 200) {
             setGrupoEnvio({});
             cargarGrupos();
-            setShowModal(false);
+            setShowModalAdd(false);
         } else {
             console.log(response);
             alert(response.data);
@@ -73,7 +76,7 @@ const Grupos = () => {
     }
 
     const handleCancel = () => {
-        setShowModal(false);
+        setShowModalAdd(false);
         setGrupoEnvio({});
     }
 
@@ -85,6 +88,17 @@ const Grupos = () => {
             event.preventDefault();
         }
     };
+
+    const verAlumnos = async (idGrupo) => {
+        const response = await ObtenerGrupoAlumnos(idGrupo);       
+        setAlumnosGroup(response.data);
+        setShowModalAlumnos(true);
+    }
+
+    const ocultarAlumnos = () => {
+        setAlumnosGroup([]);
+        setShowModalAlumnos(false);
+    }
 
 
     useEffect(() => {
@@ -107,8 +121,8 @@ const Grupos = () => {
             style: {
                 backgroundColor: '#41b89a', // Color de fondo
                 color: 'white',             // Color de la letra
-                padding: '15px',            // Espacio interno
-                textAlign: 'center',        // Alineación del texto
+                padding: '15px',           // Espacio interno
+                
                 fontSize: '16px',           // Tamaño de la letra
                 fontWeight: 'bold',         // Negrita
             },
@@ -116,12 +130,41 @@ const Grupos = () => {
     };
 
 
+    const calcularEdad = (fecha) => {
+        let fechaActual = new Date();
+        let fechaInicial = new Date(fecha);
+        console.log(fechaInicial);
+        console.log(fechaActual);
+        let milisegundosEnUnAnio = 1000 * 60 * 60 * 24 * 365.25; // Incluye el .25 para 
+        let diferenciaEnMilisegundos = fechaActual.getTime() - fechaInicial.getTime();
+        let anios = diferenciaEnMilisegundos / milisegundosEnUnAnio;
+        console.log(anios);
+        return Math.floor(anios); // Redondea hacia abajo para obtener años completos
+
+    }
+
+    const colGroup = [
+        {
+            name: "Alumno",
+            selector: row => row.alumno.nombreAlumno + " " + row.alumno.apellidosAlumno,
+            with: '30px',
+            sortable: true
+        },
+        {
+            name: "Edad",
+            selector: row => calcularEdad(row.alumno.fechaNacimiento),
+            with: '10px',
+            sortable: true
+        }
+    ];
+
+
 
     const columns = [
         {
             name: "Grupo",
             selector: row => row.nombreGrupo,
-            with: '30px',
+            with: '10px',
             sortable: true
         },
         {
@@ -141,6 +184,9 @@ const Grupos = () => {
             with: '5px',
             cell: (row) => (
                 <div className="acciones">
+                    <button className="acciones-button" onClick={() => verAlumnos(row.idGrupos)}>
+                        <FontAwesomeIcon icon={faEye} />
+                    </button>
                     <button className="acciones-button" onClick={() => alert('Ver y Editar')}>
                         <FontAwesomeIcon icon={faEdit} />
                     </button>
@@ -153,17 +199,16 @@ const Grupos = () => {
     return (
         <div >
         
-            <div className="content-container">
-           
+            <div className="content-container">           
 
                 <main className="main-content">
-                    {!showModal && (
+                    {!showModalAdd & !showModalAlumnos && (
 
                         <div className="content">
 
                             <h1>Gestión de Grupos</h1>
 
-                            <button className="new" onClick={() => setShowModal(true)}>Agregar nuevo registro</button>
+                            <button className="new" onClick={() => setShowModalAdd(true)}>Agregar nuevo registro</button>
 
                             <div className="group">
                                 <div className="seccion">
@@ -207,7 +252,7 @@ const Grupos = () => {
                             </div>
                         </div>
                     )}
-                    {showModal && (
+                    {showModalAdd && (
                         <div className="modal">
                             <form onSubmit={handleSubmit}>
                                 <h2>Nuevo Registro</h2>
@@ -261,6 +306,30 @@ const Grupos = () => {
                         </div>
                     )}
 
+                    {showModalAlumnos && (
+                        <div className="modal">
+                            <div className="table-container">
+                                <DataTable
+                                    columns={colGroup}
+                                    data={alumnosGroup}
+                                    customStyles={customStyles}
+                                    pagination
+                                    paginationComponentOptions={{
+                                        rowsPerPageText: 'Filas por página:',
+                                        rangeSeparatorText: 'de',
+                                        noRowsPerPage: false, // Muestra el selector de filas por página
+                                        selectAllRowsItem: true,
+                                        selectAllRowsItemText: 'Todos'
+                                    }}
+                                    highlightOnHover
+                                    fixedHeader
+                                    fixedHeaderScrollHeight="300px"
+                                    responsive
+                                />
+                            </div>
+                            <button type="reset" onClick={ocultarAlumnos}>Cerrar</button>
+                        </div>
+                    )}
 
                 </main>
 

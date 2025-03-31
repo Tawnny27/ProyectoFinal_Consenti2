@@ -190,7 +190,7 @@ const AgregarFotosAlumno = () => {
     };
 
     return (
-        <div style={{ padding: "20px", fontFamily: "Roboto, sans-serif" }}>
+        <div style={{ padding: "20px", fontFamily: "Roboto, sans-serif", minHeight:"100vh" }}>
             {/* <Navbar /> */}
             <h2 style={{ color: "#A569BD", marginTop: "90px" }}>Fotos de Alumnos</h2>
             {user.rolId === 1 && (

@@ -18,7 +18,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("ObtenerGrupoAlumnos/{idGrupo}")]
         public async Task <ActionResult<List<GruposAlumnos>>> ObtenerGrupoAlumnos(int idGrupo)
         {
-            return Ok(await _context.GruposAlumnos.Include(x=> x.Alumno).Where(x=> x.GruposId==idGrupo).ToListAsync());
+            return Ok(await _context.GruposAlumnos.Include(x=> x.Alumno).Where(x=> x.GruposId==idGrupo && x.Status==true).ToListAsync());
         }
 
         [HttpGet]
@@ -39,11 +39,13 @@ namespace kinder_consenti2.Server.Controllers
             return Ok(await _context.GruposAlumnos.Where(x=> x.AlumnoId==idAlumno).FirstOrDefaultAsync());
         }
 
+
         [HttpPost]
         [Route("CrearGruposAlumno")]
         public async Task<ActionResult<GruposAlumnos>> CrearGruposAlumno(GruposAlumnos gruposAlumnos)
         {
             //Validar el cupo de grupo
+            gruposAlumnos.Status = true;
             int registros =await _context.GruposAlumnos.Where(x => x.GruposId == gruposAlumnos.GruposId).CountAsync();
             var grupo = await _context.Grupos.FindAsync(gruposAlumnos.GruposId);
             if (grupo == null)
@@ -51,13 +53,23 @@ namespace kinder_consenti2.Server.Controllers
             int cupo = grupo.Cupo;
             if (registros >= cupo)
                 return BadRequest("El cupo esta completo, no se puden agregar mas alumnos");
-            //----------------------
+            //----------------------                 
 
             //Validar que no este ya registrado al mismo grupo
             if(await _context.GruposAlumnos.Where(x=> x.AlumnoId==gruposAlumnos
             .AlumnoId && x.GruposId==gruposAlumnos.GruposId).CountAsync()>0)
                 return BadRequest("No puede ingresar dos veces un alumno a un mismo grupo");
             //-----------------------------------------------
+
+            //Inactivarlo de un grupo anterior    
+            var alumno = await _context.GruposAlumnos.Where(x => x.AlumnoId == gruposAlumnos
+            .AlumnoId && x.Status == true).FirstOrDefaultAsync();
+            if (alumno != null)
+            { 
+                alumno.Status = false;
+                _context.GruposAlumnos.Update(alumno);
+                await _context.SaveChangesAsync();
+            }
 
             await _context.GruposAlumnos.AddAsync(gruposAlumnos);
             await _context.SaveChangesAsync();
@@ -83,6 +95,23 @@ namespace kinder_consenti2.Server.Controllers
             var grupoActualizado = await _context.GruposAlumnos.FindAsync(gruposAlumnos.IdGruposAlumnos);
             return Ok(grupoActualizado);
         }
+
+        [HttpPut]
+        [Route("InactivarAlumno/{idAlumno}")]
+        public async Task<ActionResult<string>> InactivarAlumno(int idAlumno)
+        {
+            var alumnoEncontrado = await _context.GruposAlumnos.Where(x => x.AlumnoId == idAlumno && x.Status == true).FirstOrDefaultAsync();
+
+            if (alumnoEncontrado == null)
+            {
+                return BadRequest("Este alumno no se encuentar en ningun grupo activo");
+            }
+            alumnoEncontrado.Status = false;
+            _context.GruposAlumnos.Update(alumnoEncontrado);
+            await _context.SaveChangesAsync();           
+            return Ok("Alumno inactivado");
+        }
+
 
         [HttpDelete]
         [Route("EliminarGruposAlumno/{id}")]

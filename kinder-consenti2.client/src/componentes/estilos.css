@@ -102,6 +102,7 @@ body {
     padding: 10px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     margin-top: 20px;
+    margin-bottom: 40px;
     /* margin-bottom: 10px;*/
     transition: opacity 0.5s ease-in-out;  
     scroll-behavior: smooth;
@@ -118,9 +119,8 @@ body {
     width: 0px;
     height: 0px;
     background-color: transparent;
-    color: transparent;
-    padding: 10px;
-    margin-top: 20px;
+    color: transparent;   
+    overflow: auto;
 }
 
     .sidebardClose ul li{
