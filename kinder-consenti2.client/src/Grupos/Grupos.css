@@ -1,4 +1,12 @@
 
+.button-cont-close {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.button-cont-close button{
+    margin-top: auto;
+}
 
 
 .btn-group {
@@ -98,7 +106,7 @@ div.otros {
 
 
 .modal {
-    display: inline-block;
+  
     position: fixed;
     top: 50%;
     left: 50%;
@@ -113,6 +121,12 @@ div.otros {
     max-height: 75%;
     text-align: initial;
     overflow-y: auto;
+
+    display: flex;
+    flex-direction:column;
+
+    justify-content: center;
+    align-items: center;
 }
 
 

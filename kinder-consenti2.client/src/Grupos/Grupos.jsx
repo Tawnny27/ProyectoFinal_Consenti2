@@ -6,7 +6,7 @@ import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileExcel, faEdit, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
 
-const Grupos = () => { 
+const Grupos = () => {
     const [filteredData, setFilteredData] = useState([]);
     const [statusFilter, setStatusFilter] = useState('todos');
     const [userFilter, setUserFilter] = useState('');
@@ -90,7 +90,7 @@ const Grupos = () => {
     };
 
     const verAlumnos = async (idGrupo) => {
-        const response = await ObtenerGrupoAlumnos(idGrupo);       
+        const response = await ObtenerGrupoAlumnos(idGrupo);
         setAlumnosGroup(response.data);
         setShowModalAlumnos(true);
     }
@@ -121,10 +121,17 @@ const Grupos = () => {
             style: {
                 backgroundColor: '#41b89a', // Color de fondo
                 color: 'white',             // Color de la letra
-                padding: '15px',           // Espacio interno
-                
-                fontSize: '16px',           // Tamaño de la letra
+                padding: '15px',           // Espacio interno                       
+                fontSize: '16px',
+                justifyContent: 'center',
+                textAlign: 'center',                // Tamaño de la letra
                 fontWeight: 'bold',         // Negrita
+            }
+        },
+        cells: {
+            style: {
+                justifyContent: 'center',
+                textAlign: 'center',
             },
         },
     };
@@ -198,8 +205,8 @@ const Grupos = () => {
 
     return (
         <div >
-        
-            <div className="content-container">           
+
+            <div className="content-container">
 
                 <main className="main-content">
                     {!showModalAdd & !showModalAlumnos && (
@@ -307,6 +314,7 @@ const Grupos = () => {
                     )}
 
                     {showModalAlumnos && (
+
                         <div className="modal">
                             <div className="table-container">
                                 <DataTable
@@ -327,14 +335,18 @@ const Grupos = () => {
                                     responsive
                                 />
                             </div>
-                            <button type="reset" onClick={ocultarAlumnos}>Cerrar</button>
+
+                            <div className="button-cont-close">
+                                <button type="reset" onClick={ocultarAlumnos}>Cerrar</button>
+                            </div>
+                            
                         </div>
                     )}
 
                 </main>
 
             </div>
-      
+
 
         </div>
     );
