@@ -1,10 +1,9 @@
-﻿import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+﻿import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../componentes/navbar';
 import Footer from '../componentes/footer';
 import './EditarAlumno.css';
-import { EditarAlumnoo, ObtenerAlumnos } from '../apiClient';
+import { EditarAlumnoo, BuscarAlumno } from '../apiClient';
 
 const EditarAlumno = () => {
     const { id } = useParams(); // Obtener el id del alumno desde la URL
@@ -34,9 +33,9 @@ const EditarAlumno = () => {
     useEffect(() => {
         const fetchAlumno = async () => {
             try {
-                const data = await ObtenerAlumnos(); // Usamos la función para obtener todos los alumnos
-                const alumnoSeleccionado = data.find(a => a.id === id); // Buscamos el alumno por id
-                setAlumno(alumnoSeleccionado);
+                console.log(id);
+                const response = await BuscarAlumno(id); // Usamos la función para obtener todos los alumnos               
+                setAlumno(response.data);
             } catch (error) {
                 console.error("Error al obtener los alumnos:", error);
             }
@@ -57,22 +56,33 @@ const EditarAlumno = () => {
         e.preventDefault();
         try {
             const response = await EditarAlumnoo(alumno); // Usamos la función de editar
-            setMensajeExito('Los cambios se guardaron correctamente.');
+            if (response.status == 200) {
+                setMensajeExito('Los cambios se guardaron correctamente.');
+            } else {
+                alert("Algo salio mal volver a intentar");
+            }           
             setTimeout(() => {
-                navigate(`/alumno-maintenance`); // Navegar después de guardar
+                navigate(`/pages/alumno-maintenance`); // Navegar después de guardar
             }, 2000);
         } catch (error) {
             console.error("Error al editar el alumno:", error);
         }
     };
 
+
+    const cerrar = () => {
+        navigate(`/pages/alumno-maintenance`);
+
+    }
+        
+
     return (
-        <div className="unique-student-maintenance-container">
-            <Navbar />
-            <div className="unique-form-container">
+        <div >
+       
+            <div className="unique-form-container">               
                 <h1>Editar Alumno</h1>
                 {mensajeExito && <div className="unique-success-message">{mensajeExito}</div>}
-                <form onSubmit={manejarEnvio}>
+                <form className="unique-student" onSubmit={manejarEnvio}>
                     <input
                         type="text"
                         name="idAlumno"
@@ -182,11 +192,14 @@ const EditarAlumno = () => {
                             onChange={manejarCambio}
                         />
                     </div>
-
-                    <button type="submit">Guardar Cambios</button>
+                    <div style={{ gap:"10px" }}>
+                        <button type="submit" style={{ maxWidth: "170px" }}>Guardar Cambios</button>
+                        <button type="reset" className="alumno-registry-delete-button" onClick={cerrar}>Cancelar</button>
+                    </div>
+                   
                 </form>
             </div>
-            <Footer />
+         
         </div>
     );
 

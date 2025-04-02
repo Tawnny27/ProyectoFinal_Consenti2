@@ -3,7 +3,7 @@ import './estilos.css';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPlus, faCaretDown, faChildren, faClipboardList, faUserEdit, faChartBar, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faUserPlus, faCaretDown, faChildren, faClipboardList, faUserEdit, faChartBar, faUsers, faChild } from '@fortawesome/free-solid-svg-icons';
 import { useUserContext } from '../UserContext';
 import {
     faAddressBook, faReceipt, faBoxesStacked, faFileInvoice, faFolderOpen,
@@ -60,6 +60,11 @@ function Sidebar( {ViewSidebard}) {
                                 <li>
                                     <Link to="/pages/registrar-usuario">
                                         <FontAwesomeIcon icon={faUserPlus} className="menu-icon" /> Registrar Usuario
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/pages/alumno-maintenance">
+                                        <FontAwesomeIcon icon={faChild} className="menu-icon" /> Alumnos
                                     </Link>
                                 </li>
                                 <li>

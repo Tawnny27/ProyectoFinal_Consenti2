@@ -239,7 +239,7 @@ function AlumnoMaintenance() {
 
 
     const handleEdit = (alumno) => {
-        navigate(`/editar-alumno/${alumno.idAlumno}`); // Corregido para usar comillas inversas
+        navigate(`/pages/editar-alumno/${alumno.idAlumno}`); // Corregido para usar comillas inversas
     };
 
     const toggleContactInfo = () => {

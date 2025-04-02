@@ -206,7 +206,7 @@ const Grupos = () => {
     return (
         <div >
 
-            <div className="content-container">
+           {/* <div className="content-container"> */}
 
                 <main className="main-content">
                     {!showModalAdd & !showModalAlumnos && (
@@ -345,10 +345,10 @@ const Grupos = () => {
 
                 </main>
 
-            </div>
+            { /* </div> */}
 
 
-        </div>
+        </div> 
     );
 };
 

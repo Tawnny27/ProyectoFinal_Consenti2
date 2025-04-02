@@ -1,6 +1,6 @@
 .orderViewOpen {
     display: grid;
-    grid-template-columns: 275px auto;
+    grid-template-columns:1fr 7fr;
     min-height: 100%;
     background: url('../assets/background.jpg') no-repeat center center fixed;
 }
@@ -12,12 +12,7 @@
     background: url('../assets/background.jpg') no-repeat center center fixed;
 }
 
-.contPrincipal {
-    display: grid;
-    /*grid-template-rows: 20px  20px;*/
-    min-height: 100%;
-    background: url('../assets/background.jpg') no-repeat center center fixed;
-}
+
 .pageContainer {
     display: grid;
    /* height: 98vh;*/
