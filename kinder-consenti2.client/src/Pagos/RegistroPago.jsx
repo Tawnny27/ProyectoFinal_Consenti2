@@ -171,6 +171,7 @@ const RegistroPago = () => {
                     detalles: []
                 });
             }
+
             else {
                 setDetallesTemp([]);
                 setMensaje('');

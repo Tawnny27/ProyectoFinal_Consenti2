@@ -347,6 +347,30 @@
     margin: 20px auto; /* Centra el contenedor horizontalmente */
 }
 
+.back {
+    display: flex;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    border: 2px solid rgb(75, 66, 66);
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.next {
+    display: flex;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    border: 2px solid rgb(75, 66, 66);
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+
     .gastos-filtro label {
         font-size: 16px; /* Tamaño del texto */
         font-weight: 500; /* Peso del texto */

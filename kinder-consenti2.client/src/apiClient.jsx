@@ -846,9 +846,9 @@ export const EliminarFotosAlumno = async (Id) => {
 */
 
 //********************************************Gastos****************************************************
-export const ObtenerGastos = async (anno, mes) => {
+export const ObtenerGasto = async (anno, mes) => {
     try {
-        const response = await apiClient.get(`/api/ObtenerGastos/${anno}&${mes}`);
+        const response = await apiClient.get(`/api/ObtenerGasto/${anno}&${mes}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -1560,6 +1560,7 @@ export const ObtenerUsuarioPorId = async (usuarioId) => {
         return ('Validar los datos:', error.response?.data);
     }
 };
+
 
 // Obtener gastos por fecha
 export const ObtenerGastosPorFecha = async (fechaFiltro) => {
