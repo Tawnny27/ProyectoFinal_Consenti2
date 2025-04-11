@@ -610,8 +610,7 @@ const Matricula = () => {
                                         </button>
                                     </div>
                                 </form>
-                            </div>
-                       
+                            </div>                       
                     </div>
                 </main>
             </div>
@@ -708,6 +707,7 @@ const ParentInfo = ({ formData, handleChange, userRole }) => (
         />
     </div>
 );
+
 
 const handleChildSelection = (idAlumno) => {
     setSelectedChildren([idAlumno]); // Reemplaza cualquier selección previa con el nuevo ID

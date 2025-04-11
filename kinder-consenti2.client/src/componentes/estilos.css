@@ -32,6 +32,7 @@ body {
 .footer {
     display: flex;
     justify-content: center;
+    text-align:center;
     align-items: center;
     padding: 10px 0px;
     background-color: #A569BD;
@@ -122,6 +123,7 @@ body {
     color: transparent;   
     overflow: auto;
 }
+
 
     .sidebardClose ul li{
         display: none;       

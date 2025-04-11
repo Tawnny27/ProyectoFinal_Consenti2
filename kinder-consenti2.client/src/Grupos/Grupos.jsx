@@ -165,8 +165,6 @@ const Grupos = () => {
         }
     ];
 
-
-
     const columns = [
         {
             name: "Grupo",

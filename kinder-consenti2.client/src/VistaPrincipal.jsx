@@ -16,7 +16,7 @@ export const VistaPrincipal = () => {
             <Navbar setearSide={setearSidebar} />
             <div className={sidebarOpen ? "orderViewOpen" : "orderViewClose"}>
                 <Sidebar ViewSidebard={sidebarOpen} />
-                <div className='pageContainer'>
+                <div className={`pageContainer ${sidebarOpen ? "menu-open" : ""}`}>
                     <Outlet />
                 </div>
             </div>

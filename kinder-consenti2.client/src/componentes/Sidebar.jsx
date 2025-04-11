@@ -158,6 +158,14 @@ function Sidebar( {ViewSidebard}) {
                         Matrícula
                     </Link>
                 </li>
+
+                <li className="menu-link">
+                    <Link to="/pages/matricula2">
+                        <FontAwesomeIcon icon={faSchoolCircleCheck} className="menu-icon" />
+                        Matrícula2
+                    </Link>
+                </li>
+
                 {user.rolId === 1 && (
                     <li className="menu-link">
                         <Link to="/pages/expedientes">

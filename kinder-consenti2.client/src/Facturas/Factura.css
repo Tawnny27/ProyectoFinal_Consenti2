@@ -1,7 +1,7 @@
 .Fact-maintenance-container {
     flex-direction: column;
     position: relative;
-    padding: 90px;
+    padding: 10px;
     font-family: 'Roboto', sans-serif;
     background: url('../assets/background.jpg') no-repeat center center;
     background-size: cover;

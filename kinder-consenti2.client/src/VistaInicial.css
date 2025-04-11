@@ -1,6 +1,6 @@
 .orderViewOpen {
     display: grid;
-    grid-template-columns:1fr 7fr;
+    grid-template-columns: auto 1fr;
     min-height: 100%;
     background: url('../assets/background.jpg') no-repeat center center fixed;
 }
@@ -21,3 +21,22 @@
     background-color: transparent;
 }
 
+@media (max-width: 768px) {
+
+    .orderViewOpen {
+        display: grid;
+        grid-template-columns: auto;
+        min-height: 100%;
+    }
+
+    .orderViewClose {
+        display: grid;
+        grid-template-columns: auto;
+        min-height: 100%;
+        background: url('../assets/background.jpg') no-repeat center center fixed;
+    }
+
+    .pageContainer.menu-open {
+        display: none;
+    }
+}

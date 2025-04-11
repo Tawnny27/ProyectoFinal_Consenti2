@@ -11,6 +11,5 @@
   <ItemGroup>
     <Folder Include="public\FotosPagos\" />
     <Folder Include="public\FotosPerfAlumno\" />
-    <Folder Include="src\Matricula\" />
   </ItemGroup>
 </Project>
