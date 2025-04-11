@@ -29,10 +29,16 @@ body {
     z-index: 1000; /* Asegura que el header esté por encima de otros elementos */
 }
 
+.user-info {
+   display:flex;
+   justify-content:center;
+   align-content:center;
+   align-items:center;
+}
 .footer {
     display: flex;
     justify-content: center;
-    text-align:center;
+    text-align: center;
     align-items: center;
     padding: 10px 0px;
     background-color: #A569BD;
@@ -204,7 +210,6 @@ body {
     align-items: center;
     justify-content: center;
     color: #333;
-    text-align: center;
 }
 
     .main-content h1 {
@@ -392,4 +397,14 @@ body {
     background-color: #E0E0E0; /* Fondo gris para inputs deshabilitados */
     cursor: not-allowed;
     color: #666666; /* Texto gris oscuro */
+}
+
+
+@media (max-width: 768px) {
+    .titleLogo {
+        display:none;
+    }
+    .cerrar {
+        display: none;
+    }
 }

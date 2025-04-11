@@ -266,7 +266,7 @@ const MaterialesDidacticos = () => {
                                     )}
                                 </div>
                                 {isLoading ? (
-                                    <p className="materiales-loading">Cargando materiales...</p>
+                                <p className="materiales-loading" style={{textAlign:"center"} }>Cargando materiales...</p>
                                 ) : (
                                     <div className="contenedor">
 

@@ -21,7 +21,8 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%; /* El formulario ocupa el 100% del ancho disponible */
-    margin: 50px auto auto auto; /* Centrado horizontal */
+    margin-top: 50px; /* Centrado horizontal */
+    margin-bottom: 50px; /* Centrado horizontal */
     color: #333;
     overflow-y: auto; /* Permite el desplazamiento si hay más contenido que el área visible */
 }
@@ -35,8 +36,10 @@ form {
     border-radius: 5px;
     background-color: #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
 }
+    label {
+        text-align:initial;
+    }
 
 /* Contenedor para las dos secciones */
 .form-layout {
@@ -155,11 +158,11 @@ select {
 }
 
     .cancel-m-button:hover {
-        background-color: #D481F5;
+        background-color: red;
     }
 
 .content-matricula {
-    width: 100%;
+    width: auto;
     /*height: 95vh;*/
     font-family: "Roboto", sans-serif;
     /* Para cubrir toda la pantalla */
@@ -171,4 +174,11 @@ select {
         text-align: left;
     }
 
+    .content-matricula div {
+        padding-top:10px;
+    }
+.botones {
+    display:flex;
+    gap:5px;
+}
     
