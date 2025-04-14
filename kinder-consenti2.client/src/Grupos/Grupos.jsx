@@ -179,6 +179,18 @@ const Grupos = () => {
             sortable: true
         },
         {
+            name: "cupo",
+            selector: row => row.cupo,
+            with: '10px',
+            sortable: true
+        },
+        {
+            name: "Edad Inicial",
+            selector: row => row.edadInicial,
+            with: '10px',
+            sortable: true
+        },
+        {
             name: "Status",
             selector: row => cargaStatus(row.status),
             with: '30px',
@@ -186,7 +198,7 @@ const Grupos = () => {
         },
         {
             name: "Acciones",
-            with: '5px',
+            with: '40px',
             cell: (row) => (
                 <div className="acciones">
                     <button className="acciones-button" onClick={() => verAlumnos(row.idGrupos)}>

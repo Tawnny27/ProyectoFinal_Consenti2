@@ -66,13 +66,11 @@ const Encuesta = () => {
             if (response.status === 200) {
                 setMessage('Ya has enviado la encuesta este año. Podrás enviar una nueva después de un año.');
                 setIsFormDisabled(true);
-
                 // Guardar la fecha del envío en localStorage
                 localStorage.setItem('lastSurveyDate', new Date().toISOString());
-
                 // Redirigir a /main después de un breve retraso
                 setTimeout(() => {
-                    navigate('/main');
+                    navigate('/pages/main');
                 }, 2000); // Esperar 2 segundos antes de redirigir
             } else {
                 toast.error('Hubo un error al enviar la encuesta. Intenta nuevamente. ', response );
@@ -83,8 +81,7 @@ const Encuesta = () => {
     };
 
     return (
-        <div className="teachers-feedback-container">
-         
+        <div className="teachers-feedback-container">         
             <form onSubmit={handleSubmit} className="survey-form" style={{ display: isFormDisabled ? 'none' : 'block' }}>
                 <h2>Encuesta del Centro Educativo</h2>
                 <label>

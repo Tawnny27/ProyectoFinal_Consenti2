@@ -666,9 +666,10 @@ export const ObtenerEvaluacion = async (Id) => {
         return ('Validar los datos:', error.response?.data);
     }
 };
+
 export const CrearEvaluacionKinder = async (EvaluacionKinder) => {
     try {
-        const response = await apiClient.post('/api/CrearEvaluacionDocente', EvaluacionKinder, {
+        const response = await apiClient.post('/api/CrearEvaluacionKinder', EvaluacionKinder, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'

@@ -55,7 +55,7 @@ const RegistroUsuario = () => {
             if (response) {
                 setMensajeExito('Usuario registrado exitosamente.');
                 setTimeout(() => {
-                    navigate(usuario.rolId === "3" ? '/alumno-maintenance' : '/user-maintenance');
+                    navigate(usuario.rolId === "3" ? '/pages/alumno-maintenance' : '/pages/user-maintenance');
                 }, 2000);
             }
         } catch (error) {
@@ -85,7 +85,6 @@ const RegistroUsuario = () => {
             setError(mensajeError);
         }
     };
-
 
     return (
         <div className="usuario-maintenance-containerR">      
@@ -187,25 +186,7 @@ const RegistroUsuario = () => {
                                 required
                             />
                         </div>
-                    </div>
-                    {/*
-                        <div className="usuario-form-groupR">
-                        <label className="usuario-labelR">Contraseña</label>
-                        <div className="usuario-input-containerR">
-                            <FontAwesomeIcon icon={faLock} className="usuario-input-iconR" />
-                            <input
-                                type="password"
-                                name="contrasennaUsuario"
-                                value={usuario.contrasennaUsuario}
-                                onChange={manejarCambio}
-                                className="usuario-inputR"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                        */ }
-                    
+                    </div>                 
 
                     <button type="submit" className="usuario-button-saveR">Registrar Usuario</button>
                     {error && <div className="usuario-error-messageR">{error}</div>}
