@@ -7,7 +7,7 @@ import { faUser, faCalendar, faIdCard, faVenusMars, faHome, faInfoCircle, faCame
 import 'primeicons/primeicons.css';
 /*import { faFileExcel, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'; // Importa los iconos*/
 import './AlumnoMaintenance.css'; // Importing main styles
-import { ObtenerAlumnos, ObtenerUsuarios, CrearAlumno, GuardarImagenPerfilAlumno, EliminarAlumno } from '../apiClient';
+import { ObtenerAlumnosActivos, ObtenerUsuarios, CrearAlumno, GuardarImagenPerfilAlumno, InactivarAlumno } from '../apiClient';
 
 
 
@@ -83,9 +83,8 @@ function AlumnoMaintenance() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const alumnosResponse = await ObtenerAlumnos();  // Llamada a ObtenerAlumnos
+                const alumnosResponse = await ObtenerAlumnosActivos();  // Llamada a ObtenerAlumnos
                 setAlumnos(alumnosResponse.data);  // Extraemos solo los datos
-
                 const usuariosResponse = await ObtenerUsuarios();  // Llamada a ObtenerUsuarios
                 const padresFiltrados = usuariosResponse.data.filter(user => user.rolId === 3);  // Filtramos padres
                 setPadres(padresFiltrados);
@@ -164,7 +163,8 @@ function AlumnoMaintenance() {
             icon: 'pi pi-exclamation-triangle',
             accept: async () => {
                 try {
-                    await EliminarAlumno(alumnoId);
+                    alert("llegue")
+                    await InactivarAlumno(alumnoId);
                     setAlumnos(alumnos.filter(alumno => alumno.idAlumno !== alumnoId));
                 } catch (error) {
                     console.error('Error al eliminar alumno:', error);
@@ -233,7 +233,7 @@ function AlumnoMaintenance() {
                         Eliminar
                     </button>
                 </div>
-            ),
+            )
         },
     ];
 
@@ -258,15 +258,12 @@ function AlumnoMaintenance() {
     return (
         
         <div className="alumno-registry-container">
-          {/* <Navbar /> */}
-            <div className="content-wrapper">
-              
 
-                {/* Contenido principal */}
+            <div className="content-wrapper">            
+
                 <div className="alumno-registry-content">
                     <h1 className="alumno-registry-title">Registro de Niños</h1>
-
-                    {/* Botones principales */}
+            
                     <div className="alumno-registry-main-buttons">
                         <button className="alumno-registry-add-child-btn" onClick={openModal}>
                             Agregar Niño
@@ -458,19 +455,6 @@ function AlumnoMaintenance() {
                                         </div>
                                     </div>
                                   
-                                    {/*<div className="alumno-form-group">*/}
-                                    {/*    <label className="alumno-label">Foto del Alumno (de momento con URL)</label>*/}
-                                    {/*    <div className="alumno-input-container">*/}
-                                    {/*        <FontAwesomeIcon icon={faCamera} className="alumno-input-icon" />*/}
-                                    {/*        <input*/}
-                                    {/*            type="text"*/}
-                                    {/*            name="fotoAlumno"*/}
-                                    {/*            value={formData.fotoAlumno}*/}
-                                    {/*            onChange={handleInputChange}*/}
-                                    {/*            className="alumno-input"*/}
-                                    {/*        />*/}
-                                    {/*    </div>*/}
-                                    {/*</div>*/}
                                 </div>
 
                                 <div className="alumno-collapsible-section">

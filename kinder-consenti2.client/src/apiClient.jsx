@@ -455,6 +455,27 @@ export const ObtenerAlumnos = async () => {
         return ('Validar los datos:', error.response?.data);
     }
 };
+
+export const ObtenerAlumnosActivos = async () => {
+    try {
+        const response = await apiClient.get('/api/ObtenerAlumnosActivos');
+        return (response);
+    } catch (error) {
+        console.error('Error al cargar los datos :', error);
+        return ('Validar los datos:', error.response?.data);
+    }
+};
+
+export const ObtenerAlumnosInactivos = async () => {
+    try {
+        const response = await apiClient.get('/api/ObtenerAlumnosInactivos');
+        return (response);
+    } catch (error) {
+        console.error('Error al cargar los datos :', error);
+        return ('Validar los datos:', error.response?.data);
+    }
+};
+
 export const BuscarAlumno = async (IdAlumno) => {
     try {
         const response = await apiClient.get(`/api/BuscarAlumno/${IdAlumno}`);
@@ -492,9 +513,18 @@ export const EditarAlumnoo = async (alumno) => {
         return ('Validar los datos:', error.response?.data);
     }
 };
-export const EliminarAlumno = async (IdAlumno) => {
+export const InactivarAlumno = async (IdAlumno) => {
     try {
-        const response = await apiClient.delete(`/api/EliminarAlumno/${IdAlumno}`);
+        const response = await apiClient.get(`/api/InactivarAlumno/${IdAlumno}`);
+        return (response);
+    } catch (error) {
+        console.error('Error al cargar los datos :', error);
+        return ('Validar los datos:', error.response?.data);
+    }
+};
+export const ActivarAlumno = async (IdAlumno) => {
+    try {
+        const response = await apiClient.get(`/api/ActivarAlumno/${IdAlumno}`);
         return (response);
     } catch (error) {
         console.error('Error al cargar los datos :', error);
@@ -952,7 +982,7 @@ export const CrearGruposAlumno = async (GruposAlumnos) => {
         return ('Validar los datos:', error.response?.data);
     }
 };
-export const InactivarAlumno = async (IdAlumno) => {
+export const InactivarAlumnoG = async (IdAlumno) => {
     try {
         const response = await apiClient.post(`api/InactivarAlumno/${IdAlumno}`);
         return response;

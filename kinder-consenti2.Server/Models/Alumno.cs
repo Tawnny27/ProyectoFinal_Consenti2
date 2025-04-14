@@ -10,9 +10,9 @@
         public string CedulaAlumno { get; set; }
         public string GeneroAlumno { get; set; }
         public string DireccionAlumno { get; set; }
+        public bool Estatus { get; set; }
         public string InformacionAdicional { get; set; }
-        public string? FotoAlumno { get; set; }       
-
+        public string? FotoAlumno { get; set; }   
 
         //******** Autorizado a recoger el alumno *********
         public string NombreCompAutorizado { get; set; }

@@ -97,7 +97,7 @@ namespace kinder_consenti2.Server.Controllers
         }
 
         [HttpPut]
-        [Route("InactivarAlumno/{idAlumno}")]
+        [Route("InactivarAlumnoG/{idAlumno}")]
         public async Task<ActionResult<string>> InactivarAlumno(int idAlumno)
         {
             var alumnoEncontrado = await _context.GruposAlumnos.Where(x => x.AlumnoId == idAlumno && x.Status == true).FirstOrDefaultAsync();

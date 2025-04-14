@@ -27,6 +27,21 @@ namespace kinder_consenti2.Server.Controllers
             return Ok(await _context.Alumno.ToListAsync());
         }
 
+        //************** Consultar AlumnosActivos ******************
+        [HttpGet]
+        [Route("ObtenerAlumnosActivos")]
+        public async Task<ActionResult<List<Alumno>>> ObtenerAlumnosActivos()
+        {
+            return Ok(await _context.Alumno.Where(x=> x.Estatus==true).ToListAsync());
+        }
+
+        //************** Consultar AlumnosActivos ******************
+        [HttpGet]
+        [Route("ObtenerAlumnosInactivos")]
+        public async Task<ActionResult<List<Alumno>>> ObtenerAlumnosInactivos()
+        {
+            return Ok(await _context.Alumno.Where(x => x.Estatus == false).ToListAsync());
+        }
         //************** Consultar un Alumno******************
         [HttpGet]
         [Route("BuscarAlumno/{id}")]
@@ -45,6 +60,7 @@ namespace kinder_consenti2.Server.Controllers
         {
             try
             {
+                alumno.Estatus = true;
                 _context.Alumno.Add(alumno);
                  await _context.SaveChangesAsync();
                 var insertado = await _context.Alumno.FindAsync(alumno.IdAlumno);                
@@ -64,6 +80,34 @@ namespace kinder_consenti2.Server.Controllers
             _context.Alumno.Update(alumno);
             await _context.SaveChangesAsync();
             return Ok(await _context.Alumno.FindAsync(alumno.IdAlumno));
+        }
+    //****************************Inactivar Alumno*************************
+
+        [HttpGet]
+        [Route("InactivarAlumno/{id}")]
+        public async Task<ActionResult<string>> InactivarAlumno(int id)
+        {
+            var alumno = await _context.Alumno.FindAsync(id);
+            if (alumno == null)
+                return NotFound("No se encontyraron datos");
+            alumno.Estatus = false;
+            _context.Alumno.Update(alumno);
+            await _context.SaveChangesAsync();
+            return Ok("Alumno Inactivado");
+        }
+
+        //****************************Inactivar Alumno*************************
+        [HttpGet]
+        [Route("ActivarAlumno/{id}")]
+        public async Task<ActionResult<string>> ActivarAlumno(int id)
+        {
+            var alumno = await _context.Alumno.FindAsync(id);
+            if (alumno == null)
+                return NotFound("No se encontyraron datos");
+            alumno.Estatus = true;
+            _context.Alumno.Update(alumno);
+            await _context.SaveChangesAsync();
+            return Ok("Alumno Inactivado");
         }
 
         //********************* Eliminar Alumnos **************************

@@ -224,6 +224,7 @@ namespace kinder_consenti2.Server.Models
                 .IsRequired().HasMaxLength(15);
                 A.Property(x => x.GeneroAlumno)
                 .IsRequired().HasMaxLength(6);
+                A.Property(x => x.Estatus).HasDefaultValue(true);
                 A.Property(x => x.DireccionAlumno)
                 .IsRequired().HasMaxLength(100);
                 A.Property(x => x.InformacionAdicional)
