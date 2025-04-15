@@ -38,7 +38,7 @@ namespace kinder_consenti2.Server.Controllers
                     return BadRequest("Debe ingresar un Alumno");
                 var actividadComidas = await _context.ActividadComida.Where(x => x.AlumnoId == idAlumno).ToListAsync();
                 if (!actividadComidas.Any())
-                    return Ok("No hay registros");
+                    return NotFound("No hay registros");
                 return Ok(actividadComidas);
             }
             catch (Exception ex) {  return BadRequest("Error en la ejecución " + ex.Message); }

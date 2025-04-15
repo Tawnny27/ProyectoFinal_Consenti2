@@ -38,7 +38,7 @@ namespace kinder_consenti2.Server.Controllers
                     return BadRequest("Debe ingresar un Alumno");
                 var actividadDormir = await _context.ActividadDormir.Where(x => x.AlumnoId == idAlumno).ToListAsync();
                 if (actividadDormir.Count==0)
-                    return Ok("No hay registros");
+                    return NotFound("No hay registros");
                 return Ok(actividadDormir);
             }
             catch (Exception ex) { return BadRequest("Error en la ejecución " + ex.Message); }

@@ -58,14 +58,31 @@ const ComportamientoAlumno = () => {
     const fetchComentarios = async (idAlumno) => {
         try {
             const responseBanno = await BuscarActividadBannos(idAlumno);
-            const responseComidas = await BuscarActividadComidas(idAlumno);
-            const responseDormir = await BuscarActividadDormirs(idAlumno);
-            const responseHuerta = await BuscarActividadHuertas(idAlumno);
+            if (responseBanno.status == 200) {
+                setComentariosBanno(responseBanno.data);
+            } else { setComentariosBanno([]) }
 
-            setComentariosBanno(responseBanno.data);
-            setComentariosComidas(responseComidas.data);
-            setComentariosDormir(responseDormir.data);
-            setComentariosHuerta(responseHuerta.data);
+            const responseComidas = await BuscarActividadComidas(idAlumno);
+            if (responseComidas.status == 200) {
+                setComentariosComidas(responseComidas.data);
+            } else { setComentariosComidas([]) }
+
+            const responseDormir = await BuscarActividadDormirs(idAlumno);
+            if (responseDormir.status == 200) {
+                setComentariosDormir(responseDormir.data);
+            } else { setComentariosDormir([]) }
+
+            const responseHuerta = await BuscarActividadHuertas(idAlumno);
+            if (responseHuerta.status == 200) {
+                setComentariosHuerta(responseHuerta.data);
+            } else { setComentariosHuerta([]) }          
+
+            console.log(responseComidas)
+            //setComentariosBanno(responseBanno.data);
+            //setComentariosComidas(responseComidas.data);
+            //setComentariosDormir(responseDormir.data);
+            //setComentariosHuerta(responseHuerta.data);
+
         } catch (error) {
             console.error('Error al obtener comentarios:', error);
         }
@@ -86,10 +103,15 @@ const ComportamientoAlumno = () => {
         if (!fechaInicio || !fechaFin) {
             return comentarios;
         }
-        return comentarios.filter(comentario => {
-            const fechaComentario = new Date(comentario.fecha);
-            return fechaComentario >= new Date(fechaInicio) && fechaComentario <= new Date(fechaFin);
+        let comentRetorno = [];
+        comentRetorno =comentarios.filter(comentario => {
+            //const fechaComentario = new Date(comentario.fecha);
+            //return fechaComentario >= new Date(fechaInicio) && fechaComentario <= new Date(fechaFin);
+            comentario.fecha>= new Date(fechaInicio) && comentario.fecha<=new Date(fechaFin)
         });
+
+        console.log(comentRetorno);
+        return comentRetorno;
     };
 
     const exportarExcel = () => {
