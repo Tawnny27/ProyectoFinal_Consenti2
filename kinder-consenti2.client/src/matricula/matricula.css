@@ -12,6 +12,11 @@
     padding-bottom: 50px; /* Ajusta este valor a la altura de tu footer */
 }
 
+.hijos {
+    padding:10px;
+    border: 1px solid ;
+    border-radius:5px;
+}
 
 /* Contenedor del formulario, ocupa el espacio restante y se adapta al tamaño de la pantalla */
 .enrollment-form {
@@ -174,9 +179,7 @@ select {
         text-align: left;
     }
 
-    .content-matricula div {
-        padding-top:10px;
-    }
+  
 .botones {
     display:flex;
     gap:5px;
