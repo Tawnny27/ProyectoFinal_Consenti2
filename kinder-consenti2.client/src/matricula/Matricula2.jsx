@@ -2,21 +2,38 @@
 import 'react-toastify/dist/ReactToastify.css';
 import './matricula.css';
 import { useUserContext } from '../UserContext';
+import Select from "react-select";
+
 import { ObtenerPadres, BuscarUsuarios, ObtenerProductosfijos, ObtenerProductosMensuales, CrearMatricula, } from '../apiClient'; // Importar las funciones desde apiClient.js
 
 export const Matricula2 = () => {
 
     const { user } = useUserContext();
+
+    const [opciones, setOpciones] = useState([]);
+    const [seleccionPadre, setSeleccionPadre] = useState(null);
+    const [isValid, setIsValid] = useState(true);
+    const [disabledRef, setDisableRef] = useState(true);
+    const [total, setTotal] = useState(0);
+    const [pago, setPago] = useState("");
+    const [imgPago, setImgPago] = useState("");
+    const [ref, setRef] = useState("");
+    const [envio, setEnvio] = useState(false);
+    const [checkVisible, setCheckVisible] = useState(false);
     const [usSelect, setUsSelect] = useState({});
+    const [hijoSelect, setHijoSelect] = useState({});
     const [usuarios, setUsuarios] = useState([]);
     const [fijos, setFijos] = useState([]);
     const [mensuales, setMensuales] = useState([]);
+    const [registrosTemp, setRegistrosTemp] = useState([]);
     const [registros, setRegistros] = useState([]);
+    const [selectedCheckbox, setSelectedCheckbox] = useState(null);
+    const [selectedPagoCheckbox, setSelectedPagoCheckbox] = useState(null);
     const [matricula, setMatricula] = useState(
         {
             "clienteId": 0,
-            "rollId": 0,
-            "fecha": "",
+            "rollId": user.rolId,
+            "fecha": new Date().toISOString(),
             "metodoPago": "",
             "imagenPago": "",
             "referencia": 0,
@@ -24,24 +41,33 @@ export const Matricula2 = () => {
             "descuento": 0,
             "iva": 0,
             "total": 0,
-            "detalles": [
-                {
-                    "encabezadoFacturaId": 0,
-                    "productoId": 0,
-                    "alumnoId": 0,
-                    "monto": 0,
-                    "dias": "string"
-                }
-            ]
+            "detalles": []
         }
     );
 
+    const reset = () => {
+        setUsSelect({});
+        setHijoSelect({});
+        setCheckVisible(false);
+        setEnvio(false);
+        setRegistrosTemp([]);
+        setRegistros([]);
+        setSelectedCheckbox(null);
+        setSeleccionPadre(null);
+    }
 
     const cargarPadre = async () => {
         if (user.rolId == 1) {
             const response = await ObtenerPadres();
             if (response.status == 200) {
                 setUsuarios(response.data);
+
+                const datosTransformados = response.data.map((item) => ({
+                    value: item.idUsuario, // Valor interno
+                    label: item.nombreUsuario + " " + item.apellidosUsuario, // Texto visible
+                }));
+                setOpciones(datosTransformados);
+
             } else {
                 setUsuarios([]);
             }
@@ -69,102 +95,158 @@ export const Matricula2 = () => {
         }
     }
 
+    //const handleUseSelect = (idUser) => {
+    //    if (idUser != 0) {
+    //        setUsSelect(usuarios.find((us) =>
+    //            us.idUsuario === parseInt(idUser)
+    //        ));
+    //    } else {
+    //        setUsSelect({});
+    //    }
+    //    setHijoSelect({});
+    //    setCheckVisible(false);
+    //    setEnvio(false);
+    //    setRegistrosTemp([]);
+    //    setSelectedCheckbox(null);
+    //}
 
-    const handleUseSelect = (idUser) => {
-        if (idUser != 0) {
+    const handleUseSelectOP = (opcion) => {
+        setSeleccionPadre(opcion);
+        if (opcion.value != 0) {
             setUsSelect(usuarios.find((us) =>
-                us.idUsuario === parseInt(idUser)
+                us.idUsuario === parseInt(opcion.value)
             ));
         } else {
             setUsSelect({});
         }
-        console.log(idUser);
-        console.log(usSelect);
+        setHijoSelect({});
+        setCheckVisible(false);
+        setEnvio(false);
+        setRegistrosTemp([]);
+        setRegistros([]);
+        setSelectedCheckbox(null);
     }
 
-    const handleCheck = (id) => {
+    const addFijos = (idHijo) => {
         const detalle = [];
-        if (registros.length === 0) {
+        fijos.map(pr =>
             detalle.push(
                 {
-                    "productoId": 1,
-                    "alumnoId": id,
-                    "monto": fijos.find(prod => prod.idProducto === 1)?.monto,
-                    "dias": "string"
+                    "productoid": pr.idProducto,
+                    "alumnoid": parseInt(idHijo),
+                    "monto": pr.monto,
+                    "dias": ""
                 },
-                {
-                    "productoId": 2,
-                    "alumnoId": id,
-                    "monto": fijos.find(prod => prod.idProducto === 2)?.monto,
-                    "dias": "string"
-                },
-                {
-                    "productoId": 3,
-                    "alumnoId": id,
-                    "monto": fijos.find(prod => prod.idProducto === 3)?.monto,
-                    "dias": "string"
-                },
-            );
-            setRegistros(prevRegistros => [...prevRegistros, ...detalle]);
+            ));
+        setRegistrosTemp(detalle);
+    }
 
+    const addHorario = (idHorario, idHijo) => {
+
+        let horario = mensuales.find(pr => pr.idProducto === idHorario);
+        const detalle = {
+            "productoid": horario.idProducto,
+            "alumnoid": parseInt(idHijo),
+            "monto": horario.monto,
+            "dias": ""
+        };
+        setRegistrosTemp((prevRegistros) => [...prevRegistros, detalle]);
+    }
+
+    const handleCheckboxChange = (index, idHorario, idHijo) => {
+        setSelectedCheckbox(index);
+        addFijos(idHijo);
+        addHorario(idHorario, idHijo);
+        setEnvio(true);
+    }
+
+    const handleSelectAlumno = (idHijo) => {
+        if (idHijo != 0) {
+            setHijoSelect(usSelect.alumnos.find(hi =>
+                hi.idAlumno === parseInt(idHijo)
+            ));
+            setCheckVisible(true);
+            setSelectedCheckbox(null);
+            setEnvio(false);
         } else {
-            let validado = registros.filter(reg => reg.alumnoId === id);
-            if (validado.length === 0) {
-                console.log("entra al push 2");
-                detalle.push(
-                    {
-                        "productoId": 1,
-                        "alumnoId": id,
-                        "monto": fijos.find(prod => prod.idProducto === 1)?.monto,
-                        "dias": "string"
-                    },
-                    {
-                        "productoId": 2,
-                        "alumnoId": id,
-                        "monto": fijos.find(prod => prod.idProducto === 2)?.monto,
-                        "dias": "string"
-                    },
-                    {
-                        "productoId": 3,
-                        "alumnoId": id,
-                        "monto": fijos.find(prod => prod.idProducto === 3)?.monto,
-                        "dias": "string"
-                    },
-                );
-                console.log(detalle);
-                setRegistros(prevRegistros => [...prevRegistros, ...detalle]);
-
-            } else {
-                validado = registros.filter(reg => reg.alumnoId != id);
-                if (validado.length > 0) {
-                    setRegistros(validado);
-                } else {
-                    setRegistros([]);
-                }
-            }
+            setHijoSelect({});
+            setCheckVisible(false);
+            setEnvio(false);
+            setRegistrosTemp([]);
+            setSelectedCheckbox(null);
         }
     }
 
-    const alumnoActivo = (id) => {
-        const validacionAlumno = registros.filter(reg => reg.alumnoId != id);
-        if (validacionAlumno.length === 0) {
-            return false;
+    const addDetalle = () => {
+        const validar = registros.filter(item => item.alumnoid === parseInt(hijoSelect.idAlumno));
+        if (validar.length === 0) {
+            setRegistros((prevRegistros) => [...prevRegistros, ...registrosTemp]);
         } else {
-            return true;
+            alert("Este Niño ya fue ingresado");
+            console.log(registros);
         }
-
+        setEnvio(false);
+        setHijoSelect({});
+        setSelectedCheckbox(null);
+        setCheckVisible(false);
     }
 
-    const horario = (id, idHorario) => {
-        let reg = {
-            "productoId": parseInt(idHorario),
-            "alumnoId": id,
-            "monto": mensuales.find(prod => prod.idProducto === parseInt(idHorario))?.monto,
-            "dias": "string"
-        }
-        setRegistros(prevRegistros => [...prevRegistros, reg]);
-      
+    const estilos = {
+        check: {
+            display: "none",
+        },
     }
+
+    const handleCheckboxPagoChange = (index, label) => {
+        setSelectedPagoCheckbox(index);
+        setPago(label);
+        if (index == 0) {          
+            setDisableRef(true);
+            setRef("");
+            setImgPago("Pago en efectivo");
+        } else {
+            setDisableRef(false);
+            setImgPago("");
+        }
+        setIsValid(true);
+    }
+
+    const handleKeyPress = (event) => {
+        const charCode = event.charCode;
+
+        // Permitir solo números (0-9)
+        if (charCode < 48 || charCode > 57) {
+            event.preventDefault();
+        }
+    };
+
+    const handleInputChange = (e) => {
+        e.target.value;
+        if (e.target.value != '' && e.target.value != 0) {
+            setRef(e.target.value);
+        } else {
+            setRef("");
+        }
+    };
+
+    // ---------------------------------------envio de datos-------------------------------------------------
+    //const handleSubmit = (e) => {
+    //    e.preventDefault();
+
+    //    if (validacionDatos(1)) {
+    //        if (selectedCheckbox === null) {
+    //            setIsValid(false);
+    //        } else { // Lógica para enviar el formulario o realizar la acción deseada 
+    //            console.log(pago);
+    //            //alert(`Aqui se envian los datosa la BD`);
+    //            if (!pago.referencia || pago.referencia == "") {
+    //                setPago({ ...pago, referencia: 0, });
+    //            }
+    //            envioDatos();
+    //        }
+    //    }
+    //};
+
     //UseEffect*******************************************************
 
     useEffect(() => {
@@ -174,8 +256,22 @@ export const Matricula2 = () => {
     }, []);
 
     useEffect(() => {
-        console.log(registros);
+        if (registros.length > 0) {
+            let suma = 0;
+            registros.map(item => suma = suma + item.monto);
+            setTotal(suma);
+        } else {
+            setTotal(0);
+        }
     }, [registros]);
+
+
+    useEffect(() => {
+        console.log(registrosTemp);
+        console.log(registros);
+        console.log(hijoSelect);
+        console.log(usSelect);
+    }, [registrosTemp], [hijoSelect], [usSelect], [registros]);
 
 
     return (
@@ -188,15 +284,22 @@ export const Matricula2 = () => {
                             {user.rolId === 1 ? (
                                 <div>
                                     <label> Seleccione un Padre</label>
-                                    <select
-                                        onChange={(e) => handleUseSelect(e.target.value)}
-                                        value={usSelect.idUsuario || "0"}>
+                                    {/*<select*/}
+                                    {/*    onChange={(e) => handleUseSelect(e.target.value)}*/}
+                                    {/*    value={usSelect.idUsuario || "0"}>*/}
 
-                                        <option value="0"> Seleccione un padre </option>
-                                        {usuarios.map((use) => (
-                                            <option key={use.idUsuario} value={use.idUsuario}> {use.nombreUsuario} {use.apellidosUsuario}</option>
-                                        ))}
-                                    </select>
+                                    {/*    <option value="0"> Seleccione un padre </option>*/}
+                                    {/*    {usuarios.map((use) => (*/}
+                                    {/*        <option key={use.idUsuario} value={use.idUsuario}> {use.nombreUsuario} {use.apellidosUsuario}</option>*/}
+                                    {/*    ))}*/}
+                                    {/*</select>*/}
+                                    <Select
+                                        options={opciones}            // Opciones con la opción inicial incluida
+                                        value={seleccionPadre}             // Valor actualmente seleccionado
+                                        onChange={handleUseSelectOP}       // Ejecuta el proceso al cambiar la selección
+                                        placeholder="Buscar o seleccionar..."
+                                    />
+
                                 </div>
                             ) : (
                                 <div>
@@ -208,54 +311,80 @@ export const Matricula2 = () => {
                             {usSelect.alumnos && usSelect.alumnos.length > 0 && (
                                 <div className="hijos" >
                                     <label>Hijos</label>
-                                    {usSelect.alumnos.map((hijo, index) => (
-                                        <div key={index}>
-                                            <div>
-                                                <label key={index}>
+
+                                    <select
+                                        value={hijoSelect.idAlumno || "0"}
+                                        onChange={(e) => handleSelectAlumno(e.target.value)}
+                                    >
+                                        <option value="0"> Seleccione un hijo</option>
+                                        {usSelect.alumnos.map((hijo) => (
+                                            <option key={hijo.idAlumno} value={hijo.idAlumno}> {hijo.nombreAlumno} </option>
+                                        ))}
+                                    </select>
+
+                                    <div>
+                                        <label>Horarios</label>
+                                        {mensuales.map((hr, index) => (
+                                            <div key={index} style={{ padding: "5px" }}>
+                                                <label className="check" key={index} style={!checkVisible ? estilos.check : {}} >
                                                     <input
                                                         type="checkbox"
-                                                        key={hijo.idAlumno}
-                                                        onChange={() => handleCheck(hijo.idAlumno)}
+                                                        checked={selectedCheckbox === index}
+                                                        onChange={() => handleCheckboxChange(index, hr.idProducto, hijoSelect.idAlumno)}
                                                     />
-
-                                                    {hijo.nombreAlumno}
+                                                    {hr.nombreProducto} - {hr.monto}
                                                 </label>
-
-                                                {alumnoActivo(hijo.idAlumno) && (
-                                                    <select
-                                                        key={index}
-                                                        onChange={(e) => horario(hijo.idAlumno, e.target.value)}
-                                                        value={(e) => registros.find((pr) => pr.idProducto === e.target.value)?.productoId || "0"}
-                                                    >
-                                                        <option value="0"> Seleccione un horario</option>
-                                                        {mensuales.map((ho) => (
-                                                            <option key={ho.idProducto} value={ho.idProducto}>{ho.nombreProducto}</option>
-                                                        ))}
-                                                    </select>
-                                                )}
+                                                <br />
                                             </div>
-
-                                        </div>
-                                    ))}
+                                        ))}
+                                        {envio && (
+                                            <button type="button" onClick={addDetalle} >Agregar</button>
+                                        )}
+                                    </div>
                                 </div>
                             )}
 
+                            <div className="contenLabel">
+                                <label className="labelCheck">Tipo de Pago</label>
+                                {['Efectivo', 'SINPE Movil', 'Transferencia'].map((label, index) => (
+                                    <div key={index} className="inputsOrder">
+                                        <label className="check" key={index}>
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedPagoCheckbox === index}
+                                                onChange={() => handleCheckboxPagoChange(index, label)}
+                                            />
+                                            {label}
+
+                                        </label>
+                                        <br />
+                                    </div>
+                                ))}
+                                {!isValid && <p style={{ color: 'red' }}>Debe seleccionar al menos una opción.</p>}
+                            </div>
 
                             <div>
-                                <label>Opcional</label>
-                                <input type="text" />
+                                <label># de referencia:</label>
+                                <input type="text"
+                                    name="referencia"
+                                    value={ref}
+                                    required
+                                    onKeyPress={handleKeyPress}
+                                    onChange={handleInputChange}
+                                    disabled={disabledRef}
+                                />
+                                {/*errorMessages.referencia && <div style={{ color: 'red' }}>{errorMessages.referencia}</div>*/}
                             </div>
+
+
                             <div>
-                                <label>Opcional</label>
-                                <input type="text" />
+                                <label>Total</label>
+                                <input type="text" value={total} />
                             </div>
-                            <div>
-                                <label>Opcional</label>
-                                <input type="text" />
-                            </div>
+
                             <div className="botones">
                                 <button type="submit" className="submit-m-button"> Enviar</button>
-                                <button type="reset" className="cancel-m-button"> Borrar</button>
+                                <button type="reset" className="cancel-m-button" onClick={reset}> Borrar</button>
                             </div>
                         </form>
                     </div>
@@ -265,6 +394,3 @@ export const Matricula2 = () => {
     );
 }
 //-------------------------------------------------------------------------------------------------------------
-
-
-
