@@ -101,7 +101,7 @@ export const RecuperarContrasena = async (email) => {
 };
 export const EditarUsuarioAp = async (usuario) => {
     try {
-        const response = await apiClient.put('/api/RecuperarContrasena', usuario);
+        const response = await apiClient.put('/api/EditarUsuario', usuario);
         return response;
     } catch (error) {
         console.error('Error en el inicio de sesión:', error.response?.data || error.message);
