@@ -18,7 +18,7 @@ namespace kinder_consenti2.Server.Controllers
         [Route("ObtenerGrupos")]
         public async Task<ActionResult<List<Grupos>>> ObtenerGrupos()
         {
-            return Ok(await _context.Grupos.Include(x=> x.Usuario).ToListAsync());
+            return Ok(await _context.Grupos.Include(x=> x.Usuario).Include(x=> x.GruposAlumnos).ToListAsync());
         }
 
         [HttpGet]

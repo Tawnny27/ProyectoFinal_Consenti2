@@ -1,29 +1,44 @@
 ﻿
 import { useState, useEffect } from 'react';
 import './Grupos.css';
-import { ObtenerGrupos, ObtenerMaestros, CrearGrupo, ObtenerGrupoAlumnos } from '../apiClient';
+import { ObtenerGrupos, ObtenerMaestros, CrearGrupo, ObtenerGrupoAlumnos, EditarGrupos, ObtenerAlumnosActivos, CrearGruposAlumno } from '../apiClient';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileExcel, faEdit, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEye, faAdd } from '@fortawesome/free-solid-svg-icons';
+import Select from "react-select";
 
 const Grupos = () => {
     const [filteredData, setFilteredData] = useState([]);
     const [statusFilter, setStatusFilter] = useState('todos');
-    const [userFilter, setUserFilter] = useState('');
-    const [showModalAdd, setShowModalAdd] = useState(false);
-    const [showModalAlumnos, setShowModalAlumnos] = useState(false);
+    const [opciones, setOpciones] = useState([]);
+    const [seleccionAlumno, setSeleccionAlumno] = useState(null);
     const [alumnosGroup, setAlumnosGroup] = useState([]);
+    const [userFilter, setUserFilter] = useState('');
+    const [showModalAdd, setShowModalAdd] = useState(false);// mostrar modal
+    const [showModalUp, setShowModalUp] = useState(false); // mostrar modal
+    const [showAddAlumGroup, setShowAddAlumGroup] = useState(false);// mostrar modal
+    const [showModalAlumnos, setShowModalAlumnos] = useState(false);// mostrar modal    
     const [grupoEnvio, setGrupoEnvio] = useState({});
+    const [grupoSelect, setGrupoSelect] = useState({});
     const [group, setGroup] = useState([]);
+    const [groupInit, setGroupInit] = useState([]);
     const [maestros, setMaestros] = useState([]);
+    const [grupoAlumnoEnv, setGrupoAlumnoEnv] = useState({});
 
 
     const cargarGrupos = async () => {
         const groups = await ObtenerGrupos();
-        setGroup(groups.data);
-        console.log(groups.data);
-        setFilteredData(groups.data);
-        console.log(group);
+        setGroupInit(groups.data);
+
+    }
+
+    const cargarAlumnos = async () => {
+        const alumnos = await ObtenerAlumnosActivos();
+        const datosTransformados = alumnos.data.map((item) => ({
+            value: item.idAlumno, // Valor interno
+            label: item.nombreAlumno + " " + item.apellidosAlumno, // Texto visible
+        }));
+        setOpciones(datosTransformados);
     }
 
     const handleFilterChange = (e) => {
@@ -36,6 +51,11 @@ const Grupos = () => {
         setGrupoEnvio({ ...grupoEnvio, [e.target.name]: e.target.value });
     };
 
+    const handleNewRecordChangeUp = (e) => {
+        setGrupoSelect({ ...grupoSelect, [e.target.name]: e.target.value });
+    };
+
+
     const cargaStatus = (status) => {
         if (status == true)
             return "Activo";
@@ -43,14 +63,12 @@ const Grupos = () => {
             return "inactivo";
     }
 
-    // agregar nuevo grupo
-
-    //--------------------------------------------------
-    // logica para inactivar
-    const handleStatusChange = (status) => {
-        alert(status);
-    };
-    //----------------------------------------------------
+    const handleUseSelectOP = (opcion) => {
+        setSeleccionAlumno(opcion);
+        if (opcion.value != 0) {
+            setGrupoAlumnoEnv({ ...grupoAlumnoEnv, alumnoId: opcion.value });
+        }
+    }
 
     const cargarMaestros = async () => {
         const usuarioResponse = await ObtenerMaestros();
@@ -70,15 +88,63 @@ const Grupos = () => {
         }
     };
 
+    const editGrupo = async () => {
+        const response = await EditarGrupos(grupoSelect);
+        if (response.status == 200) {
+            setGrupoSelect({});
+            cargarGrupos();
+            setShowModalUp(false);
+        } else {
+            console.log(response);
+            alert(response.data);
+            setGrupoSelect({});
+        }
+    };
+
+    const agregarGrupoAlumno = async () => {
+        const response = await CrearGruposAlumno(grupoAlumnoEnv);
+        if (response.status == 200) {
+            setGrupoAlumnoEnv({});
+            cargarGrupos();
+            setShowAddAlumGroup(false);
+        } else {
+            console.log(response);
+            alert(response.data);
+            setGrupoSelect({});
+        }
+    };
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
         agregarGrupo();
     }
+    const handleSubmitUp = (e) => {
+        e.preventDefault();
+        editGrupo();
+    }
+
+    const handleSubmitAlmGruop = (e) => {
+        e.preventDefault();
+        agregarGrupoAlumno();
+    }
+
 
     const handleCancel = () => {
         setShowModalAdd(false);
         setGrupoEnvio({});
     }
+
+    const handleCancelUp = () => {
+        setShowModalUp(false);
+        setGrupoSelect({});
+    }
+    const handleCancelAlmGruop = () => {
+        setShowAddAlumGroup(false);
+        setGrupoAlumnoEnv({});
+    }
+
+
 
     const handleKeyPress = (event) => {
         const charCode = event.charCode;
@@ -100,12 +166,41 @@ const Grupos = () => {
         setShowModalAlumnos(false);
     }
 
+    const verActualizar = async (idGrupo) => {
+        let encontrado = (groupInit.find(item => item.idGrupos === idGrupo));
+        setGrupoSelect({
+            "idGrupos": encontrado.idGrupos,
+            "nombreGrupo": encontrado.nombreGrupo,
+            "edadInicial": encontrado.edadInicial,
+            "cupo": encontrado.cupo,
+            "usuarioId": encontrado.usuarioId,
+            "status": encontrado.status,
+        });
+        setShowModalUp(true);
+    }
+
+    const ModalAsignacion = (idGrupo) => {
+        let encontrado = (groupInit.find(item => item.idGrupos === idGrupo));
+        setGrupoAlumnoEnv({ ...grupoAlumnoEnv, gruposId: idGrupo, nombreGrupo: encontrado.nombreGrupo });
+        setShowAddAlumGroup(true);
+
+    }
+
+    const cupoDisponible = () => {
+        setGroup(groupInit.map((item) => ({ ...item, disponible: (item.cupo - item.gruposAlumnos.length) })));
+        //console.log(grupoSelect);  
+        setFilteredData(group);
+    }
 
     useEffect(() => {
         cargarGrupos();
         cargarMaestros();
-        console.log(group);
+        cargarAlumnos();
     }, []);
+
+    useEffect(() => {
+        cupoDisponible();
+    }, [groupInit]);
 
     useEffect(() => {
         let filtered = group.filter(item =>
@@ -179,8 +274,14 @@ const Grupos = () => {
             sortable: true
         },
         {
-            name: "cupo",
+            name: "Cupo",
             selector: row => row.cupo,
+            with: '10px',
+            sortable: true
+        },
+        {
+            name: "Dsiponible",
+            selector: row => row.disponible,
             with: '10px',
             sortable: true
         },
@@ -204,10 +305,12 @@ const Grupos = () => {
                     <button className="acciones-button" onClick={() => verAlumnos(row.idGrupos)}>
                         <FontAwesomeIcon icon={faEye} />
                     </button>
-                    <button className="acciones-button" onClick={() => alert('Ver y Editar')}>
+                    <button className="acciones-button" onClick={() => verActualizar(row.idGrupos)}>
                         <FontAwesomeIcon icon={faEdit} />
                     </button>
-                    <button className="acciones-button" onClick={() => handleStatusChange(row.status)}>X</button>
+                    <button className="acciones-button" onClick={() => ModalAsignacion(row.idGrupos)}>
+                        <FontAwesomeIcon icon={faAdd} />
+                    </button>
                 </div>
             ),
         }
@@ -216,149 +319,236 @@ const Grupos = () => {
     return (
         <div >
 
-           {/* <div className="content-container"> */}
+            {/* <div className="content-container"> */}
 
-                <main className="main-content">
-                    {!showModalAdd & !showModalAlumnos && (
+            <main className="main-content">
+                {!showModalAdd & !showModalAlumnos & !showModalUp & !showAddAlumGroup && (
 
-                        <div className="content">
+                    <div className="content">
 
-                            <h1>Gestión de Grupos</h1>
+                        <h1>Gestión de Grupos</h1>
 
-                            <button className="new" onClick={() => setShowModalAdd(true)}>Agregar nuevo registro</button>
+                        <button className="new" onClick={() => setShowModalAdd(true)}>Agregar nuevo registro</button>
 
-                            <div className="group">
-                                <div className="seccion">
-                                    <label>
-                                        Filtro por estado:
-                                    </label>
-                                    <select name="status" onChange={handleFilterChange} value={statusFilter}>
-                                        <option value="todos">Todos</option>
-                                        <option value="activo">Activo</option>
-                                        <option value="inactivo">Inactivo</option>
-                                    </select>
+                        <div className="group">
+                            <div className="seccion">
+                                <label>
+                                    Filtro por estado:
+                                </label>
+                                <select name="status" onChange={handleFilterChange} value={statusFilter}>
+                                    <option value="todos">Todos</option>
+                                    <option value="activo">Activo</option>
+                                    <option value="inactivo">Inactivo</option>
+                                </select>
 
-                                </div>
-                                <div className="seccion">
-                                    <label>
-                                        Filtro por usuario:
-                                    </label>
-                                    <input className="filter" name="user" onChange={handleFilterChange} value={userFilter} />
-                                </div>
                             </div>
+                            <div className="seccion">
+                                <label>
+                                    Filtro por usuario:
+                                </label>
+                                <input className="filter" name="user" onChange={handleFilterChange} value={userFilter} />
+                            </div>
+                        </div>
 
-                            <div className="table-container">
-                                <DataTable
-                                    columns={columns}
-                                    data={filteredData}
-                                    customStyles={customStyles}
-                                    pagination
-                                    paginationComponentOptions={{
-                                        rowsPerPageText: 'Filas por página:',
-                                        rangeSeparatorText: 'de',
-                                        noRowsPerPage: false, // Muestra el selector de filas por página
-                                        selectAllRowsItem: true,
-                                        selectAllRowsItemText: 'Todos'
-                                    }}
-                                    highlightOnHover
-                                    fixedHeader
-                                    fixedHeaderScrollHeight="300px"
-                                    responsive
+                        <div className="table-container">
+                            <DataTable
+                                columns={columns}
+                                data={filteredData}
+                                customStyles={customStyles}
+                                pagination
+                                paginationComponentOptions={{
+                                    rowsPerPageText: 'Filas por página:',
+                                    rangeSeparatorText: 'de',
+                                    noRowsPerPage: false, // Muestra el selector de filas por página
+                                    selectAllRowsItem: true,
+                                    selectAllRowsItemText: 'Todos'
+                                }}
+                                highlightOnHover
+                                fixedHeader
+                                fixedHeaderScrollHeight="300px"
+                                responsive
+                            />
+
+                        </div>
+                    </div>
+                )}
+                {showModalAdd && (
+                    <div className="modal">
+                        <form onSubmit={handleSubmit}>
+                            <h2>Nuevo Registro</h2>
+                            <div>
+                                <label>Maestro:</label>
+                                <select
+                                    name="usuarioId"
+                                    value={grupoEnvio.UsuarioId}
+                                    onChange={handleNewRecordChange}
+                                    required
+                                >
+                                    <option>Selecione un maestro</option>
+                                    {
+                                        maestros.map((ma) => (
+                                            <option key={ma.idUsuario} value={ma.idUsuario}>
+                                                {ma.nombreUsuario} {ma.apellidosUsuario}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+
+                                <label>Nombre del grupo:</label>
+                                <input name="nombreGrupo"
+                                    onChange={handleNewRecordChange}
+                                    value={grupoEnvio.nombreGrupo}
+                                    required
+                                />
+
+                                <label>Edad Inicial:</label>
+                                <input name="edadInicial"
+                                    onChange={handleNewRecordChange}
+                                    value={grupoEnvio.edadInicial}
+                                    onKeyPress={handleKeyPress}
+                                    required
+                                />
+
+                                <label>Cupo:</label>
+                                <input name="cupo"
+                                    onChange={handleNewRecordChange}
+                                    value={grupoEnvio.cupo}
+                                    onKeyPress={handleKeyPress}
+                                    required
                                 />
 
                             </div>
-                        </div>
-                    )}
-                    {showModalAdd && (
-                        <div className="modal">
-                            <form onSubmit={handleSubmit}>
-                                <h2>Nuevo Registro</h2>
-                                <div>
-                                    <label>Maestro:</label>
-                                    <select
-                                        name="usuarioId"
-                                        value={grupoEnvio.UsuarioId}
-                                        onChange={handleNewRecordChange}
-                                        required
-                                    >
-                                        <option>Selecione un maestro</option>
-                                        {
-                                            maestros.map((ma) => (
-                                                <option key={ma.idUsuario} value={ma.idUsuario}>
-                                                    {ma.nombreUsuario} {ma.apellidosUsuario}
-                                                </option>
-                                            ))
-                                        }
-                                    </select>
+                            <div className="btn-group">
+                                <button type="submit">Agregar</button>
+                                <button type="reset" onClick={handleCancel}>Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                )}
 
-                                    <label>Nombre del grupo:</label>
-                                    <input name="nombreGrupo"
-                                        onChange={handleNewRecordChange}
-                                        value={grupoEnvio.nombreGrupo}
-                                        required
-                                    />
+                {showModalUp && (
+                    <div className="modal">
+                        <form onSubmit={handleSubmitUp}>
+                            <h2>Nuevo Registro</h2>
+                            <div>
+                                <label>Maestro:</label>
+                                <select
+                                    name="usuarioId"
+                                    value={grupoSelect.UsuarioId}
+                                    onChange={handleNewRecordChangeUp}
+                                    required
+                                >
+                                    <option>Selecione un maestro</option>
+                                    {
+                                        maestros.map((ma) => (
+                                            <option key={ma.idUsuario} value={ma.idUsuario}>
+                                                {ma.nombreUsuario} {ma.apellidosUsuario}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
 
-                                    <label>Edad Inicial:</label>
-                                    <input name="edadInicial"
-                                        onChange={handleNewRecordChange}
-                                        value={grupoEnvio.edadInicial}
-                                        onKeyPress={handleKeyPress}
-                                        required
-                                    />
+                                <label>Nombre del grupo:</label>
+                                <input name="nombreGrupo"
+                                    onChange={handleNewRecordChangeUp}
+                                    value={grupoSelect.nombreGrupo}
+                                    required
+                                />
 
-                                    <label>Cupo:</label>
-                                    <input name="cupo"
-                                        onChange={handleNewRecordChange}
-                                        value={grupoEnvio.cupo}
-                                        onKeyPress={handleKeyPress}
-                                        required
-                                    />
+                                <label>Edad Inicial:</label>
+                                <input name="edadInicial"
+                                    onChange={handleNewRecordChangeUp}
+                                    value={grupoSelect.edadInicial}
+                                    onKeyPress={handleKeyPress}
+                                    required
+                                />
 
-                                </div>
-                                <div className="btn-group">
-                                    <button type="submit">Agregar</button>
-                                    <button type="reset" onClick={handleCancel}>Cancelar</button>
-                                </div>
-                            </form>
-                        </div>
-                    )}
-
-                    {showModalAlumnos && (
-
-                        <div className="modal">
-                            <div className="table-container">
-                                <DataTable
-                                    columns={colGroup}
-                                    data={alumnosGroup}
-                                    customStyles={customStyles}
-                                    pagination
-                                    paginationComponentOptions={{
-                                        rowsPerPageText: 'Filas por página:',
-                                        rangeSeparatorText: 'de',
-                                        noRowsPerPage: false, // Muestra el selector de filas por página
-                                        selectAllRowsItem: true,
-                                        selectAllRowsItemText: 'Todos'
-                                    }}
-                                    highlightOnHover
-                                    fixedHeader
-                                    fixedHeaderScrollHeight="300px"
-                                    responsive
+                                <label>Cupo:</label>
+                                <input name="cupo"
+                                    onChange={handleNewRecordChangeUp}
+                                    value={grupoSelect.cupo}
+                                    onKeyPress={handleKeyPress}
+                                    required
                                 />
                             </div>
 
-                            <div className="button-cont-close">
-                                <button type="reset" onClick={ocultarAlumnos}>Cerrar</button>
+                            <div className="btn-group">
+                                <button type="submit">Agregar</button>
+                                <button type="reset" onClick={handleCancelUp}>Cancelar</button>
                             </div>
-                            
-                        </div>
-                    )}
+                        </form>
+                    </div>
+                )}
 
-                </main>
+
+                {showAddAlumGroup && (
+                    <div className="modal">
+                        <form onSubmit={handleSubmitAlmGruop}>
+                            <h2>Nuevo Alumno</h2>
+                            <div>
+                                <label> Seleccione un Alumno</label>
+                                <Select
+                                    options={opciones}            // Opciones con la opción inicial incluida
+                                    value={seleccionAlumno}             // Valor actualmente seleccionado
+                                    onChange={handleUseSelectOP}       // Ejecuta el proceso al cambiar la selección
+                                    placeholder="Buscar o seleccionar..."
+                                /> 
+                            </div> 
+                            <br></br>
+                            <div>
+                                <label>Nombre del grupo:</label>
+                                <input name="nombreGrupo"
+                                    value={grupoAlumnoEnv.nombreGrupo}
+                                    required
+                                />   
+                            </div>    
+
+                            <div className="btn-group">
+                                <button type="submit">Agregar</button>
+                                <button type="reset" onClick={handleCancelAlmGruop}>Cancelar</button>
+                            </div>
+
+                        </form>
+                    </div>
+                )}
+
+
+                {showModalAlumnos && (
+
+                    <div className="modal">
+                        <div className="table-container">
+                            <DataTable
+                                columns={colGroup}
+                                data={alumnosGroup}
+                                customStyles={customStyles}
+                                pagination
+                                paginationComponentOptions={{
+                                    rowsPerPageText: 'Filas por página:',
+                                    rangeSeparatorText: 'de',
+                                    noRowsPerPage: false, // Muestra el selector de filas por página
+                                    selectAllRowsItem: true,
+                                    selectAllRowsItemText: 'Todos'
+                                }}
+                                highlightOnHover
+                                fixedHeader
+                                fixedHeaderScrollHeight="300px"
+                                responsive
+                            />
+                        </div>
+                        
+                        <div className="button-cont-close">
+                            <button type="reset" onClick={ocultarAlumnos}>Cerrar</button>
+                        </div>
+
+                    </div>
+                )}
+
+            </main>
 
             { /* </div> */}
 
 
-        </div> 
+        </div>
     );
 };
 
