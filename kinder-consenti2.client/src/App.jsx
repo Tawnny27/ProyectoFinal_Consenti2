@@ -1,6 +1,4 @@
-﻿import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+﻿import 'bootstrap/dist/css/bootstrap.min.css';
 import AlumnoMaintenance from './Alumnos/consultasA';
 import LoginForm from './login/loginForm';
 import EditarUsuario from './usuarios/EditarUsuarios';
@@ -13,8 +11,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RegistroUsuario from './usuarios/RegistroUsuario';
 import RegistroPago from './Pagos/Registropago';
 import GeneradorRecibos from './Pagos/GenerarRecibo';
-import Matricula from './matricula/Matricula';
-import {Matricula2} from './matricula/Matricula2';
+import {Matricula} from './matricula/Matricula';
 import Reportes from './Reportes/Reportes';
 import ActivityPanel from './actividades/activityPanel';
 import FacturaMaintenance from './Facturas/Facturas';
@@ -52,7 +49,6 @@ const router = createBrowserRouter(
                 { path: 'registrar-pago', element: <RegistroPago /> },
                 { path: 'GenerarRecibo', element: <GeneradorRecibos /> },                            
                 { path: 'matricula', element: <Matricula /> },
-                { path: 'matricula2', element: <Matricula2 /> },
                 { path: 'expedientes', element: <Expedientes /> },
                 { path: 'reportes', element: <Reportes /> },
                 { path: 'activity-panel', element: <ActivityPanel /> },
@@ -87,12 +83,7 @@ const router = createBrowserRouter(
 
 function App() {
     return (
-        <RouterProvider router={router}>
-            <div>
-                {/* Componente ToastContainer para notificaciones */}
-                <ToastContainer />
-            </div>
-        </RouterProvider>
+        <RouterProvider router={router} />          
     );
 }
 

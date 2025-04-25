@@ -97,7 +97,7 @@ function Sidebar( {ViewSidebard}) {
                             <ul className="submenu">
                                 <li>
                                     <Link to="/pages/activity-panel">
-                                        <FontAwesomeIcon icon={faChildren} className="menu-icon" /> Actividades (Maestro)
+                                        <FontAwesomeIcon icon={faChildren} className="menu-icon" /> Actividades
                                     </Link>
                                 </li>
                                 <li><Link to="/pages/attendance-panel">Asistencia</Link></li>
@@ -157,14 +157,7 @@ function Sidebar( {ViewSidebard}) {
                         <FontAwesomeIcon icon={faSchoolCircleCheck} className="menu-icon" />
                         Matrícula
                     </Link>
-                </li>
-
-                <li className="menu-link">
-                    <Link to="/pages/matricula2">
-                        <FontAwesomeIcon icon={faSchoolCircleCheck} className="menu-icon" />
-                        Matrícula2
-                    </Link>
-                </li>
+                </li>               
 
                 {user.rolId === 1 && (
                     <li className="menu-link">
@@ -174,21 +167,21 @@ function Sidebar( {ViewSidebard}) {
                         </Link>
                     </li>
                 )}
-                <li>
-                    <div onClick={toggleComunicacionSubmenu} className="menu-item">
-                        <span>Comunicación</span>
-                        <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />
-                    </div>
-                    {showComunicacionSubmenu && (
-                        <ul className="submenu">
-                            <li><Link to="/pages/comunicacion">
-                                <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Comunicación correo</Link></li>
-                            <li><Link to="/pages/comunicacion-mensajes">
-                                <FontAwesomeIcon icon={faFileInvoice} className="menu-icon" /> Comunicación mensajería</Link></li>
+                {/*<li>*/}
+                {/*    <div onClick={toggleComunicacionSubmenu} className="menu-item">*/}
+                {/*        <span>Comunicación</span>*/}
+                {/*        <FontAwesomeIcon icon={faCaretDown} className="caret-icon" />*/}
+                {/*    </div>*/}
+                {/*    {showComunicacionSubmenu && (*/}
+                {/*        <ul className="submenu">*/}
+                {/*            <li><Link to="/pages/comunicacion">*/}
+                {/*                <FontAwesomeIcon icon={faWallet} className="menu-icon" /> Comunicación correo</Link></li>*/}
+                {/*            <li><Link to="/pages/comunicacion-mensajes">*/}
+                {/*                <FontAwesomeIcon icon={faFileInvoice} className="menu-icon" /> Comunicación mensajería</Link></li>*/}
 
-                        </ul>
-                    )}
-                </li>
+                {/*        </ul>*/}
+                {/*    )}*/}
+                {/*</li>*/}
 
                 {user.rolId === 1 && (
                     <li className="menu-link"><Link to="/pages/inventario">

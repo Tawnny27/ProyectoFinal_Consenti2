@@ -244,7 +244,7 @@ namespace kinder_consenti2.Server.Controllers
                         return Ok("Matricula Efectuada y factura enviada. "+envio);
                     }
 
-                    return Ok("Matricula enviada para validacio del pago");
+                    return Ok("Matricula enviada para validacion del pago");
                 }
                 return BadRequest("Algo salio mal, validar con Amnistarcion");
             }          

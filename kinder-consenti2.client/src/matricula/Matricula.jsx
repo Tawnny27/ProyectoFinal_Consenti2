@@ -1,268 +1,261 @@
 ﻿import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './matricula.css';
+import { Confirmacion } from './Confirmacion';
 import { useUserContext } from '../UserContext';
-import { BuscarUsuarios, ObtenerUsuarios, ObtenerProductosfijos, ObtenerProductosMensuales, CrearMatricula, } from '../apiClient'; // Importar las funciones desde apiClient.js
+import Select from "react-select";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCamera } from '@fortawesome/free-solid-svg-icons';
+import { ObtenerPadres, BuscarUsuarios, ObtenerProductosfijos, ObtenerProductosMensuales, CrearMatricula, } from '../apiClient'; // Importar las funciones desde apiClient.js
 
-const Matricula = () => {
-    const navigate = useNavigate();
+export const Matricula = () => {
+
     const { user } = useUserContext();
-    const [formData, setFormData] = useState({
-        parentID: 0,
-        nombreUsuario: '',
-        apellidosUsuario: '',
-        cedulaUsuario: '',
-        telefonoUsuario: '',
-        correoUsuario: '',
-        totalAmount: 0,
-        selectedChildren: [],
-        period: '',
-        paymentMethod: '',
-        proofOfPayment: '',
-        lastEnrollmentDate: null,
-        date: new Date().toISOString(), // Fecha actual
-        referenceNumber: '', // Número de referencia del comprobante
-        subtotal: 0, // Subtotal
-        iva: 0, // IVA
-        discount: 0, // Descuento
-    });
-
-
-    const handleCancel = () => {
-        // Redirige a la página principal
-        navigate('/main');
-    };
-
-    const [userDetails, setUserDetails] = useState({
-        idPadre: 0,
-        idRol: 0
-    });
-
-
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState('');
-    const [imageError, setImageError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+    const [opciones, setOpciones] = useState([]);
     const fileInputRef = useState(null);
-
-    //const IMAGE_PATH = '/FotosPagos/';
-    const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
+    const [imageError, setImageError] = useState('');
+    const [previewUrl, setPreviewUrl] = useState('');
+    const [seleccionPadre, setSeleccionPadre] = useState(null);
+    const [disabledRef, setDisableRef] = useState(true);
+    const [total, setTotal] = useState(0);
+    const [subtotal, setSubtotal] = useState(0);
+    const [pago, setPago] = useState("");
+    const [imgPago, setImgPago] = useState("");
+    const [ref, setRef] = useState(null);
+    const [envio, setEnvio] = useState(false);
+    const [checkVisible, setCheckVisible] = useState(false);
+    const [usSelect, setUsSelect] = useState({});
+    const [hijoSelect, setHijoSelect] = useState({});
+    const [usuarios, setUsuarios] = useState([]);
+    const [fijos, setFijos] = useState([]);
+    const [mensuales, setMensuales] = useState([]);
+    const [registrosTemp, setRegistrosTemp] = useState([]);
+    const [registros, setRegistros] = useState([]);
+    const [mesajePago, setMesajePago] = useState(false);
+    const [selectedCheckbox, setSelectedCheckbox] = useState(null);
+    const [selectedPagoCheckbox, setSelectedPagoCheckbox] = useState(null);
+    const [matricula, setMatricula] = useState({});
+    const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png'];
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [childrenList, setChildrenList] = useState([]);
-    const [userList, setUserList] = useState([]);
-    const [error, setError] = useState('');
-    const [productosFijos, setProductosFijos] = useState([]);
-    const [productosMensuales, setProductosMensuales] = useState([]);
-    const [selectedProductos, setSelectedProductos] = useState([]);
-    const [imagePath, setImagePath] = useState('');
-
-    useEffect(() => {
-        const cargarDatosUsuario = async () => {
-            if (user) {
-                try {
-                    // Si el rol del usuario es 3 (Padre)
-                    if (user.rolId === 3) {
-                        // Prellenar los datos del usuario actual (padre)
-                        setFormData((prev) => ({
-                            ...prev,
-                            id: user.idUsuario,
-                            rol: user.rolId,
-                            parentFullName: `${user.nombreUsuario} ${user.apellidosUsuario}`,
-                            parentID: user.cedulaUsuario,
-                            phone: user.telefonoUsuario || '',
-                            address: user.direccionUsuario || '',
-                        }));
-
-                        // Llamada para obtener los datos del usuario con el idUsuario del padre
-                        const usuarioResponse = await BuscarUsuarios(user.idUsuario);
-
-                        if (usuarioResponse.status !=200) {
-                            throw new Error('No se pudo obtener los datos del usuario');
-                        }
-                        const usuarioData = usuarioResponse.data;
-
-                        // Verificar si la respuesta de la API contiene los niños
-                        if (usuarioData && usuarioData.alumnos && usuarioData.alumnos.length > 0) {
-                            setChildrenList(usuarioData.alumnos); // Establecer los niños asociados
-                        } else {
-                            setChildrenList([]); // Limpiar la lista si no hay niños
-                        }
-                    }
-                    // Si el rol es 1 (Administrador), usar los usuarios de la API
-                    else if (user.rolId === 1) {
-                        await fetchUsers();
-                        const usuarioEncontrado = userList.find(
-                            (usuario) => usuario.id === user.idUsuario
-                        );               
-                    }
-                } catch (error) {
-                    console.error('Error al cargar los datos del usuario:', error);
-                    setChildrenList([]); // Limpiar la lista de alumnos en caso de error
-                }
+    const setearMatricula = () => {
+        setMatricula(
+            {
+                "clienteId": 0,
+                "rollId": user.rolId,
+                "fecha": new Date().toISOString(),
+                "metodoPago": "",
+                "imagenPago": "",
+                "referencia": null,
+                "subtotal": 0,
+                "descuento": 0,
+                "iva": 0,
+                "total": 0,
+                "detalles": []
             }
-        };
+        );
+    }
 
-        cargarDatosUsuario();
-    }, [user]); // Dependencia solo de `user` para evitar la carga infinita
+    const reset = () => {
+        if (opciones.length>0) {
+            setUsSelect({});
+        }        
+        setHijoSelect({});
+        setCheckVisible(false);
+        setEnvio(false);
+        setRegistrosTemp([]);
+        setRegistros([]);
+        setSelectedCheckbox(null);       
+        setSelectedPagoCheckbox(null);
+        setSeleccionPadre(null);
+        eliminaImagen();
+        setMesajePago(false);
+        setDisableRef(true);
+        setRef(null);
+        setearMatricula();
+    }
 
+    const cargarPadre = async () => {
+        if (user.rolId == 1) {
+            const response = await ObtenerPadres();
+            if (response.status == 200) {
+                setUsuarios(response.data);
 
-    const fetchUsers = async () => {
-        try {
-            const { data } = await ObtenerUsuarios ();
-            const formattedUsers = data
-                .filter((usuario) => usuario.rolId === 3)
-                .map((usuario) => ({
-                    id: usuario.idUsuario,
-                    rol: usuario.rolId,
-                    name: `${usuario.nombreUsuario} ${usuario.apellidosUsuario}`,
-                    idCard: usuario.cedulaUsuario,
-                    children: usuario.alumnos || [], // Asegúrate de que la API devuelve `alumnos`
-                    phone: usuario.telefonoUsuario,
-                    address: usuario.direccionUsuario || '',
+                const datosTransformados = response.data.map((item) => ({
+                    value: item.idUsuario, // Valor interno
+                    label: item.nombreUsuario + " " + item.apellidosUsuario, // Texto visible
                 }));
-            setUserList(formattedUsers);
-        } catch (error) {
-            console.error('Error al obtener los usuarios:', error);
-        }
-    };
+                setOpciones(datosTransformados);
 
-    const handleUserSelect = (userId) => {
-        const selectedUser = userList.find((user) => user.id === parseInt(userId));
-        if (selectedUser) {
-            setFormData((prev) => ({
-                ...prev,
-                parentFullName: selectedUser.name,
-                parentID: selectedUser.idCard,
-                phone: selectedUser.phone,
-                address: selectedUser.address,
-            }));
-
-            setChildrenList(selectedUser.children);
-
-            // Obtener idUsuario y idRol
-            const idPadre = selectedUser.id;
-            const idRol = selectedUser.rol;  // Suponiendo que el rol está guardado como 'rolId' en el objeto 'selectedUser'
-
-            // Aquí podrías hacer algo con esos valores si los necesitas, por ejemplo:
-            console.log('ID Padre:', idPadre);
-            console.log('ID Rol:', idRol);
-
-
-            // Si necesitas guardarlos en el estado o hacer alguna otra acción con ellos, puedes hacerlo aquí.
-            // Ejemplo:
-            setUserDetails({
-                idPadre,
-                idRol
-            });
-            // Guardar el usuario seleccionado
-            setSelectedUser(selectedUser); // Esto asegura que tienes acceso al usuario seleccionado
-        }
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
-    /*
-    const handleFileChange = (e) => {
-        setFormData((prev) => ({ ...prev, proofOfPayment: e.target.files[0] }));
-    };
-    */
-    const handleChildSelection = (childId) => {
-        setFormData((prev) => ({
-            ...prev,
-            selectedChildren: [childId], // Solo se permite un único niño seleccionado
-        }));
-    };
-
-
-    //Productos
-    useEffect(() => {
-        const obtenerProductos = async () => {
-            try {
-                const responseFijos = await ObtenerProductosfijos();
-                const responseMensuales = await ObtenerProductosMensuales();
-
-                setProductosFijos(responseFijos.data);
-                setProductosMensuales(responseMensuales.data);
-            } catch (error) {
-                console.error('Error al obtener los productos:', error);
+            } else {
+                setUsuarios([]);
             }
-        };
+        } else if (user.rolId == 3) {
+            const response = await BuscarUsuarios(user.idUsuario);
+            if (response.status == 200) {
+                setUsSelect(response.data);
+            } else {
+                setUsSelect({});
+            }
+        }
+    }
 
-        obtenerProductos();
-    }, []);
+    const cargarFijos = async () => {
+        const response = await ObtenerProductosfijos();
+        if (response.status == 200) {
+            setFijos(response.data);
+        }
+    }
 
-    // Actualizar el subtotal, IVA y total
-    useEffect(() => {
-        const subtotal = selectedProductos.reduce((acc, productoId) => {
-            const producto = [...productosFijos, ...productosMensuales].find(
-                (p) => p.idProducto === productoId
-            );
-            return acc + (producto ? producto.monto : 0);
-        }, 0);
+    const cargarMensuales = async () => {
+        const response = await ObtenerProductosMensuales();
+        if (response.status == 200) {
+            setMensuales(response.data);
+        }
+    }
 
-        const iva = subtotal * 0.13; // 13% de IVA
-        const discountAmount = user.rolId === 1 ? ((iva + subtotal) * formData.discount) / 100 : 0; // Descuento para rol 1
-        const total = subtotal + iva - discountAmount;
-
-        setFormData((prev) => ({
-            ...prev,
-            subtotal: subtotal,
-            iva: iva,
-            totalAmount: total,
-        }));
-    }, [selectedProductos, productosFijos, productosMensuales, formData.discount]);
-
-    const handleProductoSelection = (productoId) => {
-        setSelectedProductos([productoId]); // Reemplaza cualquier selección previa con el nuevo ID
-    };
-
-    const handlePeriodoChange = async (e) => {
-        const selectedPeriod = e.target.value;
-        setFormData((prev) => ({ ...prev, period: selectedPeriod }));
-
-        // Si selecciona "Anual", marca automáticamente la matrícula
-        if (selectedPeriod === 'Anual') {
-            setFormData((prev) => ({
-                ...prev,
-                matriculaStatus: 'Matrícula marcada automáticamente.',
-            }));
+    const handleUseSelectOP = (opcion) => {
+        setSeleccionPadre(opcion);
+        if (opcion.value != 0) {
+            setUsSelect(usuarios.find((us) =>
+                us.idUsuario === parseInt(opcion.value)
+            ));
         } else {
-            setFormData((prev) => ({
-                ...prev,
-                matriculaStatus: 'El niño está actualmente matriculado.',
-            }));
+            setUsSelect({});
+        }
+        setHijoSelect({});
+        setCheckVisible(false);
+        setEnvio(false);
+        setRegistrosTemp([]);
+        setRegistros([]);
+        setSelectedCheckbox(null);
+        setMesajePago(false);
+        setSelectedPagoCheckbox(null);
+    }
 
-            // Validar si el niño tiene matrícula activa (un año desde la última matrícula)
-            const lastEnrollmentDate = formData.lastEnrollmentDate;
-            if (lastEnrollmentDate) {
-                const today = new Date();
-                const oneYearLater = new Date(lastEnrollmentDate);
-                oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+    const addFijos = (idHijo) => {
+        const detalle = [];
+        fijos.map(pr =>
+            detalle.push(
+                {
+                    "productoId": pr.idProducto,
+                    "alumnoId": parseInt(idHijo),
+                    "monto": pr.monto,
+                    "dias": ""
+                },
+            ));
+        setRegistrosTemp(detalle);
+    }
 
-                if (today < oneYearLater) {
-                    setFormData((prev) => ({
-                        ...prev,
-                        matriculaStatus: 'El niño está actualmente matriculado. No puede matricularse nuevamente.',
-                    }));
-                }
+    const addHorario = (idHorario, idHijo) => {
+
+        let horario = mensuales.find(pr => pr.idProducto === idHorario);
+        const detalle = {
+            "productoId": horario.idProducto,
+            "alumnoId": parseInt(idHijo),
+            "monto": horario.monto,
+            "dias": ""
+        };
+        setRegistrosTemp((prevRegistros) => [...prevRegistros, detalle]);
+    }
+
+    const handleCheckboxChange = (index, idHorario, idHijo) => {
+        setSelectedCheckbox(index);
+        addFijos(idHijo);
+        addHorario(idHorario, idHijo);
+        setEnvio(true);
+    }
+
+    const handleSelectAlumno = (idHijo) => {
+        if (idHijo != 0) {
+            setHijoSelect(usSelect.alumnos.find(hi =>
+                hi.idAlumno === parseInt(idHijo)
+            ));
+            setCheckVisible(true);
+            setSelectedCheckbox(null);
+            setEnvio(false);
+        } else {
+            setHijoSelect({});
+            setCheckVisible(false);
+            setEnvio(false);
+            setRegistrosTemp([]);
+            setSelectedCheckbox(null);
+        }
+    }
+
+    const addDetalle = () => {
+        const validar = registros.filter(item => item.alumnoId === parseInt(hijoSelect.idAlumno));
+        if (validar.length === 0) {
+            setRegistros((prevRegistros) => [...prevRegistros, ...registrosTemp]);
+        } else {
+            toast.error("Este Niño ya fue ingresado");
+            console.log(registros);
+        }
+        setEnvio(false);
+        setHijoSelect({});
+        setSelectedCheckbox(null);
+        setCheckVisible(false);
+    }
+
+    const estilos = {
+        check: {
+            display: "none",
+        },
+    }
+
+    const handleCheckboxPagoChange = (index, label) => {
+        setSelectedPagoCheckbox(index);
+        setPago(label);
+        if (index == 0) {
+            setDisableRef(true);
+            setPreviewUrl('');
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
             }
+            setRef(null);
+            setImgPago("Pago en efectivo");
+        } else {
+            setDisableRef(false);
+            setImgPago("");
+        }
+        setMesajePago(false);
+    }
+
+    const handleKeyPress = (event) => {
+        const charCode = event.charCode;
+
+        // Permitir solo números (0-9)
+        if (charCode < 48 || charCode > 57) {
+            event.preventDefault();
         }
     };
 
-    //--------------------------------------------------------------------------------------------------------------------
+    const handleInputChange = (e) => {
+        e.target.value;
+        if (e.target.value != '' && e.target.value != 0) {
+            setRef(e.target.value);
+        } else {
+            setRef(null);
+        }
+    };
 
     const validateImage = (file) => {
-        if (!file) throw new Error('Por favor seleccione un archivo válido.');
-        if (!ALLOWED_FILE_TYPES.includes(file.type)) throw new Error('Formato no permitido. Use JPG, PNG o PDF.');
-        if (file.size > MAX_FILE_SIZE) throw new Error('El archivo excede el tamaño máximo de 5MB.');
+        if (!file) {
+            throw new Error('Por favor seleccione una imagen');
+        }
+        if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+            throw new Error('Formato no permitido. Use JPG, PNG');
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            throw new Error('La imagen excede el tamaño máximo de 5MB');
+        }
         return true;
     };
+
 
     const convertToBase64 = (file) => {
         return new Promise((resolve, reject) => {
@@ -273,22 +266,23 @@ const Matricula = () => {
         });
     };
 
+
     const base64Image = async (file) => {
         const base64 = await convertToBase64(file);
         return base64;
     }
+
 
     const handleImageChange = async (e) => {
         const file = e.target.files[0];
         setImageError('');
         try {
             if (validateImage(file)) {
-                setSelectedFile(file);
-                const base64 = await base64Image(file);
-                setImagePath(base64);
-                // Crear URL temporal para vista previa
-                const previewURL = URL.createObjectURL(file);
-                setPreviewUrl(previewURL);
+
+                let base64 = await base64Image(file);
+                setImgPago(base64);
+                setPreviewUrl(URL.createObjectURL(file));
+
             }
         } catch (error) {
             setImageError(error.message);
@@ -298,446 +292,300 @@ const Matricula = () => {
         }
     };
 
-    /*
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+    const eliminaImagen = () => {
+        setPreviewUrl('');
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+        setImgPago("");
     };
-    */
 
-    //Envia datos
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const eliminaImagenBoton = () => {
+        setPreviewUrl('');
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+        setImgPago("");
+    };
 
-        // Verificación del archivo de pago solo si el método no es "Efectivo"
-        if (formData.paymentMethod !== 'Efectivo' && !selectedFile) {
-            console.error("No se ha seleccionado ningún archivo.");
-            toast.error("Por favor, selecciona un archivo de pago.");
-            return;
-        }
-        // Validación de niños (si es necesario)
-        if (!formData.selectedChildren.length) {
-            toast.error('Debes seleccionar al menos un niño para matricular.');
-            return;
-        }
-        // Validación de productos seleccionados
-        if (selectedProductos.length === 0) {
-            toast.error('Debes seleccionar al menos un producto.');
-            return;
-        }
-
-        // Preparar los detalles de la matrícula (productos, monto, días)
-        const detalles = selectedProductos.map((productoId) => {
-            const producto = [...productosFijos, ...productosMensuales].find(
-                (p) => p.idProducto === productoId
+    const validacionesEnvio = () => {
+        if (selectedPagoCheckbox === null) {
+            setMesajePago(true);
+            return false;
+        } else {
+            setMesajePago(false);
+            if (registros.length === 0) {
+                toast.error("Faltan datos favor valide");
+                return false;
+            }
+            let refer = 0;
+            if (ref != null) {
+                refer = ref;
+            }
+            
+            setMatricula(
+                {
+                    ...matricula,
+                    "clienteId": usSelect.idUsuario,
+                    "rollId": user.rolId,
+                    "metodoPago": pago,
+                    "imagenPago": imgPago,
+                    "referencia": refer,
+                    "subtotal": subtotal,
+                    "descuento": 0,
+                    "iva": 0.13,
+                    "total": total,
+                    "detalles": registros
+                }
             );
-            return {
-                productoId: producto.idProducto,
-                alumnoId: formData.selectedChildren[0], // Asumiendo que seleccionas un niño
-                monto: producto.monto,
-                dias: producto.nombreProducto, // Suponiendo que el periodo se utiliza para los días
-            };
-        });
-
-        const dataToSend = {
-            ...(user.rolId === 3 && { clienteId: user.idUsuario, rollId: user.rolId }),
-            ...(user.rolId === 1 && { clienteId: userDetails.idPadre, rollId: userDetails.idRol }),
-            metodoPago: formData.paymentMethod,
-            imagenPago: imagePath || 'Pago en Efectivo',  // Si no hay archivo, se envía una cadena 
-            fecha: new Date().toISOString(),
-            referencia: formData.referenceNumber || 0, // Número de referencia
-            subtotal: formData.subtotal,
-            iva: formData.iva,
-            descuento: formData.discount, // Descuento
-            total: formData.totalAmount,
-            detalles: detalles,
-        };
-
-        console.log("Datos a enviar:", dataToSend);
-
-        try {
-            console.log('Enviando datos de matrícula:', JSON.stringify(dataToSend, null, 2));
-
-            // Intentamos crear la matrícula primero
-            const matriculaResponse = await CrearMatricula(dataToSend);
-
-            if (matriculaResponse.data) {
-                console.log('Matrícula registrada exitosamente:', matriculaResponse.data);
-                if (user.rolId === 3) { toast.info('Matrícula enviada para validación de pago') }
-
-                // Si el método de pago no es "Efectivo" y se ha seleccionado un archivo, proceder a enviarlo al servidor
-
-                /*
-                if (formData.paymentMethod !== 'Efectivo' && selectedFile) {
-                    console.log('Subiendo imagen de pago...');
-                    const imageFormData = new FormData();
-                    imageFormData.append('file', selectedFile);
-                    imageFormData.append('fileName', 'Comprobante_' + uniqueFileName);
-
-                    try {
-                        const imageResponse = await axios.post(
-                            'https://localhost:44369/api/Imagenes/GuardarImagenPago',
-                            imageFormData,
-                            {
-                                headers: { 'Content-Type': 'multipart/form-data' },
-                            }
-                        );
-
-                        if (imageResponse.status === 200) {
-                            console.log('Imagen subida exitosamente:', imageResponse.data);
-                            imagePath = imageResponse.data.filePath || imagePath; // Confirmamos la ruta desde el backend
-                        } else {
-                            setError('Error al guardar la imagen de pago');
-                            console.error('Error al subir la imagen:', imageResponse);
-                            return;
-                        }
-                    } catch (error) {
-                        console.error('Error al subir la imagen:', error);
-                        setError('Error al subir la imagen de pago');
-                    }
-                }
-                */
-
-                if (user.rolId === 1) {
-                    toast.success('¡Matrícula registrada y pago procesado con éxito!', {
-                        position: 'top-right',
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                }
-            } else {
-                setError('Error al registrar la matrícula');
-                toast.error('Error al registrar la matrícula', {
-                    position: 'top-right',
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            }
-        } catch (error) {
-            console.error('Error en el proceso de matrícula y pago:', error);
-
-            if (error.response) {
-                console.error('Detalles del error:', {
-                    data: error.response.data,
-                    status: error.response.status,
-                    headers: error.response.headers,
-                });
-
-                if (error.response.data && error.response.data.errors) {
-                    console.error('Errores de validación:', error.response.data.errors);
-                }
-            }
-
-            setError('Error al realizar el proceso de matrícula y pago');
-            toast.error('Error al realizar el proceso de matrícula y pago', {
-                position: 'top-right',
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            return true;
         }
     };
+
+    const nombreAlumno = (id) => {
+        return usSelect.alumnos.find(item => item.idAlumno === id).nombreAlumno;
+    }
+    const nombreRubro = (id) => {
+        let rubros = [...fijos, ...mensuales];
+        return rubros.find(item => item.idProducto === id).nombreProducto;
+    }
+
+    const envioDatos = async () => {
+        setLoading(true);
+        const response = await CrearMatricula(matricula);
+        if (response.status === 200) {    
+            console.log(matricula);
+            reset();
+            setLoading(false);
+            toast.success(response.data);
+        } else {     
+            console.log(matricula);
+            setLoading(false);
+            toast.error(response.data);
+        }
+    }
+
+    const cerrarConfirmacion = () => {
+        setMostrarConfirmacion(false);
+    };
+
+    // Función para mostrar el componente de confirmación
+    const ejecutarConfirmacion = () => {
+        setMostrarConfirmacion(true);
+    };
+
+
+    // ---------------------------------------envio de datos-------------------------------------------------
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (validacionesEnvio() == true) {
+            ejecutarConfirmacion();
+        }
+    };
+
+    //UseEffect*******************************************************
+
+    useEffect(() => {
+        cargarPadre();
+        cargarFijos();
+        cargarMensuales();
+        setearMatricula();
+    }, []);
+
+    useEffect(() => {
+        if (registros.length > 0) {
+            let suma = 0;
+            registros.map(item => suma = suma + item.monto);
+            setSubtotal(suma);
+            setTotal(suma + (suma * 0.13));
+        } else {
+            setTotal(0);
+        }
+    }, [registros]);
+
+
+    useEffect(() => {
+        console.log(registrosTemp);
+        console.log(selectedPagoCheckbox);
+        console.log(registros);
+        console.log(hijoSelect);
+        console.log(usSelect);
+    }, [registrosTemp], [hijoSelect], [usSelect], [registros]);
 
 
     return (
-        <div >
+        <div>
+            {loading && <div className="overlay">En Proceso...</div>}
+        <div className="content-container">
+            <main className="main-content">
+                <div className="content-matricula">
+                    {!mostrarConfirmacion && (
+                    <div className="enrollment-form">
+                        <h2>Formulario de Matrícula</h2>
+                        <form onSubmit={handleSubmit}>
+                            {user.rolId === 1 ? (
+                                <div>
+                                    <label> Seleccione un Padre</label>
+                                    <Select
+                                        options={opciones}            // Opciones con la opción inicial incluida
+                                        value={seleccionPadre}             // Valor actualmente seleccionado
+                                        onChange={handleUseSelectOP}       // Ejecuta el proceso al cambiar la selección
+                                        placeholder="Buscar o seleccionar..."
+                                    />
 
-            <div className="content-container">
-                <main className="main-content">
-                    <div className="content-matricula">                        
-                            <div className="enrollment-form">
-                                <h2>Formulario de Matrícula</h2>
-                                {error && <p className="error">{error}</p>}
-                                <form onSubmit={handleSubmit}>
-                                    <div className="form-layout">
-                                        {/* Sección Izquierda (Información del Usuario e Hijos) */}
-                                        <div className="left-section">
-                                            {user.rolId === 1 && (
-                                                <div className="select-parent">
-                                                    <h3>Selecciona un Padre:</h3>
-                                                    <select
-                                                        onChange={(e) => handleUserSelect(e.target.value)}
-                                                        value={formData.parentID || ''}
-                                                    >
-                                                        <option value="">Selecciona un padre</option>
-                                                        {userList.map((user) => (
-                                                            <option key={user.id} value={user.id}>
-                                                                {user.name}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                            )}
+                                </div>
+                            ) : (
+                                <div>
+                                    <label> Padre</label>
+                                    <input type="text" value={usSelect.nombreUsuario + " " + usSelect.apellidosUsuario} />
+                                </div>
+                            )}
 
-                                            <div className="parent-info">
-                                                <ParentInfo formData={formData} handleChange={handleChange} userRole={user.rolId} />
-                                            </div>
+                            {usSelect.alumnos && usSelect.alumnos.length > 0 && (
+                                <div className="hijos" >
+                                    <label>Hijos</label>
 
-                                            <div className="children-selection">
-                                                <ChildrenSelection
-                                                    childrenList={childrenList}
-                                                    selectedChildren={formData.selectedChildren}
-                                                    handleChildSelection={handleChildSelection}
-                                                />
-                                            </div>
-                                        </div>
+                                    <select
+                                        value={hijoSelect.idAlumno || "0"}
+                                        onChange={(e) => handleSelectAlumno(e.target.value)}
+                                    >
+                                        <option value="0"> Seleccione un hijo</option>
+                                        {usSelect.alumnos.map((hijo) => (
+                                            <option key={hijo.idAlumno} value={hijo.idAlumno}> {hijo.nombreAlumno} </option>
+                                        ))}
+                                    </select>
 
-                                        {/* Sección Derecha (Pagos y Productos) */}
-                                        <div className="right-section">
-                                            <div className="payment-section">
-                                                <h3>Fecha Actual: {new Date().toLocaleDateString()}</h3>
-
-                                                {/* Sección de Pago */}
-                                                <div className="payment-section">
-                                                    <PaymentSection
-                                                        formData={formData}
-                                                        handleChange={handleChange}                                                        
-                                                        handleImageChange={handleImageChange}
-                                                        userRole={user.rolId}
+                                    <div>
+                                        <label>Horarios</label>
+                                        {mensuales.map((hr, index) => (
+                                            <div key={index} style={{ padding: "5px" }}>
+                                                <label className="check" key={index} style={!checkVisible ? estilos.check : {}} >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedCheckbox === index}
+                                                        onChange={() => handleCheckboxChange(index, hr.idProducto, hijoSelect.idAlumno)}
                                                     />
-                                                    {formData.paymentMethod !== 'Efectivo' && (
-                                                        <>
-                                                            <label>Número de Referencia del Comprobante:</label>
-                                                            <input
-                                                                type="text"
-                                                                name="referenceNumber"
-                                                                value={formData.referenceNumber}
-                                                                onChange={handleChange}
-                                                                required
-                                                            />
-                                                        </>
-                                                    )}
-                                                    <div className="payment-period">
-                                                        <label>
-                                                            Periodo:
-                                                            <select name="period" value={formData.period} onChange={handlePeriodoChange}>
-                                                                <option value="Mensual">Mensualidad</option>
-                                                                <option value="Anual">Anualidad</option>
-                                                            </select>
-                                                        </label>
-                                                    </div>
-
-                                                </div>
-
+                                                    {hr.nombreProducto} - {hr.monto}
+                                                </label>
+                                                <br />
                                             </div>
-                                        </div>
-
-                                        <div className="right-section">
-
-                                            <div className="products-selection">
-                                                <h3>Seleccionar Productos:</h3>
-                                                {formData.period === 'Anual' ? (
-                                                    <>
-                                                        <h4>Anualidad:</h4>
-                                                        {productosFijos.map((producto) => (
-                                                            <div key={producto.idProducto}>
-                                                                <label>
-                                                                    <input
-                                                                        type="radio"
-                                                                        checked={selectedProductos.includes(producto.idProducto)}
-                                                                        onChange={() => handleProductoSelection(producto.idProducto)}
-                                                                        required
-                                                                    />
-                                                                    {producto.nombreProducto} - {producto.monto} colones
-                                                                </label>
-                                                            </div>
-                                                        ))}
-                                                    </>
-                                                ) : (
-                                                    <>
-
-                                                        <h4>Horarios:</h4>
-                                                        {productosMensuales.map((producto) => (
-                                                            <div key={producto.idProducto}>
-                                                                <label>
-                                                                    <input
-                                                                        type="radio"
-                                                                        checked={selectedProductos.includes(producto.idProducto)}
-                                                                        onChange={() => handleProductoSelection(producto.idProducto)}
-                                                                        required
-                                                                    />
-                                                                    {producto.nombreProducto} - {producto.monto} colones
-                                                                </label>
-                                                            </div>
-                                                        ))}
-                                                    </>
-                                                )}
-                                            </div>
-                                            <label>Subtotal: {formData.subtotal}</label>
-                                            <label>IVA (13%): {formData.iva}</label>
-
-
-                                            {user.rolId === 1 && (
-                                                <>
-                                                    <div className="decuento">
-                                                        <label>Descuento (%):</label>
-                                                        <input
-                                                            type="number"
-                                                            name="discount"
-                                                            value={formData.discount}
-                                                            onChange={handleChange}
-                                                            min="0"
-                                                            max="100"
-                                                        />
-                                                    </div>
-                                                </>
-                                            )}
-
-
-                                            <div className="total-amount">
-                                                <h4>Total a pagar: {formData.totalAmount} colones</h4>
-                                            </div>
-                                        </div>
-
-
+                                        ))}
+                                        {envio && (
+                                            <button type="button" onClick={addDetalle} >Agregar</button>
+                                        )}
                                     </div>
+                                </div>
+                            )}
 
-                                    <div className="buttons">
-                                        <button className="submit-m-button" type="submit">Realizar Envío</button>
-                                        <button className="cancel-m-button" type="button" onClick={handleCancel}>
-                                            Cancelar
-                                        </button>
+                            <div className="contenLabel">
+                                <label className="labelCheck">Tipo de Pago</label>
+                                {['Efectivo', 'SINPE Movil', 'Transferencia'].map((label, index) => (
+                                    <div key={index} className="inputsOrder">
+                                        <label className="check" key={index}>
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedPagoCheckbox === index}
+                                                onChange={() => handleCheckboxPagoChange(index, label)}
+                                            />
+                                            {label}
+
+                                        </label>
+                                        <br />
                                     </div>
-                                </form>
-                            </div>                       
+                                ))}
+                                {mesajePago && <p style={{ color: 'red' }}>Debe seleccionar al menos una opción.</p>}
+                            </div>
+
+                            <div>
+                                <label># de referencia:</label>
+                                <input type="text"
+                                    name="referencia"
+                                    value={ref}
+                                    required
+                                    onKeyPress={handleKeyPress}
+                                    onChange={handleInputChange}
+                                    disabled={disabledRef}
+                                />
+                            </div>
+
+                            <div >
+                                <div className="alumno-form-group">
+                                    <label className="alumno-label">Foto del la transaccion</label>
+                                    <div className="alumno-input-container">
+                                        <FontAwesomeIcon icon={faCamera} className="alumno-input-icon" />
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            onChange={handleImageChange}
+                                            accept=".jpg,.jpeg,.png"
+                                            className="alumno-input"
+                                            disabled={disabledRef}
+                                            required
+                                        />
+                                    </div>
+                                    {previewUrl && (
+                                        <div className="image-preview-container">
+                                            <img
+                                                src={previewUrl}
+                                                alt="Vista previa"
+                                                className="image-preview"
+                                                style={{ maxWidth: '200px', marginTop: '10px' }}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={eliminaImagenBoton}
+                                                className="remove-image-btn"                                    >
+                                                Eliminar imagen
+                                            </button>
+                                        </div>
+                                    )}
+                                    {imageError && (
+                                        <div className="error-message" style={{ color: 'red', marginTop: '5px' }}>
+                                            {imageError}
+                                        </div>
+                                    )}
+                                    <div className="image-info"
+                                        style={{ fontSize: '0.8rem', color: '#666', marginTop: '5px' }}>
+                                        Formatos permitidos: JPG, PNG. Tamano maximo: 5MB
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div>
+                                <label>Subtotal</label>
+                                <input type="text" value={subtotal} />
+                            </div>
+
+                            <div>
+                                <label>Total</label>
+                                <input type="text" value={total} />
+                            </div>
+
+                            <div className="botones">
+                                <button type="submit" className="submit-m-button" >Enviar</button>
+                                <button type="reset" className="cancel-m-button" onClick={reset}> Borrar</button>
+                            </div>
+                        </form>
                     </div>
-                </main>
-            </div>
+                    )}
+                    {mostrarConfirmacion && (
+                        <Confirmacion
+                            cerrar={cerrarConfirmacion}
+                            envioDatos={envioDatos}
+                            nombreAlumno={nombreAlumno}
+                            nombreRubro={nombreRubro}
+                            usSelect={usSelect}
+                            matricula={matricula}
+                            subtotal={subtotal}
+                            total={total}
+                        />
+                    )}
+
+                </div >
+            </main >
+            </div >
         </div>
     );
 }
-
-
 //-------------------------------------------------------------------------------------------------------------
-
-
-const PaymentSection = ({ formData, handleChange, handleImageChange, userRole }) => (
-    <div className="payment-section">
-        <h4>Opciones de Pago</h4>
-        <label>
-            <input
-                type="radio"
-                name="paymentMethod"
-                value="Transaccion"
-                checked={formData.paymentMethod === 'Transaccion'}
-                onChange={handleChange}
-            />
-            Transacción Bancaría
-        </label>
-        <label>
-            <input
-                type="radio"
-                name="paymentMethod"
-                value="SINPE MOVIL"
-                checked={formData.paymentMethod === 'SINPE MOVIL'}
-                onChange={handleChange}
-            />
-            SINPE MOVIL
-        </label>
-        <label>
-            <input
-                type="radio"
-                name="paymentMethod"
-                value="Efectivo"
-                checked={formData.paymentMethod === 'Efectivo'}
-                onChange={handleChange}
-                disabled={userRole === 3}
-            />
-            Efectivo
-        </label>
-        {formData.paymentMethod !== 'Efectivo' && (
-            <div className="proof-of-payment">
-                <label>Agregar comprobante de pago (JPG, PNG o PDF):</label>
-                <input type="file" id="proofOfPayment"
-                    accept=".jpg,.jpeg,.png,.pdf"
-                    onChange={handleImageChange}
-                    required />
-
-
-
-            </div>
-        )}
-    </div>
-);
-
-
-const ParentInfo = ({ formData, handleChange, userRole }) => (
-    <div className="parent-info">
-        <h3>Información del Padre</h3>
-        <label>Nombre Completo del Padre:</label>
-        <input
-            type="text"
-            name="parentFullName"
-            value={formData.parentFullName}
-            onChange={handleChange}
-            disabled
-        />
-        <label>Cédula:</label>
-        <input
-            type="text"
-            name="parentID"
-            value={formData.parentID}
-            onChange={handleChange}
-            disabled
-        />
-        <label>Teléfono:</label>
-        <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-        />
-        <label>Dirección:</label>
-        <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-        />
-    </div>
-);
-
-
-const handleChildSelection = (idAlumno) => {
-    setSelectedChildren([idAlumno]); // Reemplaza cualquier selección previa con el nuevo ID
-};
-
-const ChildrenSelection = ({ childrenList, selectedChildren, handleChildSelection }) => {
-    console.log('childrenList:', childrenList); // Verifica el contenido de childrenList
-
-    return (
-        <div className="children-selection">
-            <h3>Seleccionar Niño:</h3>
-            {childrenList.length > 0 ? (
-                childrenList.map((child) => (
-                    <div key={child.idAlumno}>
-                        <label>
-                            <input
-                                type="radio"
-                                checked={selectedChildren.includes(child.idAlumno)} // Asegúrate de que selectedChildren sea un array
-                                onChange={() => handleChildSelection(child.idAlumno)} // Llama a la función para manejar la selección
-                            />
-                            {`${child.nombreAlumno} ${child.apellidosAlumno}`}
-                        </label>
-                    </div>
-                ))
-            ) : (
-                <p>Se debe seleccionar un padre.</p>
-                // Se muestra este mensaje si childrenList está vacío
-            )}
-        </div>
-    );
-};
-
-export default Matricula;
