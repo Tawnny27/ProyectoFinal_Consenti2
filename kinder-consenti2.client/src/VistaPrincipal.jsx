@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import  Navbar  from './componentes/navBar';
 import  Sidebar  from './componentes/Sidebar';
 import Footer from './componentes/footer';
@@ -13,6 +14,7 @@ export const VistaPrincipal = () => {
 
     return (
         <div className="contPrincipal">
+            <ToastContainer />
             <Navbar setearSide={setearSidebar} />
             <div className={sidebarOpen ? "orderViewOpen" : "orderViewClose"}>
                 <Sidebar ViewSidebard={sidebarOpen} />

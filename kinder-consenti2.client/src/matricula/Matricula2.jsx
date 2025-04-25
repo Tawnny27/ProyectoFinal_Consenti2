@@ -14,11 +14,11 @@ export const Matricula2 = () => {
     const [opciones, setOpciones] = useState([]);
     const fileInputRef = useState(null);
     const [imageError, setImageError] = useState('');
-    const [previewUrl, setPreviewUrl] = useState('');    
+    const [previewUrl, setPreviewUrl] = useState('');
     const [seleccionPadre, setSeleccionPadre] = useState(null);
-   
     const [disabledRef, setDisableRef] = useState(true);
     const [total, setTotal] = useState(0);
+    const [subtotal, setSubtotal] = useState(0);
     const [pago, setPago] = useState("");
     const [imgPago, setImgPago] = useState("");
     const [ref, setRef] = useState("");
@@ -34,23 +34,27 @@ export const Matricula2 = () => {
     const [mesajePago, setMesajePago] = useState(false);
     const [selectedCheckbox, setSelectedCheckbox] = useState(null);
     const [selectedPagoCheckbox, setSelectedPagoCheckbox] = useState(null);
-    const [matricula, setMatricula] = useState(
-        {
-            "clienteId": 0,
-            "rollId": user.rolId,
-            "fecha": new Date().toISOString(),
-            "metodoPago": "",
-            "imagenPago": "",
-            "referencia": 0,
-            "subtotal": 0,
-            "descuento": 0,
-            "iva": 0,
-            "total": 0,
-            "detalles": []
-        }
-    );
+    const [matricula, setMatricula] = useState({});
     const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png'];
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+    const setearMatricula = () => {
+        setMatricula(
+            {
+                "clienteId": 0,
+                "rollId": user.rolId,
+                "fecha": new Date().toISOString(),
+                "metodoPago": "",
+                "imagenPago": "",
+                "referencia": 0,
+                "subtotal": 0,
+                "descuento": 0,
+                "iva": 0,
+                "total": 0,
+                "detalles": []
+            }
+        );
+    }
 
     const reset = () => {
         setUsSelect({});
@@ -66,6 +70,7 @@ export const Matricula2 = () => {
         setMesajePago(false);
         setDisableRef(true);
         setRef("");
+        setearMatricula();
     }
 
     const cargarPadre = async () => {
@@ -199,7 +204,7 @@ export const Matricula2 = () => {
     const handleCheckboxPagoChange = (index, label) => {
         setSelectedPagoCheckbox(index);
         setPago(label);
-        if (index == 0) {          
+        if (index == 0) {
             setDisableRef(true);
             setPreviewUrl('');
             if (fileInputRef.current) {
@@ -268,11 +273,11 @@ export const Matricula2 = () => {
         setImageError('');
         try {
             if (validateImage(file)) {
-               
+
                 let base64 = await base64Image(file);
                 setImgPago(base64);
                 setPreviewUrl(URL.createObjectURL(file));
-              
+
             }
         } catch (error) {
             setImageError(error.message);
@@ -282,7 +287,7 @@ export const Matricula2 = () => {
         }
     };
 
-    const eliminaImagen = () => {       
+    const eliminaImagen = () => {
         setPreviewUrl('');
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
@@ -290,7 +295,7 @@ export const Matricula2 = () => {
         setImgPago("");
     };
 
-    const eliminaImagenBoton = () => {      
+    const eliminaImagenBoton = () => {
         setPreviewUrl('');
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
@@ -304,17 +309,36 @@ export const Matricula2 = () => {
             return false;
         } else {
             setMesajePago(false);
+            if (registros.length === 0) {
+                alert("Faltan datos favor valide");
+                return false;
+            }
+            setMatricula(
+                {
+                    ...matricula,
+                    "clienteId": usSelect.idUsuario,
+                    "rollId": user.rolId,
+                    "metodoPago": pago,
+                    "imagenPago": imgPago,
+                    "referencia": ref,
+                    "subtotal": subtotal,
+                    "descuento": 0,
+                    "iva": 0.13,
+                    "total": total,
+                    "detalles": registros
+                }
+            );
             return true;
-        }        
+        }
     };
 
     // ---------------------------------------envio de datos-------------------------------------------------
     const handleSubmit = (e) => {
-        e.preventDefault();
-        alert("llega");
+        e.preventDefault();       
         if (validacionesEnvio() == true) {
             alert("enviado");
-        }        
+            alert(JSON.stringify(matricula, null, 2));
+        }
     };
 
     //UseEffect*******************************************************
@@ -323,13 +347,15 @@ export const Matricula2 = () => {
         cargarPadre();
         cargarFijos();
         cargarMensuales();
+        setearMatricula();
     }, []);
 
     useEffect(() => {
         if (registros.length > 0) {
             let suma = 0;
             registros.map(item => suma = suma + item.monto);
-            setTotal(suma);
+            setSubtotal(suma);
+            setTotal(suma+(suma*0.13));
         } else {
             setTotal(0);
         }
@@ -354,7 +380,7 @@ export const Matricula2 = () => {
                         <form onSubmit={handleSubmit}>
                             {user.rolId === 1 ? (
                                 <div>
-                                    <label> Seleccione un Padre</label>      
+                                    <label> Seleccione un Padre</label>
                                     <Select
                                         options={opciones}            // Opciones con la opción inicial incluida
                                         value={seleccionPadre}             // Valor actualmente seleccionado
@@ -434,7 +460,7 @@ export const Matricula2 = () => {
                                     onKeyPress={handleKeyPress}
                                     onChange={handleInputChange}
                                     disabled={disabledRef}
-                                />                               
+                                />
                             </div>
 
                             <div >
@@ -450,7 +476,7 @@ export const Matricula2 = () => {
                                             className="alumno-input"
                                             disabled={disabledRef}
                                             required
-                                        />                                        
+                                        />
                                     </div>
                                     {previewUrl && (
                                         <div className="image-preview-container">
@@ -482,12 +508,17 @@ export const Matricula2 = () => {
                             </div>
 
                             <div>
+                                <label>Subtotal</label>
+                                <input type="text" value={subtotal} />
+                            </div>
+
+                            <div>
                                 <label>Total</label>
                                 <input type="text" value={total} />
                             </div>
 
-                            <div className="botones">                               
-                                <button type="submit" className="submit-m-button" >Enviar</button>  
+                            <div className="botones">
+                                <button type="submit" className="submit-m-button" >Enviar</button>
                                 <button type="reset" className="cancel-m-button" onClick={reset}> Borrar</button>
                             </div>
                         </form>
