@@ -3,7 +3,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import './matricula.css';
 import { useUserContext } from '../UserContext';
 import Select from "react-select";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import { ObtenerPadres, BuscarUsuarios, ObtenerProductosfijos, ObtenerProductosMensuales, CrearMatricula, } from '../apiClient'; // Importar las funciones desde apiClient.js
 
 export const Matricula2 = () => {
@@ -11,8 +12,11 @@ export const Matricula2 = () => {
     const { user } = useUserContext();
 
     const [opciones, setOpciones] = useState([]);
+    const fileInputRef = useState(null);
+    const [imageError, setImageError] = useState('');
+    const [previewUrl, setPreviewUrl] = useState('');    
     const [seleccionPadre, setSeleccionPadre] = useState(null);
-    const [isValid, setIsValid] = useState(true);
+   
     const [disabledRef, setDisableRef] = useState(true);
     const [total, setTotal] = useState(0);
     const [pago, setPago] = useState("");
@@ -27,6 +31,7 @@ export const Matricula2 = () => {
     const [mensuales, setMensuales] = useState([]);
     const [registrosTemp, setRegistrosTemp] = useState([]);
     const [registros, setRegistros] = useState([]);
+    const [mesajePago, setMesajePago] = useState(false);
     const [selectedCheckbox, setSelectedCheckbox] = useState(null);
     const [selectedPagoCheckbox, setSelectedPagoCheckbox] = useState(null);
     const [matricula, setMatricula] = useState(
@@ -44,6 +49,8 @@ export const Matricula2 = () => {
             "detalles": []
         }
     );
+    const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png'];
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
     const reset = () => {
         setUsSelect({});
@@ -53,7 +60,12 @@ export const Matricula2 = () => {
         setRegistrosTemp([]);
         setRegistros([]);
         setSelectedCheckbox(null);
+        setSelectedPagoCheckbox(null);
         setSeleccionPadre(null);
+        eliminaImagen();
+        setMesajePago(false);
+        setDisableRef(true);
+        setRef("");
     }
 
     const cargarPadre = async () => {
@@ -95,21 +107,6 @@ export const Matricula2 = () => {
         }
     }
 
-    //const handleUseSelect = (idUser) => {
-    //    if (idUser != 0) {
-    //        setUsSelect(usuarios.find((us) =>
-    //            us.idUsuario === parseInt(idUser)
-    //        ));
-    //    } else {
-    //        setUsSelect({});
-    //    }
-    //    setHijoSelect({});
-    //    setCheckVisible(false);
-    //    setEnvio(false);
-    //    setRegistrosTemp([]);
-    //    setSelectedCheckbox(null);
-    //}
-
     const handleUseSelectOP = (opcion) => {
         setSeleccionPadre(opcion);
         if (opcion.value != 0) {
@@ -125,6 +122,8 @@ export const Matricula2 = () => {
         setRegistrosTemp([]);
         setRegistros([]);
         setSelectedCheckbox(null);
+        setMesajePago(false);
+        setSelectedPagoCheckbox(null);
     }
 
     const addFijos = (idHijo) => {
@@ -202,13 +201,17 @@ export const Matricula2 = () => {
         setPago(label);
         if (index == 0) {          
             setDisableRef(true);
+            setPreviewUrl('');
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
             setRef("");
             setImgPago("Pago en efectivo");
         } else {
             setDisableRef(false);
             setImgPago("");
         }
-        setIsValid(true);
+        setMesajePago(false);
     }
 
     const handleKeyPress = (event) => {
@@ -229,23 +232,90 @@ export const Matricula2 = () => {
         }
     };
 
-    // ---------------------------------------envio de datos-------------------------------------------------
-    //const handleSubmit = (e) => {
-    //    e.preventDefault();
+    const validateImage = (file) => {
+        if (!file) {
+            throw new Error('Por favor seleccione una imagen');
+        }
+        if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+            throw new Error('Formato no permitido. Use JPG, PNG');
+        }
 
-    //    if (validacionDatos(1)) {
-    //        if (selectedCheckbox === null) {
-    //            setIsValid(false);
-    //        } else { // Lógica para enviar el formulario o realizar la acción deseada 
-    //            console.log(pago);
-    //            //alert(`Aqui se envian los datosa la BD`);
-    //            if (!pago.referencia || pago.referencia == "") {
-    //                setPago({ ...pago, referencia: 0, });
-    //            }
-    //            envioDatos();
-    //        }
-    //    }
-    //};
+        if (file.size > MAX_FILE_SIZE) {
+            throw new Error('La imagen excede el tamaño máximo de 5MB');
+        }
+        return true;
+    };
+
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
+
+
+    const base64Image = async (file) => {
+        const base64 = await convertToBase64(file);
+        return base64;
+    }
+
+
+    const handleImageChange = async (e) => {
+        const file = e.target.files[0];
+        setImageError('');
+        try {
+            if (validateImage(file)) {
+               
+                let base64 = await base64Image(file);
+                setImgPago(base64);
+                setPreviewUrl(URL.createObjectURL(file));
+              
+            }
+        } catch (error) {
+            setImageError(error.message);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    };
+
+    const eliminaImagen = () => {       
+        setPreviewUrl('');
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+        setImgPago("");
+    };
+
+    const eliminaImagenBoton = () => {      
+        setPreviewUrl('');
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+        setImgPago("");
+    };
+
+    const validacionesEnvio = () => {
+        if (selectedPagoCheckbox === null) {
+            setMesajePago(true);
+            return false;
+        } else {
+            setMesajePago(false);
+            return true;
+        }        
+    };
+
+    // ---------------------------------------envio de datos-------------------------------------------------
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        alert("llega");
+        if (validacionesEnvio() == true) {
+            alert("enviado");
+        }        
+    };
 
     //UseEffect*******************************************************
 
@@ -268,6 +338,7 @@ export const Matricula2 = () => {
 
     useEffect(() => {
         console.log(registrosTemp);
+        console.log(selectedPagoCheckbox);
         console.log(registros);
         console.log(hijoSelect);
         console.log(usSelect);
@@ -280,19 +351,10 @@ export const Matricula2 = () => {
                 <div className="content-matricula">
                     <div className="enrollment-form">
                         <h2>Formulario de Matrícula</h2>
-                        <form>
+                        <form onSubmit={handleSubmit}>
                             {user.rolId === 1 ? (
                                 <div>
-                                    <label> Seleccione un Padre</label>
-                                    {/*<select*/}
-                                    {/*    onChange={(e) => handleUseSelect(e.target.value)}*/}
-                                    {/*    value={usSelect.idUsuario || "0"}>*/}
-
-                                    {/*    <option value="0"> Seleccione un padre </option>*/}
-                                    {/*    {usuarios.map((use) => (*/}
-                                    {/*        <option key={use.idUsuario} value={use.idUsuario}> {use.nombreUsuario} {use.apellidosUsuario}</option>*/}
-                                    {/*    ))}*/}
-                                    {/*</select>*/}
+                                    <label> Seleccione un Padre</label>      
                                     <Select
                                         options={opciones}            // Opciones con la opción inicial incluida
                                         value={seleccionPadre}             // Valor actualmente seleccionado
@@ -360,7 +422,7 @@ export const Matricula2 = () => {
                                         <br />
                                     </div>
                                 ))}
-                                {!isValid && <p style={{ color: 'red' }}>Debe seleccionar al menos una opción.</p>}
+                                {mesajePago && <p style={{ color: 'red' }}>Debe seleccionar al menos una opción.</p>}
                             </div>
 
                             <div>
@@ -372,18 +434,60 @@ export const Matricula2 = () => {
                                     onKeyPress={handleKeyPress}
                                     onChange={handleInputChange}
                                     disabled={disabledRef}
-                                />
-                                {/*errorMessages.referencia && <div style={{ color: 'red' }}>{errorMessages.referencia}</div>*/}
+                                />                               
                             </div>
 
+                            <div >
+                                <div className="alumno-form-group">
+                                    <label className="alumno-label">Foto del la transaccion</label>
+                                    <div className="alumno-input-container">
+                                        <FontAwesomeIcon icon={faCamera} className="alumno-input-icon" />
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            onChange={handleImageChange}
+                                            accept=".jpg,.jpeg,.png"
+                                            className="alumno-input"
+                                            disabled={disabledRef}
+                                            required
+                                        />                                        
+                                    </div>
+                                    {previewUrl && (
+                                        <div className="image-preview-container">
+                                            <img
+                                                src={previewUrl}
+                                                alt="Vista previa"
+                                                className="image-preview"
+                                                style={{ maxWidth: '200px', marginTop: '10px' }}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={eliminaImagenBoton}
+                                                className="remove-image-btn"                                    >
+                                                Eliminar imagen
+                                            </button>
+                                        </div>
+                                    )}
+                                    {imageError && (
+                                        <div className="error-message" style={{ color: 'red', marginTop: '5px' }}>
+                                            {imageError}
+                                        </div>
+                                    )}
+                                    <div className="image-info"
+                                        style={{ fontSize: '0.8rem', color: '#666', marginTop: '5px' }}>
+                                        Formatos permitidos: JPG, PNG. Tamano maximo: 5MB
+                                    </div>
+                                </div>
+
+                            </div>
 
                             <div>
                                 <label>Total</label>
                                 <input type="text" value={total} />
                             </div>
 
-                            <div className="botones">
-                                <button type="submit" className="submit-m-button"> Enviar</button>
+                            <div className="botones">                               
+                                <button type="submit" className="submit-m-button" >Enviar</button>  
                                 <button type="reset" className="cancel-m-button" onClick={reset}> Borrar</button>
                             </div>
                         </form>
