@@ -41,7 +41,10 @@ const Gastos = () => {
       
     };
 
-    
+    const returnCartegoria = (id) => {
+        const cat = categorias.find(item => item.idCategoria === id).nombreCategoria;
+        return cat;
+    }
   
     const manejarCambio = (e) => {
         const { name, value } = e.target;
@@ -110,7 +113,7 @@ const Gastos = () => {
         },
         {
             name: 'Categoria',
-            selector: row => row.categoriaId,
+            selector: row => returnCartegoria(row.categoriaId),
             sortable: true
         },
         {
