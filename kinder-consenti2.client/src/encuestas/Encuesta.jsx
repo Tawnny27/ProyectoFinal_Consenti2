@@ -81,7 +81,9 @@ const Encuesta = () => {
     };
 
     return (
-        <div className="teachers-feedback-container">         
+        <div>
+            <main className="main-content">
+        <div className="teachers-fe edback-container">         
             <form onSubmit={handleSubmit} className="survey-form" style={{ display: isFormDisabled ? 'none' : 'block' }}>
                 <h2>Encuesta del Centro Educativo</h2>
                 <label>
@@ -125,6 +127,8 @@ const Encuesta = () => {
                 </div>
             )}
 
+                </div>
+            </main>
         </div>
     );
 };

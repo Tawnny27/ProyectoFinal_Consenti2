@@ -38,8 +38,10 @@ export const Matricula = () => {
     const [selectedCheckbox, setSelectedCheckbox] = useState(null);
     const [selectedPagoCheckbox, setSelectedPagoCheckbox] = useState(null);
     const [matricula, setMatricula] = useState({});
+    const [tiposPago, setTiposPago] = useState([]);
     const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png'];
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
 
     const setearMatricula = () => {
         setMatricula(
@@ -209,7 +211,7 @@ export const Matricula = () => {
     const handleCheckboxPagoChange = (index, label) => {
         setSelectedPagoCheckbox(index);
         setPago(label);
-        if (index == 0) {
+        if (label == "Efectivo") {
             setDisableRef(true);
             setPreviewUrl('');
             if (fileInputRef.current) {
@@ -390,6 +392,12 @@ export const Matricula = () => {
         cargarFijos();
         cargarMensuales();
         setearMatricula();
+        if (user.rolId === 3) {
+            setTiposPago(['SINPE Movil', 'Transferencia']);
+        } else {
+            setTiposPago(['Efectivo', 'SINPE Movil', 'Transferencia']);
+        }
+        
     }, []);
 
     useEffect(() => {
@@ -479,7 +487,7 @@ export const Matricula = () => {
 
                             <div className="contenLabel">
                                 <label className="labelCheck">Tipo de Pago</label>
-                                {['Efectivo', 'SINPE Movil', 'Transferencia'].map((label, index) => (
+                                        {tiposPago.map((label, index) => (
                                     <div key={index} className="inputsOrder">
                                         <label className="check" key={index}>
                                             <input

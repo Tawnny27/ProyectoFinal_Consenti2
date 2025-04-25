@@ -263,43 +263,48 @@ const Grupos = () => {
     const columns = [
         {
             name: "Grupo",
-            selector: row => row.nombreGrupo,
-            with: '10px',
-            sortable: true
+            selector: row => row.nombreGrupo,            
+            sortable: true,
+            minWidth: "150px",
+            maxWidth: "200px"
         },
         {
             name: "Usuario",
-            selector: row => row.usuario.nombreUsuario + " " + row.usuario.apellidosUsuario,
-            with: '30px',
-            sortable: true
+            selector: row => row.usuario.nombreUsuario + " " + row.usuario.apellidosUsuario,            
+            sortable: true,
+            minWidth: "150px",
+            maxWidth: "200px"
         },
         {
             name: "Cupo",
-            selector: row => row.cupo,
-            with: '10px',
-            sortable: true
+            selector: row => row.cupo,            
+            sortable: true,
+            minWidth: "150px",
+            maxWidth: "200px"
         },
         {
             name: "Dsiponible",
-            selector: row => row.disponible,
-            with: '10px',
-            sortable: true
+            selector: row => row.disponible,           
+            sortable: true,
+            minWidth: "150px",
+            maxWidth: "200px"
         },
         {
             name: "Edad Inicial",
-            selector: row => row.edadInicial,
-            with: '10px',
-            sortable: true
+            selector: row => row.edadInicial,           
+            sortable: true,
+            minWidth: "150px",
+            maxWidth: "200px"
         },
         {
             name: "Status",
-            selector: row => cargaStatus(row.status),
-            with: '30px',
-            sortable: true
+            selector: row => cargaStatus(row.status),            
+            sortable: true,
+            minWidth: "150px",
+            maxWidth: "200px"
         },
         {
-            name: "Acciones",
-            with: '40px',
+            name: "Acciones",           
             cell: (row) => (
                 <div className="acciones">
                     <button className="acciones-button" onClick={() => verAlumnos(row.idGrupos)}>
@@ -313,6 +318,8 @@ const Grupos = () => {
                     </button>
                 </div>
             ),
+            minWidth: "200px",
+            maxWidth: "300px"
         }
     ];
 

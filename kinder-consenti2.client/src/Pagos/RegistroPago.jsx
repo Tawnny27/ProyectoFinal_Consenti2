@@ -13,7 +13,8 @@ const RegistroPago = () => {
     const [usuario, setUsuario] = useState([]);
     const [detallesTemp, setDetallesTemp] = useState([]);
     const [mensaje, setMensaje] = useState([]);
-    const [disabledRef, setDisableRef] = useState(true);    
+    const [disabledRef, setDisableRef] = useState(true);   
+    const [tiposPago, setTiposPago] = useState([]);
     const [usuarioSelect, setUsuarioSelect] = useState({
         idUsuario: 0,
         rolId: 0,
@@ -64,14 +65,19 @@ const RegistroPago = () => {
 
     const limpiarDatos = () => {
 
-        setUsuarioSelect({
-            idUsuario: 0,
-            rolId: 0,
-            nombreUsuario: '',
-            apellidosUsuario: '',
-            cedulaUsuario: '',
-            referencia: 0,
-        });
+        if (user.rolId != 3) {
+            setUsuarioSelect({
+                idUsuario: 0,
+                rolId: 0,
+                nombreUsuario: '',
+                apellidosUsuario: '',
+                cedulaUsuario: '',
+                referencia: 0,
+            });
+
+            setDetallesTemp([]);
+        }
+        
 
         setPago({
             clienteId: 0,
@@ -93,8 +99,7 @@ const RegistroPago = () => {
         setDisableRef(true);
         eliminaImagen();
         //setNombreUnico('default.jpg');  
-        validacionDatos(2);
-        setDetallesTemp([]);
+        validacionDatos(2);       
 
     };
 
@@ -141,6 +146,11 @@ const RegistroPago = () => {
 
     useEffect(() => {
         cargarDatos();
+        if (user.rolId === 3) {
+            setTiposPago(['SINPE Movil', 'Transferencia']);
+        } else {
+            setTiposPago(['Efectivo', 'SINPE Movil', 'Transferencia']);
+        }
     }, []);
 
     const sumarPrecios = (array) => {
@@ -197,7 +207,6 @@ const RegistroPago = () => {
                 detalles: detallesTemp
             });
         }
-
     }, [detallesTemp]);
 
     useEffect(() => {
@@ -311,11 +320,10 @@ const RegistroPago = () => {
     const handleCheckboxChange = (index, label) => {
         if (selectedCheckbox == index) {
             setSelectedCheckbox(null);
-            setPago({ ...pago, metodoPago: '', imagenPago: '' });
-            console.log("es nulo el check");
+            setPago({ ...pago, metodoPago: '', imagenPago: '' });           
             setDisableRef(true);
         } else {
-            if (index == 0) {
+            if (label == "Efectivo") {
                 setSelectedCheckbox(index);
                 setDisableRef(true);
                 setPago({ ...pago, metodoPago: 'Efectivo', imagenPago: 'Pago en Efectivo', referencia:0 });
@@ -534,7 +542,7 @@ const RegistroPago = () => {
                                     { /*Partirlo*/}
                                     <div className="contenLabel">
                                         <label className="labelCheck">Tipo de Pago</label>
-                                        {['Efectivo', 'SINPE MOVIL', 'Transferencia'].map((label, index) => (
+                                        {tiposPago.map((label, index) => (
                                             <div key={index} className="inputsOrder">
                                                 <label className="check" key={index}>
                                                     <input
