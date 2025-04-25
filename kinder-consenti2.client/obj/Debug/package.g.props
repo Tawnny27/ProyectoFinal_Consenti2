@@ -27,7 +27,7 @@
     <PackageJsonDependenciesReactDom Condition="$(PackageJsonDependenciesReactDom) == ''">^18.3.1</PackageJsonDependenciesReactDom>
     <PackageJsonDependenciesReactRatingStarsComponent Condition="$(PackageJsonDependenciesReactRatingStarsComponent) == ''">^2.2.0</PackageJsonDependenciesReactRatingStarsComponent>
     <PackageJsonDependenciesReactRouterDom Condition="$(PackageJsonDependenciesReactRouterDom) == ''">^6.26.2</PackageJsonDependenciesReactRouterDom>
-    <PackageJsonDependenciesReactSelect Condition="$(PackageJsonDependenciesReactSelect) == ''">^5.10.0</PackageJsonDependenciesReactSelect>
+    <PackageJsonDependenciesReactSelect Condition="$(PackageJsonDependenciesReactSelect) == ''">^5.10.1</PackageJsonDependenciesReactSelect>
     <PackageJsonDependenciesReactToastify Condition="$(PackageJsonDependenciesReactToastify) == ''">^10.0.6</PackageJsonDependenciesReactToastify>
     <PackageJsonDependenciesXlsx Condition="$(PackageJsonDependenciesXlsx) == ''">^0.18.5</PackageJsonDependenciesXlsx>
     <PackageJsonDevdependenciesEslintJs Condition="$(PackageJsonDevdependenciesEslintJs) == ''">^9.9.0</PackageJsonDevdependenciesEslintJs>

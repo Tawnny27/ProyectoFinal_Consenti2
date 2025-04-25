@@ -101,6 +101,7 @@ namespace kinder_consenti2.Server.Controllers
                 string clavegenerica = Guid.NewGuid().ToString().Substring(0, 8);
                 usuario.ContrasennaUsuario = Encryptar.encripSHA256(clavegenerica);
                 usuario.PassGenerico = true;
+                usuario.estado = true;
                 _context.Usuario.Add(usuario);
                 _context.SaveChanges();
 

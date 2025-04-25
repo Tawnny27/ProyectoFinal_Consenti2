@@ -2,21 +2,43 @@
 import 'react-toastify/dist/ReactToastify.css';
 import './matricula.css';
 import { useUserContext } from '../UserContext';
+import Select from "react-select";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import { ObtenerPadres, BuscarUsuarios, ObtenerProductosfijos, ObtenerProductosMensuales, CrearMatricula, } from '../apiClient'; // Importar las funciones desde apiClient.js
 
 export const Matricula2 = () => {
 
     const { user } = useUserContext();
+
+    const [opciones, setOpciones] = useState([]);
+    const fileInputRef = useState(null);
+    const [imageError, setImageError] = useState('');
+    const [previewUrl, setPreviewUrl] = useState('');    
+    const [seleccionPadre, setSeleccionPadre] = useState(null);
+   
+    const [disabledRef, setDisableRef] = useState(true);
+    const [total, setTotal] = useState(0);
+    const [pago, setPago] = useState("");
+    const [imgPago, setImgPago] = useState("");
+    const [ref, setRef] = useState("");
+    const [envio, setEnvio] = useState(false);
+    const [checkVisible, setCheckVisible] = useState(false);
     const [usSelect, setUsSelect] = useState({});
+    const [hijoSelect, setHijoSelect] = useState({});
     const [usuarios, setUsuarios] = useState([]);
     const [fijos, setFijos] = useState([]);
     const [mensuales, setMensuales] = useState([]);
+    const [registrosTemp, setRegistrosTemp] = useState([]);
     const [registros, setRegistros] = useState([]);
+    const [mesajePago, setMesajePago] = useState(false);
+    const [selectedCheckbox, setSelectedCheckbox] = useState(null);
+    const [selectedPagoCheckbox, setSelectedPagoCheckbox] = useState(null);
     const [matricula, setMatricula] = useState(
         {
             "clienteId": 0,
-            "rollId": 0,
-            "fecha": "",
+            "rollId": user.rolId,
+            "fecha": new Date().toISOString(),
             "metodoPago": "",
             "imagenPago": "",
             "referencia": 0,
@@ -24,24 +46,40 @@ export const Matricula2 = () => {
             "descuento": 0,
             "iva": 0,
             "total": 0,
-            "detalles": [
-                {
-                    "encabezadoFacturaId": 0,
-                    "productoId": 0,
-                    "alumnoId": 0,
-                    "monto": 0,
-                    "dias": "string"
-                }
-            ]
+            "detalles": []
         }
     );
+    const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png'];
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
+    const reset = () => {
+        setUsSelect({});
+        setHijoSelect({});
+        setCheckVisible(false);
+        setEnvio(false);
+        setRegistrosTemp([]);
+        setRegistros([]);
+        setSelectedCheckbox(null);
+        setSelectedPagoCheckbox(null);
+        setSeleccionPadre(null);
+        eliminaImagen();
+        setMesajePago(false);
+        setDisableRef(true);
+        setRef("");
+    }
 
     const cargarPadre = async () => {
         if (user.rolId == 1) {
             const response = await ObtenerPadres();
             if (response.status == 200) {
                 setUsuarios(response.data);
+
+                const datosTransformados = response.data.map((item) => ({
+                    value: item.idUsuario, // Valor interno
+                    label: item.nombreUsuario + " " + item.apellidosUsuario, // Texto visible
+                }));
+                setOpciones(datosTransformados);
+
             } else {
                 setUsuarios([]);
             }
@@ -69,102 +107,216 @@ export const Matricula2 = () => {
         }
     }
 
-
-    const handleUseSelect = (idUser) => {
-        if (idUser != 0) {
+    const handleUseSelectOP = (opcion) => {
+        setSeleccionPadre(opcion);
+        if (opcion.value != 0) {
             setUsSelect(usuarios.find((us) =>
-                us.idUsuario === parseInt(idUser)
+                us.idUsuario === parseInt(opcion.value)
             ));
         } else {
             setUsSelect({});
         }
-        console.log(idUser);
-        console.log(usSelect);
+        setHijoSelect({});
+        setCheckVisible(false);
+        setEnvio(false);
+        setRegistrosTemp([]);
+        setRegistros([]);
+        setSelectedCheckbox(null);
+        setMesajePago(false);
+        setSelectedPagoCheckbox(null);
     }
 
-    const handleCheck = (id) => {
+    const addFijos = (idHijo) => {
         const detalle = [];
-        if (registros.length === 0) {
+        fijos.map(pr =>
             detalle.push(
                 {
-                    "productoId": 1,
-                    "alumnoId": id,
-                    "monto": fijos.find(prod => prod.idProducto === 1)?.monto,
-                    "dias": "string"
+                    "productoid": pr.idProducto,
+                    "alumnoid": parseInt(idHijo),
+                    "monto": pr.monto,
+                    "dias": ""
                 },
-                {
-                    "productoId": 2,
-                    "alumnoId": id,
-                    "monto": fijos.find(prod => prod.idProducto === 2)?.monto,
-                    "dias": "string"
-                },
-                {
-                    "productoId": 3,
-                    "alumnoId": id,
-                    "monto": fijos.find(prod => prod.idProducto === 3)?.monto,
-                    "dias": "string"
-                },
-            );
-            setRegistros(prevRegistros => [...prevRegistros, ...detalle]);
+            ));
+        setRegistrosTemp(detalle);
+    }
 
+    const addHorario = (idHorario, idHijo) => {
+
+        let horario = mensuales.find(pr => pr.idProducto === idHorario);
+        const detalle = {
+            "productoid": horario.idProducto,
+            "alumnoid": parseInt(idHijo),
+            "monto": horario.monto,
+            "dias": ""
+        };
+        setRegistrosTemp((prevRegistros) => [...prevRegistros, detalle]);
+    }
+
+    const handleCheckboxChange = (index, idHorario, idHijo) => {
+        setSelectedCheckbox(index);
+        addFijos(idHijo);
+        addHorario(idHorario, idHijo);
+        setEnvio(true);
+    }
+
+    const handleSelectAlumno = (idHijo) => {
+        if (idHijo != 0) {
+            setHijoSelect(usSelect.alumnos.find(hi =>
+                hi.idAlumno === parseInt(idHijo)
+            ));
+            setCheckVisible(true);
+            setSelectedCheckbox(null);
+            setEnvio(false);
         } else {
-            let validado = registros.filter(reg => reg.alumnoId === id);
-            if (validado.length === 0) {
-                console.log("entra al push 2");
-                detalle.push(
-                    {
-                        "productoId": 1,
-                        "alumnoId": id,
-                        "monto": fijos.find(prod => prod.idProducto === 1)?.monto,
-                        "dias": "string"
-                    },
-                    {
-                        "productoId": 2,
-                        "alumnoId": id,
-                        "monto": fijos.find(prod => prod.idProducto === 2)?.monto,
-                        "dias": "string"
-                    },
-                    {
-                        "productoId": 3,
-                        "alumnoId": id,
-                        "monto": fijos.find(prod => prod.idProducto === 3)?.monto,
-                        "dias": "string"
-                    },
-                );
-                console.log(detalle);
-                setRegistros(prevRegistros => [...prevRegistros, ...detalle]);
+            setHijoSelect({});
+            setCheckVisible(false);
+            setEnvio(false);
+            setRegistrosTemp([]);
+            setSelectedCheckbox(null);
+        }
+    }
 
-            } else {
-                validado = registros.filter(reg => reg.alumnoId != id);
-                if (validado.length > 0) {
-                    setRegistros(validado);
-                } else {
-                    setRegistros([]);
-                }
+    const addDetalle = () => {
+        const validar = registros.filter(item => item.alumnoid === parseInt(hijoSelect.idAlumno));
+        if (validar.length === 0) {
+            setRegistros((prevRegistros) => [...prevRegistros, ...registrosTemp]);
+        } else {
+            alert("Este Niño ya fue ingresado");
+            console.log(registros);
+        }
+        setEnvio(false);
+        setHijoSelect({});
+        setSelectedCheckbox(null);
+        setCheckVisible(false);
+    }
+
+    const estilos = {
+        check: {
+            display: "none",
+        },
+    }
+
+    const handleCheckboxPagoChange = (index, label) => {
+        setSelectedPagoCheckbox(index);
+        setPago(label);
+        if (index == 0) {          
+            setDisableRef(true);
+            setPreviewUrl('');
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+            setRef("");
+            setImgPago("Pago en efectivo");
+        } else {
+            setDisableRef(false);
+            setImgPago("");
+        }
+        setMesajePago(false);
+    }
+
+    const handleKeyPress = (event) => {
+        const charCode = event.charCode;
+
+        // Permitir solo números (0-9)
+        if (charCode < 48 || charCode > 57) {
+            event.preventDefault();
+        }
+    };
+
+    const handleInputChange = (e) => {
+        e.target.value;
+        if (e.target.value != '' && e.target.value != 0) {
+            setRef(e.target.value);
+        } else {
+            setRef("");
+        }
+    };
+
+    const validateImage = (file) => {
+        if (!file) {
+            throw new Error('Por favor seleccione una imagen');
+        }
+        if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+            throw new Error('Formato no permitido. Use JPG, PNG');
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            throw new Error('La imagen excede el tamaño máximo de 5MB');
+        }
+        return true;
+    };
+
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
+
+
+    const base64Image = async (file) => {
+        const base64 = await convertToBase64(file);
+        return base64;
+    }
+
+
+    const handleImageChange = async (e) => {
+        const file = e.target.files[0];
+        setImageError('');
+        try {
+            if (validateImage(file)) {
+               
+                let base64 = await base64Image(file);
+                setImgPago(base64);
+                setPreviewUrl(URL.createObjectURL(file));
+              
+            }
+        } catch (error) {
+            setImageError(error.message);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
             }
         }
-    }
+    };
 
-    const alumnoActivo = (id) => {
-        const validacionAlumno = registros.filter(reg => reg.alumnoId != id);
-        if (validacionAlumno.length === 0) {
+    const eliminaImagen = () => {       
+        setPreviewUrl('');
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+        setImgPago("");
+    };
+
+    const eliminaImagenBoton = () => {      
+        setPreviewUrl('');
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+        setImgPago("");
+    };
+
+    const validacionesEnvio = () => {
+        if (selectedPagoCheckbox === null) {
+            setMesajePago(true);
             return false;
         } else {
+            setMesajePago(false);
             return true;
-        }
+        }        
+    };
 
-    }
+    // ---------------------------------------envio de datos-------------------------------------------------
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        alert("llega");
+        if (validacionesEnvio() == true) {
+            alert("enviado");
+        }        
+    };
 
-    const horario = (id, idHorario) => {
-        let reg = {
-            "productoId": parseInt(idHorario),
-            "alumnoId": id,
-            "monto": mensuales.find(prod => prod.idProducto === parseInt(idHorario))?.monto,
-            "dias": "string"
-        }
-        setRegistros(prevRegistros => [...prevRegistros, reg]);
-      
-    }
     //UseEffect*******************************************************
 
     useEffect(() => {
@@ -174,8 +326,23 @@ export const Matricula2 = () => {
     }, []);
 
     useEffect(() => {
-        console.log(registros);
+        if (registros.length > 0) {
+            let suma = 0;
+            registros.map(item => suma = suma + item.monto);
+            setTotal(suma);
+        } else {
+            setTotal(0);
+        }
     }, [registros]);
+
+
+    useEffect(() => {
+        console.log(registrosTemp);
+        console.log(selectedPagoCheckbox);
+        console.log(registros);
+        console.log(hijoSelect);
+        console.log(usSelect);
+    }, [registrosTemp], [hijoSelect], [usSelect], [registros]);
 
 
     return (
@@ -184,19 +351,17 @@ export const Matricula2 = () => {
                 <div className="content-matricula">
                     <div className="enrollment-form">
                         <h2>Formulario de Matrícula</h2>
-                        <form>
+                        <form onSubmit={handleSubmit}>
                             {user.rolId === 1 ? (
                                 <div>
-                                    <label> Seleccione un Padre</label>
-                                    <select
-                                        onChange={(e) => handleUseSelect(e.target.value)}
-                                        value={usSelect.idUsuario || "0"}>
+                                    <label> Seleccione un Padre</label>      
+                                    <Select
+                                        options={opciones}            // Opciones con la opción inicial incluida
+                                        value={seleccionPadre}             // Valor actualmente seleccionado
+                                        onChange={handleUseSelectOP}       // Ejecuta el proceso al cambiar la selección
+                                        placeholder="Buscar o seleccionar..."
+                                    />
 
-                                        <option value="0"> Seleccione un padre </option>
-                                        {usuarios.map((use) => (
-                                            <option key={use.idUsuario} value={use.idUsuario}> {use.nombreUsuario} {use.apellidosUsuario}</option>
-                                        ))}
-                                    </select>
                                 </div>
                             ) : (
                                 <div>
@@ -208,54 +373,122 @@ export const Matricula2 = () => {
                             {usSelect.alumnos && usSelect.alumnos.length > 0 && (
                                 <div className="hijos" >
                                     <label>Hijos</label>
-                                    {usSelect.alumnos.map((hijo, index) => (
-                                        <div key={index}>
-                                            <div>
-                                                <label key={index}>
+
+                                    <select
+                                        value={hijoSelect.idAlumno || "0"}
+                                        onChange={(e) => handleSelectAlumno(e.target.value)}
+                                    >
+                                        <option value="0"> Seleccione un hijo</option>
+                                        {usSelect.alumnos.map((hijo) => (
+                                            <option key={hijo.idAlumno} value={hijo.idAlumno}> {hijo.nombreAlumno} </option>
+                                        ))}
+                                    </select>
+
+                                    <div>
+                                        <label>Horarios</label>
+                                        {mensuales.map((hr, index) => (
+                                            <div key={index} style={{ padding: "5px" }}>
+                                                <label className="check" key={index} style={!checkVisible ? estilos.check : {}} >
                                                     <input
                                                         type="checkbox"
-                                                        key={hijo.idAlumno}
-                                                        onChange={() => handleCheck(hijo.idAlumno)}
+                                                        checked={selectedCheckbox === index}
+                                                        onChange={() => handleCheckboxChange(index, hr.idProducto, hijoSelect.idAlumno)}
                                                     />
-
-                                                    {hijo.nombreAlumno}
+                                                    {hr.nombreProducto} - {hr.monto}
                                                 </label>
-
-                                                {alumnoActivo(hijo.idAlumno) && (
-                                                    <select
-                                                        key={index}
-                                                        onChange={(e) => horario(hijo.idAlumno, e.target.value)}
-                                                        value={(e) => registros.find((pr) => pr.idProducto === e.target.value)?.productoId || "0"}
-                                                    >
-                                                        <option value="0"> Seleccione un horario</option>
-                                                        {mensuales.map((ho) => (
-                                                            <option key={ho.idProducto} value={ho.idProducto}>{ho.nombreProducto}</option>
-                                                        ))}
-                                                    </select>
-                                                )}
+                                                <br />
                                             </div>
-
-                                        </div>
-                                    ))}
+                                        ))}
+                                        {envio && (
+                                            <button type="button" onClick={addDetalle} >Agregar</button>
+                                        )}
+                                    </div>
                                 </div>
                             )}
 
+                            <div className="contenLabel">
+                                <label className="labelCheck">Tipo de Pago</label>
+                                {['Efectivo', 'SINPE Movil', 'Transferencia'].map((label, index) => (
+                                    <div key={index} className="inputsOrder">
+                                        <label className="check" key={index}>
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedPagoCheckbox === index}
+                                                onChange={() => handleCheckboxPagoChange(index, label)}
+                                            />
+                                            {label}
+
+                                        </label>
+                                        <br />
+                                    </div>
+                                ))}
+                                {mesajePago && <p style={{ color: 'red' }}>Debe seleccionar al menos una opción.</p>}
+                            </div>
 
                             <div>
-                                <label>Opcional</label>
-                                <input type="text" />
+                                <label># de referencia:</label>
+                                <input type="text"
+                                    name="referencia"
+                                    value={ref}
+                                    required
+                                    onKeyPress={handleKeyPress}
+                                    onChange={handleInputChange}
+                                    disabled={disabledRef}
+                                />                               
                             </div>
+
+                            <div >
+                                <div className="alumno-form-group">
+                                    <label className="alumno-label">Foto del la transaccion</label>
+                                    <div className="alumno-input-container">
+                                        <FontAwesomeIcon icon={faCamera} className="alumno-input-icon" />
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            onChange={handleImageChange}
+                                            accept=".jpg,.jpeg,.png"
+                                            className="alumno-input"
+                                            disabled={disabledRef}
+                                            required
+                                        />                                        
+                                    </div>
+                                    {previewUrl && (
+                                        <div className="image-preview-container">
+                                            <img
+                                                src={previewUrl}
+                                                alt="Vista previa"
+                                                className="image-preview"
+                                                style={{ maxWidth: '200px', marginTop: '10px' }}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={eliminaImagenBoton}
+                                                className="remove-image-btn"                                    >
+                                                Eliminar imagen
+                                            </button>
+                                        </div>
+                                    )}
+                                    {imageError && (
+                                        <div className="error-message" style={{ color: 'red', marginTop: '5px' }}>
+                                            {imageError}
+                                        </div>
+                                    )}
+                                    <div className="image-info"
+                                        style={{ fontSize: '0.8rem', color: '#666', marginTop: '5px' }}>
+                                        Formatos permitidos: JPG, PNG. Tamano maximo: 5MB
+                                    </div>
+                                </div>
+
+                            </div>
+
                             <div>
-                                <label>Opcional</label>
-                                <input type="text" />
+                                <label>Total</label>
+                                <input type="text" value={total} />
                             </div>
-                            <div>
-                                <label>Opcional</label>
-                                <input type="text" />
-                            </div>
-                            <div className="botones">
-                                <button type="submit" className="submit-m-button"> Enviar</button>
-                                <button type="reset" className="cancel-m-button"> Borrar</button>
+
+                            <div className="botones">                               
+                                <button type="submit" className="submit-m-button" >Enviar</button>  
+                                <button type="reset" className="cancel-m-button" onClick={reset}> Borrar</button>
                             </div>
                         </form>
                     </div>
@@ -265,6 +498,3 @@ export const Matricula2 = () => {
     );
 }
 //-------------------------------------------------------------------------------------------------------------
-
-
-

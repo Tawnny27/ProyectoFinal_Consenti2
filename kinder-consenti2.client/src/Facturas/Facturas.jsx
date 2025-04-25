@@ -94,13 +94,8 @@ const FacturaMaintenance = () => {
     };
 
 
-    const abrirModal = (imagen) => {
-        const partesRuta = imagen.split('/');
-        const directorio = partesRuta.slice(0, -1).join('/');
-        const nombreArchivo = partesRuta.slice(-1)[0];
-        const nombreCompleto = `Comprobante_${nombreArchivo}`;
-        const rutaCompleta = `${directorio}/${nombreCompleto}`;
-
+    const abrirModal = (imagen) => {       
+        const rutaCompleta = imagen;
         setImagenSeleccionada(rutaCompleta);
         setModalOpen(true);
     };

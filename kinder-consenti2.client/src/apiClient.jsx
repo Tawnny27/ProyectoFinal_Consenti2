@@ -73,10 +73,11 @@ export const CrearUsuario = async (usuario) => {
         const response = await apiClient.post('/api/CrearUsuario', usuario);
         return response;
     } catch (error) {
-        console.error('Error en el inicio de sesión:', error.response?.data || error.message);
-        return (error.response?.data || 'Error en el inicio de sesión. Revisa tus credenciales.');
+        console.error('Error en el creacion de usuario:', error.response?.data || error.message);
+        return (error.response?.data );
     }
 };
+
 export const CambiarContrasena = async (email, newPassword, confirmPassword) => {
     try {
         const response = await apiClient.put('/api/CambiarContrasena', {

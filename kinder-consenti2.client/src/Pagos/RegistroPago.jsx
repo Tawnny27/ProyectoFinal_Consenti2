@@ -351,6 +351,7 @@ const RegistroPago = () => {
     const handleImageChange = async (e) => {
         const file = e.target.files[0];
         setImageError('');
+        console.log(file);
         try {
             if (validateImage(file)) {
                 setSelectedFile(file);          
@@ -365,13 +366,11 @@ const RegistroPago = () => {
                 fileInputRef.current.value = '';
             }
         }
-
     };
 
     // ---------------------------------------envio de datos-------------------------------------------------
     const handleSubmit = (e) => {
         e.preventDefault();
-
         if (validacionDatos(1)) {
             if (selectedCheckbox === null) {
                 setIsValid(false);

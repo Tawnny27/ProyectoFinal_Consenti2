@@ -17,7 +17,7 @@ const RegistroUsuario = () => {
         cedulaUsuario: '',
         telefonoUsuario: '',
         correoUsuario: '',
-        contrasennaUsuario: '',
+        fechaIngreso: new Date().toISOString(),
     });
     const [mensajeExito, setMensajeExito] = useState('');
     const [error, setError] = useState('');
@@ -52,7 +52,7 @@ const RegistroUsuario = () => {
         try {
             const response = await CrearUsuario(usuario);
 
-            if (response) {
+            if (response.status==200) {
                 setMensajeExito('Usuario registrado exitosamente.');
                 setTimeout(() => {
                     navigate(usuario.rolId === "3" ? '/pages/alumno-maintenance' : '/pages/user-maintenance');
