@@ -182,7 +182,7 @@ namespace kinder_consenti2.Server.Controllers
                     usuario.PassGenerico = true; // cambia el status a true  para la vandera de alerta de clave generica
                     _context.Usuario.Update(usuario); // se actulizan los datos
                     _context.SaveChanges();// se actulizan en la BD
-                    var dat = _context.SetingCorreo.Find(1); // traen los datos del servidor de correo gmail
+                    var dat = _context.SetingCorreo.FirstOrDefault(s => s.IdRegistro == 1); // traen los datos del servidor de correo gmail
                     _correoEnvio.EnviarCorreo(587, dat.CorreoOrigen, dat.ContrasennaOrigen,
                         usuario.CorreoUsuario, dat.smtpClient, dat.asunto, dat.cuerpo, clavegenerica);// se envia el correo con la clave generica
                     return Ok("Revisar correo de recuperación");

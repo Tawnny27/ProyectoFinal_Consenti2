@@ -19,6 +19,8 @@ function ActivityPanel() {
     const { user } = useUserContext();
     const currentDate = new Date().toISOString().slice(0, 10);
 
+
+
     // Función para obtener grupos
     const obtenerGrupos = async () => {
         try {
@@ -43,7 +45,7 @@ function ActivityPanel() {
                     descripcion: "", // Valor por defecto
                     statusParticipacion: 1, // Valor por defecto
                     statusComida: 1,
-                    tipoComida: "Normal",
+                    tipoComida: "Desayuno",
                     comentario: "", // Valor por defecto
                     catidad: 0,
                     name: child.alumno.nombreAlumno + ' ' + child.alumno.apellidosAlumno || "Sin nombre"
@@ -92,79 +94,71 @@ function ActivityPanel() {
         switch (activity) {
             case 'Comida':
                 try {
-                    console.log(childrenData)
                     const response = await CrearActividadComidas(childrenData);
 
                     if (response.status === 200) {
-                        console.log('Success:', response.data);
                         alert('Actividad de Comida guardada con éxito!');
                     } else {
-                        console.error('Error:', response.status, response.data);
                         alert('Hubo un error al guardar la actividad de Comida.');
                     }
                 } catch (error) {
-                    console.error("Error :", error);
                     alert('Error al guardar la actividad de Comida: ' + error.message);
                 }
                 break;
             case 'Huerta':
                 try {
-                    console.log(childrenData)
 
                     const response = await CrearActividadHuerta(childrenData);
                     
                     if (response.status === 200) {
-                        console.log('Success:', response.data);
                         alert('Actividad de Huerta guardada con éxito!');
                     } else {
-                        console.error('Error:', response.status, response.data);
                         alert('Hubo un error al guardar la actividad de Huerta.');
                     }
                 } catch (error) {
-                    console.error("Error :", error);
                     alert('Error al guardar la actividad de Huerta: ' + error.message);
                 }
                 break;
             case 'Dormir':
                 try {
-                    console.log(childrenData)
                     const response = await CrearActividadDormir(childrenData);
                     if (response.status === 200) {
-                        console.log('Success:', response.data);
                         alert('Actividad de Dormir guardada con éxito!');
                     } else {
-                        console.error('Error:', response.status, response.data);
                         alert('Hubo un error al guardar la actividad de Dormir.');
                     }
                 } catch (error) {
-                    console.error("Error :", error);
                     alert('Error al guardar la actividad de Dormir: ' + error.message);
                 }
                 break;
             case 'Ir al Baño':
                 try {
-                    console.log(childrenData)
                     const response = await CrearActividadBanno(childrenData);
                     if (response.status === 200) {
-                        console.log('Success:', response.data);
                         alert('Actividad de Baño guardada con éxito!');
                     } else {
-                        console.error('Error:', response.status, response.data);
                         alert('Hubo un error al guardar la actividad de Baño.');
                     }
                 } catch (error) {
-                    console.error("Error :", error);
                     alert('Error al guardar la actividad de Baño: ' + error.message);
                 }
                 break;
             default:
-                console.log("No hay actividad seleccionada");
         }
     };
 
     useEffect(() => {
         obtenerGrupos();
     }, []);
+
+    if (user?.rolId === 3) {
+        return (
+            <div className="user-maintenance-container" style={{ marginTop: '200px', textAlign: 'center' }}>
+                <h2 style={{ color: 'red' }}>No tiene permisos para acceder a esta sección.</h2>
+                <p>Esta funcionalidad no está disponible para usuarios con rol de Padre.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="user-maintenance-container">
@@ -229,9 +223,9 @@ function ActivityPanel() {
                                                     onChange={(e) => handleInputChange(index, 'tipoComida', e.target.value)}
                                                     className="activity-select"
                                                 >
-                                                    <option value="Normal">Normal</option>
-                                                    <option value="Vegetariana">Vegetariana</option>
-                                                    <option value="Vegana">Vegana</option>
+                                                    <option value="Desayuno">Desayuno</option>
+                                                    <option value="Merienda">Merienda</option>
+                                                    <option value="Almuerzo">Almuerzo</option>
                                                 </select>
                                             </td>
                                             <td>
