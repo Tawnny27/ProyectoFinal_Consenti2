@@ -4,6 +4,7 @@ import './ActivityPanel.css';
 import { faCarrot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from '../UserContext';
+import { toast } from 'react-toastify';
 
 import Select from 'react-select';
 import { ObtenerGrupos, ObtenerGrupoAlumnos, CrearActividadComidas, CrearActividadBanno, CrearActividadDormir, CrearActividadHuerta } from '../apiClient'; // Importar las funciones desde apiClient.js
@@ -97,12 +98,12 @@ function ActivityPanel() {
                     const response = await CrearActividadComidas(childrenData);
 
                     if (response.status === 200) {
-                        alert('Actividad de Comida guardada con éxito!');
+                        toast.success('Actividad de Comida guardada con éxito!');
                     } else {
-                        alert('Hubo un error al guardar la actividad de Comida.');
+                        toast.error('Hubo un error al guardar la actividad de Comida.');
                     }
                 } catch (error) {
-                    alert('Error al guardar la actividad de Comida: ' + error.message);
+                    toast.error('Error al guardar la actividad de Comida: ' + error.message);
                 }
                 break;
             case 'Huerta':
@@ -111,36 +112,36 @@ function ActivityPanel() {
                     const response = await CrearActividadHuerta(childrenData);
                     
                     if (response.status === 200) {
-                        alert('Actividad de Huerta guardada con éxito!');
+                        toast.success('Actividad de Huerta guardada con éxito!');
                     } else {
-                        alert('Hubo un error al guardar la actividad de Huerta.');
+                        toast.error('Hubo un error al guardar la actividad de Huerta.');
                     }
                 } catch (error) {
-                    alert('Error al guardar la actividad de Huerta: ' + error.message);
+                    toast.error('Error al guardar la actividad de Huerta: ' + error.message);
                 }
                 break;
             case 'Dormir':
                 try {
                     const response = await CrearActividadDormir(childrenData);
                     if (response.status === 200) {
-                        alert('Actividad de Dormir guardada con éxito!');
+                        toast.success('Actividad de Dormir guardada con éxito!');
                     } else {
-                        alert('Hubo un error al guardar la actividad de Dormir.');
+                        toast.error('Hubo un error al guardar la actividad de Dormir.');
                     }
                 } catch (error) {
-                    alert('Error al guardar la actividad de Dormir: ' + error.message);
+                    toast.error('Error al guardar la actividad de Dormir: ' + error.message);
                 }
                 break;
             case 'Ir al Baño':
                 try {
                     const response = await CrearActividadBanno(childrenData);
                     if (response.status === 200) {
-                        alert('Actividad de Baño guardada con éxito!');
+                        toast.success('Actividad de Baño guardada con éxito!');
                     } else {
-                        alert('Hubo un error al guardar la actividad de Baño.');
+                        toast.error('Hubo un error al guardar la actividad de Baño.');
                     }
                 } catch (error) {
-                    alert('Error al guardar la actividad de Baño: ' + error.message);
+                    toast.error('Error al guardar la actividad de Baño: ' + error.message);
                 }
                 break;
             default:
