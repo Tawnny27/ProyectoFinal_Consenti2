@@ -52,6 +52,7 @@
     background-size: cover;
     box-sizing: border-box;
     min-height: 100vh;
+    min-width:60%;
     z-index: 1;
     width: 100%;
 }

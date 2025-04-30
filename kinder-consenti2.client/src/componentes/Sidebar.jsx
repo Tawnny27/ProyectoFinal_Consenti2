@@ -78,11 +78,11 @@ function Sidebar( {ViewSidebard}) {
                                         Aulas
                                     </Link>
                                 </li>
-                                <li>
-                                    <Link to="/pages/reportes">
-                                        <FontAwesomeIcon icon={faChartBar} className="menu-icon" /> Reportes
-                                    </Link>
-                                </li>
+                                {/*<li>*/}
+                                {/*    <Link to="/pages/reportes">*/}
+                                {/*        <FontAwesomeIcon icon={faChartBar} className="menu-icon" /> Reportes*/}
+                                {/*    </Link>*/}
+                                {/*</li>*/}
                             </ul>
                         )}
                     </li>

@@ -626,7 +626,7 @@ const RegistroPago = () => {
 
                             </div>
                             <div className="button-group">
-                                <button type="submit" className="btn-submit" onClick={handleSubmit}>Enviar</button>                                
+                                <button type="submit" className="btn-submit" >Enviar</button>                                
                                 <button type="button" className="btn-cancel" onClick={limpiarDatos}>Cancelar</button>
                             </div>
                         </form>
